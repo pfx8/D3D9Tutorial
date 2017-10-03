@@ -5,6 +5,7 @@
 //
 //=============================================================================
 #include "Main.h"
+#include "Windows.h"
 
 //*****************************************************************************
 // グローバル変数:
@@ -20,10 +21,11 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 //=============================================================================
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
+	// ウィンドウを初期化
 	UNREFERENCED_PARAMETER(hPrevInstance);	// 無くても良いけど、警告が出る（未使用宣言）
 	UNREFERENCED_PARAMETER(lpCmdLine);		// 無くても良いけど、警告が出る（未使用宣言）
 
-	// ウィンドウ属性を設定
+											// ウィンドウ属性を設定
 	WNDCLASSEX	wcex = { 0 };
 	wcex.cbSize = sizeof(WNDCLASSEX);
 	wcex.style = CS_CLASSDC;
@@ -40,33 +42,33 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 	HWND		hWnd;
 	MSG			msg;
-	
+
 	// ウィンドウクラスの登録
 	if (!RegisterClassEx(&wcex))
 		return -1;
 
 	// ウィンドウの作成
 	hWnd = CreateWindow(CLASS_NAME,
-						WINDOW_NAME,
-						WS_OVERLAPPEDWINDOW,
-						CW_USEDEFAULT,																		// ウィンドウの左座標
-						CW_USEDEFAULT,																		// ウィンドウの上座標
-						SCREEN_WIDTH,																		// ウィンドウ横幅
-						SCREEN_HEIGHT,																		// ウィンドウ縦幅
-						NULL,
-						NULL,
-						hInstance,
-						NULL);
+		WINDOW_NAME,
+		WS_OVERLAPPEDWINDOW,
+		CW_USEDEFAULT,																		// ウィンドウの左座標
+		CW_USEDEFAULT,																		// ウィンドウの上座標
+		SCREEN_WIDTH,																		// ウィンドウ横幅
+		SCREEN_HEIGHT,																		// ウィンドウ縦幅
+		NULL,
+		NULL,
+		hInstance,
+		NULL);
 
 	//ヴインドウを中心に移動
 	RECT rect;
 	SystemParametersInfo(SPI_GETWORKAREA, 0, &rect, 0);
-	MoveWindow(	hWnd, 
-				(rect.right - rect.left - SCREEN_WIDTH) / 2, 
-				(rect.bottom - rect.top - SCREEN_HEIGHT) / 2, 
-				SCREEN_WIDTH, 
-				SCREEN_HEIGHT,
-				true);
+	MoveWindow(hWnd,
+		(rect.right - rect.left - SCREEN_WIDTH) / 2,
+		(rect.bottom - rect.top - SCREEN_HEIGHT) / 2,
+		SCREEN_WIDTH,
+		SCREEN_HEIGHT,
+		true);
 
 	// ウインドウの表示(Init()の後に呼ばないと駄目)
 	ShowWindow(hWnd, nCmdShow);

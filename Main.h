@@ -1,6 +1,6 @@
 //=============================================================================
 //
-// ゲーム全体処理[main.cpp]
+// ゲーム全体処理[main.h]
 // Author : リョウ　カンシン
 //
 //=============================================================================
@@ -24,13 +24,8 @@
 //*****************************************************************************
 #define CLASS_NAME			_T("D3d9Class")				// ウインドウのクラス名
 #define WINDOW_NAME			_T("Zilch-E")				// ウインドウのキャプション名
-#define SCREEN_WIDTH		(960)							// ウインドウの幅
-#define SCREEN_HEIGHT		(540)							// ウインドウの高さ
-#define SCREEN_HALF_X		(SCREEN_WIDTH / 2)				// ウインドウの中心Ｘ座標
-#define SCREEN_HALF_Y		(SCREEN_HEIGHT / 2)				// ウインドウの中心Ｙ座標
-
-#define	NUM_VERTEX			(4)								// 頂点数
-#define	NUM_POLYGON			(2)								// ポリゴン数
+#define SCREEN_WIDTH		(960)						// ウインドウの幅
+#define SCREEN_HEIGHT		(540)						// ウインドウの高さ
 
 // 頂点フォーマット( 頂点座標[2D] / 反射光 / テクスチャ座標 )
 #define	FVF_VERTEX_2D	(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1)//D3DFVF_TEX1　テクスチャー座標
