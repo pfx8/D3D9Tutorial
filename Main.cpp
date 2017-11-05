@@ -1,9 +1,10 @@
-﻿//=============================================================================
+﻿//*****************************************************************************
 //
 // ゲーム全体処理[main.cpp]
+//
 // Author : リョウ　カンシン
 //
-//=============================================================================
+//*****************************************************************************
 #include "Main.h"
 #include "GameObjectsClass.h"
 #include "CameraClass.h"
@@ -11,21 +12,26 @@
 #include "LightClass.h"
 
 //*****************************************************************************
-// グローバル変数:
+//
+// グローバル変数
+//
 //*****************************************************************************
-int						g_nCountFPS;							// FPSカウンタ
-LPDIRECT3D9				g_pD3D = NULL;							// Direct3Dオブジェクト
-LPDIRECT3DDEVICE9			g_pD3DDevice = NULL;					// Deviceオブジェクト(描画に必要)
+int							g_nCountFPS;						// FPSカウンタ
+LPDIRECT3D9					g_pD3D = NULL;						// Direct3Dオブジェクト
+LPDIRECT3DDEVICE9			g_pD3DDevice = NULL;				// Deviceオブジェクト(描画に必要)
 
-LPDIRECT3DVERTEXBUFFER9	g_pVertexBuffer = NULL;				// 頂点バッファ
+LPDIRECT3DVERTEXBUFFER9		g_pVertexBuffer = NULL;				// 頂点バッファ
 LPDIRECT3DINDEXBUFFER9		g_pIndexBuffer = NULL;				// インデックスバッファ
 
-CameraClass					g_camera;
-MaterialClass					g_material;
-GameObjectsClass				g_gameobject;
-LightClass					g_light;
+CameraClass*				g_camera;							// カメラ
+MaterialClass				g_material;							// マテリアル
+GameObjectsClass			g_gameobject;						// ゲーム素材
+LightClass					g_light;							// ライト
+
 //*****************************************************************************
+//
 // プロトタイプ宣言
+//
 //*****************************************************************************
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HRESULT InitDiretX(HWND hWnd, BOOL bWindow);
@@ -34,9 +40,11 @@ void	Updata(void);
 void	Draw(HWND hwnd);
 void	Release(void);
 
-//=============================================================================
+//*****************************************************************************
+//
 // メイン関数
-//=============================================================================
+//
+//*****************************************************************************
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	srand(timeGetTime());
@@ -97,7 +105,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		return -1;
 	}
 
-	// GameObjectsClassを初期化する
+	// ゲーム素材を初期化する
 	InitGameObject();
 
 	//ヴインドウを中心に移動
@@ -170,9 +178,11 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	return (int)msg.wParam;
 }
 
-//=============================================================================
+//*****************************************************************************
+//
 // プロシージャ
-//=============================================================================
+//
+//*****************************************************************************
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch( message )
@@ -202,9 +212,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-//=============================================================================
+//*****************************************************************************
+//
 // 初期化処理
-//=============================================================================
+//
+//*****************************************************************************
 HRESULT InitDiretX(HWND hWnd, BOOL bWindow)
 {
 	D3DPRESENT_PARAMETERS d3dpp;
@@ -285,9 +297,11 @@ HRESULT InitDiretX(HWND hWnd, BOOL bWindow)
 	return S_OK;
 }
 
-//=============================================================================
+//*****************************************************************************
+//
 // 初期化処理
-//=============================================================================
+//
+//*****************************************************************************
 HRESULT InitGameObject(void)
 {
 	// 设置渲染状态
@@ -296,13 +310,23 @@ HRESULT InitGameObject(void)
 	//g_pD3DDevice->SetRenderState(D3DRS_SPECULARENABLE, true);	// Specular LightClass
 	//g_pD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);   //开启背面消隐
 
-	g_camera;
+	// カメラを初期化
+	g_camera = new CameraClass();
+	g_camera->InitCamera(D3DXVECTOR3(0.0f, 0.0f, -200.0f),		// Eye
+						D3DXVECTOR3(0.0f, 0.0f, 0.0f),			// At
+						D3DXVECTOR3(0.0f, 1.0f, 0.0f));			// Up
+
+	// マテリアルを初期化
 	g_material.SetMaterial();
+
+	// ゲーム素材を初期化
 	g_gameobject.SetExample(ET_Vertex);
+
+	// ライトを初期化
 	g_light.ChangeLight(LT_PointLight);
 
 	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, true);      //开启光照
-	g_pD3DDevice->SetRenderState(D3DRS_NORMALIZENORMALS, true);	// 頂点法線の自動正規化を有効にする
+	// g_pD3DDevice->SetRenderState(D3DRS_NORMALIZENORMALS, true);	// 頂点法線の自動正規化を有効にする
 	g_pD3DDevice->SetRenderState(D3DRS_SPECULARENABLE, true);	// 鏡面光を設定,スペキュラハイライト
 
 	g_pD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);   //开启背面消隐
@@ -310,17 +334,13 @@ HRESULT InitGameObject(void)
 	return S_OK;
 }
 
-//=============================================================================
+//*****************************************************************************
+//
 // 更新処理
-//=============================================================================
+//
+//*****************************************************************************
 void Updata(void)
 {
-	// カメラ設定
-	g_camera.setWorldMatrix();
-	g_camera.setViewMatrix();
-	g_camera.setProjMatrix();
-	g_camera.setViewport();
-
 	// 获取键盘消息并给予设置相应的 填充模式(塗りつぶしモード)
 	if (GetAsyncKeyState(0x31) & 0x8000f)
 	{
@@ -347,15 +367,39 @@ void Updata(void)
 		g_light.ChangeLight(LT_SpotLight);
 	}
 
-	// 回転
-	// in camera
+	// カメラ注視点移動
+	if (GetAsyncKeyState(0x33) & 0x8000f)
+	{
+		g_camera->At(1.0f, 'x');
+	}
+	if (GetAsyncKeyState(0x34) & 0x8000f)
+	{
+		g_camera->At(-1.0f, 'x');
+	}
+
+	// カメラ視点移動
+	if (GetAsyncKeyState(0x35) & 0x8000f)
+	{
+		g_camera->Eye(1.0f, 'x');
+	}
+	if (GetAsyncKeyState(0x36) & 0x8000f)
+	{
+		g_camera->Eye(-1.0f, 'x');
+	}
 }
 
-//=============================================================================
+//*****************************************************************************
+//
 // 描画処理
-//=============================================================================
+//
+//*****************************************************************************
 void Draw(HWND hwnd)
 {
+	g_camera->setWorldMatrix();
+	g_camera->setViewMatrix();
+	g_camera->setProjMatrix();
+	g_camera->setViewport();
+
 	// バックバッファ＆Ｚバッファのクリア
 	g_pD3DDevice->Clear(0, NULL, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER), D3DCOLOR_RGBA(0, 0, 0, 1), 1.0f, 0);
 
@@ -386,9 +430,11 @@ void Draw(HWND hwnd)
 	g_pD3DDevice->Present(NULL, NULL, NULL, NULL);
 }
 
-//=============================================================================
+//*****************************************************************************
+//
 // 終了処理
-//=============================================================================
+//
+//*****************************************************************************
 void Release(void)
 {
 	SAFE_RELEASE(g_pD3D);
@@ -397,27 +443,36 @@ void Release(void)
 	SAFE_RELEASE(g_pIndexBuffer);
 }
 
-//=============================================================================
+//*****************************************************************************
+//
 // デバイス取得関数
-//他のファイルの中に、グローバル変数を渡すとき、こういうGET関数が必要だ。
-//=============================================================================
+//
+// 他のファイルの中に、グローバル変数を渡すとき、こういうGET関数が必要だ。
+//
+//*****************************************************************************
 LPDIRECT3DDEVICE9 GetDevice(void)
 {
 	return g_pD3DDevice;
 }
 
-//=============================================================================
+//*****************************************************************************
+//
 // 頂点バッファ取得関数
-//=============================================================================
+//
+//*****************************************************************************
 LPDIRECT3DVERTEXBUFFER9 *GetVertexBuffer(void)
 {
 	return &g_pVertexBuffer;
 }
 
-//=============================================================================
+//*****************************************************************************
+//
 // 頂点インデックスバッファ取得関数
-//=============================================================================
+//
+//*****************************************************************************
 LPDIRECT3DINDEXBUFFER9 *GetIndexBuffer(void)
 {
 	return &g_pIndexBuffer;
 }
+
+
