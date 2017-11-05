@@ -1,31 +1,31 @@
 ﻿//=============================================================================
 //
-// ライトクラス [Light.cpp]
+// ライトクラス [LightClass.cpp]
 // Author : リョウ　カンシン
 //
 //=============================================================================
-#include "Light.h"
+#include "LightClass.h"
 
 //*****************************************************************************
 // コンストラクタ
 //*****************************************************************************
-Light::Light()
+LightClass::LightClass()
 {
 }
 
 //*****************************************************************************
 // デストラクタ
 //*****************************************************************************
-Light::~Light()
+LightClass::~LightClass()
 {
 }
 
-Light::Light(LightType type)
+LightClass::LightClass(LightType type)
 {
 	ChangeLight(type);
 }
 
-void Light::ChangeLight(LightType type)
+void LightClass::ChangeLight(LightType type)
 {
 	// ライト構造体を初期化する
 	static D3DLIGHT9 light;

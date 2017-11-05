@@ -1,21 +1,21 @@
 ﻿//=============================================================================
 //
-// 品物の質感クラス [Material.cpp]
+// 品物の質感クラス [MaterialClass.cpp]
 // Author : リョウ　カンシン
 //
 //=============================================================================
-#include "Material.h"
+#include "MaterialClass.h"
 
-Material::Material()
+MaterialClass::MaterialClass()
 {
 	
 }
 
-Material::~Material()
+MaterialClass::~MaterialClass()
 {
 }
 
-void Material::SetMaterial()
+void MaterialClass::SetMaterial()
 {
 	D3DMATERIAL9 mtrl;
 	ZeroMemory(&mtrl, sizeof(mtrl));

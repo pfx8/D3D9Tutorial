@@ -5,10 +5,10 @@
 //
 //=============================================================================
 #include "Main.h"
-#include "GameObjects.h"
-#include "Camera.h"
-#include "Material.h"
-#include "Light.h"
+#include "GameObjectsClass.h"
+#include "CameraClass.h"
+#include "MaterialClass.h"
+#include "LightClass.h"
 
 //*****************************************************************************
 // グローバル変数:
@@ -20,10 +20,10 @@ LPDIRECT3DDEVICE9			g_pD3DDevice = NULL;					// Deviceオブジェクト(描画�
 LPDIRECT3DVERTEXBUFFER9	g_pVertexBuffer = NULL;				// 頂点バッファ
 LPDIRECT3DINDEXBUFFER9		g_pIndexBuffer = NULL;				// インデックスバッファ
 
-Camera					g_camera;
-Material					g_material;
-GameObjects				g_gameobject;
-Light					g_light;
+CameraClass					g_camera;
+MaterialClass					g_material;
+GameObjectsClass				g_gameobject;
+LightClass					g_light;
 //*****************************************************************************
 // プロトタイプ宣言
 //*****************************************************************************
@@ -97,7 +97,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		return -1;
 	}
 
-	// GameObjectsを初期化する
+	// GameObjectsClassを初期化する
 	InitGameObject();
 
 	//ヴインドウを中心に移動
@@ -292,8 +292,8 @@ HRESULT InitGameObject(void)
 {
 	// 设置渲染状态
 	//g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);      //关闭光照
-	//g_pD3DDevice->SetRenderState(D3DRS_AMBIENT, D3DCOLOR_XRGB(36, 36, 36));	// Ambient Light
-	//g_pD3DDevice->SetRenderState(D3DRS_SPECULARENABLE, true);	// Specular Light
+	//g_pD3DDevice->SetRenderState(D3DRS_AMBIENT, D3DCOLOR_XRGB(36, 36, 36));	// Ambient LightClass
+	//g_pD3DDevice->SetRenderState(D3DRS_SPECULARENABLE, true);	// Specular LightClass
 	//g_pD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);   //开启背面消隐
 
 	g_camera;

@@ -1,23 +1,23 @@
 //=============================================================================
 //
-// 品物の質感クラス [Material.h]
+// 品物の質感クラス [MaterialClass.h]
 // Author : リョウ　カンシン
 //
 //=============================================================================
-#ifndef _MATERIAL_H_
-#define _MATERIAL_H
+#ifndef _MATERIAL_CLASS_H_
+#define _MATERIAL_CLASS_H_
 
 #include "Main.h"
 
-class Material
+class MaterialClass
 {
 public:
-	Material();
-	~Material();
+	MaterialClass();
+	~MaterialClass();
 
 	void SetMaterial();
 private:
 
 };
 
-#endif // !_MATERIAL_H
+#endif // !_MATERIAL_CLASS_H

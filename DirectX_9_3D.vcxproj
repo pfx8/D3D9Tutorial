@@ -18,6 +18,22 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="CameraClass.cpp" />
+    <ClCompile Include="CharacterClass.cpp" />
+    <ClCompile Include="GameObjectsClass.cpp" />
+    <ClCompile Include="LightClass.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MaterialClass.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CameraClass.h" />
+    <ClInclude Include="CharacterClass.h" />
+    <ClInclude Include="GameObjectsClass.h" />
+    <ClInclude Include="LightClass.h" />
+    <ClInclude Include="Main.h" />
+    <ClInclude Include="MaterialClass.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{AE2F5D68-7730-43CB-B207-504B5C12B285}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
@@ -151,22 +167,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="Character.cpp" />
-    <ClCompile Include="GameObjects.cpp" />
-    <ClCompile Include="Light.cpp" />
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Material.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="Character.h" />
-    <ClInclude Include="GameObjects.h" />
-    <ClInclude Include="Light.h" />
-    <ClInclude Include="Main.h" />
-    <ClInclude Include="Material.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

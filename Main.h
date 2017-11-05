@@ -38,14 +38,9 @@
 //*****************************************************************************
 typedef struct Vertex_3D
 {
-	float x, y, z; // 頂点座標
-	// float nx, ny, nz; // 法線ベクトル
-	// float u, v; // テクスチャ座標
-	DWORD color;
-
 	D3DXVECTOR3 Position;			// 頂点座標
-	D3DXVECTOR3 NormalVector;		// 法線ベクトル
-	D3DXVECTOR2 TexturePosition;	// テクスチャ座標
+	//D3DXVECTOR3 NormalVector;		// 法線ベクトル
+	//D3DXVECTOR2 TexturePosition;	// テクスチャ座標
 	D3DCOLOR diffuse;				// 反射光
 }Vertex_3D;
 

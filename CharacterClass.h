@@ -1,29 +1,24 @@
 //=============================================================================
 //
-// ライトクラス [Light.h]
+// キャラクターベースクラス [CharacterClass.h]
 // Author : リョウ　カンシン
 //
 //=============================================================================
-#ifndef _LIGHT_H_
-#define _LIGHT_H
+#ifndef _CHARACTER_CLASS_H_
+#define _CHARACTER_CLASS_H_
 
 #include "Main.h"
 
-class Light
+class CharacterClass
 {
 public:
-	Light();
-	Light(LightType type);
-	~Light();
-
-	void ChangeLight(LightType type);
+	CharacterClass();
+	~CharacterClass();
 
 private:
+	
 
 };
 
 
-
-
-
-#endif // !_LIGHT_H_
+#endif // !_CHARACTER_CLASS_H_
