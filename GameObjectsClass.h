@@ -10,7 +10,7 @@
 
 #include "Main.h"
 
-class GameObjectsClass
+class GameObjects
 {
 private:
 	bool m_Status;
@@ -18,8 +18,8 @@ private:
 	void InitEMVer(void);
 	void InitEMLig(void);
 public:
-	GameObjectsClass();					// コンストラクタ
-	~GameObjectsClass();					// デストラクタ
+	GameObjects();						// コンストラクタ
+	~GameObjects();					// デストラクタ
 
 	void SetExample(ExampleType mode);
 	bool GetStatus();

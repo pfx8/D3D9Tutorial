@@ -10,15 +10,20 @@
 
 #include "Main.h"
 
-class MaterialClass
+class Material
 {
+private:
+	LPD3DXBUFFER		m_D3DXBuffMatModel;	// マテリアル情報へのポインタ
+	DWORD				m_NumMatModel;		// マテリアル情報の数
+
 public:
-	MaterialClass();
-	~MaterialClass();
+	Material();
+	~Material();
 
 	void SetMaterial();
-private:
 
+	LPD3DXBUFFER* GetMaterialPoint();		// m_D3DXBuffMatModelの取得
+	DWORD* GetMterialNumber();				// m_NumMatModelの取得
 };
 
 #endif // !_MATERIAL_CLASS_H

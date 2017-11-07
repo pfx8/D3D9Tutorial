@@ -12,7 +12,7 @@
 // コンストラクタ
 //
 //*****************************************************************************
-LightClass::LightClass()
+Light::Light()
 {
 
 }
@@ -22,7 +22,7 @@ LightClass::LightClass()
 // デストラクタ
 //
 //*****************************************************************************
-LightClass::~LightClass()
+Light::~Light()
 {
 
 }
@@ -32,7 +32,7 @@ LightClass::~LightClass()
 // 
 //
 //*****************************************************************************
-LightClass::LightClass(LightType type)
+Light::Light(LightType type)
 {
 	ChangeLight(type);
 }
@@ -42,7 +42,7 @@ LightClass::LightClass(LightType type)
 // 
 //
 //*****************************************************************************
-void LightClass::ChangeLight(LightType type)
+void Light::ChangeLight(LightType type)
 {
 	// ライト構造体を初期化する
 	static D3DLIGHT9 light;

@@ -23,7 +23,7 @@
 // プロトタイプ宣言
 //
 //*****************************************************************************
-class CameraClass
+class Camera
 {
 private:
 	D3DXVECTOR3		m_posCameraEye;			// カメラの視点
@@ -31,14 +31,11 @@ private:
 	D3DXVECTOR3		m_vecCameraUP;			// カメラの上方向ベクトル
 
 public:
-	CameraClass();
-	~CameraClass();
+	Camera();
+	~Camera();
 
 	// カメラを初期化関数
 	void InitCamera(D3DXVECTOR3 Eye, D3DXVECTOR3 At, D3DXVECTOR3 Up);
-
-	// ワールド変換
-	void setWorldMatrix();
 
 	// ビューイング変換
 	void setViewMatrix();

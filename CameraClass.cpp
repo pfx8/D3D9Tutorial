@@ -13,7 +13,7 @@
 // コンストラクタ
 //
 //*****************************************************************************
-CameraClass::CameraClass()
+Camera::Camera()
 {
 
 }
@@ -23,7 +23,7 @@ CameraClass::CameraClass()
 // デストラクタ
 //
 //*****************************************************************************
-CameraClass::~CameraClass()
+Camera::~Camera()
 {
 
 }
@@ -33,7 +33,7 @@ CameraClass::~CameraClass()
 // カメラを初期化する
 //
 //*****************************************************************************
-void CameraClass::InitCamera(D3DXVECTOR3 Eye, D3DXVECTOR3 At, D3DXVECTOR3 Up)
+void Camera::InitCamera(D3DXVECTOR3 Eye, D3DXVECTOR3 At, D3DXVECTOR3 Up)
 {
 	// カメラの視点を初期化する
 	m_posCameraEye = Eye;
@@ -47,38 +47,10 @@ void CameraClass::InitCamera(D3DXVECTOR3 Eye, D3DXVECTOR3 At, D3DXVECTOR3 Up)
 
 //*****************************************************************************
 //
-// ワールド変換
-//
-//*****************************************************************************
-void CameraClass::setWorldMatrix()
-{
-	D3DXMATRIX matWorld, Rx, Ry, Rz;
-
-	// 単位行列を作成する
-	D3DXMatrixIdentity(&matWorld);
-
-	// X軸に回転
-	//D3DXMatrixRotationX(&Rx, D3DX_PI * (timeGetTime() / 1000.0f));
-
-	// Y軸に回転
-	D3DXMatrixRotationY(&Ry, D3DX_PI * (timeGetTime() / 1440.0f));
-
-	// Z軸に回転
-	//D3DXMatrixRotationZ(&Rz, D3DX_PI * (timeGetTime() / 1000.0f / 3));
-
-	//matWorld = Rx * Ry * Rz * matWorld;
-
-	matWorld = Ry * matWorld;
-
-	GetDevice()->SetTransform(D3DTS_WORLD, &matWorld);
-}
-
-//*****************************************************************************
-//
 // ビューイング変換
 //
 //*****************************************************************************
-void CameraClass::setViewMatrix()
+void Camera::setViewMatrix()
 {
 	D3DXMATRIX matView;
 
@@ -97,7 +69,7 @@ void CameraClass::setViewMatrix()
 // プロジェクション変換(投影変換)
 //
 //*****************************************************************************
-void CameraClass::setProjMatrix()
+void Camera::setProjMatrix()
 {
 	D3DXMATRIX matProj;
 
@@ -116,7 +88,7 @@ void CameraClass::setProjMatrix()
 // ビューポートを設定
 //
 //*****************************************************************************
-void CameraClass::setViewport()
+void Camera::setViewport()
 {
 	D3DVIEWPORT9 vp;
 	vp.X = 0;
@@ -135,7 +107,7 @@ void CameraClass::setViewport()
 // 視点操作
 //
 //*****************************************************************************
-void CameraClass::Eye(float move, char direction)
+void Camera::Eye(float move, char direction)
 {
 	switch (direction)
 	{
@@ -155,7 +127,7 @@ void CameraClass::Eye(float move, char direction)
 // 注視点操作
 //
 //*****************************************************************************
-void CameraClass::At(float move, char direction)
+void Camera::At(float move, char direction)
 {
 	switch (direction)
 	{

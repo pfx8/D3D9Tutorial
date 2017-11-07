@@ -13,7 +13,8 @@
 #include <tchar.h>
 #include <time.h>
 
-#include <string>
+#include <iostream>
+#include <map>
 
 #if 1	// [ここを"0"にした場合、"構成プロパティ" -> "リンカ" -> "入力" -> "追加の依存ファイル"に対象ライブラリを設定する]
 #pragma comment (lib, "d3d9.lib")
@@ -34,7 +35,8 @@
 // 頂点フォーマット( 頂点座標[2D] / 反射光 / テクスチャ座標 )
 #define	FVF_VERTEX	(D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE) //D3DFVF_TEX1　テクスチャー座標
 
-#define SAFE_RELEASE(ptr)					{ if(ptr) { (ptr)->Release(); (ptr) = NULL; } }
+#define SAFE_RELEASE_POINT(ptr)					{ if(ptr) { (ptr)->Release(); (ptr) = NULL; } }
+#define SAFE_RELEASE_CLASS_POINT(cptr)			{ if(cptr) { delete cptr; } }
 
 //*****************************************************************************
 // 構造体定義
@@ -46,6 +48,14 @@ typedef struct Vertex_3D
 	//D3DXVECTOR2 TexturePosition;	// テクスチャ座標
 	D3DCOLOR diffuse;				// 反射光
 }Vertex_3D;
+
+// テクスチャ構造体
+typedef struct Texture
+{
+	const char* Name;
+	const char* Path;
+	LPDIRECT3DTEXTURE9		TexturePoint;
+}Texture;
 
 //*****************************************************************************
 // 列挙体定義

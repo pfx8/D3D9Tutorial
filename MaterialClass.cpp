@@ -12,9 +12,10 @@
 // コンストラクタ
 //
 //*****************************************************************************
-MaterialClass::MaterialClass()
+Material::Material()
 {
-	
+	m_D3DXBuffMatModel = NULL;
+	m_NumMatModel = 0;
 }
 
 //*****************************************************************************
@@ -22,19 +23,40 @@ MaterialClass::MaterialClass()
 // デストラクタ
 //
 //*****************************************************************************
-MaterialClass::~MaterialClass()
+Material::~Material()
 {
+	SAFE_RELEASE_POINT(m_D3DXBuffMatModel); 
 }
 
+//*****************************************************************************
+//
+// m_D3DXBuffMatModelの取得
+//
+//*****************************************************************************
+LPD3DXBUFFER* Material::GetMaterialPoint()
+{
+	return &m_D3DXBuffMatModel;
+}
+
+//*****************************************************************************
+//
+// m_NumMatModelの取得
+//
+//*****************************************************************************
+DWORD* Material::GetMterialNumber()
+{
+	return &m_NumMatModel;
+}
 
 //*****************************************************************************
 //
 // 
 //
 //*****************************************************************************
-void MaterialClass::SetMaterial()
+void Material::SetMaterial()
 {
 	D3DMATERIAL9 mtrl;
+
 	ZeroMemory(&mtrl, sizeof(mtrl));
 
 	// 環境光を設定

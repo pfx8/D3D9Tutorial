@@ -12,7 +12,7 @@
 // コンストラクタ
 //
 //*****************************************************************************
-GameObjectsClass::GameObjectsClass()
+GameObjects::GameObjects()
 {
 
 }
@@ -22,7 +22,7 @@ GameObjectsClass::GameObjectsClass()
 // デストラクタ
 //
 //*****************************************************************************
-GameObjectsClass::~GameObjectsClass()
+GameObjects::~GameObjects()
 {
 
 }
@@ -32,7 +32,7 @@ GameObjectsClass::~GameObjectsClass()
 // 
 //
 //*****************************************************************************
-void GameObjectsClass::SetExample(ExampleType mode)
+void GameObjects::SetExample(ExampleType mode)
 {
 	switch (mode)
 	{
@@ -54,7 +54,7 @@ void GameObjectsClass::SetExample(ExampleType mode)
 // 
 //
 //*****************************************************************************
-bool GameObjectsClass::GetStatus(void)
+bool GameObjects::GetStatus(void)
 {
 	return m_Status;
 }
@@ -64,7 +64,7 @@ bool GameObjectsClass::GetStatus(void)
 // 
 //
 //*****************************************************************************
-void GameObjectsClass::InitEMVer(void)
+void GameObjects::InitEMVer(void)
 {
 	// オブジェクトの頂点バッファを生成
 	if (FAILED(GetDevice()->CreateVertexBuffer(8 * sizeof(Vertex_3D), 0, FVF_VERTEX, D3DPOOL_DEFAULT,
@@ -135,7 +135,7 @@ void GameObjectsClass::InitEMVer(void)
 // 
 //
 //*****************************************************************************
-void GameObjectsClass::InitEMLig(void)
+void GameObjects::InitEMLig(void)
 {
 
 }

@@ -6,9 +6,10 @@
 //
 //*****************************************************************************
 #include "Main.h"
-#include "GameObjectsClass.h"
+
+#include "CharacterClass.h"
 #include "CameraClass.h"
-#include "MaterialClass.h"
+#include "MeshClass.h"
 #include "LightClass.h"
 
 //*****************************************************************************
@@ -23,10 +24,12 @@ LPDIRECT3DDEVICE9			g_pD3DDevice = NULL;				// Deviceオブジェクト(描画�
 LPDIRECT3DVERTEXBUFFER9		g_pVertexBuffer = NULL;				// 頂点バッファ
 LPDIRECT3DINDEXBUFFER9		g_pIndexBuffer = NULL;				// インデックスバッファ
 
-CameraClass*				g_camera;							// カメラ
-MaterialClass				g_material;							// マテリアル
-GameObjectsClass			g_gameobject;						// ゲーム素材
-LightClass					g_light;							// ライト
+Camera*				g_camera;							// カメラ
+Mesh*				g_mesh;								// メッシュ(マテリアルを含む)
+Light*				g_light;							// ライト
+
+Character*			g_character;						// ゲーム素材
+
 
 //*****************************************************************************
 //
@@ -292,7 +295,7 @@ HRESULT InitDiretX(HWND hWnd, BOOL bWindow)
 		return E_FAIL;
 	}
 
-	SAFE_RELEASE(g_pD3D); // リリースLPDIRECT3D9
+	SAFE_RELEASE_POINT(g_pD3D); // リリースLPDIRECT3D9
 
 	return S_OK;
 }
@@ -311,25 +314,25 @@ HRESULT InitGameObject(void)
 	//g_pD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);   //开启背面消隐
 
 	// カメラを初期化
-	g_camera = new CameraClass();
+	g_camera = new Camera();
 	g_camera->InitCamera(D3DXVECTOR3(0.0f, 0.0f, -200.0f),		// Eye
 						D3DXVECTOR3(0.0f, 0.0f, 0.0f),			// At
 						D3DXVECTOR3(0.0f, 1.0f, 0.0f));			// Up
 
-	// マテリアルを初期化
-	g_material.SetMaterial();
+	// メッシュを初期化
+	g_mesh = new Mesh();
 
 	// ゲーム素材を初期化
-	g_gameobject.SetExample(ET_Vertex);
+	g_character = new Character();
 
 	// ライトを初期化
-	g_light.ChangeLight(LT_PointLight);
+	g_light = new Light(LT_PointLight);
 
-	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, true);      //开启光照
+	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, true);	// 开启光照
 	// g_pD3DDevice->SetRenderState(D3DRS_NORMALIZENORMALS, true);	// 頂点法線の自動正規化を有効にする
 	g_pD3DDevice->SetRenderState(D3DRS_SPECULARENABLE, true);	// 鏡面光を設定,スペキュラハイライト
 
-	g_pD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);   //开启背面消隐
+	g_pD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);   // 开启背面消隐
 
 	return S_OK;
 }
@@ -356,15 +359,15 @@ void Updata(void)
 	// 根据键盘消息设置相应的光照
 	if (GetAsyncKeyState(0x51) & 0x8000f)         // key q
 	{
-		g_light.ChangeLight(LT_PointLight);
+		g_light->ChangeLight(LT_PointLight);
 	}
 	if (GetAsyncKeyState(0x57) & 0x8000f)         // key w
 	{
-		g_light.ChangeLight(LT_DirectionalLight);
+		g_light->ChangeLight(LT_DirectionalLight);
 	}
 	if (GetAsyncKeyState(0x57) & 0x8000f)         // key e
 	{
-		g_light.ChangeLight(LT_SpotLight);
+		g_light->ChangeLight(LT_SpotLight);
 	}
 
 	// カメラ注視点移動
@@ -386,6 +389,15 @@ void Updata(void)
 	{
 		g_camera->Eye(-1.0f, 'x');
 	}
+
+	if (GetAsyncKeyState(0x37) & 0x8000f)
+	{
+		g_camera->Eye(1.0f, 'z');
+	}
+	if (GetAsyncKeyState(0x38) & 0x8000f)
+	{
+		g_camera->Eye(-1.0f, 'z');
+	}
 }
 
 //*****************************************************************************
@@ -395,9 +407,16 @@ void Updata(void)
 //*****************************************************************************
 void Draw(HWND hwnd)
 {
-	g_camera->setWorldMatrix();
+	// キャラクターをワールド変換
+	g_character->setWorldMatrix();
+
+	// ビューイング変換
 	g_camera->setViewMatrix();
+	
+	// プロジェクション変換
 	g_camera->setProjMatrix();
+	
+	// ビューポートを設定
 	g_camera->setViewport();
 
 	// バックバッファ＆Ｚバッファのクリア
@@ -411,18 +430,21 @@ void Draw(HWND hwnd)
 	if (SUCCEEDED(g_pD3DDevice->BeginScene()))
 	{
 
-		// レンダリングデフォルトモード
-		g_pD3DDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD); // 省略可
+		//// レンダリングデフォルトモード
+		//g_pD3DDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD); // 省略可
 
-		g_pD3DDevice->SetStreamSource(0, g_pVertexBuffer, 0, sizeof(Vertex_3D));
+		//g_pD3DDevice->SetStreamSource(0, g_pVertexBuffer, 0, sizeof(Vertex_3D));
 
-		g_pD3DDevice->SetFVF(FVF_VERTEX);
+		//g_pD3DDevice->SetFVF(FVF_VERTEX);
 
-		g_pD3DDevice->SetIndices(g_pIndexBuffer);
+		//g_pD3DDevice->SetIndices(g_pIndexBuffer);
 
-		g_pD3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 17, 0, 16);
+		//g_pD3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 17, 0, 16);
 
 		// Direct3Dによる描画の終了
+
+		g_character->GetMesh()->DrawModel();
+
 		g_pD3DDevice->EndScene();
 	}
 
@@ -437,10 +459,17 @@ void Draw(HWND hwnd)
 //*****************************************************************************
 void Release(void)
 {
-	SAFE_RELEASE(g_pD3D);
-	SAFE_RELEASE(g_pD3DDevice);
-	SAFE_RELEASE(g_pVertexBuffer);
-	SAFE_RELEASE(g_pIndexBuffer);
+	// ポインタ
+	SAFE_RELEASE_POINT(g_pD3D);
+	SAFE_RELEASE_POINT(g_pD3DDevice);
+	SAFE_RELEASE_POINT(g_pVertexBuffer);
+	SAFE_RELEASE_POINT(g_pIndexBuffer);
+
+	// クラスポインタ
+	SAFE_RELEASE_CLASS_POINT(g_camera);
+	SAFE_RELEASE_CLASS_POINT(g_mesh);
+	SAFE_RELEASE_CLASS_POINT(g_light);
+	SAFE_RELEASE_CLASS_POINT(g_character);
 }
 
 //*****************************************************************************

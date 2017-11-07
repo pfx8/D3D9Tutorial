@@ -1,25 +1,27 @@
 //*****************************************************************************
 //
-// ライトクラス [LightClass.h]
+// シーンマネジャークラス [SceneManagerClass.h]
 //
 // Author : リョウ　カンシン
 //
 //*****************************************************************************
-#ifndef _LIGHT_CLASS_H_
-#define _LIGHT_CLASS_H_
+#ifndef _SCENE_MANAGER_CLASS_H_
+#define _SCENE_MANAGER_CLASS_H_
 
 #include "Main.h"
 
-class Light
+class SceneManager
 {
-public:
-	Light();
-	Light(LightType type);
-	~Light();
-
-	void ChangeLight(LightType type);
-
 private:
 
+public:
+	SceneManager();
+	~SceneManager();
 };
-#endif // !_LIGHT_CLASS_H_
+
+
+
+
+
+#endif // !_SCENE_MANAGER_CLASS_H_
+
