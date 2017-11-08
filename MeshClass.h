@@ -21,6 +21,11 @@ private:
 
 	TextureManager* m_textureManager; // テクスチャマネジメント
 
+
+	// 臨時
+	//LPD3DXBUFFER		m_D3DXBuffMatModel = NULL;	// マテリアル情報へのポインタ
+	//DWORD				m_NumMatModel = NULL;		// マテリアル情報の数
+	//LPDIRECT3DTEXTURE9	m_TexturePoint = NULL;
 public:
 	Mesh();
 	~Mesh();

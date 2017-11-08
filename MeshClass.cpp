@@ -81,15 +81,17 @@ void Mesh::DrawModel()
 
 	// マテリアル情報に対するポインタを取得
 	pD3DXMat = (D3DXMATERIAL*)(*m_material->GetMaterialPoint())->GetBufferPointer();
+	//pD3DXMat = (D3DXMATERIAL*)m_D3DXBuffMatModel->GetBufferPointer();
 
-	for (int count = 0; count < (int)m_material->GetMterialNumber(); count++)
+	for (int count = 0; count < (int)/*m_NumMatModel*/*(m_material->GetMterialNumber()); count++)
 	{
 		// マテリアルの設定
 		pDevice->SetMaterial(&pD3DXMat[count].MatD3D);
 
 		// テクスチャの設定
-		pDevice->SetTexture(0, m_textureManager->GetTexture()->TexturePoint);
-		pDevice->SetTexture(0, NULL);
+		Texture *p = m_textureManager->GetTexture(3);
+		pDevice->SetTexture(0, p->TexturePoint);
+		//pDevice->SetTexture(0, NULL);
 
 		// 描画
 		m_mesh->DrawSubset(count);

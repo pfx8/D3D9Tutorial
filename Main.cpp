@@ -307,15 +307,9 @@ HRESULT InitDiretX(HWND hWnd, BOOL bWindow)
 //*****************************************************************************
 HRESULT InitGameObject(void)
 {
-	// 设置渲染状态
-	//g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);      //关闭光照
-	//g_pD3DDevice->SetRenderState(D3DRS_AMBIENT, D3DCOLOR_XRGB(36, 36, 36));	// Ambient LightClass
-	//g_pD3DDevice->SetRenderState(D3DRS_SPECULARENABLE, true);	// Specular LightClass
-	//g_pD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);   //开启背面消隐
-
 	// カメラを初期化
 	g_camera = new Camera();
-	g_camera->InitCamera(D3DXVECTOR3(0.0f, 0.0f, -200.0f),		// Eye
+	g_camera->InitCamera(D3DXVECTOR3(0.0f, 150.0f, -200.0f),	// Eye
 						D3DXVECTOR3(0.0f, 0.0f, 0.0f),			// At
 						D3DXVECTOR3(0.0f, 1.0f, 0.0f));			// Up
 
@@ -328,11 +322,24 @@ HRESULT InitGameObject(void)
 	// ライトを初期化
 	g_light = new Light(LT_PointLight);
 
-	g_pD3DDevice->SetRenderState(D3DRS_LIGHTING, true);	// 开启光照
-	// g_pD3DDevice->SetRenderState(D3DRS_NORMALIZENORMALS, true);	// 頂点法線の自動正規化を有効にする
-	g_pD3DDevice->SetRenderState(D3DRS_SPECULARENABLE, true);	// 鏡面光を設定,スペキュラハイライト
 
-	g_pD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);   // 开启背面消隐
+	// レンダーステートパラメータの設定
+	g_pD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);				// 裏面をカリング
+	g_pD3DDevice->SetRenderState(D3DRS_ZENABLE, TRUE);						// Zバッファを使用
+	g_pD3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);				// αブレンドを行う
+	g_pD3DDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);		// αソースカラーの指定
+	g_pD3DDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);	// αデスティネーションカラーの指定
+
+	// サンプラーステートパラメータの設定
+	g_pD3DDevice->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);	// テクスチャアドレッシング方法(U値)を設定
+	g_pD3DDevice->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);	// テクスチャアドレッシング方法(V値)を設定
+	g_pD3DDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);	// テクスチャ縮小フィルタモードを設定
+	g_pD3DDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);	// テクスチャ拡大フィルタモードを設定
+
+	// テクスチャステージステートの設定
+	g_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);	// アルファブレンディング処理
+	g_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);	// 最初のアルファ引数
+	g_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_CURRENT);	// ２番目のアルファ引数
 
 	return S_OK;
 }
@@ -432,16 +439,6 @@ void Draw(HWND hwnd)
 
 		//// レンダリングデフォルトモード
 		//g_pD3DDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD); // 省略可
-
-		//g_pD3DDevice->SetStreamSource(0, g_pVertexBuffer, 0, sizeof(Vertex_3D));
-
-		//g_pD3DDevice->SetFVF(FVF_VERTEX);
-
-		//g_pD3DDevice->SetIndices(g_pIndexBuffer);
-
-		//g_pD3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 17, 0, 16);
-
-		// Direct3Dによる描画の終了
 
 		g_character->GetMesh()->DrawModel();
 

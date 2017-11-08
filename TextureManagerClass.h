@@ -14,18 +14,17 @@
 class TextureManager
 {
 private:
-	Texture m_Field_Grass;
-	Texture m_Field_Stone;
-	Texture m_Field_Checkered;
-
-	Texture m_Null;
+	Texture m_Field_Grass = { "Field_Grass", "data/TEXTURE/field000.jpg", NULL };
+	Texture m_Field_Stone = { "Field_Stone", "data/TEXTURE/field001.jpg", NULL };
+	Texture m_Field_Checkered = { "Field_Checkered", "data/TEXTURE/field002.jpg", NULL };
+	Texture m_Null = { "Null", NULL, NULL };
 
 public:
 	TextureManager();
 	~TextureManager();
 
 	void LoadTexture(Texture* texture);
-	Texture* GetTexture(/*const char* Name*/int num = 99);
+	Texture* GetTexture(/*const char* Name*/int num);
 };
 
 #endif // !TEXTURE_MANAGER_CLASS_H_

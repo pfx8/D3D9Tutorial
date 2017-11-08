@@ -77,7 +77,11 @@ void Camera::setProjMatrix()
 	D3DXMatrixIdentity(&matProj);
 
 	// プロジェクションマトリックスの作成
-	D3DXMatrixPerspectiveLH(&matProj, D3DX_PI / 4.0f, 1.0f, 1.0f, 1000.0f);
+	D3DXMatrixPerspectiveLH(&matProj,
+							D3DXToRadian(45.0f),							// ビュー平面の視野角
+							((float)SCREEN_WIDTH / (float)SCREEN_HEIGHT),		// ビュー平面のアスペクト比
+							10.0f,											// ビュー平面のNearZ値
+							1000.0f);										// ビュー平面のFarZ値
 
 	// プロジェクションマトリックスの設定
 	GetDevice()->SetTransform(D3DTS_PROJECTION, &matProj);
