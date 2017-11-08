@@ -15,7 +15,7 @@
 //*****************************************************************************
 Camera::Camera()
 {
-
+	m_Message = new OutputMessage();
 }
 
 //*****************************************************************************
@@ -25,7 +25,7 @@ Camera::Camera()
 //*****************************************************************************
 Camera::~Camera()
 {
-
+	SAFE_RELEASE_CLASS_POINT(m_Message);
 }
 
 //*****************************************************************************
@@ -77,9 +77,9 @@ void Camera::setProjMatrix()
 	D3DXMatrixIdentity(&matProj);
 
 	// プロジェクションマトリックスの作成
-	D3DXMatrixPerspectiveLH(&matProj,
+	D3DXMatrixPerspectiveFovLH(&matProj,									// D3DXMatrixPerspectiveFovLHとD3DXMatrixPerspectiveLH？
 							D3DXToRadian(45.0f),							// ビュー平面の視野角
-							((float)SCREEN_WIDTH / (float)SCREEN_HEIGHT),		// ビュー平面のアスペクト比
+							((float)SCREEN_WIDTH / (float)SCREEN_HEIGHT),	// ビュー平面のアスペクト比
 							10.0f,											// ビュー平面のNearZ値
 							1000.0f);										// ビュー平面のFarZ値
 
@@ -144,4 +144,15 @@ void Camera::At(float move, char direction)
 	default:
 		break;
 	}
+}
+
+//*****************************************************************************
+//
+// 座標をメッセージに渡して、画面に描画する
+//
+//*****************************************************************************
+void Camera::PosToMessageAndMessageDraw(int row)
+{
+	m_Message->DrawPosMessage("CameraEye", m_posCameraEye, D3DXVECTOR2(0, row * 18 * 2));
+	m_Message->DrawPosMessage("CameraAt", m_posCameraAt, D3DXVECTOR2(0, (row+1) * 18 * 2));
 }

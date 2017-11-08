@@ -18,9 +18,10 @@ Character::Character()
 	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_scl = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
 
-	m_Mesh	= new Mesh;
-
+	m_Mesh	= new Mesh();
 	m_Mesh->ReadXFile();
+
+	m_Message = new OutputMessage();
 }
 
 //*****************************************************************************
@@ -31,6 +32,7 @@ Character::Character()
 Character::~Character()
 {
 	SAFE_RELEASE_CLASS_POINT(m_Mesh);
+	SAFE_RELEASE_CLASS_POINT(m_Message);
 }
 
 //*****************************************************************************
@@ -70,4 +72,14 @@ void Character::setWorldMatrix()
 Mesh* Character::GetMesh()
 {
 	return m_Mesh;
+}
+
+//*****************************************************************************
+//
+// 座標をメッセージに渡して、画面に描画する
+//
+//*****************************************************************************
+void Character::PosToMessageAndMessageDraw(int row)
+{
+	m_Message->DrawPosMessage("Car1", m_pos, D3DXVECTOR2(0, row * 18 * 2));
 }

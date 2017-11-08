@@ -414,24 +414,25 @@ void Updata(void)
 //*****************************************************************************
 void Draw(HWND hwnd)
 {
+	// ビューイング変換
+	g_camera->setViewMatrix();
+
+	// プロジェクション変換
+	g_camera->setProjMatrix();
+
 	// キャラクターをワールド変換
 	g_character->setWorldMatrix();
 
-	// ビューイング変換
-	g_camera->setViewMatrix();
-	
-	// プロジェクション変換
-	g_camera->setProjMatrix();
 	
 	// ビューポートを設定
-	g_camera->setViewport();
+	//g_camera->setViewport();
 
 	// バックバッファ＆Ｚバッファのクリア
 	g_pD3DDevice->Clear(0, NULL, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER), D3DCOLOR_RGBA(0, 0, 0, 1), 1.0f, 0);
 
 	//定义一个矩形，用于获取主窗口矩形  
-	RECT formatRect;
-	GetClientRect(hwnd, &formatRect);
+	//RECT formatRect;
+	//GetClientRect(hwnd, &formatRect);
 
 	// Direct3Dによる描画の開始
 	if (SUCCEEDED(g_pD3DDevice->BeginScene()))
@@ -440,7 +441,14 @@ void Draw(HWND hwnd)
 		//// レンダリングデフォルトモード
 		//g_pD3DDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD); // 省略可
 
+		// キャラクターを描画する
 		g_character->GetMesh()->DrawModel();
+
+		// キャラクターの座標インフォメーション
+		g_character->PosToMessageAndMessageDraw(0);
+
+		// カメラの座標インフォメーション
+		g_camera->PosToMessageAndMessageDraw(1);
 
 		g_pD3DDevice->EndScene();
 	}

@@ -12,6 +12,7 @@
 
 #include "MeshClass.h"
 #include "TextureManagerClass.h"
+#include "MessageClass.h"
 
 class Character
 {
@@ -23,6 +24,7 @@ private:
 
 	Mesh*			m_Mesh;
 
+	OutputMessage*	m_Message;
 public:
 	Character();
 	~Character();
@@ -32,6 +34,9 @@ public:
 
 	// キャラクターのメッシュの取得
 	Mesh* GetMesh();
+
+	// 座標をメッセージに渡して、画面に描画する
+	void PosToMessageAndMessageDraw(int row);
 };
 
 

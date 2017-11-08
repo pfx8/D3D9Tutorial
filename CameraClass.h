@@ -11,6 +11,7 @@
 
 #include "Main.h"
 
+#include "MessageClass.h"
 //*****************************************************************************
 //
 // マクロ定義
@@ -30,6 +31,7 @@ private:
 	D3DXVECTOR3		m_posCameraAt;			// カメラの注視点
 	D3DXVECTOR3		m_vecCameraUP;			// カメラの上方向ベクトル
 
+	OutputMessage*	m_Message;
 public:
 	Camera();
 	~Camera();
@@ -53,6 +55,9 @@ public: // 操作
 
 	// 視点
 	void Eye(float move, char direction);
+
+	// 座標をメッセージに渡して、画面に描画する
+	void PosToMessageAndMessageDraw(int row);
 };
 
 

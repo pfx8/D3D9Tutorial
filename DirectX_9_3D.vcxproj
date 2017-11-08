@@ -26,6 +26,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MaterialClass.cpp" />
     <ClCompile Include="MeshClass.cpp" />
+    <ClCompile Include="MessageClass.cpp" />
     <ClCompile Include="SceneManagerClass.cpp" />
     <ClCompile Include="TextureManagerClass.cpp" />
   </ItemGroup>
@@ -37,6 +38,7 @@
     <ClInclude Include="Main.h" />
     <ClInclude Include="MaterialClass.h" />
     <ClInclude Include="MeshClass.h" />
+    <ClInclude Include="MessageClass.h" />
     <ClInclude Include="SceneManagerClass.h" />
     <ClInclude Include="TextureManagerClass.h" />
   </ItemGroup>
