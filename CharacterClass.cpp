@@ -17,10 +17,11 @@ Character::Character()
 	m_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_scl = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
+	
+	m_name = " ";
 
-	m_Mesh	= new Mesh();
-	m_Mesh->ReadXFile();
-
+	// クラスポインタ
+	m_Mesh = new Mesh();
 	m_Message = new OutputMessage();
 }
 
@@ -31,6 +32,7 @@ Character::Character()
 //*****************************************************************************
 Character::~Character()
 {
+	// クラスポインタ
 	SAFE_RELEASE_CLASS_POINT(m_Mesh);
 	SAFE_RELEASE_CLASS_POINT(m_Message);
 }
@@ -40,12 +42,12 @@ Character::~Character()
 // ワールド変換
 //
 //*****************************************************************************
-void Character::setWorldMatrix()
+void Character::setWorldMatrix(D3DXMATRIX& mtxWorld)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
-	D3DXMATRIX mtxScl, mtxRot, mtxTranslate, mtxWorld;
+	D3DXMATRIX mtxScl, mtxRot, mtxTranslate;
 
-	// ワールドマトリックスの初期化
+	// ワールドマトリックスを初期化する
 	D3DXMatrixIdentity(&mtxWorld);
 
 	// スケールを反映
@@ -81,5 +83,38 @@ Mesh* Character::GetMesh()
 //*****************************************************************************
 void Character::PosToMessageAndMessageDraw(int row)
 {
-	m_Message->DrawPosMessage("Car1", m_pos, D3DXVECTOR2(0, row * 18 * 2));
+	m_Message->DrawPosMessage("Car1", m_pos, D3DXVECTOR2(0, float(row * 18 * 2)));
+}
+
+//*****************************************************************************
+//
+// 座標を設定
+//
+//*****************************************************************************
+void Character::InitCoordinate(D3DXVECTOR3 pos)
+{
+	m_pos = pos;
+}
+
+//*****************************************************************************
+//
+// キャラクターの名前を決める
+//
+//*****************************************************************************
+void Character::SetName(std::string name)
+{
+	m_name = name;
+
+	// 名前でメッシュとテクスチャを読み込み
+	ChooseMesh(m_name);
+}
+
+//*****************************************************************************
+//
+// 名前でメッシュを作成
+//
+//*****************************************************************************
+void Character::ChooseMesh(std::string name)
+{
+	m_Mesh->SetMesh(name);
 }

@@ -19,9 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\LESSON\DirectX_9.0c_3D\model\input.cpp" />
     <ClCompile Include="CameraClass.cpp" />
     <ClCompile Include="CharacterClass.cpp" />
-    <ClCompile Include="GameObjectsClass.cpp" />
+    <ClCompile Include="FieldClass.cpp" />
     <ClCompile Include="LightClass.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MaterialClass.cpp" />
@@ -31,9 +32,10 @@
     <ClCompile Include="TextureManagerClass.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\LESSON\DirectX_9.0c_3D\model\input.h" />
     <ClInclude Include="CameraClass.h" />
     <ClInclude Include="CharacterClass.h" />
-    <ClInclude Include="GameObjectsClass.h" />
+    <ClInclude Include="FieldClass.h" />
     <ClInclude Include="LightClass.h" />
     <ClInclude Include="Main.h" />
     <ClInclude Include="MaterialClass.h" />

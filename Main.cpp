@@ -7,10 +7,16 @@
 //*****************************************************************************
 #include "Main.h"
 
+// 臨時
+#include "input.h"
+
 #include "CharacterClass.h"
 #include "CameraClass.h"
 #include "MeshClass.h"
 #include "LightClass.h"
+#include "FieldClass.h"
+
+#include "TextureManagerClass.h"
 
 //*****************************************************************************
 //
@@ -24,12 +30,19 @@ LPDIRECT3DDEVICE9			g_pD3DDevice = NULL;				// Deviceオブジェクト(描画�
 LPDIRECT3DVERTEXBUFFER9		g_pVertexBuffer = NULL;				// 頂点バッファ
 LPDIRECT3DINDEXBUFFER9		g_pIndexBuffer = NULL;				// インデックスバッファ
 
-Camera*				g_camera;							// カメラ
-Mesh*				g_mesh;								// メッシュ(マテリアルを含む)
-Light*				g_light;							// ライト
 
-Character*			g_character;						// ゲーム素材
+//////////////////////////////////////////////////////////////////////////////////
+Camera*				g_camera;					// カメラ
+Mesh*				g_mesh;						// メッシュ(マテリアルを含む)
+Light*				g_light;					// ライト
 
+Character*			g_Car1;						// 車1
+Character*			g_Car2;						// 車２
+
+D3DXMATRIX			g_mtxWorld;					// ワールドマトリックス
+
+Field*				g_FieldStone;				// 石のフィールド
+//////////////////////////////////////////////////////////////////////////////////
 
 //*****************************************************************************
 //
@@ -37,7 +50,7 @@ Character*			g_character;						// ゲーム素材
 //
 //*****************************************************************************
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
-HRESULT InitDiretX(HWND hWnd, BOOL bWindow);
+HRESULT InitDiretX(HINSTANCE hInstance, HWND hWnd, BOOL bWindow);
 HRESULT InitGameObject(void);
 void	Updata(void);
 void	Draw(HWND hwnd);
@@ -103,7 +116,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		NULL);
 
 	// DirectXの初期化(ウィンドウを作成してから行う)
-	if (FAILED(InitDiretX(hWnd, true)))
+	if (FAILED(InitDiretX(hInstance, hWnd, true)))
 	{
 		return -1;
 	}
@@ -220,7 +233,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 // 初期化処理
 //
 //*****************************************************************************
-HRESULT InitDiretX(HWND hWnd, BOOL bWindow)
+HRESULT InitDiretX(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 {
 	D3DPRESENT_PARAMETERS d3dpp;
 	D3DDISPLAYMODE d3ddm;
@@ -297,6 +310,14 @@ HRESULT InitDiretX(HWND hWnd, BOOL bWindow)
 
 	SAFE_RELEASE_POINT(g_pD3D); // リリースLPDIRECT3D9
 
+	//*****************************************************************************
+	//
+	// input
+	//
+	//*****************************************************************************
+	InitInput(hInstance, hWnd);
+
+
 	return S_OK;
 }
 
@@ -317,11 +338,20 @@ HRESULT InitGameObject(void)
 	g_mesh = new Mesh();
 
 	// ゲーム素材を初期化
-	g_character = new Character();
+	g_Car1 = new Character();
+	g_Car1->InitCoordinate(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	g_Car1->ChooseMesh("data/MODEL/car000.x");
+
+	g_Car2 = new Character();
+	g_Car2->InitCoordinate(D3DXVECTOR3(50.0f, 0.0f, 0.0f));
+	g_Car2->ChooseMesh("data/MODEL/car001.x");
+
+	// 地面を初期化する
+	g_FieldStone = new Field();
+	g_FieldStone->InitCoordinate(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
 	// ライトを初期化
 	g_light = new Light(LT_PointLight);
-
 
 	// レンダーステートパラメータの設定
 	g_pD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);				// 裏面をカリング
@@ -351,59 +381,73 @@ HRESULT InitGameObject(void)
 //*****************************************************************************
 void Updata(void)
 {
-	// 获取键盘消息并给予设置相应的 填充模式(塗りつぶしモード)
-	if (GetAsyncKeyState(0x31) & 0x8000f)
+	// 入力更新
+	UpdateInput();
+
+	// 塗りつぶしモード
+	if (GetKeyboardPress(DIK_1))			// key 1
 	{
-		// key 1,进行线框填充(ワイヤフレームを塗りつぶす)
+		// ワイヤフレームを塗りつぶす
 		g_pD3DDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 	}
-	if (GetAsyncKeyState(0x32) & 0x8000f)
+	if (GetKeyboardPress(DIK_2))			// key 2
 	{
-		// key 2,进行实体填充(面を塗りつぶす)
+		// 面を塗りつぶす
 		g_pD3DDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
 	}
 
-	// 根据键盘消息设置相应的光照
-	if (GetAsyncKeyState(0x51) & 0x8000f)         // key q
+
+	// 入力したキーによって、ライトの種類を変わる
+	if (GetKeyboardPress(DIK_7))			// key 7
 	{
+		// ポインター光源
 		g_light->ChangeLight(LT_PointLight);
 	}
-	if (GetAsyncKeyState(0x57) & 0x8000f)         // key w
+	if (GetKeyboardPress(DIK_8))			// key 8
 	{
+		// スポットライト光源
 		g_light->ChangeLight(LT_DirectionalLight);
 	}
-	if (GetAsyncKeyState(0x57) & 0x8000f)         // key e
+	if (GetKeyboardPress(DIK_9))			// key 9
 	{
+		// ディレクショナル光源
 		g_light->ChangeLight(LT_SpotLight);
 	}
 
 	// カメラ注視点移動
-	if (GetAsyncKeyState(0x33) & 0x8000f)
+	if (GetKeyboardPress(DIK_A))			// key A
 	{
-		g_camera->At(1.0f, 'x');
+		g_camera->At(-2.0f, 'x');
 	}
-	if (GetAsyncKeyState(0x34) & 0x8000f)
+	if (GetKeyboardPress(DIK_D))			// key D
 	{
-		g_camera->At(-1.0f, 'x');
+		g_camera->At(2.0f, 'x');
+	}
+	if (GetKeyboardPress(DIK_W))			// key W
+	{
+		g_camera->At(2.0f, 'y');
+	}
+	if (GetKeyboardPress(DIK_S))			// key S
+	{
+		g_camera->At(-2.0f, 'y');
 	}
 
 	// カメラ視点移動
-	if (GetAsyncKeyState(0x35) & 0x8000f)
+	if (GetKeyboardPress(DIK_J))			// key 9
 	{
 		g_camera->Eye(1.0f, 'x');
 	}
-	if (GetAsyncKeyState(0x36) & 0x8000f)
+	if (GetKeyboardPress(DIK_L))			// key 9
 	{
 		g_camera->Eye(-1.0f, 'x');
 	}
-
-	if (GetAsyncKeyState(0x37) & 0x8000f)
+	if (GetKeyboardPress(DIK_I))			// key 9
 	{
-		g_camera->Eye(1.0f, 'z');
+		g_camera->Eye(1.0f, 'y');
 	}
-	if (GetAsyncKeyState(0x38) & 0x8000f)
+	if (GetKeyboardPress(DIK_K))			// key 9
 	{
-		g_camera->Eye(-1.0f, 'z');
+		g_camera->Eye(-1.0f, 'y');
 	}
 }
 
@@ -414,25 +458,8 @@ void Updata(void)
 //*****************************************************************************
 void Draw(HWND hwnd)
 {
-	// ビューイング変換
-	g_camera->setViewMatrix();
-
-	// プロジェクション変換
-	g_camera->setProjMatrix();
-
-	// キャラクターをワールド変換
-	g_character->setWorldMatrix();
-
-	
-	// ビューポートを設定
-	//g_camera->setViewport();
-
 	// バックバッファ＆Ｚバッファのクリア
 	g_pD3DDevice->Clear(0, NULL, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER), D3DCOLOR_RGBA(0, 0, 0, 1), 1.0f, 0);
-
-	//定义一个矩形，用于获取主窗口矩形  
-	//RECT formatRect;
-	//GetClientRect(hwnd, &formatRect);
 
 	// Direct3Dによる描画の開始
 	if (SUCCEEDED(g_pD3DDevice->BeginScene()))
@@ -441,14 +468,37 @@ void Draw(HWND hwnd)
 		//// レンダリングデフォルトモード
 		//g_pD3DDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD); // 省略可
 
+		// 1.
+		// キャラクターをワールド変換
+		g_Car1->setWorldMatrix(g_mtxWorld);
 		// キャラクターを描画する
-		g_character->GetMesh()->DrawModel();
+		g_Car1->GetMesh()->DrawModel();
 
-		// キャラクターの座標インフォメーション
-		g_character->PosToMessageAndMessageDraw(0);
+		// 2.
+		// キャラクターをワールド変換
+		g_Car2->setWorldMatrix(g_mtxWorld);
+		// キャラクターを描画する
+		g_Car2->GetMesh()->DrawModel();
+
+		// ビューポートを設定
+		g_camera->setViewport();
+
+		// フィールドをワールド変換して描画する
+		g_FieldStone->setWorldMatrix(g_mtxWorld);
+		g_FieldStone->DrawField();
+
+		// ビューイング変換
+		g_camera->setViewMatrix();
+
+		// プロジェクション変換
+		g_camera->setProjMatrix();
+
+		// キャラクターの座標インフォメーション、括弧の中はなん行目
+		g_Car1->PosToMessageAndMessageDraw(0);
+		g_Car2->PosToMessageAndMessageDraw(1);
 
 		// カメラの座標インフォメーション
-		g_camera->PosToMessageAndMessageDraw(1);
+		//g_camera->PosToMessageAndMessageDraw(2);
 
 		g_pD3DDevice->EndScene();
 	}
@@ -474,7 +524,12 @@ void Release(void)
 	SAFE_RELEASE_CLASS_POINT(g_camera);
 	SAFE_RELEASE_CLASS_POINT(g_mesh);
 	SAFE_RELEASE_CLASS_POINT(g_light);
-	SAFE_RELEASE_CLASS_POINT(g_character);
+	SAFE_RELEASE_CLASS_POINT(g_Car1);
+	SAFE_RELEASE_CLASS_POINT(g_Car2);
+	SAFE_RELEASE_CLASS_POINT(g_FieldStone);
+
+	// 入力処理の終了処理
+	UninitInput();
 }
 
 //*****************************************************************************
@@ -508,5 +563,3 @@ LPDIRECT3DINDEXBUFFER9 *GetIndexBuffer(void)
 {
 	return &g_pIndexBuffer;
 }
-
-

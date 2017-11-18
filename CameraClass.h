@@ -27,7 +27,7 @@
 class Camera
 {
 private:
-	D3DXVECTOR3		m_posCameraEye;			// カメラの視点
+	D3DXVECTOR3		m_posCameraEye;			// カメラの位置
 	D3DXVECTOR3		m_posCameraAt;			// カメラの注視点
 	D3DXVECTOR3		m_vecCameraUP;			// カメラの上方向ベクトル
 
@@ -53,7 +53,7 @@ public: // 操作
 	// 注視点
 	void At(float move, char direction);
 
-	// 視点
+	// カメラ位置を操作する
 	void Eye(float move, char direction);
 
 	// 座標をメッセージに渡して、画面に描画する

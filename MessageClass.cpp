@@ -38,7 +38,7 @@ OutputMessage::~OutputMessage()
 //*****************************************************************************
 void OutputMessage::DrawPosMessage(const char name[], D3DXVECTOR3 OutputPos, D3DXVECTOR2 MessagePos)
 {
-	RECT rectCoor = { MessagePos.x, MessagePos.y, SCREEN_WIDTH, SCREEN_HEIGHT };
+	RECT rectCoor = { int(MessagePos.x), int(MessagePos.y), SCREEN_WIDTH, SCREEN_HEIGHT };
 	char str[256];
 
 	// ï∂éöóÒÇçÏÇÈ

@@ -17,6 +17,9 @@
 
 #include <iostream>
 #include <map>
+#include <string>
+
+#include <dinput.h>
 
 #if 1	// [ここを"0"にした場合、"構成プロパティ" -> "リンカ" -> "入力" -> "追加の依存ファイル"に対象ライブラリを設定する]
 #pragma comment (lib, "d3d9.lib")
@@ -34,29 +37,33 @@
 #define SCREEN_WIDTH		(960)						// ウインドウの幅
 #define SCREEN_HEIGHT		(540)						// ウインドウの高さ
 
-// 頂点フォーマット( 頂点座標[2D] / 反射光 / テクスチャ座標 )
-#define	FVF_VERTEX	(D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE | D3DFVF_TEX1) //D3DFVF_TEX1　テクスチャー座標
+// 頂点フォーマット( 頂点座標[3D] / 法線 / 反射光 / テクスチャ座標 )
+#define	FVF_VERTEX_3D	(D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE | D3DFVF_TEX1) //D3DFVF_TEX1　テクスチャー座標
 
 #define SAFE_RELEASE_POINT(ptr)					{ if(ptr) { (ptr)->Release(); (ptr) = NULL; } }
 #define SAFE_RELEASE_CLASS_POINT(cptr)			{ if(cptr) { delete cptr; } }
 
+#define	NUM_VERTEX		(4)		// 頂点数
+#define	NUM_POLYGON		(2)		// ポリゴン数
+
 //*****************************************************************************
 // 構造体定義
 //*****************************************************************************
-typedef struct Vertex_3D
+typedef struct VERTEX_3D
 {
+	// 頂点楮体変数の順番は頂点フォーマットのと同じ
 	D3DXVECTOR3 Position;			// 頂点座標
-	//D3DXVECTOR3 NormalVector;		// 法線ベクトル
-	//D3DXVECTOR2 TexturePosition;	// テクスチャ座標
+	D3DXVECTOR3 NormalVector;		// 法線ベクトル
 	D3DCOLOR diffuse;				// 反射光
-}Vertex_3D;
+	D3DXVECTOR2 TexturePosition;	// テクスチャ座標
+}VERTEX_3D;
 
 // テクスチャ構造体
 typedef struct Texture
 {
-	const char* Name;
-	const char* Path;
-	LPDIRECT3DTEXTURE9		TexturePoint;
+	const char*				Name;			// テクスチャ名前
+	const char*				Path;			// テクスチャパス
+	LPDIRECT3DTEXTURE9		TexturePoint;	// テクスチャポインタ
 }Texture;
 
 //*****************************************************************************

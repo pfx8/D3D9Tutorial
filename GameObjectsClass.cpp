@@ -67,7 +67,7 @@ bool GameObjects::GetStatus(void)
 void GameObjects::InitEMVer(void)
 {
 	// オブジェクトの頂点バッファを生成
-	if (FAILED(GetDevice()->CreateVertexBuffer(8 * sizeof(Vertex_3D), 0, FVF_VERTEX, D3DPOOL_DEFAULT,
+	if (FAILED(GetDevice()->CreateVertexBuffer(8 * sizeof(Vertex_3D), 0, FVF_VERTEX_3D, D3DPOOL_DEFAULT,
 		GetVertexBuffer(), NULL)))
 	{
 		m_Status = false;

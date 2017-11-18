@@ -39,11 +39,6 @@ void TextureManager::LoadTexture(Texture* texture)
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	D3DXCreateTextureFromFile(pDevice, texture->Path, &texture->TexturePoint);
-
-	/*if (texture->TexturePoint != NULL)
-	{
-		std::cout << "Load " << texture->Name << " Successed！" << std::endl;
-	}*/
 }
 
 //*****************************************************************************

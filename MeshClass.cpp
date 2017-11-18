@@ -16,6 +16,7 @@ Mesh::Mesh()
 {
 	// ポインタ
 	m_mesh = NULL;
+	m_path = " ";
 
 	// クラスポインタ
 	m_material = new Material();
@@ -37,6 +38,18 @@ Mesh::~Mesh()
 	SAFE_RELEASE_CLASS_POINT(m_textureManager);
 }
 
+
+//*****************************************************************************
+//
+// 使いたいメッシュを読み込み
+//
+//*****************************************************************************
+void Mesh::SetMesh(std::string path)
+{
+	m_path = path;
+	ReadXFile();
+}
+
 //*****************************************************************************
 //
 // メッシュを初期かする
@@ -47,16 +60,15 @@ HRESULT Mesh::ReadXFile()
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	// Xファイルの読み込み
-	if (FAILED(D3DXLoadMeshFromX("data/MODEL/car000.x",				// モデルのファイル名
-		D3DXMESH_SYSTEMMEM,		// メッシュのメモリ確保オプション
-		pDevice,				// デバイスへのポインタ
-		NULL,					// 隣接性データを含むバッファへのポインタ
-		//&m_D3DXBuffMatModel,	// マテリアルデータを含むバッファへのポインタ
+	if (FAILED(D3DXLoadMeshFromX(
+		m_path.data(),							// モデルのファイル名
+		D3DXMESH_SYSTEMMEM,						// メッシュのメモリ確保オプション
+		pDevice,								// デバイスへのポインタ
+		NULL,									// 隣接性データを含むバッファへのポインタ
 		m_material->GetMaterialPoint(),
-		NULL,					// エフェクトインスタンスを含むバッファへのポインタ
-		//&m_NumMatModel,		// マテリアル構造体の数
+		NULL,									// エフェクトインスタンスを含むバッファへのポインタ
 		m_material->GetMterialNumber(),
-		&m_mesh)))	// メッシュへのポインタ
+		&m_mesh)))								// メッシュへのポインタ
 	{
 		return E_FAIL;
 	}
@@ -81,9 +93,8 @@ void Mesh::DrawModel()
 
 	// マテリアル情報に対するポインタを取得
 	pD3DXMat = (D3DXMATERIAL*)(*m_material->GetMaterialPoint())->GetBufferPointer();
-	//pD3DXMat = (D3DXMATERIAL*)m_D3DXBuffMatModel->GetBufferPointer();
 
-	for (int count = 0; count < (int)/*m_NumMatModel*/*(m_material->GetMterialNumber()); count++)
+	for (int count = 0; count < (int)*(m_material->GetMterialNumber()); count++)
 	{
 		// マテリアルの設定
 		pDevice->SetMaterial(&pD3DXMat[count].MatD3D);
@@ -91,7 +102,6 @@ void Mesh::DrawModel()
 		// テクスチャの設定
 		Texture *p = m_textureManager->GetTexture(3);
 		pDevice->SetTexture(0, p->TexturePoint);
-		//pDevice->SetTexture(0, NULL);
 
 		// 描画
 		m_mesh->DrawSubset(count);
@@ -99,3 +109,4 @@ void Mesh::DrawModel()
 
 	pDevice->SetMaterial(&matDef);	//	マテリアルを元に戻る
 }
+

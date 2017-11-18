@@ -108,7 +108,7 @@ void Camera::setViewport()
 
 //*****************************************************************************
 //
-// 視点操作
+// カメラ位置を操作する
 //
 //*****************************************************************************
 void Camera::Eye(float move, char direction)
@@ -153,6 +153,6 @@ void Camera::At(float move, char direction)
 //*****************************************************************************
 void Camera::PosToMessageAndMessageDraw(int row)
 {
-	m_Message->DrawPosMessage("CameraEye", m_posCameraEye, D3DXVECTOR2(0, row * 18 * 2));
-	m_Message->DrawPosMessage("CameraAt", m_posCameraAt, D3DXVECTOR2(0, (row+1) * 18 * 2));
+	m_Message->DrawPosMessage("CameraEye", m_posCameraEye, D3DXVECTOR2(0, float(row * 18 * 2)));
+	m_Message->DrawPosMessage("CameraAt", m_posCameraAt, D3DXVECTOR2(0, float((row+1) * 18 * 2)));
 }
