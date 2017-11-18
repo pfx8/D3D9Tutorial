@@ -2,7 +2,7 @@
 //
 // フィールド処理[FieldClass.cpp]
 //
-// Author : リョウ　カンシン
+// Author : LIAO HANCHEN
 //
 //*****************************************************************************
 #include "FieldClass.h"
@@ -23,9 +23,6 @@ Field::Field()
 
 	// クラスポインタ
 	m_textureManager = new TextureManager();
-
-	// 頂点作成
-	MakeVertex();
 }
 
 //*****************************************************************************
@@ -57,7 +54,7 @@ void Field::InitCoordinate(D3DXVECTOR3 pos)
 // 頂点作成
 //
 //*****************************************************************************
-HRESULT Field::MakeVertex()
+HRESULT Field::MakeVertex(int width, int height)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
@@ -70,6 +67,7 @@ HRESULT Field::MakeVertex()
 	// 頂点バッファ作成
 	VERTEX_3D* VetexBuffer;
 
+	// 頂点データの範囲をロックし、頂点バッファ メモリへのポインタを取得する
 	m_VertexBuffField->Lock(0, 0, (void**)&VetexBuffer, 0);
 
 	// 頂点バッファの中身を埋める
@@ -78,10 +76,10 @@ HRESULT Field::MakeVertex()
 	// m_posFiledは世界での位置で
 	
 	// position
-	VetexBuffer[0].Position = m_pos + D3DXVECTOR3(-100.0f, 0.0f, 100.0f);
-	VetexBuffer[1].Position = m_pos + D3DXVECTOR3(100.0f, 0.0f, 100.0f);
-	VetexBuffer[2].Position = m_pos + D3DXVECTOR3(-100.0f, 0.0f, -100.0f);
-	VetexBuffer[3].Position = m_pos + D3DXVECTOR3(100.0f, 0.0f, -100.0f);
+	VetexBuffer[0].Position = D3DXVECTOR3(-width, 0.0f, height);
+	VetexBuffer[1].Position = D3DXVECTOR3(width, 0.0f, height);
+	VetexBuffer[2].Position = D3DXVECTOR3(-width, 0.0f, -height);
+	VetexBuffer[3].Position = D3DXVECTOR3(width, 0.0f, -height);
 
 	// normal
 	VetexBuffer[0].NormalVector = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
@@ -101,6 +99,7 @@ HRESULT Field::MakeVertex()
 	VetexBuffer[2].TexturePosition = D3DXVECTOR2(0.0f, 1.0f);
 	VetexBuffer[3].TexturePosition = D3DXVECTOR2(1.0f, 1.0f);
 
+	// 頂点データをアンロックする
 	m_VertexBuffField->Unlock();
 
 	return S_OK;
@@ -140,11 +139,10 @@ void Field::setWorldMatrix(D3DXMATRIX& mtxWorld)
 // テクスチャを描画する
 //
 //*****************************************************************************
-void Field::DrawField()
+void Field::Draw()
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
-	// レンダリングデフォルトモード
 	// 頂点バッファをデバイスのデータストリームにバイナリ
 	pDevice->SetStreamSource(0, m_VertexBuffField, 0, sizeof(VERTEX_3D));
 

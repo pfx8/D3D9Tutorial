@@ -2,7 +2,7 @@
 //
 // ゲーム全体処理[main.cpp]
 //
-// Author : リョウ　カンシン
+// Author : LIAO HANCHEN
 //
 //*****************************************************************************
 #include "Main.h"
@@ -16,7 +16,7 @@
 #include "LightClass.h"
 #include "FieldClass.h"
 
-#include "TextureManagerClass.h"
+// 臨時
 
 //*****************************************************************************
 //
@@ -26,10 +26,6 @@
 int							g_nCountFPS;						// FPSカウンタ
 LPDIRECT3D9					g_pD3D = NULL;						// Direct3Dオブジェクト
 LPDIRECT3DDEVICE9			g_pD3DDevice = NULL;				// Deviceオブジェクト(描画に必要)
-
-LPDIRECT3DVERTEXBUFFER9		g_pVertexBuffer = NULL;				// 頂点バッファ
-LPDIRECT3DINDEXBUFFER9		g_pIndexBuffer = NULL;				// インデックスバッファ
-
 
 //////////////////////////////////////////////////////////////////////////////////
 Camera*				g_camera;					// カメラ
@@ -42,6 +38,9 @@ Character*			g_Car2;						// 車２
 D3DXMATRIX			g_mtxWorld;					// ワールドマトリックス
 
 Field*				g_FieldStone;				// 石のフィールド
+
+// 臨時
+
 //////////////////////////////////////////////////////////////////////////////////
 
 //*****************************************************************************
@@ -349,6 +348,7 @@ HRESULT InitGameObject(void)
 	// 地面を初期化する
 	g_FieldStone = new Field();
 	g_FieldStone->InitCoordinate(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	g_FieldStone->MakeVertex(100, 100);
 
 	// ライトを初期化
 	g_light = new Light(LT_PointLight);
@@ -370,6 +370,10 @@ HRESULT InitGameObject(void)
 	g_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);	// アルファブレンディング処理
 	g_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);	// 最初のアルファ引数
 	g_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_CURRENT);	// ２番目のアルファ引数
+
+
+	// 臨時
+
 
 	return S_OK;
 }
@@ -472,20 +476,20 @@ void Draw(HWND hwnd)
 		// キャラクターをワールド変換
 		g_Car1->setWorldMatrix(g_mtxWorld);
 		// キャラクターを描画する
-		g_Car1->GetMesh()->DrawModel();
+		g_Car1->Draw();
 
 		// 2.
 		// キャラクターをワールド変換
 		g_Car2->setWorldMatrix(g_mtxWorld);
 		// キャラクターを描画する
-		g_Car2->GetMesh()->DrawModel();
+		g_Car2->Draw();
 
 		// ビューポートを設定
 		g_camera->setViewport();
 
 		// フィールドをワールド変換して描画する
 		g_FieldStone->setWorldMatrix(g_mtxWorld);
-		g_FieldStone->DrawField();
+		g_FieldStone->Draw();
 
 		// ビューイング変換
 		g_camera->setViewMatrix();
@@ -517,8 +521,6 @@ void Release(void)
 	// ポインタ
 	SAFE_RELEASE_POINT(g_pD3D);
 	SAFE_RELEASE_POINT(g_pD3DDevice);
-	SAFE_RELEASE_POINT(g_pVertexBuffer);
-	SAFE_RELEASE_POINT(g_pIndexBuffer);
 
 	// クラスポインタ
 	SAFE_RELEASE_CLASS_POINT(g_camera);
@@ -542,24 +544,4 @@ void Release(void)
 LPDIRECT3DDEVICE9 GetDevice(void)
 {
 	return g_pD3DDevice;
-}
-
-//*****************************************************************************
-//
-// 頂点バッファ取得関数
-//
-//*****************************************************************************
-LPDIRECT3DVERTEXBUFFER9 *GetVertexBuffer(void)
-{
-	return &g_pVertexBuffer;
-}
-
-//*****************************************************************************
-//
-// 頂点インデックスバッファ取得関数
-//
-//*****************************************************************************
-LPDIRECT3DINDEXBUFFER9 *GetIndexBuffer(void)
-{
-	return &g_pIndexBuffer;
 }

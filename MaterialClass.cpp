@@ -2,7 +2,7 @@
 //
 // マテリアルクラス [MaterialClass.cpp]
 //
-// Author : リョウ　カンシン
+// Author : LIAO HANCHEN
 //
 //*****************************************************************************
 #include "MaterialClass.h"

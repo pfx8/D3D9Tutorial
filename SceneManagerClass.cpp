@@ -2,7 +2,7 @@
 //
 // シーンマネジャークラス [SceneManagerClass.cpp]
 //
-// Author : リョウ　カンシン
+// Author : LIAO HANCHEN
 //
 //*****************************************************************************
 #include "SceneManagerClass.h"

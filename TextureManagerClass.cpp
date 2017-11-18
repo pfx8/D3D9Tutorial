@@ -2,7 +2,7 @@
 //
 // テクスチャ管理クラス [TextureManager.cpp]
 //
-// Author : リョウ　カンシン
+// Author : LIAO HANCHEN
 //
 //*****************************************************************************
 #include "TextureManagerClass.h"

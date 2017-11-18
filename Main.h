@@ -2,7 +2,7 @@
 //
 // ゲーム全体処理[main.h]
 //
-// Author : リョウ　カンシン
+// Author : LIAO HANCHEN
 //
 //*****************************************************************************
 #define _CRT_SECURE_NO_WARNINGS			// scanf のwarning防止
@@ -38,7 +38,8 @@
 #define SCREEN_HEIGHT		(540)						// ウインドウの高さ
 
 // 頂点フォーマット( 頂点座標[3D] / 法線 / 反射光 / テクスチャ座標 )
-#define	FVF_VERTEX_3D	(D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE | D3DFVF_TEX1) //D3DFVF_TEX1　テクスチャー座標
+#define	FVF_VERTEX_3D		(D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE | D3DFVF_TEX1) //D3DFVF_TEX1　テクスチャー座標
+#define	FVF_VERTEX_3D_NT	(D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE) //D3DFVF_TEX1　テクスチャー座標
 
 #define SAFE_RELEASE_POINT(ptr)					{ if(ptr) { (ptr)->Release(); (ptr) = NULL; } }
 #define SAFE_RELEASE_CLASS_POINT(cptr)			{ if(cptr) { delete cptr; } }
@@ -49,6 +50,7 @@
 //*****************************************************************************
 // 構造体定義
 //*****************************************************************************
+// 3D頂点
 typedef struct VERTEX_3D
 {
 	// 頂点楮体変数の順番は頂点フォーマットのと同じ
@@ -57,6 +59,15 @@ typedef struct VERTEX_3D
 	D3DCOLOR diffuse;				// 反射光
 	D3DXVECTOR2 TexturePosition;	// テクスチャ座標
 }VERTEX_3D;
+
+// 3D頂点(テクスチャ無し)
+typedef struct VERTEX_3D_NT
+{
+	// 頂点楮体変数の順番は頂点フォーマットのと同じ
+	D3DXVECTOR3 Position;			// 頂点座標
+	D3DXVECTOR3 NormalVector;		// 法線ベクトル
+	D3DCOLOR diffuse;				// 反射光
+}VERTEX_3D_NT;
 
 // テクスチャ構造体
 typedef struct Texture
@@ -87,7 +98,5 @@ typedef enum LightType
 // プロトタイプ宣言
 //*****************************************************************************
 LPDIRECT3DDEVICE9 GetDevice(void);
-LPDIRECT3DVERTEXBUFFER9 *GetVertexBuffer(void);
-LPDIRECT3DINDEXBUFFER9 *GetIndexBuffer(void);
 
 #endif

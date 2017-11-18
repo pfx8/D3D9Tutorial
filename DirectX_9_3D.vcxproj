@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\LESSON\DirectX_9.0c_3D\model\input.cpp" />
+    <ClCompile Include="BoundingBoxClass.cpp" />
     <ClCompile Include="CameraClass.cpp" />
     <ClCompile Include="CharacterClass.cpp" />
     <ClCompile Include="FieldClass.cpp" />
@@ -33,6 +34,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\LESSON\DirectX_9.0c_3D\model\input.h" />
+    <ClInclude Include="BoundingBoxClass.h" />
     <ClInclude Include="CameraClass.h" />
     <ClInclude Include="CharacterClass.h" />
     <ClInclude Include="FieldClass.h" />

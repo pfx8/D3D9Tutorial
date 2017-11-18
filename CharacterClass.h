@@ -2,7 +2,7 @@
 //
 // キャラクターベースクラス [CharacterClass.h]
 //
-// Author : リョウ　カンシン
+// Author : LIAO HANCHEN
 //
 //*****************************************************************************
 #ifndef _CHARACTER_CLASS_H_
@@ -13,6 +13,7 @@
 #include "MeshClass.h"
 #include "TextureManagerClass.h"
 #include "MessageClass.h"
+#include "BoundingBoxClass.h"
 
 class Character
 {
@@ -22,20 +23,19 @@ private:
 	D3DXVECTOR3		m_rot;		// 回転
 	D3DXVECTOR3		m_scl;		// 拡大縮小
 
-	Mesh*			m_Mesh;		// メッシュ
-
-	OutputMessage*	m_Message;	// Debugメッセージ
+	Mesh*			m_Mesh;			// メッシュ
+	OutputMessage*	m_Message;		// Debugメッセージ
+	BoundingBox*	m_BoundingBox;	// バウンディングボックス
 
 	std::string		m_name;		// キャラクターの名前、これによってメッシュとテクスチャを探す
+
+
 public:
 	Character();
 	~Character();
 	
 	// 臨時ーーワールド変換
 	void setWorldMatrix(D3DXMATRIX& mtxWorld);
-
-	// キャラクターのメッシュの取得
-	Mesh* GetMesh();
 
 	// 座標をメッセージに渡して、画面に描画する
 	void PosToMessageAndMessageDraw(int row);
@@ -48,6 +48,9 @@ public:
 
 	// 名前でメッシュを作成
 	void ChooseMesh(std::string name);
+
+	// キャラクターの描画
+	void Draw();
 };
 
 

@@ -2,7 +2,7 @@
 //
 // マテリアルクラス [MaterialClass.h]
 //
-// Author : リョウ　カンシン
+// Author : LIAO HANCHEN
 //
 //*****************************************************************************
 #ifndef _MATERIAL_CLASS_H_

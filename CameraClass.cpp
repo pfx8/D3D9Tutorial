@@ -2,7 +2,7 @@
 //
 // カメラクラス [CameraClass.cpp]
 //
-// Author : リョウ　カンシン
+// Author : LIAO HANCHEN
 //
 //*****************************************************************************
 #include "CameraClass.h"

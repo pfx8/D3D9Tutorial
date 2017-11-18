@@ -2,7 +2,7 @@
 //
 // テクスチャ管理クラス [TextureManager.h]
 //
-// Author : リョウ　カンシン
+// Author : LIAO HANCHEN
 //
 //*****************************************************************************
 #ifndef TEXTURE_MANAGER_CLASS_H_

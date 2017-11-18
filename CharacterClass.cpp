@@ -2,7 +2,7 @@
 //
 // キャラクターベースクラス [CharacterClass.cpp]
 //
-// Author : リョウ　カンシン
+// Author : LIAO HANCHEN
 //
 //*****************************************************************************
 #include "CharacterClass.h"
@@ -23,6 +23,7 @@ Character::Character()
 	// クラスポインタ
 	m_Mesh = new Mesh();
 	m_Message = new OutputMessage();
+	m_BoundingBox = new BoundingBox();
 }
 
 //*****************************************************************************
@@ -35,6 +36,7 @@ Character::~Character()
 	// クラスポインタ
 	SAFE_RELEASE_CLASS_POINT(m_Mesh);
 	SAFE_RELEASE_CLASS_POINT(m_Message);
+	SAFE_RELEASE_CLASS_POINT(m_BoundingBox);
 }
 
 //*****************************************************************************
@@ -68,16 +70,6 @@ void Character::setWorldMatrix(D3DXMATRIX& mtxWorld)
 
 //*****************************************************************************
 //
-// キャラクターのメッシュの取得
-//
-//*****************************************************************************
-Mesh* Character::GetMesh()
-{
-	return m_Mesh;
-}
-
-//*****************************************************************************
-//
 // 座標をメッセージに渡して、画面に描画する
 //
 //*****************************************************************************
@@ -94,6 +86,9 @@ void Character::PosToMessageAndMessageDraw(int row)
 void Character::InitCoordinate(D3DXVECTOR3 pos)
 {
 	m_pos = pos;
+
+	// バウンディングボックスを初期化する
+	m_BoundingBox->InitBox(10, 10, 10, 0.4f);
 }
 
 //*****************************************************************************
@@ -117,4 +112,18 @@ void Character::SetName(std::string name)
 void Character::ChooseMesh(std::string name)
 {
 	m_Mesh->SetMesh(name);
+}
+
+//*****************************************************************************
+//
+// キャラクターの描画
+//
+//*****************************************************************************
+void Character::Draw()
+{
+	// メッシュを描画する
+	m_Mesh->DrawModel();
+
+	// バウンディングボックスを描画する
+	m_BoundingBox->Draw();
 }

@@ -2,7 +2,7 @@
 //
 // シーンマネジャークラス [SceneManagerClass.h]
 //
-// Author : リョウ　カンシン
+// Author : LIAO HANCHEN
 //
 //*****************************************************************************
 #ifndef _SCENE_MANAGER_CLASS_H_

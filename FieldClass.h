@@ -2,7 +2,7 @@
 //
 // フィールド処理[FieldClass.h]
 //
-// Author : リョウ　カンシン
+// Author : LIAO HANCHEN
 //
 //*****************************************************************************
 #ifndef _FIELD_CLASS_H_
@@ -35,10 +35,10 @@ public:
 	void InitCoordinate(D3DXVECTOR3 pos);
 
 	// 頂点作成
-	HRESULT MakeVertex();
+	HRESULT MakeVertex(int Width, int height);
 
 	// テクスチャを描画する
-	void DrawField();
+	void Draw();
 
 	// 臨時ーーワールド変換
 	void setWorldMatrix(D3DXMATRIX& mtxWorld);
