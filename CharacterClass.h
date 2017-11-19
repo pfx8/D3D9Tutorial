@@ -67,6 +67,9 @@ public:
 
 	// バウンディングボックス位置を取得
 	D3DXVECTOR3* GetPosition();
+
+	// 当たり判定
+	bool CheckHitBB(Character* Object);
 };
 
 

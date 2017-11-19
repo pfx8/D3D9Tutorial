@@ -51,7 +51,7 @@ void	Draw(HWND hwnd);
 void	Release(void);
 
 // 臨時
-bool CheckHitBB(Character* Object1, Character* Object2);
+
 
 //*****************************************************************************
 //
@@ -394,6 +394,16 @@ void Updata(void)
 		// 面を塗りつぶす
 		g_pD3DDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
 	}
+	if (GetKeyboardPress(DIK_3))			// key 3
+	{
+		// バウンディングボックスを表示
+		
+	}
+	if (GetKeyboardPress(DIK_4))			// key 4
+	{
+		// バウンディングボックスを消す
+		
+	}
 
 
 	// 入力したキーによって、ライトの種類を変わる
@@ -420,7 +430,13 @@ void Updata(void)
 	g_camera->Update();
 
 	// 当たり判定
-	CheckHitBB(g_Car1, g_Car2);
+	if (g_Car1->CheckHitBB(g_Car2))
+	{
+		// 移動
+		g_Car2->Move();
+	}
+
+	
 }
 
 //*****************************************************************************
@@ -511,40 +527,4 @@ void Release(void)
 LPDIRECT3DDEVICE9 GetDevice(void)
 {
 	return g_pD3DDevice;
-}
-
-//*****************************************************************************
-//
-// 臨時当たり判定
-//
-//*****************************************************************************
-bool CheckHitBB(Character* Object1, Character* Object2)
-{
-	D3DXVECTOR3* p1 = Object1->GetPosition();
-	D3DXVECTOR3* s1 = Object1->GetBoundingBox()->GetSize();
-	D3DXVECTOR3* p2 = Object2->GetPosition();
-	D3DXVECTOR3* s2 = Object2->GetBoundingBox()->GetSize();
-
-	if (
-		/*m_pos.x + (m_Size.x / 2) > Object2->GetBoundingBox()->m_pos.x - Object2->GetBoundingBox()->(m_Size.x / 2) &&
-		m_pos.x - (m_Size.x / 2) < Object2->GetBoundingBox()->m_pos.x + Object2->GetBoundingBox()->(m_Size.x / 2) &&
-		m_pos.y - (m_Size.y / 2) < Object2->GetBoundingBox()->m_pos.y + Object2->GetBoundingBox()->(m_Size.y / 2) &&
-		m_pos.y + (m_Size.y / 2) > Object2->GetBoundingBox()->m_pos.y - Object2->GetBoundingBox()->(m_Size.y / 2) &&
-		m_pos.z - (m_Size.z / 2) < Object2->GetBoundingBox()->m_pos.z + Object2->GetBoundingBox()->(m_Size.z / 2) &&
-		m_pos.z + (m_Size.z / 2) > Object2->GetBoundingBox()->m_pos.z - Object2->GetBoundingBox()->(m_Size.z / 2)*/
-		p1->x + s1->x / 2 > p2->x - s2->x / 2 &&
-		p1->x - s1->x / 2 < p2->x + s2->x / 2 &&
-		p1->y - s1->y / 2 < p2->y + s2->y / 2 &&
-		p1->y + s1->y / 2 > p2->y - s2->y / 2 &&
-		p1->z + s1->z / 2 > p2->z - s2->z / 2 &&
-		p1->z - s1->z / 2 < p2->z + s2->z / 2
-		)
-	{
-		Object2->Move();
-		return true;
-	}
-	else
-	{
-		return false;
-	}
 }

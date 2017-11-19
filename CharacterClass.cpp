@@ -186,3 +186,30 @@ D3DXVECTOR3* Character::GetPosition()
 {
 	return &m_pos;
 }
+
+//*****************************************************************************
+//
+// “–‚½‚è”»’è
+//
+//*****************************************************************************
+bool Character::CheckHitBB(Character* Object)
+{
+	D3DXVECTOR3* ObjectPos = Object->GetPosition();
+	D3DXVECTOR3* ObjectSize = Object->GetBoundingBox()->GetSize();
+
+	if (
+		GetPosition()->x + GetBoundingBox()->GetSize()->x / 2 > ObjectPos->x - ObjectSize->x / 2 &&
+		GetPosition()->x - GetBoundingBox()->GetSize()->x / 2 < ObjectPos->x + ObjectSize->x / 2 &&
+		GetPosition()->y - GetBoundingBox()->GetSize()->y / 2 < ObjectPos->y + ObjectSize->y / 2 &&
+		GetPosition()->y + GetBoundingBox()->GetSize()->y / 2 > ObjectPos->y - ObjectSize->y / 2 &&
+		GetPosition()->z + GetBoundingBox()->GetSize()->z / 2 > ObjectPos->z - ObjectSize->z / 2 &&
+		GetPosition()->z - GetBoundingBox()->GetSize()->z / 2 < ObjectPos->z + ObjectSize->z / 2
+		)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
