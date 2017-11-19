@@ -8,13 +8,17 @@
 #ifndef _CHARACTER_CLASS_H_
 #define _CHARACTER_CLASS_H_
 
-#include "Main.h"
+#include "Engine.h"
 
 #include "MeshClass.h"
-#include "TextureManagerClass.h"
 #include "MessageClass.h"
 #include "BoundingBoxClass.h"
 
+//*****************************************************************************
+//
+// クラス宣言
+//
+//*****************************************************************************
 class Character
 {
 private:
@@ -29,7 +33,7 @@ private:
 
 	std::string		m_name;		// キャラクターの名前、これによってメッシュとテクスチャを探す
 
-
+	float			m_Speed;		
 public:
 	Character();
 	~Character();
@@ -51,6 +55,18 @@ public:
 
 	// キャラクターの描画
 	void Draw();
+
+	// キャラクター移動
+	void Move();
+
+	// キャラクター更新
+	void Update();
+
+	// キャラクターのバウンディングボックスを取得
+	BoundingBox* GetBoundingBox();
+
+	// バウンディングボックス位置を取得
+	D3DXVECTOR3* GetPosition();
 };
 
 

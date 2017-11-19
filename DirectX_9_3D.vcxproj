@@ -37,9 +37,9 @@
     <ClInclude Include="BoundingBoxClass.h" />
     <ClInclude Include="CameraClass.h" />
     <ClInclude Include="CharacterClass.h" />
+    <ClInclude Include="Engine.h" />
     <ClInclude Include="FieldClass.h" />
     <ClInclude Include="LightClass.h" />
-    <ClInclude Include="Main.h" />
     <ClInclude Include="MaterialClass.h" />
     <ClInclude Include="MeshClass.h" />
     <ClInclude Include="MessageClass.h" />

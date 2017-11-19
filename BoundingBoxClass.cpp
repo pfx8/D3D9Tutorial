@@ -14,9 +14,10 @@
 //*****************************************************************************
 BoundingBox::BoundingBox()
 {
-	m_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_scl = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
+	m_pos  = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_rot  = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_scl  = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
+	m_Size = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
 
 	m_IndexBuffer = NULL;
 	m_VertexBuffer = NULL;
@@ -41,12 +42,11 @@ BoundingBox::~BoundingBox()
 
 //*****************************************************************************
 //
-// 幅、高さ、奥行きによって長方体を作り
+// 長方体頂点を設定
 //
 //*****************************************************************************
-HRESULT BoundingBox::InitBox(int width, int height, int depth, float alpha)
+HRESULT BoundingBox::MakeVertex()
 {
-
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	// Vertex
@@ -61,14 +61,14 @@ HRESULT BoundingBox::InitBox(int width, int height, int depth, float alpha)
 	VERTEX_3D_NT Vetex[] =
 	{
 		// 座標、法線、diffuse
-		{ D3DXVECTOR3(-width,  height, -depth), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(255.0f, 0.0f, 0.0f, alpha) },
-		{ D3DXVECTOR3(-width,  height,  depth), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(255.0f, 0.0f, 0.0f, alpha) },
-		{ D3DXVECTOR3( width,  height,  depth), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(255.0f, 0.0f, 0.0f, alpha) },
-		{ D3DXVECTOR3( width,  height, -depth), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(255.0f, 0.0f, 0.0f, alpha) },
-		{ D3DXVECTOR3(-width, -height, -depth), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(255.0f, 0.0f, 0.0f, alpha) },
-		{ D3DXVECTOR3(-width, -height,  depth), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(255.0f, 0.0f, 0.0f, alpha) },
-		{ D3DXVECTOR3( width, -height,  depth), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(255.0f, 0.0f, 0.0f, alpha) },
-		{ D3DXVECTOR3( width, -height, -depth), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(255.0f, 0.0f, 0.0f, alpha) }
+		{ D3DXVECTOR3(-m_Size.x / 2,  m_Size.y / 2, -m_Size.z / 2), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(255.0f, 0.0f, 0.0f, m_Alpha) },
+		{ D3DXVECTOR3(-m_Size.x / 2,  m_Size.y / 2,  m_Size.z / 2), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(255.0f, 0.0f, 0.0f, m_Alpha) },
+		{ D3DXVECTOR3( m_Size.x / 2,  m_Size.y / 2,  m_Size.z / 2), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(255.0f, 0.0f, 0.0f, m_Alpha) },
+		{ D3DXVECTOR3( m_Size.x / 2,  m_Size.y / 2, -m_Size.z / 2), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(255.0f, 0.0f, 0.0f, m_Alpha) },
+		{ D3DXVECTOR3(-m_Size.x / 2,  0,            -m_Size.z / 2), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(255.0f, 0.0f, 0.0f, m_Alpha) },
+		{ D3DXVECTOR3(-m_Size.x / 2,  0,             m_Size.z / 2), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(255.0f, 0.0f, 0.0f, m_Alpha) },
+		{ D3DXVECTOR3( m_Size.x / 2,  0,             m_Size.z / 2), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(255.0f, 0.0f, 0.0f, m_Alpha) },
+		{ D3DXVECTOR3( m_Size.x / 2,  0,            -m_Size.z / 2), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(255.0f, 0.0f, 0.0f, m_Alpha) }
 	};
 
 	// 頂点バッファポインタ作成
@@ -126,6 +126,21 @@ HRESULT BoundingBox::InitBox(int width, int height, int depth, float alpha)
 
 	// インデックス データのロックを解除する
 	m_IndexBuffer->Unlock();
+
+	return S_OK;
+}
+
+//*****************************************************************************
+//
+// 幅、高さ、奥行きによって長方体を作り
+//
+//*****************************************************************************
+void BoundingBox::InitBox(int width, int height, int depth, float alpha)
+{
+	m_Size = D3DXVECTOR3((float)width, (float)height, (float)depth);
+	m_Alpha = alpha;
+
+	MakeVertex();
 }
 
 //*****************************************************************************
@@ -177,4 +192,49 @@ void BoundingBox::Draw()
 
 	// バウンディングボックスの描画
 	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 17, 0, 16);
+}
+
+//*****************************************************************************
+//
+// 当たり判定(長方体)
+//
+//*****************************************************************************
+//bool BoundingBox::CheckHitBB(Character* Object)
+//{
+//	if (
+//		m_pos.x + (m_Size.x / 2) > Object->GetBoundingBox()->m_pos.x - Object->GetBoundingBox()->m_Size.x &&
+//		m_pos.x - (m_Size.x / 2) < Object->GetBoundingBox()->m_pos.x + Object->GetBoundingBox()->m_Size.x &&
+//		m_pos.y - (m_Size.y / 2) < Object->GetBoundingBox()->m_pos.y + Object->GetBoundingBox()->m_Size.y &&
+//		m_pos.y + (m_Size.y / 2) > Object->GetBoundingBox()->m_pos.y - Object->GetBoundingBox()->m_Size.y &&
+//		m_pos.z - (m_Size.z / 2) < Object->GetBoundingBox()->m_pos.z + Object->GetBoundingBox()->m_Size.z &&
+//		m_pos.z + (m_Size.z / 2) > Object->GetBoundingBox()->m_pos.z - Object->GetBoundingBox()->m_Size.z
+//		)
+//	{
+//		Object->Move();
+//		return true;
+//	}
+//	else
+//	{
+//		return false;
+//	}
+//}
+
+//*****************************************************************************
+//
+// バウンディングボックスサイズを取得
+//
+//*****************************************************************************
+D3DXVECTOR3* BoundingBox::GetSize()
+{
+	return &m_Size;
+}
+
+//*****************************************************************************
+//
+// バウンディングボックス位置を取得
+//
+//*****************************************************************************
+D3DXVECTOR3* BoundingBox::GetPosition()
+{
+	return &m_pos;
 }

@@ -76,10 +76,10 @@ HRESULT Field::MakeVertex(int width, int height)
 	// m_posFiledÇÕê¢äEÇ≈ÇÃà íuÇ≈
 	
 	// position
-	VetexBuffer[0].Position = D3DXVECTOR3(-width, 0.0f, height);
-	VetexBuffer[1].Position = D3DXVECTOR3(width, 0.0f, height);
+	VetexBuffer[0].Position = D3DXVECTOR3(-width, 0.0f,  height);
+	VetexBuffer[1].Position = D3DXVECTOR3( width, 0.0f,  height);
 	VetexBuffer[2].Position = D3DXVECTOR3(-width, 0.0f, -height);
-	VetexBuffer[3].Position = D3DXVECTOR3(width, 0.0f, -height);
+	VetexBuffer[3].Position = D3DXVECTOR3( width, 0.0f, -height);
 
 	// normal
 	VetexBuffer[0].NormalVector = D3DXVECTOR3(0.0f, 1.0f, 0.0f);

@@ -5,14 +5,10 @@
 // Author : LIAO HANCHEN
 //
 //*****************************************************************************
-#include "Main.h"
-
-// 臨時
-#include "input.h"
+#include "Engine.h"
 
 #include "CharacterClass.h"
 #include "CameraClass.h"
-#include "MeshClass.h"
 #include "LightClass.h"
 #include "FieldClass.h"
 
@@ -29,7 +25,6 @@ LPDIRECT3DDEVICE9			g_pD3DDevice = NULL;				// Deviceオブジェクト(描画�
 
 //////////////////////////////////////////////////////////////////////////////////
 Camera*				g_camera;					// カメラ
-Mesh*				g_mesh;						// メッシュ(マテリアルを含む)
 Light*				g_light;					// ライト
 
 Character*			g_Car1;						// 車1
@@ -54,6 +49,9 @@ HRESULT InitGameObject(void);
 void	Updata(void);
 void	Draw(HWND hwnd);
 void	Release(void);
+
+// 臨時
+bool CheckHitBB(Character* Object1, Character* Object2);
 
 //*****************************************************************************
 //
@@ -333,16 +331,13 @@ HRESULT InitGameObject(void)
 						D3DXVECTOR3(0.0f, 0.0f, 0.0f),			// At
 						D3DXVECTOR3(0.0f, 1.0f, 0.0f));			// Up
 
-	// メッシュを初期化
-	g_mesh = new Mesh();
-
 	// ゲーム素材を初期化
 	g_Car1 = new Character();
 	g_Car1->InitCoordinate(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 	g_Car1->ChooseMesh("data/MODEL/car000.x");
 
 	g_Car2 = new Character();
-	g_Car2->InitCoordinate(D3DXVECTOR3(50.0f, 0.0f, 0.0f));
+	g_Car2->InitCoordinate(D3DXVECTOR3(100.0f, 0.0f, 0.0f));
 	g_Car2->ChooseMesh("data/MODEL/car001.x");
 
 	// 地面を初期化する
@@ -418,41 +413,14 @@ void Updata(void)
 		g_light->ChangeLight(LT_SpotLight);
 	}
 
-	// カメラ注視点移動
-	if (GetKeyboardPress(DIK_A))			// key A
-	{
-		g_camera->At(-2.0f, 'x');
-	}
-	if (GetKeyboardPress(DIK_D))			// key D
-	{
-		g_camera->At(2.0f, 'x');
-	}
-	if (GetKeyboardPress(DIK_W))			// key W
-	{
-		g_camera->At(2.0f, 'y');
-	}
-	if (GetKeyboardPress(DIK_S))			// key S
-	{
-		g_camera->At(-2.0f, 'y');
-	}
+	// キャラクター移動
+	g_Car1->Update();
 
 	// カメラ視点移動
-	if (GetKeyboardPress(DIK_J))			// key 9
-	{
-		g_camera->Eye(1.0f, 'x');
-	}
-	if (GetKeyboardPress(DIK_L))			// key 9
-	{
-		g_camera->Eye(-1.0f, 'x');
-	}
-	if (GetKeyboardPress(DIK_I))			// key 9
-	{
-		g_camera->Eye(1.0f, 'y');
-	}
-	if (GetKeyboardPress(DIK_K))			// key 9
-	{
-		g_camera->Eye(-1.0f, 'y');
-	}
+	g_camera->Update();
+
+	// 当たり判定
+	CheckHitBB(g_Car1, g_Car2);
 }
 
 //*****************************************************************************
@@ -524,7 +492,6 @@ void Release(void)
 
 	// クラスポインタ
 	SAFE_RELEASE_CLASS_POINT(g_camera);
-	SAFE_RELEASE_CLASS_POINT(g_mesh);
 	SAFE_RELEASE_CLASS_POINT(g_light);
 	SAFE_RELEASE_CLASS_POINT(g_Car1);
 	SAFE_RELEASE_CLASS_POINT(g_Car2);
@@ -544,4 +511,40 @@ void Release(void)
 LPDIRECT3DDEVICE9 GetDevice(void)
 {
 	return g_pD3DDevice;
+}
+
+//*****************************************************************************
+//
+// 臨時当たり判定
+//
+//*****************************************************************************
+bool CheckHitBB(Character* Object1, Character* Object2)
+{
+	D3DXVECTOR3* p1 = Object1->GetPosition();
+	D3DXVECTOR3* s1 = Object1->GetBoundingBox()->GetSize();
+	D3DXVECTOR3* p2 = Object2->GetPosition();
+	D3DXVECTOR3* s2 = Object2->GetBoundingBox()->GetSize();
+
+	if (
+		/*m_pos.x + (m_Size.x / 2) > Object2->GetBoundingBox()->m_pos.x - Object2->GetBoundingBox()->(m_Size.x / 2) &&
+		m_pos.x - (m_Size.x / 2) < Object2->GetBoundingBox()->m_pos.x + Object2->GetBoundingBox()->(m_Size.x / 2) &&
+		m_pos.y - (m_Size.y / 2) < Object2->GetBoundingBox()->m_pos.y + Object2->GetBoundingBox()->(m_Size.y / 2) &&
+		m_pos.y + (m_Size.y / 2) > Object2->GetBoundingBox()->m_pos.y - Object2->GetBoundingBox()->(m_Size.y / 2) &&
+		m_pos.z - (m_Size.z / 2) < Object2->GetBoundingBox()->m_pos.z + Object2->GetBoundingBox()->(m_Size.z / 2) &&
+		m_pos.z + (m_Size.z / 2) > Object2->GetBoundingBox()->m_pos.z - Object2->GetBoundingBox()->(m_Size.z / 2)*/
+		p1->x + s1->x / 2 > p2->x - s2->x / 2 &&
+		p1->x - s1->x / 2 < p2->x + s2->x / 2 &&
+		p1->y - s1->y / 2 < p2->y + s2->y / 2 &&
+		p1->y + s1->y / 2 > p2->y - s2->y / 2 &&
+		p1->z + s1->z / 2 > p2->z - s2->z / 2 &&
+		p1->z - s1->z / 2 < p2->z + s2->z / 2
+		)
+	{
+		Object2->Move();
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }

@@ -8,12 +8,15 @@
 #ifndef _FIELD_CLASS_H_
 #define _FIELD_CLASS_H_
 
-#include "Main.h"
+#include "Engine.h"
 
 #include "TextureManagerClass.h"
 
-
-
+//*****************************************************************************
+//
+// ƒNƒ‰ƒXéŒ¾
+//
+//*****************************************************************************
 class Field
 {
 private:

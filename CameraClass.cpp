@@ -6,7 +6,6 @@
 //
 //*****************************************************************************
 #include "CameraClass.h"
-#include "Main.h"
 
 //*****************************************************************************
 //
@@ -155,4 +154,30 @@ void Camera::PosToMessageAndMessageDraw(int row)
 {
 	m_Message->DrawPosMessage("CameraEye", m_posCameraEye, D3DXVECTOR2(0, float(row * 18 * 2)));
 	m_Message->DrawPosMessage("CameraAt", m_posCameraAt, D3DXVECTOR2(0, float((row+1) * 18 * 2)));
+}
+
+//*****************************************************************************
+//
+// カメラ更新
+//
+//*****************************************************************************
+void Camera::Update()
+{
+
+	if (GetKeyboardPress(DIK_J))			// key J
+	{
+		Eye(1.0f, 'x');
+	}
+	if (GetKeyboardPress(DIK_L))			// key L
+	{
+		Eye(-1.0f, 'x');
+	}
+	if (GetKeyboardPress(DIK_I))			// key I
+	{
+		Eye(1.0f, 'y');
+	}
+	if (GetKeyboardPress(DIK_K))			// key K
+	{
+		Eye(-1.0f, 'y');
+	}
 }

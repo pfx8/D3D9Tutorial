@@ -1,26 +1,41 @@
 //*****************************************************************************
 //
-// ゲーム全体処理[main.h]
+// 通用データ＆ヘッドファイル[Engine.h]
 //
 // Author : LIAO HANCHEN
 //
 //*****************************************************************************
 #define _CRT_SECURE_NO_WARNINGS			// scanf のwarning防止
 
-#ifndef _MAIN_H_
-#define _MAIN_H_
+#ifndef _ENGINE_H_
+#define _ENGINE_H_
 
+//*****************************************************************************
+//
+// ヘッドファイル
+//
+//*****************************************************************************
+// Dx9
 #include <windows.h>
 #include <d3dx9.h>
 #include <tchar.h>
 #include <time.h>
+#include <dinput.h>
+#include "input.h"
 
+// c++
 #include <iostream>
 #include <map>
 #include <string>
 
-#include <dinput.h>
+// 自作ヘッドファイル
 
+
+//*****************************************************************************
+//
+// 依存ファイル
+//
+//*****************************************************************************
 #if 1	// [ここを"0"にした場合、"構成プロパティ" -> "リンカ" -> "入力" -> "追加の依存ファイル"に対象ライブラリを設定する]
 #pragma comment (lib, "d3d9.lib")
 #pragma comment (lib, "d3dx9.lib")
@@ -30,7 +45,9 @@
 #endif
 
 //*****************************************************************************
+//
 // マクロ定義
+//
 //*****************************************************************************
 #define CLASS_NAME			_T("D3d9Class")				// ウインドウのクラス名
 #define WINDOW_NAME			_T("Zilch-E")				// ウインドウのキャプション名
@@ -39,7 +56,7 @@
 
 // 頂点フォーマット( 頂点座標[3D] / 法線 / 反射光 / テクスチャ座標 )
 #define	FVF_VERTEX_3D		(D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE | D3DFVF_TEX1) //D3DFVF_TEX1　テクスチャー座標
-#define	FVF_VERTEX_3D_NT	(D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE) //D3DFVF_TEX1　テクスチャー座標
+#define	FVF_VERTEX_3D_NT	(D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE)				//D3DFVF_TEX1　テクスチャー座標
 
 #define SAFE_RELEASE_POINT(ptr)					{ if(ptr) { (ptr)->Release(); (ptr) = NULL; } }
 #define SAFE_RELEASE_CLASS_POINT(cptr)			{ if(cptr) { delete cptr; } }
@@ -48,7 +65,9 @@
 #define	NUM_POLYGON		(2)		// ポリゴン数
 
 //*****************************************************************************
+//
 // 構造体定義
+//
 //*****************************************************************************
 // 3D頂点
 typedef struct VERTEX_3D
@@ -78,15 +97,10 @@ typedef struct Texture
 }Texture;
 
 //*****************************************************************************
+//
 // 列挙体定義
+//
 //*****************************************************************************
-typedef enum ExampleType
-{
-	ET_Vertex,
-	ET_Light,
-	ET_SampleMesh,
-}ExampleType;
-
 typedef enum LightType
 {
 	LT_PointLight,
@@ -95,8 +109,10 @@ typedef enum LightType
 }LightType;
 
 //*****************************************************************************
+//
 // プロトタイプ宣言
+//
 //*****************************************************************************
 LPDIRECT3DDEVICE9 GetDevice(void);
 
-#endif
+#endif // !_ENGINE_H_

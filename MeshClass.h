@@ -8,11 +8,16 @@
 #ifndef _MESH_CLASS_H_
 #define _MESH_CLASS_H_
 
-#include "Main.h"
+#include "Engine.h"
 
 #include "MaterialClass.h"
 #include "TextureManagerClass.h"
 
+//*****************************************************************************
+//
+// ƒNƒ‰ƒXéŒ¾
+//
+//*****************************************************************************
 class Mesh
 {
 private:

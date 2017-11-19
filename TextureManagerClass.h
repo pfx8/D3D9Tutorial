@@ -8,9 +8,13 @@
 #ifndef TEXTURE_MANAGER_CLASS_H_
 #define TEXTURE_MANAGER_CLASS_H_
 
-#include "Main.h"
+#include "Engine.h"
 
-// テクスチャマネジャー
+//*****************************************************************************
+//
+// クラス宣言
+//
+//*****************************************************************************
 class TextureManager
 {
 private:

@@ -8,8 +8,13 @@
 #ifndef _SCENE_MANAGER_CLASS_H_
 #define _SCENE_MANAGER_CLASS_H_
 
-#include "Main.h"
+#include "Engine.h"
 
+//*****************************************************************************
+//
+// ÉNÉâÉXêÈåæ
+//
+//*****************************************************************************
 class SceneManager
 {
 private:
