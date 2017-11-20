@@ -1,12 +1,12 @@
 //*****************************************************************************
 //
-// シーンマネジャークラス [SceneManagerClass.h]
+// マテリアル処理 [Material.h]
 //
 // Author : LIAO HANCHEN
 //
 //*****************************************************************************
-#ifndef _SCENE_MANAGER_CLASS_H_
-#define _SCENE_MANAGER_CLASS_H_
+#ifndef _MATERIAL_H_
+#define _MATERIAL_H_
 
 #include "Engine.h"
 
@@ -15,18 +15,20 @@
 // クラス宣言
 //
 //*****************************************************************************
-class SceneManager
+class Material
 {
 private:
+	LPD3DXBUFFER		m_D3DXBuffMatModel;	// マテリアル情報へのポインタ
+	DWORD			m_NumMatModel;		// マテリアル情報の数
 
 public:
-	SceneManager();
-	~SceneManager();
+	Material();
+	~Material();
+
+	void SetMaterial();
+
+	LPD3DXBUFFER* GetMaterialPoint();		// m_D3DXBuffMatModelの取得
+	DWORD* GetMterialNumber();				// m_NumMatModelの取得
 };
 
-
-
-
-
-#endif // !_SCENE_MANAGER_CLASS_H_
-
+#endif // !_MATERIAL_H

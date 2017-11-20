@@ -1,11 +1,11 @@
 //*****************************************************************************
 //
-// キャラクターベースクラス [CharacterClass.cpp]
+// キャラクターベース処理 [Character.cpp]
 //
 // Author : LIAO HANCHEN
 //
 //*****************************************************************************
-#include "CharacterClass.h"
+#include "Character.h"
 
 //*****************************************************************************
 //
@@ -24,7 +24,7 @@ Character::Character()
 
 	// クラスポインタ
 	m_Mesh = new Mesh();
-	m_Message = new OutputMessage();
+	m_Message = new DebugMessage();
 	m_BoundingBox = new BoundingBox();
 }
 

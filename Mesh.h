@@ -1,17 +1,16 @@
 //*****************************************************************************
 //
-// メッシュクラス [MeshClass.h]
+// メッシュ処理 [Mesh.h]
 //
 // Author : LIAO HANCHEN
 //
 //*****************************************************************************
-#ifndef _MESH_CLASS_H_
-#define _MESH_CLASS_H_
+#ifndef _MESH_H_
+#define _MESH_H_
 
 #include "Engine.h"
 
-#include "MaterialClass.h"
-#include "TextureManagerClass.h"
+#include "Material.h"
 
 //*****************************************************************************
 //
@@ -21,12 +20,12 @@
 class Mesh
 {
 private:
-	LPD3DXMESH		m_mesh;				// メッシュ情報へのポインタ
-	Material*		m_material;			// マテリアル情報へのポインタ
+	LPD3DXMESH		m_mesh;		// メッシュ情報へのポインタ
+	Material*			m_material;	// マテリアル情報へのポインタ
 
-	TextureManager* m_textureManager;	// テクスチャマネジメント
+	PDIRECT3DTEXTURE9	m_Point;		// テクスチャマネジメント
 
-	std::string		m_path;				// モデルのパス
+	std::string		m_path;		// モデルのパス
 public:
 	Mesh();
 	~Mesh();
@@ -41,5 +40,5 @@ public:
 	void DrawModel();
 };
 
-#endif // !_MESH_CLASS_H_
+#endif // !_MESH_H_
 

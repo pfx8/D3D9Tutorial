@@ -1,12 +1,12 @@
 //*****************************************************************************
 //
-// マテリアルクラス [MaterialClass.h]
+// デバックメッセージ処理 [DebugMessage.h]
 //
 // Author : LIAO HANCHEN
 //
 //*****************************************************************************
-#ifndef _MATERIAL_CLASS_H_
-#define _MATERIAL_CLASS_H_
+#ifndef _DEBUG_MESSAGE_H_
+#define _DEBUG_MESSAGE_H_
 
 #include "Engine.h"
 
@@ -15,20 +15,17 @@
 // クラス宣言
 //
 //*****************************************************************************
-class Material
+class DebugMessage
 {
 private:
-	LPD3DXBUFFER		m_D3DXBuffMatModel;	// マテリアル情報へのポインタ
-	DWORD				m_NumMatModel;		// マテリアル情報の数
+	LPD3DXFONT			m_Font;	// フォントのポインタ
 
 public:
-	Material();
-	~Material();
+	DebugMessage();
+	~DebugMessage();
 
-	void SetMaterial();
+	void DrawPosMessage(const char name[], D3DXVECTOR3 OutputPos, D3DXVECTOR2 MessagePos);
 
-	LPD3DXBUFFER* GetMaterialPoint();		// m_D3DXBuffMatModelの取得
-	DWORD* GetMterialNumber();				// m_NumMatModelの取得
 };
 
-#endif // !_MATERIAL_CLASS_H
+#endif // !Debug_MESSAGE_H_

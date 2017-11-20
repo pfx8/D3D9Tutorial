@@ -1,11 +1,11 @@
 ﻿//*****************************************************************************
 //
-// メッシュクラス [MeshClass.cpp]
+// メッシュ処理 [Mesh.cpp]
 //
 // Author : LIAO HANCHEN
 //
 //*****************************************************************************
-#include "MeshClass.h"
+#include "Mesh.h"
 
 //*****************************************************************************
 //
@@ -19,7 +19,6 @@ Mesh::Mesh()
 
 	// クラスポインタ
 	m_material = new Material();
-	m_textureManager = new TextureManager();
 }
 
 //*****************************************************************************
@@ -34,7 +33,6 @@ Mesh::~Mesh()
 
 	// クラスポインタ
 	SAFE_RELEASE_CLASS_POINT(m_material);
-	SAFE_RELEASE_CLASS_POINT(m_textureManager);
 }
 
 
@@ -100,8 +98,8 @@ void Mesh::DrawModel()
 		pDevice->SetMaterial(&pD3DXMat[count].MatD3D);
 
 		// テクスチャの設定
-		Texture *p = m_textureManager->GetTexture(3);
-		pDevice->SetTexture(0, p->TexturePoint);
+		//Texture *p = m_textureManager->GetTexture(3);
+		//pDevice->SetTexture(0, p->TexturePoint);
 
 		// 描画
 		m_mesh->DrawSubset(count);

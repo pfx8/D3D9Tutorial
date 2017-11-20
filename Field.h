@@ -1,16 +1,14 @@
 //*****************************************************************************
 //
-// フィールド処理[FieldClass.h]
+// フィールド処理[Field.h]
 //
 // Author : LIAO HANCHEN
 //
 //*****************************************************************************
-#ifndef _FIELD_CLASS_H_
-#define _FIELD_CLASS_H_
+#ifndef _FIELD_H_
+#define _FIELD_H_
 
 #include "Engine.h"
-
-#include "TextureManagerClass.h"
 
 //*****************************************************************************
 //
@@ -24,11 +22,8 @@ private:
 	D3DXVECTOR3		m_rot;		// 回転
 	D3DXVECTOR3		m_scl;		// 拡大縮小
 	
-	TextureManager*			m_textureManager;	// テクスチャマネジメント
 	LPDIRECT3DVERTEXBUFFER9	m_VertexBuffField;	// 頂点バッファへのポインタ
-
-	// 臨時に隠す
-	// std::string		m_path;				// モデルのパス
+	LPDIRECT3DTEXTURE9			m_FieldTexture;	// フィールドテクスチャ
 
 public:
 	Field();
@@ -45,9 +40,12 @@ public:
 
 	// 臨時ーーワールド変換
 	void setWorldMatrix(D3DXMATRIX& mtxWorld);
+
+	// テクスチャを設定
+	void SetTexture();
 };
 
 
 
 
-#endif // !_FIELD_CLASS_H_
+#endif // !_FIELD_H_

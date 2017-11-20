@@ -1,16 +1,16 @@
 //*****************************************************************************
 //
-// バウンディングボックス処理[BoundingBoxClass.h]
+// バウンディングボックス処理[BoundingBox.h]
 //
 // Author : LIAO HANCHEN
 //
 //*****************************************************************************
-#ifndef _BOUNDING_BOX_CLASS_H_
-#define _BOUNDING_BOX_CLASS_H_
+#ifndef _BOUNDING_BOX_H_
+#define _BOUNDING_BOX_H_
 
 #include "Engine.h"
 
-#include "MeshClass.h"
+#include "Mesh.h"
 //*****************************************************************************
 //
 // クラス宣言
@@ -58,4 +58,4 @@ public:
 };
 
 
-#endif // !_BOUNDING_BOX_CLASS_H_
+#endif // !_BOUNDING_BOX_H_

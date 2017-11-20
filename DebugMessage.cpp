@@ -1,18 +1,18 @@
 //*****************************************************************************
 //
-// メッセージクラス [MessageClass.cpp]
+// デバックメッセージ処理 [DebugMessage.cpp]
 //
 // Author : LIAO HANCHEN
 //
 //*****************************************************************************
-#include "MessageClass.h"
+#include "DebugMessage.h"
 
 //*****************************************************************************
 //
 // コンストラクタ
 //
 //*****************************************************************************
-OutputMessage::OutputMessage()
+DebugMessage::DebugMessage()
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
@@ -26,7 +26,7 @@ OutputMessage::OutputMessage()
 // デストラクタ
 //
 //*****************************************************************************
-OutputMessage::~OutputMessage()
+DebugMessage::~DebugMessage()
 {
 	SAFE_RELEASE_POINT(m_Font);
 }
@@ -36,7 +36,7 @@ OutputMessage::~OutputMessage()
 // 文字を描画する
 //
 //*****************************************************************************
-void OutputMessage::DrawPosMessage(const char name[], D3DXVECTOR3 OutputPos, D3DXVECTOR2 MessagePos)
+void DebugMessage::DrawPosMessage(const char name[], D3DXVECTOR3 OutputPos, D3DXVECTOR2 MessagePos)
 {
 	RECT rectCoor = { int(MessagePos.x), int(MessagePos.y), SCREEN_WIDTH, SCREEN_HEIGHT };
 	char str[256];

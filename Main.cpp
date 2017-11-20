@@ -7,10 +7,14 @@
 //*****************************************************************************
 #include "Engine.h"
 
-#include "CharacterClass.h"
-#include "CameraClass.h"
-#include "LightClass.h"
-#include "FieldClass.h"
+#include "Character.h"
+#include "Camera.h"
+#include "Light.h"
+#include "Field.h"
+#include "Console.h"
+#include "SceneManager.h"
+
+using namespace std;
 
 // 臨時
 
@@ -19,21 +23,21 @@
 // グローバル変数
 //
 //*****************************************************************************
-int							g_nCountFPS;						// FPSカウンタ
-LPDIRECT3D9					g_pD3D = NULL;						// Direct3Dオブジェクト
+int						g_nCountFPS;						// FPSカウンタ
+LPDIRECT3D9				g_pD3D = NULL;					// Direct3Dオブジェクト
 LPDIRECT3DDEVICE9			g_pD3DDevice = NULL;				// Deviceオブジェクト(描画に必要)
 
 //////////////////////////////////////////////////////////////////////////////////
 Camera*				g_camera;					// カメラ
 Light*				g_light;					// ライト
-
-Character*			g_Car1;						// 車1
-Character*			g_Car2;						// 車２
-
-D3DXMATRIX			g_mtxWorld;					// ワールドマトリックス
-
+Character*			g_Car1;					// 車1
+Character*			g_Car2;					// 車２
 Field*				g_FieldStone;				// 石のフィールド
+Console*				g_Console;				// コンソール
 
+D3DXMATRIX			g_mtxWorld;				// ワールドマトリックス
+
+SceneManager*			g_SceneManager;			// シンー管理？？？
 // 臨時
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -77,6 +81,12 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	dwExecLastTime = dwFPSLastTime = timeGetTime();		//ミリ秒単位で取得 syutoku
 	dwCurrentTime = dwFrameCount = 0;
 
+	//*****************************************************************************
+	//
+	// ウィンドウの設定
+	//
+	//*****************************************************************************
+	
 	// ウィンドウ属性を設定
 	WNDCLASSEX	wcex = { 0 };
 	wcex.cbSize = sizeof(WNDCLASSEX);
@@ -92,8 +102,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	wcex.lpszClassName = CLASS_NAME;
 	wcex.hIconSm = NULL;
 
-	HWND		hWnd;
-	MSG			msg;
+	HWND		hWnd;	// ハンドル
+	MSG		msg;		// メッセージ
 
 	// ウィンドウクラスの登録
 	if (!RegisterClassEx(&wcex))
@@ -117,6 +127,20 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	{
 		return -1;
 	}
+
+	// メッセージを出る為のコンソールを初期化
+	g_Console = new Console();
+	if (g_Console->GetConsoleStatue() == false)
+	{
+		// 初期化失敗ならば
+		return E_FAIL;
+	}
+
+	// シンー
+	g_SceneManager = new SceneManager();
+	g_SceneManager->InitScene();
+	g_SceneManager->LoadScene();
+	//g_SceneManager->LoadSceneFile("Scene/test.txt"); // 読み込みOK
 
 	// ゲーム素材を初期化する
 	InitGameObject();
@@ -325,12 +349,6 @@ HRESULT InitDiretX(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 //*****************************************************************************
 HRESULT InitGameObject(void)
 {
-	// カメラを初期化
-	g_camera = new Camera();
-	g_camera->InitCamera(D3DXVECTOR3(0.0f, 150.0f, -200.0f),	// Eye
-						D3DXVECTOR3(0.0f, 0.0f, 0.0f),			// At
-						D3DXVECTOR3(0.0f, 1.0f, 0.0f));			// Up
-
 	// ゲーム素材を初期化
 	g_Car1 = new Character();
 	g_Car1->InitCoordinate(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
@@ -344,6 +362,13 @@ HRESULT InitGameObject(void)
 	g_FieldStone = new Field();
 	g_FieldStone->InitCoordinate(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 	g_FieldStone->MakeVertex(100, 100);
+
+	// カメラを初期化
+	g_camera = new Camera();
+	g_camera->InitCamera(D3DXVECTOR3(0.0f, 150.0f, -200.0f),	// Eye
+		D3DXVECTOR3(0.0f, 0.0f, 0.0f),			// At
+		D3DXVECTOR3(0.0f, 1.0f, 0.0f),			// Up
+		*g_Car1->GetPosition());				// 注視点のPos
 
 	// ライトを初期化
 	g_light = new Light(LT_PointLight);
@@ -515,6 +540,9 @@ void Release(void)
 
 	// 入力処理の終了処理
 	UninitInput();
+
+	// コンソールの終了処理
+	FreeConsole();
 }
 
 //*****************************************************************************

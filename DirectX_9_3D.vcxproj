@@ -19,32 +19,34 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\LESSON\DirectX_9.0c_3D\model\input.cpp" />
-    <ClCompile Include="BoundingBoxClass.cpp" />
-    <ClCompile Include="CameraClass.cpp" />
-    <ClCompile Include="CharacterClass.cpp" />
-    <ClCompile Include="FieldClass.cpp" />
-    <ClCompile Include="LightClass.cpp" />
+    <ClCompile Include="BoundingBox.cpp" />
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Character.cpp" />
+    <ClCompile Include="Console.cpp" />
+    <ClCompile Include="Field.cpp" />
+    <ClCompile Include="input.cpp" />
+    <ClCompile Include="Light.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="MaterialClass.cpp" />
-    <ClCompile Include="MeshClass.cpp" />
-    <ClCompile Include="MessageClass.cpp" />
-    <ClCompile Include="SceneManagerClass.cpp" />
-    <ClCompile Include="TextureManagerClass.cpp" />
+    <ClCompile Include="Material.cpp" />
+    <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="DebugMessage.cpp" />
+    <ClCompile Include="ResourcesManager.cpp" />
+    <ClCompile Include="SceneManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\LESSON\DirectX_9.0c_3D\model\input.h" />
-    <ClInclude Include="BoundingBoxClass.h" />
-    <ClInclude Include="CameraClass.h" />
-    <ClInclude Include="CharacterClass.h" />
+    <ClInclude Include="BoundingBox.h" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="Character.h" />
+    <ClInclude Include="Console.h" />
     <ClInclude Include="Engine.h" />
-    <ClInclude Include="FieldClass.h" />
-    <ClInclude Include="LightClass.h" />
-    <ClInclude Include="MaterialClass.h" />
-    <ClInclude Include="MeshClass.h" />
-    <ClInclude Include="MessageClass.h" />
-    <ClInclude Include="SceneManagerClass.h" />
-    <ClInclude Include="TextureManagerClass.h" />
+    <ClInclude Include="Field.h" />
+    <ClInclude Include="input.h" />
+    <ClInclude Include="Light.h" />
+    <ClInclude Include="Material.h" />
+    <ClInclude Include="Mesh.h" />
+    <ClInclude Include="DebugMessage.h" />
+    <ClInclude Include="ResourcesManager.h" />
+    <ClInclude Include="SceneManager.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{AE2F5D68-7730-43CB-B207-504B5C12B285}</ProjectGuid>

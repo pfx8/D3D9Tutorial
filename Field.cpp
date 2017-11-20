@@ -1,11 +1,11 @@
 //*****************************************************************************
 //
-// フィールド処理[FieldClass.cpp]
+// フィールド処理[Field.cpp]
 //
 // Author : LIAO HANCHEN
 //
 //*****************************************************************************
-#include "FieldClass.h"
+#include "Field.h"
 
 //*****************************************************************************
 //
@@ -20,9 +20,6 @@ Field::Field()
 
 	// ポインタ
 	m_VertexBuffField = NULL;
-
-	// クラスポインタ
-	m_textureManager = new TextureManager();
 }
 
 //*****************************************************************************
@@ -34,9 +31,6 @@ Field::~Field()
 {
 	// ポインタ
 	SAFE_RELEASE_POINT(m_VertexBuffField);
-
-	// クラスポインタ
-	SAFE_RELEASE_CLASS_POINT(m_textureManager);
 }
 
 //*****************************************************************************
@@ -150,9 +144,18 @@ void Field::Draw()
 	pDevice->SetFVF(FVF_VERTEX_3D);
 
 	// テクスチャの設定
-	Texture* p = m_textureManager->GetTexture(0);
-	pDevice->SetTexture(0, p->TexturePoint);
+	pDevice->SetTexture(0, m_FieldTexture);
 
 	// ポリゴンの描画
 	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, NUM_POLYGON);
+}
+
+//*****************************************************************************
+//
+// テクスチャを設定
+//
+//*****************************************************************************
+void Field::SetTexture()
+{
+	
 }

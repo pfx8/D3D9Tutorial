@@ -1,12 +1,12 @@
 //*****************************************************************************
 //
-// メッセージクラス [MessageClass.h]
+// ライト処理 [Light.h]
 //
 // Author : LIAO HANCHEN
 //
 //*****************************************************************************
-#ifndef _MESSAGE_CLASS_H_
-#define _MESSAGE_CLASS_H_
+#ifndef _LIGHT_H_
+#define _LIGHT_H_
 
 #include "Engine.h"
 
@@ -15,17 +15,16 @@
 // クラス宣言
 //
 //*****************************************************************************
-class OutputMessage
+class Light
 {
-private:
-	LPD3DXFONT			m_Font;	// フォントのポインタ
-
 public:
-	OutputMessage();
-	~OutputMessage();
+	Light();
+	Light(LightType type);
+	~Light();
 
-	void DrawPosMessage(const char name[], D3DXVECTOR3 OutputPos, D3DXVECTOR2 MessagePos);
+	void ChangeLight(LightType type);
+
+private:
 
 };
-
-#endif // !_MESSAGE_CLASS_H_
+#endif // !_LIGHT_H_

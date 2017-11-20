@@ -1,11 +1,11 @@
 ﻿//*****************************************************************************
 //
-// カメラクラス [CameraClass.cpp]
+// カメラ処理 [Camera.cpp]
 //
 // Author : LIAO HANCHEN
 //
 //*****************************************************************************
-#include "CameraClass.h"
+#include "Camera.h"
 
 //*****************************************************************************
 //
@@ -14,7 +14,13 @@
 //*****************************************************************************
 Camera::Camera()
 {
-	m_Message = new OutputMessage();
+	m_posEye = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_posAt  = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_vecUP  = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+
+	m_DirectionVector = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+
+	m_Message = new DebugMessage();
 }
 
 //*****************************************************************************
@@ -32,16 +38,19 @@ Camera::~Camera()
 // カメラを初期化する
 //
 //*****************************************************************************
-void Camera::InitCamera(D3DXVECTOR3 Eye, D3DXVECTOR3 At, D3DXVECTOR3 Up)
+void Camera::InitCamera(D3DXVECTOR3 Eye, D3DXVECTOR3 At, D3DXVECTOR3 Up, D3DXVECTOR3 MainPos)
 {
 	// カメラの視点を初期化する
-	m_posCameraEye = Eye;
+	m_posEye = Eye;
 
 	// カメラの注視点を初期化する
-	m_posCameraAt = At;
+	m_posAt = At;
 
 	// カメラの上方向ベクトル、一般には (0, 1, 0) を定義する 
-	m_vecCameraUP = Up;
+	m_vecUP = Up;
+
+	// 方向ベクトルを初期化する
+	m_DirectionVector = m_posEye - MainPos;
 }
 
 //*****************************************************************************
@@ -57,7 +66,7 @@ void Camera::setViewMatrix()
 	D3DXMatrixIdentity(&matView);
 
 	// ビューマトリックスの作成
-	D3DXMatrixLookAtLH(&matView, &m_posCameraEye, &m_posCameraAt, &m_vecCameraUP);
+	D3DXMatrixLookAtLH(&matView, &m_posEye, &m_posAt, &m_vecUP);
 
 	// ビューマトリックスの設定
 	GetDevice()->SetTransform(D3DTS_VIEW, &matView);
@@ -115,11 +124,11 @@ void Camera::Eye(float move, char direction)
 	switch (direction)
 	{
 	case 'x':
-	case 'X':m_posCameraEye.x += move; break; // zと同じ？
+	case 'X':m_posEye.x += move; break; // zと同じ？
 	case 'y':
-	case 'Y':m_posCameraEye.y += move; break;
+	case 'Y':m_posEye.y += move; break;
 	case 'z':
-	case 'Z':m_posCameraEye.z += move; break;
+	case 'Z':m_posEye.z += move; break;
 	default:
 		break;
 	}
@@ -135,11 +144,11 @@ void Camera::At(float move, char direction)
 	switch (direction)
 	{
 	case 'x':
-	case 'X':m_posCameraAt.x += move; break;
+	case 'X':m_posAt.x += move; break;
 	case 'y':
-	case 'Y':m_posCameraAt.y += move; break;
+	case 'Y':m_posAt.y += move; break;
 	case 'z':
-	case 'Z':m_posCameraAt.z += move; break;
+	case 'Z':m_posAt.z += move; break;
 	default:
 		break;
 	}
@@ -152,8 +161,8 @@ void Camera::At(float move, char direction)
 //*****************************************************************************
 void Camera::PosToMessageAndMessageDraw(int row)
 {
-	m_Message->DrawPosMessage("CameraEye", m_posCameraEye, D3DXVECTOR2(0, float(row * 18 * 2)));
-	m_Message->DrawPosMessage("CameraAt", m_posCameraAt, D3DXVECTOR2(0, float((row+1) * 18 * 2)));
+	m_Message->DrawPosMessage("CameraEye", m_posEye, D3DXVECTOR2(0, float(row * 18 * 2)));
+	m_Message->DrawPosMessage("CameraAt", m_posAt, D3DXVECTOR2(0, float((row+1) * 18 * 2)));
 }
 
 //*****************************************************************************

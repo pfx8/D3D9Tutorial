@@ -1,6 +1,6 @@
 //*****************************************************************************
 //
-// カメラクラス [CameraClass.h]
+// カメラ処理 [Camera.h]
 //
 // Author : LIAO HANCHEN
 //
@@ -11,7 +11,8 @@
 
 #include "Engine.h"
 
-#include "MessageClass.h"
+#include "DebugMessage.h"
+
 //*****************************************************************************
 //
 // クラス宣言
@@ -20,17 +21,20 @@
 class Camera
 {
 private:
-	D3DXVECTOR3		m_posCameraEye;			// カメラの位置
-	D3DXVECTOR3		m_posCameraAt;			// カメラの注視点
-	D3DXVECTOR3		m_vecCameraUP;			// カメラの上方向ベクトル
+	D3DXVECTOR3		m_posEye;			// カメラの位置
+	D3DXVECTOR3		m_posAt;			// カメラの注視点
+	D3DXVECTOR3		m_vecUP;			// カメラの上方向ベクトル
 
-	OutputMessage*	m_Message;
+	D3DXVECTOR3		m_DirectionVector;	// カメラ方向ベクトル
+
+
+	DebugMessage*	m_Message;
 public:
 	Camera();
 	~Camera();
 
 	// カメラを初期化関数
-	void InitCamera(D3DXVECTOR3 Eye, D3DXVECTOR3 At, D3DXVECTOR3 Up);
+	void InitCamera(D3DXVECTOR3 Eye, D3DXVECTOR3 At, D3DXVECTOR3 Up, D3DXVECTOR3 MainPos);
 
 	// ビューイング変換
 	void setViewMatrix();
@@ -57,4 +61,4 @@ public: // 操作
 };
 
 
-#endif // !_CAMERA_CLASS_H_
+#endif // !_CAMERA_H_

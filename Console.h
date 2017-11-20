@@ -1,12 +1,12 @@
 //*****************************************************************************
 //
-// ライトクラス [LightClass.h]
+// コンソールウィンドウ処理 [Console.h]
 //
 // Author : LIAO HANCHEN
 //
 //*****************************************************************************
-#ifndef _LIGHT_CLASS_H_
-#define _LIGHT_CLASS_H_
+#ifndef _CONSOLE_H_
+#define _CONSOLE_H_
 
 #include "Engine.h"
 
@@ -15,16 +15,18 @@
 // クラス宣言
 //
 //*****************************************************************************
-class Light
+class Console
 {
-public:
-	Light();
-	Light(LightType type);
-	~Light();
-
-	void ChangeLight(LightType type);
-
 private:
+	bool m_ConsoleStatus;
 
+public:
+	Console();
+	~Console();
+
+	// コンソールの状態を取得
+	bool GetConsoleStatue();
 };
-#endif // !_LIGHT_CLASS_H_
+
+
+#endif // !_CONSOLE_H_

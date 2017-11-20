@@ -25,7 +25,6 @@
 
 // c++
 #include <iostream>
-#include <map>
 #include <string>
 
 // 自作ヘッドファイル
@@ -50,7 +49,7 @@
 //
 //*****************************************************************************
 #define CLASS_NAME			_T("D3d9Class")				// ウインドウのクラス名
-#define WINDOW_NAME			_T("Zilch-E")				// ウインドウのキャプション名
+#define WINDOW_NAME		_T("Zilch-E")					// ウインドウのキャプション名
 #define SCREEN_WIDTH		(960)						// ウインドウの幅
 #define SCREEN_HEIGHT		(540)						// ウインドウの高さ
 
@@ -91,9 +90,9 @@ typedef struct VERTEX_3D_NT
 // テクスチャ構造体
 typedef struct Texture
 {
-	const char*				Name;			// テクスチャ名前
-	const char*				Path;			// テクスチャパス
-	LPDIRECT3DTEXTURE9		TexturePoint;	// テクスチャポインタ
+	const char*			Name;			// テクスチャ名前
+	const char*			Path;			// テクスチャパス
+	LPDIRECT3DTEXTURE9		TexturePoint;		// テクスチャポインタ
 }Texture;
 
 //*****************************************************************************
