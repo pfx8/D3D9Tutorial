@@ -38,15 +38,39 @@ SceneManager::~SceneManager()
 // シンーの初期化
 //
 //*****************************************************************************
-void SceneManager::InitScene(string name)
+void SceneManager::InitScene()
 {
-	m_SceneName = name;
-
 	// コンソールにメッセージを出す
+	cout << "シンーを選択してください:" << endl;
+	cout << "-> a.d3d" << endl << "-> b.shaderTest" << endl;
+
+	// 選択文字を入れる
+	char temp = ' ';
+
+	cin >> temp;
+
+	// 選択によって、シンーを決める
+	switch (temp)
+	{
+	case 'a':
+	case 'A':m_SceneName = "D3DTutorial"; break;
+	case 'b':
+	case 'B':m_SceneName = "shaderTest"; break;
+	default:
+		break;
+	}
+
+	system("cls");
+
+	// コンソールにシンーの名前を出す
 	cout << "///////////////////////////////" << endl;
 	cout << "// Scene : " << m_SceneName << endl;
 	cout << "///////////////////////////////" << endl << endl;
-	
+
+	// シンーによって資源を読み込む
+	LoadScene();
+
+	// 
 }
 
 //*****************************************************************************
@@ -71,7 +95,7 @@ void SceneManager::UninitScene()
 
 //*****************************************************************************
 //
-// ファイルからシンーの資源を読み込み
+// ファイル(blender)からシンーの資源を読み込み
 //
 //*****************************************************************************
 HRESULT SceneManager::LoadSceneFile(string name)
@@ -125,4 +149,14 @@ void SceneManager::LoadScene()
 ResourcesManager* SceneManager::GetResourcesManager()
 {
 	return m_ResourcesManager;
+}
+
+//*****************************************************************************
+//
+// リソースを初期化
+//
+//*****************************************************************************
+void InitResourcesManager()
+{
+
 }

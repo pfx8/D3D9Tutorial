@@ -30,15 +30,15 @@
 class SceneManager
 {
 private:
-	ResourcesManager*	m_ResourcesManager;	// テクスチャマネジメント
+	ResourcesManager*	m_ResourcesManager;	// リソースマネジメント
 	std::string		m_SceneName;			// シンーの名前
 
 public:
 	SceneManager();
 	~SceneManager();
 
-	// シンーの初期化
-	void InitScene(std::string name);
+	// シンーを初期化
+	void InitScene();
 
 	// シンーの更新
 	void UpdateScene();
@@ -46,7 +46,7 @@ public:
 	// シンーの終了処理
 	void UninitScene();
 
-	// ファイルからシンーの資源を読み込み
+	// ファイル(blender)からシンーの資源を読み込み
 	// 今はリソースすべてを読み込み
 	void LoadScene();	// 臨時
 	HRESULT LoadSceneFile(std::string name);		// 未完成

@@ -138,9 +138,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 	// シンー
 	g_SceneManager = new SceneManager();
-	g_SceneManager->InitScene("test");
-	g_SceneManager->LoadScene();
-	//g_SceneManager->LoadSceneFile("Scene/test.txt"); // 読み込みOK
+	g_SceneManager->InitScene();
 
 	// ゲーム素材を初期化する
 	InitGameObject();

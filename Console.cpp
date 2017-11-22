@@ -23,7 +23,7 @@ Console::Console()
 	// コンソールにinput,outputを定義する
 	freopen("CONIN$", "r", stdin);
 	freopen("CONOUT$", "w", stdout);
-	//freopen("CONOUT$", "w", stderr);
+	freopen("CONOUT$", "w", stderr);
 }
 
 //*****************************************************************************
