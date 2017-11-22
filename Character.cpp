@@ -46,7 +46,7 @@ Character::~Character()
 // ワールド変換
 //
 //*****************************************************************************
-void Character::setWorldMatrix(D3DXMATRIX& mtxWorld)
+void Character::SetWorldMatrix(D3DXMATRIX& mtxWorld)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 	D3DXMATRIX mtxScl, mtxRot, mtxTranslate;
@@ -85,7 +85,7 @@ void Character::PosToMessageAndMessageDraw(int row)
 // 座標を設定
 //
 //*****************************************************************************
-void Character::InitCoordinate(D3DXVECTOR3 pos)
+void Character::SetCoordinate(D3DXVECTOR3 pos)
 {
 	m_pos = pos;
 
@@ -212,4 +212,14 @@ bool Character::CheckHitBB(Character* Object)
 	{
 		return false;
 	}
+}
+
+//*****************************************************************************
+//
+// メッシュを取得
+//
+//*****************************************************************************
+Mesh* Character::GetMesh()
+{
+	return m_Mesh;
 }

@@ -33,34 +33,19 @@ SceneManager::~SceneManager()
 	SAFE_RELEASE_CLASS_POINT(m_ResourcesManager);
 }
 
-
-//*****************************************************************************
-//
-// フィールドテクスチャを設定
-//
-//*****************************************************************************
-void SceneManager::SetTexture(Field* field, string name)
-{
-
-}
-
-//*****************************************************************************
-//
-// キャラクターテクスチャを設定
-//
-//*****************************************************************************
-void SceneManager::SetTexture(Character* character, string name)
-{
-
-}
-
 //*****************************************************************************
 //
 // シンーの初期化
 //
 //*****************************************************************************
-void SceneManager::InitScene()
+void SceneManager::InitScene(string name)
 {
+	m_SceneName = name;
+
+	// コンソールにメッセージを出す
+	cout << "///////////////////////////////" << endl;
+	cout << "// Scene : " << m_SceneName << endl;
+	cout << "///////////////////////////////" << endl << endl;
 	
 }
 
@@ -91,6 +76,7 @@ void SceneManager::UninitScene()
 //*****************************************************************************
 HRESULT SceneManager::LoadSceneFile(string name)
 {
+	// コンソールにメッセージを出す
 	cout << "Loading " << name << endl;
 
 	// 読み込みオブジェクトを作る
@@ -102,11 +88,13 @@ HRESULT SceneManager::LoadSceneFile(string name)
 	// 読み込みは失敗した場合
 	if (fin.fail())
 	{
+		// コンソールにメッセージを出す
 		cout << "エラー[ 読み込み失敗 ]" << endl;
 		return E_FAIL;
 	}
 	else
 	{
+		// コンソールにメッセージを出す
 		cout << name << " ok!" << endl;
 		char PathTemp[100];
 		while (!fin.eof())
@@ -127,4 +115,14 @@ HRESULT SceneManager::LoadSceneFile(string name)
 void SceneManager::LoadScene()
 {
 	m_ResourcesManager->InitTextureList();
+}
+
+//*****************************************************************************
+//
+// リソースマネジメントを取得
+//
+//*****************************************************************************
+ResourcesManager* SceneManager::GetResourcesManager()
+{
+	return m_ResourcesManager;
 }

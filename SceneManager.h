@@ -31,18 +31,14 @@ class SceneManager
 {
 private:
 	ResourcesManager*	m_ResourcesManager;	// テクスチャマネジメント
-	std::string		m_Name;			// シンーの名前
+	std::string		m_SceneName;			// シンーの名前
 
 public:
 	SceneManager();
 	~SceneManager();
-	
-	// テクスチャを設定
-	void SetTexture(Field* field, std::string name);
-	void SetTexture(Character* character, std::string name);
 
 	// シンーの初期化
-	void InitScene();
+	void InitScene(std::string name);
 
 	// シンーの更新
 	void UpdateScene();
@@ -55,8 +51,9 @@ public:
 	void LoadScene();	// 臨時
 	HRESULT LoadSceneFile(std::string name);		// 未完成
 
-	// テクスチャのパスを
-};
+	// リソースマネジメントを取得
+	ResourcesManager* GetResourcesManager();
+}; 
 
 #endif // !_SCENE_MANAGER_H_
 

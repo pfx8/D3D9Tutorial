@@ -14,7 +14,7 @@
 //*****************************************************************************
 ResourcesManager::ResourcesManager()
 {
-	std::cout << "Loading Texture:" << std::endl;
+	
 }
 
 //*****************************************************************************
@@ -34,6 +34,9 @@ ResourcesManager::~ResourcesManager()
 //*****************************************************************************
 void ResourcesManager::InitTextureList()
 {
+	// コンソールにメッセージを出す
+	std::cout << "Loading Texture:" << std::endl;
+
 	// テクスチャを読み込み
 	LoadTexture(&m_FieldGrass);
 	LoadTexture(&m_FieldStone);
@@ -43,6 +46,7 @@ void ResourcesManager::InitTextureList()
 	m_TextureList[m_FieldGrass.Name]	= m_FieldGrass.TexturePoint;
 	m_TextureList[m_FieldStone.Name]	= m_FieldStone.TexturePoint;
 	m_TextureList[m_FieldCheckered.Name]	= m_FieldCheckered.TexturePoint;
+	m_TextureList[m_Null.Name]			= m_Null.TexturePoint;
 }
 
 //*****************************************************************************
@@ -50,7 +54,7 @@ void ResourcesManager::InitTextureList()
 // テクスチャを読み込み
 //
 //*****************************************************************************
-HRESULT ResourcesManager::LoadTexture(Texture* texture)
+HRESULT ResourcesManager::LoadTexture(TextureStruct* texture)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
@@ -59,6 +63,7 @@ HRESULT ResourcesManager::LoadTexture(Texture* texture)
 		return E_FAIL;
 	}
 
+	// コンソールにメッセージを出す
 	std::cout << texture->Path << " OK!" << std::endl;
 
 	return S_OK;
@@ -69,10 +74,12 @@ HRESULT ResourcesManager::LoadTexture(Texture* texture)
 // テクスチャを取得
 //
 //*****************************************************************************
-LPDIRECT3DTEXTURE9* ResourcesManager::GetTexture(std::string name)
+LPDIRECT3DTEXTURE9* ResourcesManager::SetTexture(std::string name)
 {
-	m_TextureList.find(name);
-
+	if(m_TextureList.find(name) != m_TextureList.end())
+	{
+		return &m_TextureList[name];
+	}
 
 	return NULL;
 }

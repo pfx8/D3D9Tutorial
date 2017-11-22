@@ -30,6 +30,7 @@ Mesh::~Mesh()
 {
 	// ポインタ
 	SAFE_RELEASE_POINT(m_mesh);
+	SAFE_RELEASE_POINT(m_MeshTexturePoint);
 
 	// クラスポインタ
 	SAFE_RELEASE_CLASS_POINT(m_material);
@@ -98,8 +99,7 @@ void Mesh::DrawModel()
 		pDevice->SetMaterial(&pD3DXMat[count].MatD3D);
 
 		// テクスチャの設定
-		//Texture *p = m_textureManager->GetTexture(3);
-		//pDevice->SetTexture(0, p->TexturePoint);
+		pDevice->SetTexture(0, m_MeshTexturePoint);
 
 		// 描画
 		m_mesh->DrawSubset(count);
@@ -108,3 +108,12 @@ void Mesh::DrawModel()
 	pDevice->SetMaterial(&matDef);	//	マテリアルを元に戻る
 }
 
+//*****************************************************************************
+//
+// メッシュにテクスチャを設定する
+//
+//*****************************************************************************
+void Mesh::SetMeshTexture(PDIRECT3DTEXTURE9* texturePoint)
+{
+	m_MeshTexturePoint = *texturePoint;
+}

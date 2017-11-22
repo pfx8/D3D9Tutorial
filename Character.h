@@ -37,18 +37,16 @@ private:
 public:
 	Character();
 	~Character();
-	
+
+	// 座標を設定
+	void SetCoordinate(D3DXVECTOR3 pos);
 	// 臨時ーーワールド変換
-	void setWorldMatrix(D3DXMATRIX& mtxWorld);
+	void SetWorldMatrix(D3DXMATRIX& mtxWorld);
+	// キャラクターの名前を決める
+	void SetName(std::string name);
 
 	// 座標をメッセージに渡して、画面に描画する
 	void PosToMessageAndMessageDraw(int row);
-
-	// 座標を設定
-	void InitCoordinate(D3DXVECTOR3 pos);
-
-	// キャラクターの名前を決める
-	void SetName(std::string name);
 
 	// 名前でメッシュを作成
 	void ChooseMesh(std::string name);
@@ -64,12 +62,15 @@ public:
 
 	// キャラクターのバウンディングボックスを取得
 	BoundingBox* GetBoundingBox();
-
 	// バウンディングボックス位置を取得
 	D3DXVECTOR3* GetPosition();
+	// メッシュを取得
+	Mesh* GetMesh();
 
 	// 当たり判定
 	bool CheckHitBB(Character* Object);
+
+
 };
 
 

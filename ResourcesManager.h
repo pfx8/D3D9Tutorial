@@ -20,16 +20,16 @@
 class ResourcesManager
 {
 private:
-	Texture m_FieldGrass = { "FieldGrass", "data/TEXTURE/field000.jpg", NULL };
-	Texture m_FieldStone = { "FieldStone", "data/TEXTURE/field001.jpg", NULL };
-	Texture m_FieldCheckered = { "FieldCheckered", "data/TEXTURE/field002.jpg", NULL};
-	Texture m_Null = { "Null", NULL, NULL };
+	TextureStruct m_FieldGrass = { "FieldGrass", "data/TEXTURE/field000.jpg", NULL };
+	TextureStruct m_FieldStone = { "FieldStone", "data/TEXTURE/field001.jpg", NULL };
+	TextureStruct m_FieldCheckered = { "FieldCheckered", "data/TEXTURE/field002.jpg", NULL};
+	TextureStruct m_Null = { "NULL", NULL, NULL };
 
 	// テクスチャリスト
 	std::map < std::string, LPDIRECT3DTEXTURE9> m_TextureList;
 
 	// テクスチャを読み込み
-	HRESULT LoadTexture(Texture* texture);
+	HRESULT LoadTexture(TextureStruct* texture);
 
 public:
 	ResourcesManager();
@@ -39,7 +39,7 @@ public:
 	void InitTextureList();
 
 	// テクスチャを取得
-	LPDIRECT3DTEXTURE9* GetTexture(std::string name);
+	LPDIRECT3DTEXTURE9* SetTexture(std::string name);
 };
 
 #endif // !_RESOURCES_MANAGER_H_

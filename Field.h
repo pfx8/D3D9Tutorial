@@ -30,7 +30,7 @@ public:
 	~Field();
 
 	// 座標を設定
-	void InitCoordinate(D3DXVECTOR3 pos);
+	void SetCoordinate(D3DXVECTOR3 pos);
 
 	// 頂点作成
 	HRESULT MakeVertex(int Width, int height);
@@ -39,10 +39,10 @@ public:
 	void Draw();
 
 	// 臨時ーーワールド変換
-	void setWorldMatrix(D3DXMATRIX& mtxWorld);
+	void SetWorldMatrix(D3DXMATRIX& mtxWorld);
 
 	// テクスチャを設定
-	void SetTexture();
+	void Field::SetTexture(LPDIRECT3DTEXTURE9* point);
 };
 
 

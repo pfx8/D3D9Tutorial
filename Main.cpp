@@ -23,9 +23,9 @@ using namespace std;
 // グローバル変数
 //
 //*****************************************************************************
-int						g_nCountFPS;						// FPSカウンタ
-LPDIRECT3D9				g_pD3D = NULL;					// Direct3Dオブジェクト
-LPDIRECT3DDEVICE9			g_pD3DDevice = NULL;				// Deviceオブジェクト(描画に必要)
+int					g_nCountFPS;						// FPSカウンタ
+LPDIRECT3D9			g_pD3D = NULL;					// Direct3Dオブジェクト
+LPDIRECT3DDEVICE9		g_pD3DDevice = NULL;				// Deviceオブジェクト(描画に必要)
 
 //////////////////////////////////////////////////////////////////////////////////
 Camera*				g_camera;					// カメラ
@@ -138,7 +138,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 	// シンー
 	g_SceneManager = new SceneManager();
-	g_SceneManager->InitScene();
+	g_SceneManager->InitScene("test");
 	g_SceneManager->LoadScene();
 	//g_SceneManager->LoadSceneFile("Scene/test.txt"); // 読み込みOK
 
@@ -351,17 +351,20 @@ HRESULT InitGameObject(void)
 {
 	// ゲーム素材を初期化
 	g_Car1 = new Character();
-	g_Car1->InitCoordinate(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	g_Car1->SetCoordinate(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	PDIRECT3DTEXTURE9* p = g_SceneManager->GetResourcesManager()->SetTexture("NULL");
+	g_Car1->GetMesh()->SetMeshTexture(p);
 	g_Car1->ChooseMesh("data/MODEL/car000.x");
 
 	g_Car2 = new Character();
-	g_Car2->InitCoordinate(D3DXVECTOR3(100.0f, 0.0f, 0.0f));
+	g_Car2->SetCoordinate(D3DXVECTOR3(100.0f, 0.0f, 0.0f));
 	g_Car2->ChooseMesh("data/MODEL/car001.x");
 
 	// 地面を初期化する
 	g_FieldStone = new Field();
-	g_FieldStone->InitCoordinate(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	g_FieldStone->SetCoordinate(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 	g_FieldStone->MakeVertex(100, 100);
+	g_FieldStone->SetTexture(g_SceneManager->GetResourcesManager()->SetTexture("FieldGrass"));
 
 	// カメラを初期化
 	g_camera = new Camera();
@@ -483,13 +486,13 @@ void Draw(HWND hwnd)
 
 		// 1.
 		// キャラクターをワールド変換
-		g_Car1->setWorldMatrix(g_mtxWorld);
+		g_Car1->SetWorldMatrix(g_mtxWorld);
 		// キャラクターを描画する
 		g_Car1->Draw();
 
 		// 2.
 		// キャラクターをワールド変換
-		g_Car2->setWorldMatrix(g_mtxWorld);
+		g_Car2->SetWorldMatrix(g_mtxWorld);
 		// キャラクターを描画する
 		g_Car2->Draw();
 
@@ -497,7 +500,7 @@ void Draw(HWND hwnd)
 		g_camera->setViewport();
 
 		// フィールドをワールド変換して描画する
-		g_FieldStone->setWorldMatrix(g_mtxWorld);
+		g_FieldStone->SetWorldMatrix(g_mtxWorld);
 		g_FieldStone->Draw();
 
 		// ビューイング変換

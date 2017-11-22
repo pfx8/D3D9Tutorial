@@ -88,12 +88,12 @@ typedef struct VERTEX_3D_NT
 }VERTEX_3D_NT;
 
 // テクスチャ構造体
-typedef struct Texture
+typedef struct TextureStruct
 {
 	const char*			Name;			// テクスチャ名前
 	const char*			Path;			// テクスチャパス
 	LPDIRECT3DTEXTURE9		TexturePoint;		// テクスチャポインタ
-}Texture;
+}TextureStruct;
 
 //*****************************************************************************
 //

@@ -7,6 +7,7 @@
 //*****************************************************************************
 #include "Field.h"
 
+#include "ResourcesManager.h"
 //*****************************************************************************
 //
 // コンストラクタ
@@ -31,6 +32,7 @@ Field::~Field()
 {
 	// ポインタ
 	SAFE_RELEASE_POINT(m_VertexBuffField);
+	SAFE_RELEASE_POINT(m_FieldTexture);
 }
 
 //*****************************************************************************
@@ -38,7 +40,7 @@ Field::~Field()
 // 座標を設定
 //
 //*****************************************************************************
-void Field::InitCoordinate(D3DXVECTOR3 pos)
+void Field::SetCoordinate(D3DXVECTOR3 pos)
 {
 	m_pos = pos;
 }
@@ -104,7 +106,7 @@ HRESULT Field::MakeVertex(int width, int height)
 // ワールド変換
 //
 //*****************************************************************************
-void Field::setWorldMatrix(D3DXMATRIX& mtxWorld)
+void Field::SetWorldMatrix(D3DXMATRIX& mtxWorld)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 	D3DXMATRIX mtxScl, mtxRot, mtxTranslate;
@@ -155,7 +157,7 @@ void Field::Draw()
 // テクスチャを設定
 //
 //*****************************************************************************
-void Field::SetTexture()
+void Field::SetTexture(LPDIRECT3DTEXTURE9* point)
 {
-	
+	m_FieldTexture = *point;
 }

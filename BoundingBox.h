@@ -19,12 +19,12 @@
 class BoundingBox
 {
 private:
-	D3DXVECTOR3 m_pos;	// バウンディングボックス座標
-	D3DXVECTOR3 m_rot;	// 回転
-	D3DXVECTOR3 m_scl;	// 拡大縮小
+	D3DXVECTOR3	m_pos;	// バウンディングボックス座標
+	D3DXVECTOR3	m_rot;	// 回転
+	D3DXVECTOR3	m_scl;	// 拡大縮小
 
-	D3DXVECTOR3 m_Size;	// バウンディングボックスサイズ
-	float		m_Alpha;// 透明度
+	D3DXVECTOR3	m_Size;	// バウンディングボックスサイズ
+	float		m_Alpha;	// 透明度
 
 	Mesh*		m_Mesh;	// メッシュ
 
@@ -42,7 +42,7 @@ public:
 	HRESULT MakeVertex();
 
 	// 臨時ーーワールド変換
-	void setWorldMatrix(D3DXMATRIX& mtxWorld);
+	void SetWorldMatrix(D3DXMATRIX& mtxWorld);
 
 	// バウンディングボックスを描画する
 	void Draw();

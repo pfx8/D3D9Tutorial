@@ -65,10 +65,10 @@ HRESULT BoundingBox::MakeVertex()
 		{ D3DXVECTOR3(-m_Size.x / 2,  m_Size.y / 2,  m_Size.z / 2), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(255.0f, 0.0f, 0.0f, m_Alpha) },
 		{ D3DXVECTOR3( m_Size.x / 2,  m_Size.y / 2,  m_Size.z / 2), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(255.0f, 0.0f, 0.0f, m_Alpha) },
 		{ D3DXVECTOR3( m_Size.x / 2,  m_Size.y / 2, -m_Size.z / 2), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(255.0f, 0.0f, 0.0f, m_Alpha) },
-		{ D3DXVECTOR3(-m_Size.x / 2,  0,            -m_Size.z / 2), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(255.0f, 0.0f, 0.0f, m_Alpha) },
-		{ D3DXVECTOR3(-m_Size.x / 2,  0,             m_Size.z / 2), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(255.0f, 0.0f, 0.0f, m_Alpha) },
-		{ D3DXVECTOR3( m_Size.x / 2,  0,             m_Size.z / 2), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(255.0f, 0.0f, 0.0f, m_Alpha) },
-		{ D3DXVECTOR3( m_Size.x / 2,  0,            -m_Size.z / 2), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(255.0f, 0.0f, 0.0f, m_Alpha) }
+		{ D3DXVECTOR3(-m_Size.x / 2,  0,           -m_Size.z / 2), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(255.0f, 0.0f, 0.0f, m_Alpha) },
+		{ D3DXVECTOR3(-m_Size.x / 2,  0,            m_Size.z / 2), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(255.0f, 0.0f, 0.0f, m_Alpha) },
+		{ D3DXVECTOR3( m_Size.x / 2,  0,            m_Size.z / 2), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(255.0f, 0.0f, 0.0f, m_Alpha) },
+		{ D3DXVECTOR3( m_Size.x / 2,  0,           -m_Size.z / 2), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(255.0f, 0.0f, 0.0f, m_Alpha) }
 	};
 
 	// 頂点バッファポインタ作成
@@ -148,7 +148,7 @@ void BoundingBox::InitBox(int width, int height, int depth, float alpha)
 // ワールド変換
 //
 //*****************************************************************************
-void BoundingBox::setWorldMatrix(D3DXMATRIX& mtxWorld)
+void BoundingBox::SetWorldMatrix(D3DXMATRIX& mtxWorld)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 	D3DXMATRIX mtxScl, mtxRot, mtxTranslate;
