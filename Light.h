@@ -17,14 +17,15 @@
 //*****************************************************************************
 class Light
 {
-public:
-	Light();
-	Light(LightType type);
-	~Light();
-
-	void ChangeLight(LightType type);
-
 private:
+	//LightType		m_type;	// 光タイプ
+
+public:
+	Light();				// コンストラクタ
+	~Light();				// デストラクタ
+
+	void Update();					// 光更新
+	void ChangeLight(LightType type);	// チェンジ光
 
 };
 #endif // !_LIGHT_H_

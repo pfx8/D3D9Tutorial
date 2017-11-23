@@ -10,9 +10,12 @@
 
 #include "Engine.h"
 
+#include <map>
+
 #include "Mesh.h"
 #include "DebugMessage.h"
 #include "BoundingBox.h"
+
 
 //*****************************************************************************
 //
@@ -24,6 +27,7 @@ class Character
 private:
 	// 固定属性
 	D3DXVECTOR3		m_pos;		// 位置
+	D3DXVECTOR3		m_Speed;		// スピード
 	D3DXVECTOR3		m_rot;		// 回転
 	D3DXVECTOR3		m_scl;		// 拡大縮小
 
@@ -33,44 +37,42 @@ private:
 
 	std::string		m_name;			// キャラクターの名前、これによってメッシュとテクスチャを探す
 
-	float			m_Speed;		
+	
+	std::map<std::string, void*>m_MemberList;// プライベートメンバーリスト
+	void InitMemberList();// プライベートメンバーリスト初期化
 public:
 	Character();
 	~Character();
 
 	// 座標を設定
-	void SetCoordinate(D3DXVECTOR3 pos);
+	void InitCharacter(D3DXVECTOR3 pos, PDIRECT3DTEXTURE9* texturePoint, std::string meshPath);
 	// 臨時ーーワールド変換
 	void SetWorldMatrix(D3DXMATRIX& mtxWorld);
-	// キャラクターの名前を決める
-	void SetName(std::string name);
 
 	// 座標をメッセージに渡して、画面に描画する
 	void PosToMessageAndMessageDraw(int row);
 
-	// 名前でメッシュを作成
-	void ChooseMesh(std::string name);
-
 	// キャラクターの描画
 	void Draw();
 
-	// キャラクター移動
+	//  臨時ーーキャラクター移動
 	void Move();
 
 	// キャラクター更新
 	void Update();
-
-	// キャラクターのバウンディングボックスを取得
-	BoundingBox* GetBoundingBox();
-	// バウンディングボックス位置を取得
-	D3DXVECTOR3* GetPosition();
 	// メッシュを取得
 	Mesh* GetMesh();
 
 	// 当たり判定
 	bool CheckHitBB(Character* Object);
 
-
+	// 取得
+	// キャラクターのバウンディングボックスを取得
+	BoundingBox* GetBoundingBox();
+	// キャラクター位置を取得
+	D3DXVECTOR3* GetPosition();
+	// プライベートメンバーを取得
+	auto* GetMember(std::string MemberName);
 };
 
 

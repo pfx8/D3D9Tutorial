@@ -28,15 +28,7 @@ LPDIRECT3D9			g_pD3D = NULL;					// Direct3Dオブジェクト
 LPDIRECT3DDEVICE9		g_pD3DDevice = NULL;				// Deviceオブジェクト(描画に必要)
 
 //////////////////////////////////////////////////////////////////////////////////
-Camera*				g_camera;					// カメラ
-Light*				g_light;					// ライト
-Character*			g_Car1;					// 車1
-Character*			g_Car2;					// 車２
-Field*				g_FieldStone;				// 石のフィールド
 Console*				g_Console;				// コンソール
-
-D3DXMATRIX			g_mtxWorld;				// ワールドマトリックス
-
 SceneManager*			g_SceneManager;			// シンー管理？？？
 // 臨時
 
@@ -49,7 +41,7 @@ SceneManager*			g_SceneManager;			// シンー管理？？？
 //*****************************************************************************
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HRESULT InitDiretX(HINSTANCE hInstance, HWND hWnd, BOOL bWindow);
-HRESULT InitGameObject(void);
+
 void	Updata(void);
 void	Draw(HWND hwnd);
 void	Release(void);
@@ -139,9 +131,6 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	// シンー
 	g_SceneManager = new SceneManager();
 	g_SceneManager->InitScene();
-
-	// ゲーム素材を初期化する
-	InitGameObject();
 
 	//ヴインドウを中心に移動
 	RECT rect;
@@ -342,65 +331,6 @@ HRESULT InitDiretX(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 //*****************************************************************************
 //
-// 初期化処理
-//
-//*****************************************************************************
-HRESULT InitGameObject(void)
-{
-	// ゲーム素材を初期化
-	g_Car1 = new Character();
-	g_Car1->SetCoordinate(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-	PDIRECT3DTEXTURE9* p = g_SceneManager->GetResourcesManager()->SetTexture("NULL");
-	g_Car1->GetMesh()->SetMeshTexture(p);
-	g_Car1->ChooseMesh("data/MODEL/car000.x");
-
-	g_Car2 = new Character();
-	g_Car2->SetCoordinate(D3DXVECTOR3(100.0f, 0.0f, 0.0f));
-	g_Car2->ChooseMesh("data/MODEL/car001.x");
-
-	// 地面を初期化する
-	g_FieldStone = new Field();
-	g_FieldStone->SetCoordinate(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-	g_FieldStone->MakeVertex(100, 100);
-	g_FieldStone->SetTexture(g_SceneManager->GetResourcesManager()->SetTexture("FieldGrass"));
-
-	// カメラを初期化
-	g_camera = new Camera();
-	g_camera->InitCamera(D3DXVECTOR3(0.0f, 150.0f, -200.0f),	// Eye
-		D3DXVECTOR3(0.0f, 0.0f, 0.0f),			// At
-		D3DXVECTOR3(0.0f, 1.0f, 0.0f),			// Up
-		*g_Car1->GetPosition());				// 注視点のPos
-
-	// ライトを初期化
-	g_light = new Light(LT_PointLight);
-
-	// レンダーステートパラメータの設定
-	g_pD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);				// 裏面をカリング
-	g_pD3DDevice->SetRenderState(D3DRS_ZENABLE, TRUE);						// Zバッファを使用
-	g_pD3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);				// αブレンドを行う
-	g_pD3DDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);		// αソースカラーの指定
-	g_pD3DDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);	// αデスティネーションカラーの指定
-
-	// サンプラーステートパラメータの設定
-	g_pD3DDevice->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);	// テクスチャアドレッシング方法(U値)を設定
-	g_pD3DDevice->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);	// テクスチャアドレッシング方法(V値)を設定
-	g_pD3DDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);	// テクスチャ縮小フィルタモードを設定
-	g_pD3DDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);	// テクスチャ拡大フィルタモードを設定
-
-	// テクスチャステージステートの設定
-	g_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);	// アルファブレンディング処理
-	g_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);	// 最初のアルファ引数
-	g_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_CURRENT);	// ２番目のアルファ引数
-
-
-	// 臨時
-
-
-	return S_OK;
-}
-
-//*****************************************************************************
-//
 // 更新処理
 //
 //*****************************************************************************
@@ -409,60 +339,8 @@ void Updata(void)
 	// 入力更新
 	UpdateInput();
 
-	// 塗りつぶしモード
-	if (GetKeyboardPress(DIK_1))			// key 1
-	{
-		// ワイヤフレームを塗りつぶす
-		g_pD3DDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
-	}
-	if (GetKeyboardPress(DIK_2))			// key 2
-	{
-		// 面を塗りつぶす
-		g_pD3DDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
-	}
-	if (GetKeyboardPress(DIK_3))			// key 3
-	{
-		// バウンディングボックスを表示
-		
-	}
-	if (GetKeyboardPress(DIK_4))			// key 4
-	{
-		// バウンディングボックスを消す
-		
-	}
-
-
-	// 入力したキーによって、ライトの種類を変わる
-	if (GetKeyboardPress(DIK_7))			// key 7
-	{
-		// ポインター光源
-		g_light->ChangeLight(LT_PointLight);
-	}
-	if (GetKeyboardPress(DIK_8))			// key 8
-	{
-		// スポットライト光源
-		g_light->ChangeLight(LT_DirectionalLight);
-	}
-	if (GetKeyboardPress(DIK_9))			// key 9
-	{
-		// ディレクショナル光源
-		g_light->ChangeLight(LT_SpotLight);
-	}
-
-	// キャラクター移動
-	g_Car1->Update();
-
-	// カメラ視点移動
-	g_camera->Update();
-
-	// 当たり判定
-	if (g_Car1->CheckHitBB(g_Car2))
-	{
-		// 移動
-		g_Car2->Move();
-	}
-
-	
+	// シンーを更新する
+	g_SceneManager->Update();
 }
 
 //*****************************************************************************
@@ -472,53 +350,8 @@ void Updata(void)
 //*****************************************************************************
 void Draw(HWND hwnd)
 {
-	// バックバッファ＆Ｚバッファのクリア
-	g_pD3DDevice->Clear(0, NULL, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER), D3DCOLOR_RGBA(0, 0, 0, 1), 1.0f, 0);
-
-	// Direct3Dによる描画の開始
-	if (SUCCEEDED(g_pD3DDevice->BeginScene()))
-	{
-
-		//// レンダリングデフォルトモード
-		//g_pD3DDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD); // 省略可
-
-		// 1.
-		// キャラクターをワールド変換
-		g_Car1->SetWorldMatrix(g_mtxWorld);
-		// キャラクターを描画する
-		g_Car1->Draw();
-
-		// 2.
-		// キャラクターをワールド変換
-		g_Car2->SetWorldMatrix(g_mtxWorld);
-		// キャラクターを描画する
-		g_Car2->Draw();
-
-		// ビューポートを設定
-		g_camera->setViewport();
-
-		// フィールドをワールド変換して描画する
-		g_FieldStone->SetWorldMatrix(g_mtxWorld);
-		g_FieldStone->Draw();
-
-		// ビューイング変換
-		g_camera->setViewMatrix();
-
-		// プロジェクション変換
-		g_camera->setProjMatrix();
-
-		// キャラクターの座標インフォメーション、括弧の中はなん行目
-		g_Car1->PosToMessageAndMessageDraw(0);
-		g_Car2->PosToMessageAndMessageDraw(1);
-
-		// カメラの座標インフォメーション
-		//g_camera->PosToMessageAndMessageDraw(2);
-
-		g_pD3DDevice->EndScene();
-	}
-
-	// バックバッファとフロントバッファの入れ替え
-	g_pD3DDevice->Present(NULL, NULL, NULL, NULL);
+	// シンーをドロー
+	g_SceneManager->Draw();
 }
 
 //*****************************************************************************
@@ -532,18 +365,12 @@ void Release(void)
 	SAFE_RELEASE_POINT(g_pD3D);
 	SAFE_RELEASE_POINT(g_pD3DDevice);
 
-	// クラスポインタ
-	SAFE_RELEASE_CLASS_POINT(g_camera);
-	SAFE_RELEASE_CLASS_POINT(g_light);
-	SAFE_RELEASE_CLASS_POINT(g_Car1);
-	SAFE_RELEASE_CLASS_POINT(g_Car2);
-	SAFE_RELEASE_CLASS_POINT(g_FieldStone);
-
 	// 入力処理の終了処理
 	UninitInput();
 
 	// コンソールの終了処理
-	FreeConsole();
+	SAFE_RELEASE_CLASS_POINT(g_Console);
+	SAFE_RELEASE_CLASS_POINT(g_SceneManager);
 }
 
 //*****************************************************************************

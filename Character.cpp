@@ -20,12 +20,31 @@ Character::Character()
 	
 	m_name = " ";
 
-	m_Speed = 1.5f;
+	m_Speed = D3DXVECTOR3(1.5f, 0.0f, 0.0f);
 
 	// クラスポインタ
 	m_Mesh = new Mesh();
 	m_Message = new DebugMessage();
 	m_BoundingBox = new BoundingBox();
+
+	InitMemberList();
+}
+
+//*****************************************************************************
+//
+// プライベートメンバーリスト初期化
+//
+//*****************************************************************************
+void Character::InitMemberList()
+{
+	m_MemberList["pos"] = &m_pos;
+	m_MemberList["rot"] = &m_rot;
+	m_MemberList["scl"] = &m_scl;
+	m_MemberList["speed"] = &m_Speed;
+	m_MemberList["mesh"] = &m_Mesh;
+	m_MemberList["message"] = &m_Message;
+	m_MemberList["boundingBox"] = &m_BoundingBox;
+	m_MemberList["name"] = &m_name;
 }
 
 //*****************************************************************************
@@ -85,37 +104,21 @@ void Character::PosToMessageAndMessageDraw(int row)
 // 座標を設定
 //
 //*****************************************************************************
-void Character::SetCoordinate(D3DXVECTOR3 pos)
+void Character::InitCharacter(D3DXVECTOR3 pos, PDIRECT3DTEXTURE9* texturePoint, std::string meshPath)
 {
+	// 位置
 	m_pos = pos;
 
 	// バウンディングボックスを初期化する
 	m_BoundingBox->InitBox(20, 30, 40, 0.4f);
+
+	// メッシュを決める
+	m_Mesh->SetMesh(meshPath);
 	
+	// テクスチャを決める
+	m_Mesh->SetMeshTexture(texturePoint);
+
 	// DEBUG
-}
-
-//*****************************************************************************
-//
-// キャラクターの名前を決める
-//
-//*****************************************************************************
-void Character::SetName(std::string name)
-{
-	m_name = name;
-
-	// 名前でメッシュとテクスチャを読み込み
-	ChooseMesh(m_name);
-}
-
-//*****************************************************************************
-//
-// 名前でメッシュを作成
-//
-//*****************************************************************************
-void Character::ChooseMesh(std::string name)
-{
-	m_Mesh->SetMesh(name);
 }
 
 //*****************************************************************************
@@ -139,7 +142,7 @@ void Character::Draw()
 //*****************************************************************************
 void Character::Move()
 {
-	m_pos.x -= m_Speed;
+	m_pos.x -= m_Speed.x;
 }
 
 //*****************************************************************************
@@ -151,19 +154,19 @@ void Character::Update()
 {
 	if (GetKeyboardPress(DIK_A))			// key A
 	{
-		m_pos.x -= m_Speed;
+		m_pos.x -= m_Speed.x;
 	}
 	if (GetKeyboardPress(DIK_D))			// key D
 	{
-		m_pos.x += m_Speed;
+		m_pos.x += m_Speed.x;
 	}
 	if (GetKeyboardPress(DIK_W))			// key W
 	{
-		m_pos.z += m_Speed;
+		m_pos.z += m_Speed.x;
 	}
 	if (GetKeyboardPress(DIK_S))			// key S
 	{
-		m_pos.z -= m_Speed;
+		m_pos.z -= m_Speed.x;
 	}
 }
 
@@ -179,7 +182,7 @@ BoundingBox* Character::GetBoundingBox()
 
 //*****************************************************************************
 //
-// バウンディングボックス位置を取得
+// キャラクター位置を取得
 //
 //*****************************************************************************
 D3DXVECTOR3* Character::GetPosition()
@@ -222,4 +225,17 @@ bool Character::CheckHitBB(Character* Object)
 Mesh* Character::GetMesh()
 {
 	return m_Mesh;
+}
+
+//*****************************************************************************
+//
+// プライベートメンバーを取得
+//
+//*****************************************************************************
+auto* Character::GetMember(std::string MemberName)
+{
+	if (m_MemberList.find(MemberName) != m_MemberList.end())
+	{
+		return &m_MemberList[MemberName];
+	}
 }

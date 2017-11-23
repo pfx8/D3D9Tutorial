@@ -40,9 +40,16 @@ Field::~Field()
 // 座標を設定
 //
 //*****************************************************************************
-void Field::SetCoordinate(D3DXVECTOR3 pos)
+void Field::InitField(D3DXVECTOR3 pos, D3DXVECTOR2 size, LPDIRECT3DTEXTURE9* texturePoint)
 {
+	// 位置
 	m_pos = pos;
+	
+	// 頂点作成
+	MakeVertex(size.x, size.y);
+
+	// テクスチャ
+	SetTexture(texturePoint);
 }
 
 //*****************************************************************************

@@ -18,8 +18,22 @@ using namespace std;
 //*****************************************************************************
 SceneManager::SceneManager()
 {
-	// クラスポインタ
-	m_ResourcesManager = new ResourcesManager();
+	// リソース
+	m_resourcesManager = new ResourcesManager();
+	
+	// フィールド
+	m_FieldStone = new Field();
+	
+	// 車
+	m_car1 = new Character();
+	m_car2 = new Character();
+	
+
+	// ライト
+	m_light = new Light();
+
+	// カメラ
+	m_camera = new Camera();
 }
 
 //*****************************************************************************
@@ -30,32 +44,98 @@ SceneManager::SceneManager()
 SceneManager::~SceneManager()
 {
 	// クラスポインタ
-	SAFE_RELEASE_CLASS_POINT(m_ResourcesManager);
+	// リソース
+	SAFE_RELEASE_CLASS_POINT(m_resourcesManager);
+
+	// フィールド
+	SAFE_RELEASE_CLASS_POINT(m_FieldStone);
+
+	// 車
+	SAFE_RELEASE_CLASS_POINT(m_car1);
+	SAFE_RELEASE_CLASS_POINT(m_car2);
+
+	// ライト
+	SAFE_RELEASE_CLASS_POINT(m_light);
+
+	// カメラ
+	SAFE_RELEASE_CLASS_POINT(m_camera);
 }
 
 //*****************************************************************************
 //
 // シンーの初期化
 //
+// up:blenderから読み込む予定
+//
 //*****************************************************************************
 void SceneManager::InitScene()
 {
-	// コンソールにメッセージを出す
+	// コンソール
+	ConsoleMessage();
+
+	// シンーによって資源を読み込む
+	LoadScene();
+
+	// フィールド
+	m_FieldStone->InitField(
+		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+		D3DXVECTOR2(100, 100),
+		GetResourcesManager()->SetTexture("FieldGrass"));
+
+	// 車
+	/*for (int count = 0; count < m_carNum; count++)
+	{
+		m_car[count]->InitCharacter(
+			D3DXVECTOR3(0.0f + count * 50, 0.0f, 0.0f),
+			GetResourcesManager()->SetTexture("NULL"),
+			"data/MODEL/car000.x");
+	}*/
+	m_car1->InitCharacter(
+		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+		GetResourcesManager()->SetTexture("NULL"),
+		"data/MODEL/car000.x");
+	m_car2->InitCharacter(
+		D3DXVECTOR3(0.0f + 50, 0.0f, 0.0f),
+		GetResourcesManager()->SetTexture("NULL"),
+		"data/MODEL/car001.x");
+
+	// ライト
+	// 無し
+
+	// カメラを初期化
+	m_camera->InitCamera(
+		D3DXVECTOR3(0.0f, 150.0f, -200.0f),	// Eye
+		D3DXVECTOR3(0.0f, 0.0f, 0.0f),		// At
+		D3DXVECTOR3(0.0f, 1.0f, 0.0f),		// Up
+		*m_car1->GetPosition());			// 注視点のPos
+
+}
+
+//*****************************************************************************
+//
+// コンソールに表示するメッセージ
+//
+// 修正为可以新建场景，以及场景list
+//
+//*****************************************************************************
+void SceneManager::ConsoleMessage()
+{
+	// シンーを選択
 	cout << "シンーを選択してください:" << endl;
 	cout << "-> a.d3d" << endl << "-> b.shaderTest" << endl;
 
-	// 選択文字を入れる
-	char temp = ' ';
-
-	cin >> temp;
+	// 文字を入力
+	//char temp = ' ';
+	char temp = 'a';
+	//cin >> temp;
 
 	// 選択によって、シンーを決める
 	switch (temp)
 	{
 	case 'a':
-	case 'A':m_SceneName = "D3DTutorial"; break;
+	case 'A':m_sceneName = "D3DTutorial"; break;
 	case 'b':
-	case 'B':m_SceneName = "shaderTest"; break;
+	case 'B':m_sceneName = "shaderTest"; break;
 	default:
 		break;
 	}
@@ -64,13 +144,8 @@ void SceneManager::InitScene()
 
 	// コンソールにシンーの名前を出す
 	cout << "///////////////////////////////" << endl;
-	cout << "// Scene : " << m_SceneName << endl;
+	cout << "// Scene : " << m_sceneName << endl;
 	cout << "///////////////////////////////" << endl << endl;
-
-	// シンーによって資源を読み込む
-	LoadScene();
-
-	// 
 }
 
 //*****************************************************************************
@@ -78,9 +153,146 @@ void SceneManager::InitScene()
 // シンーの更新
 //
 //*****************************************************************************
-void SceneManager::UpdateScene()
+void SceneManager::Update()
 {
+	// レンダリング状態更新
+	ChangeRenderState();
 
+	// プレーヤー操作更新
+	UpdatePlayer();
+
+	// フィールド更新
+	// 無し
+
+	// ライト更新
+	m_light->Update();
+
+	// カメラ視点移動
+	m_camera->Update();
+
+	// 当たり判定
+	if (m_car1->CheckHitBB(m_car2))
+	{
+		// 移動
+		m_car2->Move();
+	}
+}
+
+//*****************************************************************************
+//
+// レンダリング状態更新
+//
+//*****************************************************************************
+void SceneManager::ChangeRenderState()
+{
+	// 塗りつぶしモード
+	if (GetKeyboardPress(DIK_1))			// key 1
+	{
+		// ワイヤフレームを塗りつぶす
+		GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+	}
+	if (GetKeyboardPress(DIK_2))			// key 2
+	{
+		// 面を塗りつぶす
+		GetDevice()->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
+	}
+	if (GetKeyboardPress(DIK_3))			// key 3
+	{
+		// バウンディングボックスを表示
+
+	}
+	if (GetKeyboardPress(DIK_4))			// key 4
+	{
+		// バウンディングボックスを消す
+
+	}
+}
+
+//*****************************************************************************
+//
+// プレーヤー操作更新
+//
+//*****************************************************************************
+void SceneManager::UpdatePlayer()
+{
+	D3DXVECTOR3 tempPos = *m_car1->GetMember("pos");
+	//D3DXVECTOR3* tempSpeed = m_car[1]->GetMember("speed");
+
+	//if (GetKeyboardPress(DIK_A))			// key A
+	//{
+	//	tempPos->x -= tempSpeed->x;
+	//}
+	//if (GetKeyboardPress(DIK_D))			// key D
+	//{
+	//	tempPos->x += tempSpeed->x;
+	//}
+	//if (GetKeyboardPress(DIK_W))			// key W
+	//{
+	//	tempPos->z += tempSpeed->x;
+	//}
+	//if (GetKeyboardPress(DIK_S))			// key S
+	//{
+	//	tempPos->z -= tempSpeed->x;
+	//}
+}
+
+//*****************************************************************************
+//
+// シンーの描画
+//
+//*****************************************************************************
+void SceneManager::Draw()
+{
+	// レンダリング状態を設定
+	SetState();
+
+	// バックバッファ＆Ｚバッファのクリア
+	GetDevice()->Clear(0, NULL, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER), D3DCOLOR_RGBA(0, 0, 0, 1), 1.0f, 0);
+
+	// Direct3Dによる描画の開始
+	if (SUCCEEDED(GetDevice()->BeginScene()))
+	{
+
+		//// レンダリングデフォルトモード
+		//GetDevice()->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD); // 省略可
+
+		// 1.
+		// キャラクターをワールド変換
+		m_car1->SetWorldMatrix(m_mtxWorld);
+		// キャラクターを描画する
+		m_car1->Draw();
+
+		// 2.
+		// キャラクターをワールド変換
+		m_car2->SetWorldMatrix(m_mtxWorld);
+		// キャラクターを描画する
+		m_car2->Draw();
+
+		// ビューポートを設定
+		m_camera->setViewport();
+
+		// フィールドをワールド変換して描画する
+		m_FieldStone->SetWorldMatrix(m_mtxWorld);
+		m_FieldStone->Draw();
+
+		// ビューイング変換
+		m_camera->setViewMatrix();
+
+		// プロジェクション変換
+		m_camera->setProjMatrix();
+
+		// キャラクターの座標インフォメーション、括弧の中はなん行目
+		m_car1->PosToMessageAndMessageDraw(0);
+		m_car2->PosToMessageAndMessageDraw(1);
+
+		// カメラの座標インフォメーション
+		//g_camera->PosToMessageAndMessageDraw(2);
+
+		GetDevice()->EndScene();
+	}
+
+	// バックバッファとフロントバッファの入れ替え
+	GetDevice()->Present(NULL, NULL, NULL, NULL);
 }
 
 //*****************************************************************************
@@ -138,7 +350,7 @@ HRESULT SceneManager::LoadSceneFile(string name)
 //*****************************************************************************
 void SceneManager::LoadScene()
 {
-	m_ResourcesManager->InitTextureList();
+	m_resourcesManager->InitTextureList();
 }
 
 //*****************************************************************************
@@ -148,15 +360,31 @@ void SceneManager::LoadScene()
 //*****************************************************************************
 ResourcesManager* SceneManager::GetResourcesManager()
 {
-	return m_ResourcesManager;
+	return m_resourcesManager;
 }
 
 //*****************************************************************************
 //
-// リソースを初期化
+// レンダリング状態を設定
 //
 //*****************************************************************************
-void InitResourcesManager()
+void SceneManager::SetState()
 {
+	// レンダーステートパラメータの設定
+	GetDevice()->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);			// 裏面をカリング
+	GetDevice()->SetRenderState(D3DRS_ZENABLE, TRUE);					// Zバッファを使用
+	GetDevice()->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);			// αブレンドを行う
+	GetDevice()->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);		// αソースカラーの指定
+	GetDevice()->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);	// αデスティネーションカラーの指定
 
+	// サンプラーステートパラメータの設定
+	GetDevice()->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);	// テクスチャアドレッシング方法(U値)を設定
+	GetDevice()->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);	// テクスチャアドレッシング方法(V値)を設定
+	GetDevice()->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);	// テクスチャ縮小フィルタモードを設定
+	GetDevice()->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);	// テクスチャ拡大フィルタモードを設定
+
+	// テクスチャステージステートの設定
+	GetDevice()->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);	// アルファブレンディング処理
+	GetDevice()->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);	// 最初のアルファ引数
+	GetDevice()->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_CURRENT);	// ２番目のアルファ引数
 }

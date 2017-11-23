@@ -60,14 +60,14 @@ HRESULT Mesh::ReadXFile()
 
 	// Xファイルの読み込み
 	if (FAILED(D3DXLoadMeshFromX(
-		m_path.data(),							// モデルのファイル名
-		D3DXMESH_SYSTEMMEM,						// メッシュのメモリ確保オプション
-		pDevice,								// デバイスへのポインタ
-		NULL,									// 隣接性データを含むバッファへのポインタ
+		m_path.data(),					// モデルのファイル名
+		D3DXMESH_SYSTEMMEM,				// メッシュのメモリ確保オプション
+		pDevice,							// デバイスへのポインタ
+		NULL,							// 隣接性データを含むバッファへのポインタ
 		m_material->GetMaterialPoint(),
-		NULL,									// エフェクトインスタンスを含むバッファへのポインタ
+		NULL,							// エフェクトインスタンスを含むバッファへのポインタ
 		m_material->GetMterialNumber(),
-		&m_mesh)))								// メッシュへのポインタ
+		&m_mesh)))						// メッシュへのポインタ
 	{
 		return E_FAIL;
 	}
