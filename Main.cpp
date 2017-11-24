@@ -133,9 +133,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		return E_FAIL;
 	}
 
-	// シンー
+	// シンーマネジメント
 	g_SceneManager = new SceneManager();
-	g_SceneManager->InitScene();
 
 	//ヴインドウを中心に移動
 	RECT rect;

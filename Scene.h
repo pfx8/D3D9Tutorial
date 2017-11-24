@@ -26,41 +26,24 @@
 class Scene
 {
 private:
-	ResourcesManager*	m_resourcesManager;	// リソースマネジメント
 	std::string		m_sceneName;	// シンーの名前
-	D3DXMATRIX		m_mtxWorld;	// ワールドマトリックス
-
-	Camera*			m_camera;	// カメラ
-	Light*			m_light;	// ライト
-
-	// ゲーム素材
-	Field*			m_FieldStone;	// フィールド
-	Character*		m_car1;		// 車, プレーヤー
-	Character*		m_car2;		// 車
+	ResourcesManager*	m_resourcesManager;	// リソースマネジメント
 
 public:
+	D3DXMATRIX		m_mtxWorld;			// ワールドマトリックス
+
 	Scene();
 	~Scene();
 
-	// シンーを初期化(ゲーム素材を初期化する)
-	void InitScene(std::string name);
-
-	// シンーの更新
-	void Update();
-
-	// シンーの描画
-	void Draw();
-
-	// リソースマネジメントを取得
-	ResourcesManager* GetResourcesManager();
+	virtual void Update() {};
+	virtual void Draw() {};
 
 	// ファイル(blender)からシンーの資源を読み込み
-	// 今はリソースすべてを読み込み
-	void LoadScene();	// 臨時
 	HRESULT LoadSceneFile(std::string name);		// 未完成
 
-	void UpdatePlayer(D3DXVECTOR3* Pos, D3DXVECTOR3* Speed);	// プレーヤー操作更新
-	std::string GetSceneName();	// シーんの名前を取得
+	ResourcesManager* GetResourcesManager();	//リソースマネジメントを取得
+	void SetSceneName(std::string name);	// シーンの名前を設定
+	std::string GetSceneName();	// シーンの名前を設定
 };
 
 #endif // !_SCENE_H_

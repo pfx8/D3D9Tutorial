@@ -36,7 +36,7 @@ public:
 	~ResourcesManager();
 
 	// テクスチャリストを初期化する
-	void InitTextureList();
+	void InitTexture();
 
 	// テクスチャを取得
 	LPDIRECT3DTEXTURE9* SetTexture(std::string name);

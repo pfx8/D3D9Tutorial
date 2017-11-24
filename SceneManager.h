@@ -12,7 +12,7 @@
 
 #include <map>
 
-#include "Scene.h"
+#include "Scene00.h"
 
 //*****************************************************************************
 //
@@ -26,11 +26,11 @@ private:
 	void ConsoleMessage();		// コンソールに表示するメッセージ
 	void ChangeRenderState();	// レンダリング状態更新
 
+	
 public:
 	SceneManager();
 	~SceneManager();
 
-	void InitScene();		// シンーを初期化(ゲーム素材を初期化する)
 	void Update();		// シーンの更新
 	void Draw();			// シンーの描画
 	void SetState();		// レンダリング状態を設定

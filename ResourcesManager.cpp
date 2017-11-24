@@ -32,7 +32,7 @@ ResourcesManager::~ResourcesManager()
 // テクスチャリストを初期化する
 //
 //*****************************************************************************
-void ResourcesManager::InitTextureList()
+void ResourcesManager::InitTexture()
 {
 	// コンソールにメッセージを出す
 	std::cout << "Loading Texture:" << std::endl;
