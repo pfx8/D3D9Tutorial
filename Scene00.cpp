@@ -18,9 +18,6 @@ using namespace std;
 //*****************************************************************************
 Scene00::Scene00()
 {	
-	// 名前をつける
-	SetSceneName("D3DTutorial");
-
 	// フィールド
 	m_FieldStone = new Field();
 	ResourcesManager* p1 = GetResourcesManager();
@@ -53,6 +50,13 @@ Scene00::Scene00()
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f),		// At
 		D3DXVECTOR3(0.0f, 1.0f, 0.0f),		// Up
 		*m_car1->GetPosition());			// 注視点のPos
+
+	// 名前をつける
+	SetSceneName("D3DTutorial");
+
+	Scene::ConsoleMessage(GetSceneName());
+
+	std::cout << "BoundingBox: " << std::boolalpha << m_car1->m_BoundingBoxON << std::endl;
 }
 
 //*****************************************************************************
@@ -106,6 +110,7 @@ void Scene00::UpdatePlayer(D3DXVECTOR3* Pos, D3DXVECTOR3* Speed)
 	{
 		m_car1->m_BoundingBoxON = !m_car1->m_BoundingBoxON;
 		m_car2->m_BoundingBoxON = !m_car2->m_BoundingBoxON;
+		std::cout << "BoundingBox: " << std::boolalpha << m_car1->m_BoundingBoxON << std::endl;
 	}
 }
 

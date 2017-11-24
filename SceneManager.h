@@ -23,9 +23,8 @@ class SceneManager
 {
 private:
 	Scene*	m_sceneD3D;		// シーン
-	void ConsoleMessage();		// コンソールに表示するメッセージ
-	void ChangeRenderState();	// レンダリング状態更新
 
+	void ChangeRenderState();	// レンダリング状態更新
 	
 public:
 	SceneManager();

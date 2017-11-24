@@ -50,6 +50,9 @@ public:
 	// 臨時ーーワールド変換
 	void SetWorldMatrix(D3DXMATRIX& mtxWorld);
 
+	void SetName(std::string name) { m_name = name; };
+	std::string GetName() { return m_name; };
+
 	// 座標をメッセージに渡して、画面に描画する
 	void PosToMessageAndMessageDraw(int row);
 

@@ -39,15 +39,6 @@ Character::Character()
 //*****************************************************************************
 void Character::InitMemberList()
 {
-	/*m_MemberList->at("pos") = &m_pos;
-	m_MemberList->at("rot") = &m_rot;
-	m_MemberList->at("scl") = &m_scl;
-	m_MemberList->at("speed") = &m_Speed;
-	m_MemberList->at("mesh") = &m_Mesh;
-	m_MemberList->at("message") = &m_Message;
-	m_MemberList->at("boundingBox") = &m_BoundingBox;
-	m_MemberList->at("name") = &m_name;*/
-
 	m_MemberList["pos"] = &m_pos;
 	m_MemberList["rot"] = &m_rot;
 	m_MemberList["scl"] = &m_scl;

@@ -44,6 +44,8 @@ public:
 	ResourcesManager* GetResourcesManager();	//リソースマネジメントを取得
 	void SetSceneName(std::string name);	// シーンの名前を設定
 	std::string GetSceneName();	// シーンの名前を設定
+
+	void ConsoleMessage(std::string sceneName);		// コンソールに表示するメッセージ
 };
 
 #endif // !_SCENE_H_
