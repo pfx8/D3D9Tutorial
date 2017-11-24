@@ -36,13 +36,14 @@ private:
 	BoundingBox*		m_BoundingBox;	// バウンディングボックス
 
 	std::string		m_name;			// キャラクターの名前、これによってメッシュとテクスチャを探す
-
 	
-	std::map<std::string, void*>m_MemberList;// プライベートメンバーリスト
+	std::map<std::string, void*> m_MemberList;// プライベートメンバーリスト
 	void InitMemberList();// プライベートメンバーリスト初期化
 public:
 	Character();
 	~Character();
+
+	bool		m_BoundingBoxON;	// バウンディングボックスを描画する
 
 	// 座標を設定
 	void InitCharacter(D3DXVECTOR3 pos, PDIRECT3DTEXTURE9* texturePoint, std::string meshPath);
@@ -71,9 +72,37 @@ public:
 	BoundingBox* GetBoundingBox();
 	// キャラクター位置を取得
 	D3DXVECTOR3* GetPosition();
+
+
+	//*****************************************************************************
+	//
 	// プライベートメンバーを取得
-	auto* GetMember(std::string MemberName);
+	//
+	//*****************************************************************************
+	/*template <typename T> T* GetMember(std::string MemberName)
+	{
+		if (m_MemberList.find(MemberName) != m_MemberList.end())
+		{
+			return dynamic_cast<T*> m_MemberList[MemberName];
+		}
+	};*/
+
+	/*auto* GetMember(std::string MemberName)
+	{
+		if (m_MemberList->find(MemberName) != m_MemberList->end())
+		{
+			return m_MemberList->at(MemberName);
+		}
+	};*/
+
+	auto* GetMember(std::string MemberName)
+	{
+		if (m_MemberList.find(MemberName) != m_MemberList.end())
+		{
+			return m_MemberList[MemberName];
+		}
+	};
 };
 
-
 #endif // !_CHARACTER_H_
+

@@ -27,7 +27,9 @@ Character::Character()
 	m_Message = new DebugMessage();
 	m_BoundingBox = new BoundingBox();
 
-	InitMemberList();
+	InitMemberList();	// メンバーリストを作る
+
+	m_BoundingBoxON = true;	// バウンディングボックスを描画する
 }
 
 //*****************************************************************************
@@ -37,6 +39,15 @@ Character::Character()
 //*****************************************************************************
 void Character::InitMemberList()
 {
+	/*m_MemberList->at("pos") = &m_pos;
+	m_MemberList->at("rot") = &m_rot;
+	m_MemberList->at("scl") = &m_scl;
+	m_MemberList->at("speed") = &m_Speed;
+	m_MemberList->at("mesh") = &m_Mesh;
+	m_MemberList->at("message") = &m_Message;
+	m_MemberList->at("boundingBox") = &m_BoundingBox;
+	m_MemberList->at("name") = &m_name;*/
+
 	m_MemberList["pos"] = &m_pos;
 	m_MemberList["rot"] = &m_rot;
 	m_MemberList["scl"] = &m_scl;
@@ -132,7 +143,10 @@ void Character::Draw()
 	m_Mesh->DrawModel();
 
 	// バウンディングボックスを描画する
-	m_BoundingBox->Draw();
+	if (m_BoundingBoxON == true)
+	{
+		m_BoundingBox->Draw();
+	}
 }
 
 //*****************************************************************************
@@ -152,22 +166,7 @@ void Character::Move()
 //*****************************************************************************
 void Character::Update()
 {
-	if (GetKeyboardPress(DIK_A))			// key A
-	{
-		m_pos.x -= m_Speed.x;
-	}
-	if (GetKeyboardPress(DIK_D))			// key D
-	{
-		m_pos.x += m_Speed.x;
-	}
-	if (GetKeyboardPress(DIK_W))			// key W
-	{
-		m_pos.z += m_Speed.x;
-	}
-	if (GetKeyboardPress(DIK_S))			// key S
-	{
-		m_pos.z -= m_Speed.x;
-	}
+
 }
 
 //*****************************************************************************
@@ -225,17 +224,4 @@ bool Character::CheckHitBB(Character* Object)
 Mesh* Character::GetMesh()
 {
 	return m_Mesh;
-}
-
-//*****************************************************************************
-//
-// プライベートメンバーを取得
-//
-//*****************************************************************************
-auto* Character::GetMember(std::string MemberName)
-{
-	if (m_MemberList.find(MemberName) != m_MemberList.end())
-	{
-		return &m_MemberList[MemberName];
-	}
 }

@@ -31,6 +31,7 @@
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="DebugMessage.cpp" />
     <ClCompile Include="ResourcesManager.cpp" />
+    <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -46,6 +47,7 @@
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="DebugMessage.h" />
     <ClInclude Include="ResourcesManager.h" />
+    <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

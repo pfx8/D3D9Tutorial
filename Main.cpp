@@ -114,6 +114,11 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		hInstance,
 		NULL);
 
+	//*****************************************************************************
+	//
+	// 各初期化
+	//
+	//*****************************************************************************
 	// DirectXの初期化(ウィンドウを作成してから行う)
 	if (FAILED(InitDiretX(hInstance, hWnd, true)))
 	{
