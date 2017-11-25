@@ -20,7 +20,7 @@ Camera::Camera()
 
 	m_DirectionVector = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
-	m_Message = new DebugMessage();
+	//m_Message = new DebugMessage();
 }
 
 //*****************************************************************************
@@ -30,7 +30,7 @@ Camera::Camera()
 //*****************************************************************************
 Camera::~Camera()
 {
-	SAFE_RELEASE_CLASS_POINT(m_Message);
+	//SAFE_RELEASE_CLASS_POINT(m_Message);
 }
 
 //*****************************************************************************
@@ -38,7 +38,7 @@ Camera::~Camera()
 // カメラを初期化する
 //
 //*****************************************************************************
-void Camera::InitCamera(D3DXVECTOR3 Eye, D3DXVECTOR3 At, D3DXVECTOR3 Up, D3DXVECTOR3 MainPos)
+void Camera::InitCamera(D3DXVECTOR3 Eye, D3DXVECTOR3 At, D3DXVECTOR3 Up)
 {
 	// カメラの視点を初期化する
 	m_posEye = Eye;
@@ -50,7 +50,7 @@ void Camera::InitCamera(D3DXVECTOR3 Eye, D3DXVECTOR3 At, D3DXVECTOR3 Up, D3DXVEC
 	m_vecUP = Up;
 
 	// 方向ベクトルを初期化する
-	m_DirectionVector = m_posEye - MainPos;
+	m_DirectionVector = m_posEye - At;
 }
 
 //*****************************************************************************
@@ -88,7 +88,7 @@ void Camera::setProjMatrix()
 	D3DXMatrixPerspectiveFovLH(&matProj,									// D3DXMatrixPerspectiveFovLHとD3DXMatrixPerspectiveLH？
 							D3DXToRadian(45.0f),							// ビュー平面の視野角
 							((float)SCREEN_WIDTH / (float)SCREEN_HEIGHT),	// ビュー平面のアスペクト比
-							10.0f,											// ビュー平面のNearZ値
+							1.0f,											// ビュー平面のNearZ値
 							1000.0f);										// ビュー平面のFarZ値
 
 	// プロジェクションマトリックスの設定
@@ -161,8 +161,8 @@ void Camera::At(float move, char direction)
 //*****************************************************************************
 void Camera::PosToMessageAndMessageDraw(int row)
 {
-	m_Message->DrawPosMessage("CameraEye", m_posEye, D3DXVECTOR2(0, float(row * 18 * 2)));
-	m_Message->DrawPosMessage("CameraAt", m_posAt, D3DXVECTOR2(0, float((row+1) * 18 * 2)));
+	//m_Message->DrawPosMessage("CameraEye", m_posEye, D3DXVECTOR2(0, float(row * 18 * 2)));
+	//m_Message->DrawPosMessage("CameraAt", m_posAt, D3DXVECTOR2(0, float((row+1) * 18 * 2)));
 }
 
 //*****************************************************************************
@@ -172,7 +172,6 @@ void Camera::PosToMessageAndMessageDraw(int row)
 //*****************************************************************************
 void Camera::Update()
 {
-
 	if (GetKeyboardPress(DIK_J))			// key J
 	{
 		Eye(1.0f, 'x');

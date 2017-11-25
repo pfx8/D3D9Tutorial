@@ -28,13 +28,13 @@ private:
 	D3DXVECTOR3		m_DirectionVector;	// カメラ方向ベクトル
 
 
-	DebugMessage*	m_Message;
+	//DebugMessage*	m_Message;
 public:
 	Camera();
 	~Camera();
 
 	// カメラを初期化関数
-	void InitCamera(D3DXVECTOR3 Eye, D3DXVECTOR3 At, D3DXVECTOR3 Up, D3DXVECTOR3 MainPos);
+	void InitCamera(D3DXVECTOR3 Eye, D3DXVECTOR3 At, D3DXVECTOR3 Up);
 
 	// ビューイング変換
 	void setViewMatrix();

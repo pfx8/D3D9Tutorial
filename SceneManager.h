@@ -13,6 +13,7 @@
 #include <map>
 
 #include "Scene00.h"
+#include "Scene01.h"
 
 //*****************************************************************************
 //
@@ -22,16 +23,17 @@
 class SceneManager
 {
 private:
-	Scene*	m_sceneD3D;		// シーン
+	Scene* m_scene;			// シーン
+	//std::string m_sceneList[2];	// シーンリスト
 
 	void ChangeRenderState();	// レンダリング状態更新
-	
+	void ChooseScene();		// シーンを選択する
 public:
 	SceneManager();
 	~SceneManager();
 
 	void Update();		// シーンの更新
-	void Draw();			// シンーの描画
+	void Draw();			// シーンの描画
 	void SetState();		// レンダリング状態を設定
 }; 
 

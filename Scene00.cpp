@@ -47,9 +47,8 @@ Scene00::Scene00()
 	m_camera = new Camera();
 	m_camera->InitCamera(
 		D3DXVECTOR3(0.0f, 150.0f, -200.0f),	// Eye
-		D3DXVECTOR3(0.0f, 0.0f, 0.0f),		// At
-		D3DXVECTOR3(0.0f, 1.0f, 0.0f),		// Up
-		*m_car1->GetPosition());			// 注視点のPos
+		*m_car1->GetPosition(),			// At
+		D3DXVECTOR3(0.0f, 1.0f, 0.0f));		// Up
 
 	// 名前をつける
 	SetSceneName("D3DTutorial");

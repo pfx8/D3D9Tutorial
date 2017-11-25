@@ -18,9 +18,8 @@ using namespace std;
 //*****************************************************************************
 SceneManager::SceneManager()
 {
-	m_sceneD3D = new Scene00();	// シーン初期化
-
-	SetState();	// レンダリング状態を設定
+	ChooseScene();	// シーンを選択
+	SetState();		// レンダリング状態を設定
 }
 
 //*****************************************************************************
@@ -31,8 +30,46 @@ SceneManager::SceneManager()
 SceneManager::~SceneManager()
 {
 	// クラスポインタ
-	// シーン
-	SAFE_RELEASE_CLASS_POINT(m_sceneD3D);
+	SAFE_RELEASE_CLASS_POINT(m_scene);
+}
+
+//*****************************************************************************
+//
+// シーンを選択する
+//
+//*****************************************************************************
+void SceneManager::ChooseScene()
+{
+	// シーンリストを初期化
+	/*m_sceneList[2] =
+	{
+		"D3DTutorial",
+		"ShaderTutorial",
+	};*/
+
+	/*std::cout << "シーンを選択してください" << std::endl;
+	for(int count= 0; count < 2; count++)
+	{ 
+		std::cout << 'a' + count << ". "<< m_sceneList[count] << std::endl;
+	}*/
+
+	// シーンを選択する
+	char chooseScene = 'b';
+
+	//std::cin >> chooseScene;
+
+	switch (chooseScene)
+	{
+	case 'a':
+	case 'A':m_scene = new Scene00(); break;	// シンー01初期化
+	case 'b':
+	case 'B':m_scene = new Scene01(); break;	// シンー01初期化
+	default:
+		break;
+	}
+
+	// レンダリング状態を設定
+	SetState();
 }
 
 //*****************************************************************************
@@ -42,8 +79,7 @@ SceneManager::~SceneManager()
 //*****************************************************************************
 void SceneManager::Update()
 {
-	m_sceneD3D->Update();	// シーン更新
-
+	m_scene->Update();		// シンー01更新
 	ChangeRenderState();	// レンダリング状態更新
 }
 
@@ -84,7 +120,7 @@ void SceneManager::ChangeRenderState()
 //*****************************************************************************
 void SceneManager::Draw()
 {
-	m_sceneD3D->Draw();
+	m_scene->Draw();	// シンー01描画
 }
 
 //*****************************************************************************
