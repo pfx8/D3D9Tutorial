@@ -28,6 +28,7 @@
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Material.cpp" />
+    <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="DebugMessage.cpp" />
     <ClCompile Include="ResourcesManager.cpp" />
@@ -47,6 +48,7 @@
     <ClInclude Include="input.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="Material.h" />
+    <ClInclude Include="Matrix.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="DebugMessage.h" />
     <ClInclude Include="ResourcesManager.h" />
@@ -60,6 +62,11 @@
     <None Include="Shader\Basic.hlsl">
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">SetColor</EntryPointName>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">2.0</ShaderModel>
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shader\Vertex.hlsl">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

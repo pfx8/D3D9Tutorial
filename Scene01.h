@@ -1,6 +1,6 @@
 //*****************************************************************************
 //
-// シーン01処理 [Scene01.h]
+// ShaderTutorial処理 [Scene01.h]
 //
 // Author : LIAO HANCHEN
 //
@@ -16,6 +16,7 @@
 #include "Camera.h"
 #include "Light.h"
 #include "Shader.h"
+#include "Character.h"
 
 
 //*****************************************************************************
@@ -26,14 +27,13 @@
 class Scene01 : public Scene
 {
 private:
-	D3DXMATRIX		m_mtxWorld;	// ワールドマトリックス
+	D3DXMATRIX	m_mtxWorld;	// ワールドマトリックス
 
-	Camera*			m_camera;	// カメラ
-	Light*			m_light;	// ライト
+	Camera*		m_camera;		// カメラ
+	Light*		m_light;		// ライト
 
-	ID3DXMesh*		m_teapot;	// ティーポット
-	ID3DXMesh*		m_box;
-	Shader*			m_shader;	// シェーダー
+	Shader*		m_shader;		// シェーダー
+	Character*	m_dolphin;	// イルカ
 public:
 	Scene01();
 	~Scene01();

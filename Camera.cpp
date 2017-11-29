@@ -14,13 +14,20 @@
 //*****************************************************************************
 Camera::Camera()
 {
-	m_posEye = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_posAt  = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_vecUP  = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_posEye		= D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_posAt		= D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_rot		= D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
-	m_DirectionVector = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_vecUp		= D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+	m_vecLook		= D3DXVECTOR3(0.0f, 0.0f, 1.0f);
+	m_vecRight	= D3DXVECTOR3(1.0f, 0.0f, 0.0f);
 
-	//m_Message = new DebugMessage();
+	m_vecFromEyeToAt		= D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+
+	D3DXMatrixIdentity(&m_viewMatrix);
+	D3DXMatrixIdentity(&m_projectionMatrix);
+
+	m_Message = new DebugMessage();
 }
 
 //*****************************************************************************
@@ -30,8 +37,10 @@ Camera::Camera()
 //*****************************************************************************
 Camera::~Camera()
 {
-	//SAFE_RELEASE_CLASS_POINT(m_Message);
+	SAFE_RELEASE_CLASS_POINT(m_Message);
 }
+
+
 
 //*****************************************************************************
 //
@@ -40,17 +49,23 @@ Camera::~Camera()
 //*****************************************************************************
 void Camera::InitCamera(D3DXVECTOR3 Eye, D3DXVECTOR3 At, D3DXVECTOR3 Up)
 {
-	// カメラの視点を初期化する
-	m_posEye = Eye;
+	
+	m_posEye = Eye;	// カメラの視点を初期化する
+	m_posAt = At;		// カメラの注視点を初期化する
+	m_vecUp = Up;		// カメラの上方向ベクトル、一般には (0, 1, 0) を定義する 
 
-	// カメラの注視点を初期化する
-	m_posAt = At;
+	m_vecFromEyeToAt = m_posEye - m_posAt;
+}
 
-	// カメラの上方向ベクトル、一般には (0, 1, 0) を定義する 
-	m_vecUP = Up;
-
-	// 方向ベクトルを初期化する
-	m_DirectionVector = m_posEye - At;
+//*****************************************************************************
+//
+// 注視点座標を更新
+//
+//*****************************************************************************
+void Camera::UpdateAt(D3DXVECTOR3 pos)
+{
+	m_posAt = pos;
+	//m_posEye = m_vecFromEyeToAt + pos;
 }
 
 //*****************************************************************************
@@ -58,18 +73,13 @@ void Camera::InitCamera(D3DXVECTOR3 Eye, D3DXVECTOR3 At, D3DXVECTOR3 Up)
 // ビューイング変換
 //
 //*****************************************************************************
-void Camera::setViewMatrix()
+void Camera::SetViewMatrix()
 {
-	D3DXMATRIX matView;
-
-	// ビューマトリックスの初期化
-	D3DXMatrixIdentity(&matView);
-
 	// ビューマトリックスの作成
-	D3DXMatrixLookAtLH(&matView, &m_posEye, &m_posAt, &m_vecUP);
+	D3DXMatrixLookAtLH(&m_viewMatrix, &m_posEye, &m_posAt, &m_vecUp);
 
 	// ビューマトリックスの設定
-	GetDevice()->SetTransform(D3DTS_VIEW, &matView);
+	GetDevice()->SetTransform(D3DTS_VIEW, &m_viewMatrix);
 }
 
 //*****************************************************************************
@@ -77,22 +87,17 @@ void Camera::setViewMatrix()
 // プロジェクション変換(投影変換)
 //
 //*****************************************************************************
-void Camera::setProjMatrix()
+void Camera::SetProjMatrix()
 {
-	D3DXMATRIX matProj;
-
-	// プロジェクションマトリックスの初期化
-	D3DXMatrixIdentity(&matProj);
-
 	// プロジェクションマトリックスの作成
-	D3DXMatrixPerspectiveFovLH(&matProj,									// D3DXMatrixPerspectiveFovLHとD3DXMatrixPerspectiveLH？
-							D3DXToRadian(45.0f),							// ビュー平面の視野角
-							((float)SCREEN_WIDTH / (float)SCREEN_HEIGHT),	// ビュー平面のアスペクト比
-							1.0f,											// ビュー平面のNearZ値
-							1000.0f);										// ビュー平面のFarZ値
+	D3DXMatrixPerspectiveFovLH(&m_projectionMatrix,
+		D3DXToRadian(45.0f),						// ビュー平面の視野角
+		(float)SCREEN_WIDTH / (float)SCREEN_HEIGHT,	// ビュー平面のアスペクト比
+		10.0f,									// ヒュー平面のNearZ値
+		1000.0f);									// ビュー平面のFarZ値
 
 	// プロジェクションマトリックスの設定
-	GetDevice()->SetTransform(D3DTS_PROJECTION, &matProj);
+	GetDevice()->SetTransform(D3DTS_PROJECTION, &m_projectionMatrix);
 }
 
 //*****************************************************************************
@@ -100,7 +105,7 @@ void Camera::setProjMatrix()
 // ビューポートを設定
 //
 //*****************************************************************************
-void Camera::setViewport()
+void Camera::SetViewport()
 {
 	D3DVIEWPORT9 vp;
 	vp.X = 0;
@@ -110,59 +115,8 @@ void Camera::setViewport()
 	vp.MinZ = 0.0f;
 	vp.MaxZ = 1.0f;
 
-	// GetViewport
+	// ヒューポットを設定
 	GetDevice()->SetViewport(&vp);
-}
-
-//*****************************************************************************
-//
-// カメラ位置を操作する
-//
-//*****************************************************************************
-void Camera::Eye(float move, char direction)
-{
-	switch (direction)
-	{
-	case 'x':
-	case 'X':m_posEye.x += move; break; // zと同じ？
-	case 'y':
-	case 'Y':m_posEye.y += move; break;
-	case 'z':
-	case 'Z':m_posEye.z += move; break;
-	default:
-		break;
-	}
-}
-
-//*****************************************************************************
-//
-// 注視点操作
-//
-//*****************************************************************************
-void Camera::At(float move, char direction)
-{
-	switch (direction)
-	{
-	case 'x':
-	case 'X':m_posAt.x += move; break;
-	case 'y':
-	case 'Y':m_posAt.y += move; break;
-	case 'z':
-	case 'Z':m_posAt.z += move; break;
-	default:
-		break;
-	}
-}
-
-//*****************************************************************************
-//
-// 座標をメッセージに渡して、画面に描画する
-//
-//*****************************************************************************
-void Camera::PosToMessageAndMessageDraw(int row)
-{
-	//m_Message->DrawPosMessage("CameraEye", m_posEye, D3DXVECTOR2(0, float(row * 18 * 2)));
-	//m_Message->DrawPosMessage("CameraAt", m_posAt, D3DXVECTOR2(0, float((row+1) * 18 * 2)));
 }
 
 //*****************************************************************************
@@ -174,18 +128,130 @@ void Camera::Update()
 {
 	if (GetKeyboardPress(DIK_J))			// key J
 	{
-		Eye(1.0f, 'x');
+		RotationVecUp(1.0f / 180.0f * D3DX_PI);
 	}
 	if (GetKeyboardPress(DIK_L))			// key L
 	{
-		Eye(-1.0f, 'x');
+		RotationVecUp(-1.0f / 180.0f * D3DX_PI);
 	}
 	if (GetKeyboardPress(DIK_I))			// key I
 	{
-		Eye(1.0f, 'y');
+		RotationVecRight(1.0f / 180.0f * D3DX_PI);
 	}
 	if (GetKeyboardPress(DIK_K))			// key K
 	{
-		Eye(-1.0f, 'y');
+		RotationVecRight(-1.0f / 180.0f * D3DX_PI);
 	}
+
+	if (GetKeyboardPress(DIK_LEFT))
+	{
+		MoveAlongVecRight(-1.0f);
+	}
+	if (GetKeyboardPress(DIK_RIGHT))
+	{
+		MoveAlongVecRight(1.0f);
+	}
+	if (GetKeyboardPress(DIK_UP))
+	{
+		MoveAlongVecLook(1.0f);
+	}
+	if (GetKeyboardPress(DIK_DOWN))
+	{
+		MoveAlongVecLook(-1.0f);
+	}
+
+	// ビューイング変換
+	SetViewMatrix();
+}
+
+//*****************************************************************************
+//
+// 上方向のベクトルにして回転
+//
+//*****************************************************************************
+void Camera::RotationVecUp(float angle)
+{
+	if (m_rot.y > D3DX_PI * 2.0f || m_rot.y < -D3DX_PI * 2.0f)
+	{
+		m_rot.y = 0;
+	}
+
+	// 角度を記録する
+	m_rot.y -= angle;
+
+	// 新しい右方向ベクトルを計算する
+	m_vecRight.x = cosf(m_rot.y);
+	m_vecRight.z = sinf(m_rot.y);
+
+	// 新しい注視方向ベクトルを計算する
+	m_vecLook.x = cosf(m_rot.y + D3DX_PI / 2);
+	m_vecLook.z = sinf(m_rot.y + D3DX_PI / 2);
+
+	m_posEye.x = m_posEye.x * cosf(angle) + m_posEye.z * sinf(angle);
+	m_posEye.z = -m_posEye.x * sinf(angle) + m_posEye.z * cosf(angle);
+}
+
+//*****************************************************************************
+//
+// 右方向のベクトルにして回転
+//
+//*****************************************************************************
+void Camera::RotationVecRight(float angle)
+{
+	if (m_rot.x > D3DXToRadian(45))
+	{
+		m_rot.x = D3DXToRadian(-45);
+	}
+	if (m_rot.x < D3DXToRadian(-45))
+	{
+		m_rot.x = D3DXToRadian(45);
+	}
+	else
+	{
+		m_posEye.y = m_posEye.y * cosf(angle) - m_posEye.z * sinf(angle);
+		m_posEye.z = m_posEye.y * sinf(angle) + m_posEye.z * cosf(angle);
+
+		// 角度を記録する
+		m_rot.x += angle;
+	}
+}
+
+//*****************************************************************************
+//
+// 右方向に沿って移動
+//
+//*****************************************************************************
+void Camera::MoveAlongVecRight(float unit)
+{
+	m_posEye += m_vecRight * unit;
+	m_posAt += m_vecRight * unit;
+	//m_posAt = m_vecRight * D3DXVec3Length(&m_posEye);
+}
+
+//*****************************************************************************
+//
+// 注視方向に沿って移動
+//
+//*****************************************************************************
+void Camera::MoveAlongVecLook(float unit)
+{
+	m_posEye += m_vecLook * unit;
+	m_posAt += m_vecLook * unit;
+	//m_posAt = m_vecRight * D3DXVec3Length(&m_posEye);
+}
+
+//*****************************************************************************
+//
+// 座標をメッセージに渡して、画面に描画する
+//
+//*****************************************************************************
+void Camera::PosToMessageAndMessageDraw(int row)
+{
+	m_Message->DrawPosMessage("CameraEye", m_posEye, D3DXVECTOR2(0, float((row + 1)* 18 * 2)));
+	m_Message->DrawPosMessage("CameraAt", m_posAt, D3DXVECTOR2(0, float((row + 2) * 18 * 2)));
+	m_Message->DrawPosMessage("->VecLook", m_vecLook, D3DXVECTOR2(0, float((row + 4) * 18 * 2)));
+	m_Message->DrawPosMessage("->VecRight", m_vecRight, D3DXVECTOR2(0, float((row + 5) * 18 * 2)));
+	m_Message->DrawPosMessage("VecUp", m_vecUp, D3DXVECTOR2(0, float((row + 7) * 18 * 2)));
+	m_Message->DrawPosMessage("Rot Radian", m_rot, D3DXVECTOR2(0, float((row + 9) * 18 * 2)));
+	m_Message->DrawPosMessage("Rot Degree", D3DXVECTOR3(0.0f, D3DXToDegree(m_rot.y), 0.0f), D3DXVECTOR2(0, float((row + 10) * 18 * 2)));
 }

@@ -20,8 +20,7 @@ Shader::Shader()
 	m_constTable = NULL;
 
 	m_WVPMatrixHandle = NULL;
-	m_LightDirectionHandle = NULL;
-	m_Scalar = NULL;
+	m_colorHandle = NULL;
 }
 
 //*****************************************************************************
@@ -44,21 +43,8 @@ Shader::~Shader()
 //*****************************************************************************
 HRESULT Shader::LoadShaderFile()
 {
-	D3DVERTEXELEMENT9 MorphMeshDecl[] =
-	{
-		//1st stream is for source mesh - position, normal, texcoord
-		{ 0,  0, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0 },
-		{ 0, 12, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_NORMAL,   0 },
-		{ 0, 24, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0 },
-
-		//2nd stream is for target mesh - position, normal
-		{ 1,  0, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 1 },
-		{ 1, 12, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_NORMAL,   1 },
-		D3DDECL_END()
-	};
-
 	HRESULT hr = D3DXCompileShaderFromFile(
-		"Shader/Vertex.hlsl",
+		"Shader/Basic.hlsl",
 		0,
 		0,
 		"SetColor",		// シェーダーの入り口関数
@@ -94,10 +80,8 @@ HRESULT Shader::LoadShaderFile()
 
 	// シェーダーファイル中の変数を取得
 	m_WVPMatrixHandle = m_constTable->GetConstantByName(0, "WVPMatrix");	// WVPマトリックス
-	m_LightDirectionHandle = m_constTable->GetConstantByName(0, "LightDirection");	// 乱反射光
-	m_Scalar = m_constTable->GetConstantByName(0, "Scalar");	// モーフィング数値
+	m_colorHandle = m_constTable->GetConstantByName(0, "color");		// 頂点カラー
 
-	m_constTable->SetVector(GetDevice(), m_LightDirectionHandle, &D3DXVECTOR4(0.0f, -1.0f, 0.0f, 0.0f));
 	m_constTable->SetDefaults(GetDevice());	// デフォルト設定
 
 	return S_OK;

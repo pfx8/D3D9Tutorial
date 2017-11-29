@@ -1,6 +1,6 @@
 //*****************************************************************************
 //
-// シーン00処理 [Scene00.h]
+// D3DTutorial処理 [Scene00.h]
 //
 // Author : LIAO HANCHEN
 //
@@ -36,7 +36,6 @@ private:
 	// ゲーム素材
 	Field*			m_FieldStone;	// フィールド
 	Character*		m_car1;		// 車, プレーヤー
-	Character*		m_car2;		// 車
 
 public:
 	Scene00();

@@ -1,6 +1,6 @@
 ﻿//*****************************************************************************
 //
-// シーン01処理 [Scene01.cpp]
+// ShaderTutorial処理 [Scene01.cpp]
 //
 // Author : LIAO HANCHEN
 //
@@ -24,9 +24,12 @@ Scene01::Scene01()
 	// カメラ
 	m_camera = new Camera();
 	m_camera->InitCamera(
-		D3DXVECTOR3(0.0f, 3.0f, -5.0f),		// Eye
+		D3DXVECTOR3(0.0f, 5.0f, -10.0f),	// Eye
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f),		// At
 		D3DXVECTOR3(0.0f, 1.0f, 0.0f));		// Up
+	m_camera->SetViewMatrix();	// ビューイング変換
+	m_camera->SetProjMatrix();	// プロジェクション変換
+	m_camera->SetViewport();	// ビューポートを設定
 
 	// 名前をつける
 	SetSceneName("ShaderTutorial");
@@ -35,10 +38,12 @@ Scene01::Scene01()
 	m_shader = new Shader();
 	m_shader->LoadShaderFile();
 
-	// ティーポット
-	m_teapot = NULL;
-	D3DXCreateTeapot(GetDevice(), &m_teapot, 0);
-	D3DXCreateBox(GetDevice(), 200.0f, 200.0f, 200.0f, &m_box, 0);
+	// イルカ
+	m_dolphin = new Character();
+	m_dolphin->InitCharacter(
+		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+		GetResourcesManager()->SetTexture("NULL"),
+		"data/MODEL/dolphin1.x");
 
 	// コンソールを表示
 	Scene::ConsoleMessage(GetSceneName());
@@ -51,9 +56,6 @@ Scene01::Scene01()
 //*****************************************************************************
 Scene01::~Scene01()
 {
-	m_box->Release();
-	m_teapot->Release();
-
 	// クラスポインタ
 	// ライト
 	SAFE_RELEASE_CLASS_POINT(m_light);
@@ -61,6 +63,8 @@ Scene01::~Scene01()
 	SAFE_RELEASE_CLASS_POINT(m_camera);
 	// シェーダー
 	SAFE_RELEASE_CLASS_POINT(m_shader);
+	// イルカ
+	SAFE_RELEASE_CLASS_POINT(m_dolphin);
 }
 
 //*****************************************************************************
@@ -71,6 +75,10 @@ Scene01::~Scene01()
 void Scene01::Update()
 {
 	m_camera->Update();
+	m_camera->UpdateAt(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+
+	m_dolphin->Update();
+	m_dolphin->SetWorldMatrix(m_mtxWorld);
 }
 
 //*****************************************************************************
@@ -86,28 +94,21 @@ void Scene01::Draw()
 	// Direct3Dによる描画の開始
 	if (SUCCEEDED(GetDevice()->BeginScene()))
 	{
-		// ビューポートを設定
-		m_camera->setViewport();
-		// ビューイング変換
-		m_camera->setViewMatrix();
-		// プロジェクション変換
-		m_camera->setProjMatrix();
+		GetDevice()->SetTransform(D3DTS_WORLD, &m_mtxWorld);
+		D3DXMATRIX matWVP = m_mtxWorld * m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
 
-		D3DXMATRIX matWorld, matView, matProj;
-		GetDevice()->GetTransform(D3DTS_WORLD, &matWorld);
-		GetDevice()->GetTransform(D3DTS_VIEW, &matView);
-		GetDevice()->GetTransform(D3DTS_PROJECTION, &matProj);
-
-		D3DXMATRIX matWVP = matWorld * matView * matProj;
+		// 計算
 		m_shader->m_constTable->SetMatrix(GetDevice(), m_shader->m_WVPMatrixHandle, &matWVP);	// シェーダーのWVPマトリックスを設定
 
 		D3DXVECTOR4 color(1.0f, 1.0f, 0.0f, 1.0f);
-		m_shader->m_constTable->SetVector(GetDevice(), m_shader->m_colorHandle, &color);		// シェーダーの頂点カラーを設定
+		m_shader->m_constTable->SetVector(GetDevice(), m_shader->m_LightDirectionHandle, &color);		// シェーダーの頂点カラーを設定
 
 		GetDevice()->SetVertexShader(m_shader->m_vertexShader);	// シェーダーを設定
 
-		m_teapot->DrawSubset(0);	// ティーポット
-		m_box->DrawSubset(0);
+		//m_teapot->DrawSubset(0);	// ティーポット
+		m_dolphin->Draw();
+
+		m_camera->PosToMessageAndMessageDraw(0);
 
 		GetDevice()->EndScene();
 	}

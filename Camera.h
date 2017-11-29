@@ -1,6 +1,6 @@
-//*****************************************************************************
+ï»¿//*****************************************************************************
 //
-// ƒJƒƒ‰ˆ— [Camera.h]
+// ã‚«ãƒ¡ãƒ©å‡¦ç† [Camera.h]
 //
 // Author : LIAO HANCHEN
 //
@@ -12,52 +12,49 @@
 #include "Engine.h"
 
 #include "DebugMessage.h"
+#include "Matrix.h"
 
 //*****************************************************************************
 //
-// ƒNƒ‰ƒXéŒ¾
+// ã‚¯ãƒ©ã‚¹å®£è¨€
 //
 //*****************************************************************************
 class Camera
 {
 private:
-	D3DXVECTOR3		m_posEye;			// ƒJƒƒ‰‚ÌˆÊ’u
-	D3DXVECTOR3		m_posAt;			// ƒJƒƒ‰‚Ì’‹“_
-	D3DXVECTOR3		m_vecUP;			// ƒJƒƒ‰‚Ìã•ûŒüƒxƒNƒgƒ‹
-
-	D3DXVECTOR3		m_DirectionVector;	// ƒJƒƒ‰•ûŒüƒxƒNƒgƒ‹
-
-
-	//DebugMessage*	m_Message;
+	// ä½ç½®
+	D3DXVECTOR3	m_posEye;			// ã‚«ãƒ¡ãƒ©ã®ä½ç½®
+	D3DXVECTOR3	m_posAt;			// ã‚«ãƒ¡ãƒ©ã®æ³¨è¦–ç‚¹
+	// ãƒ™ã‚¯ãƒˆãƒ«
+	D3DXVECTOR3	m_vecUp;			// ã‚«ãƒ¡ãƒ©ã®ä¸Šæ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«
+	D3DXVECTOR3	m_vecLook;		// ã‚«ãƒ¡ãƒ©ã®æ³¨è¦–æ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«
+	D3DXVECTOR3	m_vecRight;		// ã‚«ãƒ¡ãƒ©ã®å³æ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«
+	D3DXVECTOR3	m_vecFromEyeToAt;	// ã‚«ãƒ¡ãƒ©ã‹ã‚‰æ³¨è¦–ç‚¹ã¾ã§ã®ãƒ™ã‚¯ãƒˆãƒ«
+	// å›è»¢è§’åº¦
+	D3DXVECTOR3	m_rot;			// ã‚«ãƒ¡ãƒ©ã®å›è»¢è§’åº¦
+	DebugMessage*	m_Message;
 public:
+	// ãƒãƒˆãƒªãƒƒã‚¯ã‚¹
+	D3DXMATRIX	m_viewMatrix;		// ãƒ“ãƒ¥ãƒ¼ã‚¤ãƒ³ã‚°å¤‰æ›è¡Œåˆ—
+	D3DXMATRIX	m_projectionMatrix;	// ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ã‚·ãƒ§ãƒ³å¤‰æ›è¡Œåˆ—
+
 	Camera();
 	~Camera();
 
-	// ƒJƒƒ‰‚ğ‰Šú‰»ŠÖ”
-	void InitCamera(D3DXVECTOR3 Eye, D3DXVECTOR3 At, D3DXVECTOR3 Up);
+	void InitCamera(D3DXVECTOR3 Eye, D3DXVECTOR3 At, D3DXVECTOR3 Up);	// ã‚«ãƒ¡ãƒ©ã‚’åˆæœŸåŒ–é–¢æ•°
+	void SetViewMatrix();	// ãƒ“ãƒ¥ãƒ¼ã‚¤ãƒ³ã‚°å¤‰æ›
+	void SetProjMatrix();	// ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ã‚·ãƒ§ãƒ³å¤‰æ›(æŠ•å½±å¤‰æ›)
+	void SetViewport();	// ãƒ“ãƒ¥ãƒ¼ãƒãƒ¼ãƒˆã‚’è¨­å®š
+	void PosToMessageAndMessageDraw(int row);	// åº§æ¨™ã‚’ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã«æ¸¡ã—ã¦ã€ç”»é¢ã«æç”»ã™ã‚‹
 
-	// ƒrƒ…[ƒCƒ“ƒO•ÏŠ·
-	void setViewMatrix();
+	void RotationVecUp(float angle);	// ä¸Šæ–¹å‘ã®ãƒ™ã‚¯ãƒˆãƒ«ã«ã—ã¦å›è»¢
+	void RotationVecRight(float angle);	// å³æ–¹å‘ã®ãƒ™ã‚¯ãƒˆãƒ«ã«ã—ã¦å›è»¢
+	void MoveAlongVecRight(float unit);	// å³æ–¹å‘ã«æ²¿ã£ã¦ç§»å‹•
+	void MoveAlongVecLook(float unit);	// æ³¨è¦–æ–¹å‘ã«æ²¿ã£ã¦ç§»å‹•
 
-	// ƒvƒƒWƒFƒNƒVƒ‡ƒ“•ÏŠ·(“Š‰e•ÏŠ·)
-	void setProjMatrix();
-
-	// ƒrƒ…[ƒ|[ƒg‚ğİ’è
-	void setViewport();
-
-public: // ‘€ì
-	
-	// ’‹“_
-	void At(float move, char direction);
-
-	// ƒJƒƒ‰ˆÊ’u‚ğ‘€ì‚·‚é
-	void Eye(float move, char direction);
-
-	// À•W‚ğƒƒbƒZ[ƒW‚É“n‚µ‚ÄA‰æ–Ê‚É•`‰æ‚·‚é
-	void PosToMessageAndMessageDraw(int row);
-
-	// ƒJƒƒ‰XV
-	void Update();
+public: 
+	void Update();	// ã‚«ãƒ¡ãƒ©æ›´æ–°
+	void UpdateAt(D3DXVECTOR3 pos);	// æ³¨è¦–ç‚¹åº§æ¨™ã‚’æ›´æ–°
 };
 
 

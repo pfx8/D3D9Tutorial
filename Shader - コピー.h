@@ -19,10 +19,8 @@ public:
 	ID3DXBuffer* m_errorBuffer;				// エラーバッファ
 	IDirect3DVertexShader9* m_vertexShader;	// 頂点シェーダーポインタ
 	ID3DXConstantTable* m_constTable;		// 定数表
-
-	D3DXHANDLE m_Scalar;					// モーフィング計算する数値
 	D3DXHANDLE m_WVPMatrixHandle;			// ワールドマトリックスハンドル
-	D3DXHANDLE m_LightDirectionHandle;		// カラーマトリックスハンドル
+	D3DXHANDLE m_colorHandle;				// カラーマトリックスハンドル
 
 	Shader();
 	~Shader();

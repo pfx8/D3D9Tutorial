@@ -1,6 +1,6 @@
 ﻿//*****************************************************************************
 //
-// シーン00処理 [Scene00.cpp]
+// D3DTutorial処理 [Scene00.cpp]
 //
 // Author : LIAO HANCHEN
 //
@@ -20,8 +20,6 @@ Scene00::Scene00()
 {	
 	// フィールド
 	m_FieldStone = new Field();
-	ResourcesManager* p1 = GetResourcesManager();
-	LPDIRECT3DTEXTURE9* p = p1->SetTexture("FieldGrass");
 	m_FieldStone->InitField(
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
 		D3DXVECTOR2(100, 100),
@@ -34,12 +32,6 @@ Scene00::Scene00()
 		GetResourcesManager()->SetTexture("NULL"),
 		"data/MODEL/car000.x");
 
-	m_car2 = new Character();
-	m_car2->InitCharacter(
-		D3DXVECTOR3(0.0f + 50, 0.0f, 0.0f),
-		GetResourcesManager()->SetTexture("NULL"),
-		"data/MODEL/car001.x");
-
 	// ライト
 	m_light = new Light();
 
@@ -49,6 +41,9 @@ Scene00::Scene00()
 		D3DXVECTOR3(0.0f, 150.0f, -200.0f),	// Eye
 		*m_car1->GetPosition(),			// At
 		D3DXVECTOR3(0.0f, 1.0f, 0.0f));		// Up
+	m_camera->SetViewMatrix();	// ビューイング変換
+	m_camera->SetProjMatrix();	// プロジェクション変換
+	m_camera->SetViewport();	// ビューポートを設定
 
 	// 名前をつける
 	SetSceneName("D3DTutorial");
@@ -72,7 +67,6 @@ Scene00::~Scene00()
 
 	// 車
 	SAFE_RELEASE_CLASS_POINT(m_car1);
-	SAFE_RELEASE_CLASS_POINT(m_car2);
 
 	// ライト
 	SAFE_RELEASE_CLASS_POINT(m_light);
@@ -108,7 +102,6 @@ void Scene00::UpdatePlayer(D3DXVECTOR3* Pos, D3DXVECTOR3* Speed)
 	if (GetKeyboardTrigger(DIK_Q))	// key Q
 	{
 		m_car1->m_BoundingBoxON = !m_car1->m_BoundingBoxON;
-		m_car2->m_BoundingBoxON = !m_car2->m_BoundingBoxON;
 		std::cout << "BoundingBox: " << std::boolalpha << m_car1->m_BoundingBoxON << std::endl;
 	}
 }
@@ -131,13 +124,15 @@ void Scene00::Update()
 
 	// カメラ視点移動
 	m_camera->Update();
+	//m_camera->UpdateAt(m_car1->m_pos);
 
 	// 当たり判定
-	if (m_car1->CheckHitBB(m_car2))
-	{
-		// 移動
-		m_car2->Move();
-	}
+	//if (m_car1->CheckHitBB(m_car2))
+	//{
+	//	// 移動
+	//	m_car2->Move();
+	//}
+
 }
 
 //*****************************************************************************
@@ -163,31 +158,15 @@ void Scene00::Draw()
 		// キャラクターを描画する
 		m_car1->Draw();
 
-		// 2.
-		// キャラクターをワールド変換
-		m_car2->SetWorldMatrix(m_mtxWorld);
-		// キャラクターを描画する
-		m_car2->Draw();
-
-		// ビューポートを設定
-		m_camera->setViewport();
-
 		// フィールドをワールド変換して描画する
 		m_FieldStone->SetWorldMatrix(m_mtxWorld);
 		m_FieldStone->Draw();
 
-		// ビューイング変換
-		m_camera->setViewMatrix();
-
-		// プロジェクション変換
-		m_camera->setProjMatrix();
-
 		// キャラクターの座標インフォメーション、括弧の中はなん行目
 		m_car1->PosToMessageAndMessageDraw(0);
-		m_car2->PosToMessageAndMessageDraw(1);
 
 		// カメラの座標インフォメーション
-		//g_camera->PosToMessageAndMessageDraw(2);
+		m_camera->PosToMessageAndMessageDraw(2);
 
 		GetDevice()->EndScene();
 	}

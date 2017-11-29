@@ -25,12 +25,6 @@
 class Character
 {
 private:
-	// 固定属性
-	D3DXVECTOR3		m_pos;		// 位置
-	D3DXVECTOR3		m_Speed;		// スピード
-	D3DXVECTOR3		m_rot;		// 回転
-	D3DXVECTOR3		m_scl;		// 拡大縮小
-
 	Mesh*			m_Mesh;			// メッシュ
 	DebugMessage*		m_Message;		// Debugメッセージ
 	BoundingBox*		m_BoundingBox;	// バウンディングボックス
@@ -40,6 +34,12 @@ private:
 	std::map<std::string, void*> m_MemberList;// プライベートメンバーリスト
 	void InitMemberList();// プライベートメンバーリスト初期化
 public:
+	// 固定属性
+	D3DXVECTOR3		m_pos;		// 位置
+	D3DXVECTOR3		m_Speed;		// スピード
+	D3DXVECTOR3		m_rot;		// 回転
+	D3DXVECTOR3		m_scl;		// 拡大縮小
+
 	Character();
 	~Character();
 

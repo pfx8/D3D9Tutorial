@@ -54,16 +54,16 @@ void SceneManager::ChooseScene()
 	}*/
 
 	// シーンを選択する
-	char chooseScene = 'b';
+	char chooseScene = 'a';
 
 	//std::cin >> chooseScene;
 
 	switch (chooseScene)
 	{
 	case 'a':
-	case 'A':m_scene = new Scene00(); break;	// シンー01初期化
+	case 'A':m_scene = new Scene00(); break;	// D3DTutorial初期化
 	case 'b':
-	case 'B':m_scene = new Scene01(); break;	// シンー01初期化
+	case 'B':m_scene = new Scene01(); break;	// ShaderTutorial初期化
 	default:
 		break;
 	}
