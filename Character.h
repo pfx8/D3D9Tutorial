@@ -25,9 +25,8 @@
 class Character
 {
 private:
-	Mesh*			m_Mesh;			// メッシュ
-	DebugMessage*		m_Message;		// Debugメッセージ
-	BoundingBox*		m_BoundingBox;	// バウンディングボックス
+	DebugMessage*		m_message;		// Debugメッセージ
+	BoundingBox*		m_boundingBox;	// バウンディングボックス
 
 	std::string		m_name;			// キャラクターの名前、これによってメッシュとテクスチャを探す
 	
@@ -40,13 +39,14 @@ public:
 	D3DXVECTOR3		m_rot;		// 回転
 	D3DXVECTOR3		m_scl;		// 拡大縮小
 
+	Mesh*			m_mesh;			// メッシュ
 	Character();
 	~Character();
 
 	bool		m_BoundingBoxON;	// バウンディングボックスを描画する
 
 	// 座標を設定
-	void InitCharacter(D3DXVECTOR3 pos, PDIRECT3DTEXTURE9* texturePoint, std::string meshPath);
+	void InitCharacter(D3DXVECTOR3 pos);
 	// 臨時ーーワールド変換
 	void SetWorldMatrix(D3DXMATRIX& mtxWorld);
 

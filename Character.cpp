@@ -23,9 +23,9 @@ Character::Character()
 	m_Speed = D3DXVECTOR3(1.5f, 0.0f, 0.0f);
 
 	// クラスポインタ
-	m_Mesh = new Mesh();
-	m_Message = new DebugMessage();
-	m_BoundingBox = new BoundingBox();
+	m_mesh = new Mesh();
+	m_message = new DebugMessage();
+	m_boundingBox = new BoundingBox();
 
 	InitMemberList();	// メンバーリストを作る
 
@@ -43,9 +43,9 @@ void Character::InitMemberList()
 	m_MemberList["rot"] = &m_rot;
 	m_MemberList["scl"] = &m_scl;
 	m_MemberList["speed"] = &m_Speed;
-	m_MemberList["mesh"] = &m_Mesh;
-	m_MemberList["message"] = &m_Message;
-	m_MemberList["boundingBox"] = &m_BoundingBox;
+	m_MemberList["mesh"] = &m_mesh;
+	m_MemberList["message"] = &m_message;
+	m_MemberList["boundingBox"] = &m_boundingBox;
 	m_MemberList["name"] = &m_name;
 }
 
@@ -57,9 +57,9 @@ void Character::InitMemberList()
 Character::~Character()
 {
 	// クラスポインタ
-	SAFE_RELEASE_CLASS_POINT(m_Mesh);
-	SAFE_RELEASE_CLASS_POINT(m_Message);
-	SAFE_RELEASE_CLASS_POINT(m_BoundingBox);
+	SAFE_RELEASE_CLASS_POINT(m_mesh);
+	SAFE_RELEASE_CLASS_POINT(m_message);
+	SAFE_RELEASE_CLASS_POINT(m_boundingBox);
 }
 
 //*****************************************************************************
@@ -98,7 +98,7 @@ void Character::SetWorldMatrix(D3DXMATRIX& mtxWorld)
 //*****************************************************************************
 void Character::PosToMessageAndMessageDraw(int row)
 {
-	m_Message->DrawPosMessage("Car1", m_pos, D3DXVECTOR2(0, float(row * 18 * 2)));
+	m_message->DrawPosMessage("Car1", m_pos, D3DXVECTOR2(0, float(row * 18 * 2)));
 }
 
 //*****************************************************************************
@@ -106,19 +106,13 @@ void Character::PosToMessageAndMessageDraw(int row)
 // 座標を設定
 //
 //*****************************************************************************
-void Character::InitCharacter(D3DXVECTOR3 pos, PDIRECT3DTEXTURE9* texturePoint, std::string meshPath)
+void Character::InitCharacter(D3DXVECTOR3 pos)
 {
 	// 位置
 	m_pos = pos;
 
 	// バウンディングボックスを初期化する
-	m_BoundingBox->InitBox(20, 30, 40, 0.4f);
-
-	// メッシュを決める
-	m_Mesh->SetMesh(meshPath);
-	
-	// テクスチャを決める
-	m_Mesh->SetMeshTexture(texturePoint);
+	m_boundingBox->InitBox(20, 30, 40, 0.4f);
 
 	// DEBUG
 }
@@ -131,12 +125,12 @@ void Character::InitCharacter(D3DXVECTOR3 pos, PDIRECT3DTEXTURE9* texturePoint, 
 void Character::Draw()
 {
 	// メッシュを描画する
-	m_Mesh->DrawModel();
+	m_mesh->DrawModel();
 
 	// バウンディングボックスを描画する
 	if (m_BoundingBoxON == true)
 	{
-		m_BoundingBox->Draw();
+		m_boundingBox->Draw();
 	}
 }
 
@@ -167,7 +161,7 @@ void Character::Update()
 //*****************************************************************************
 BoundingBox* Character::GetBoundingBox()
 {
-	return m_BoundingBox;
+	return m_boundingBox;
 }
 
 //*****************************************************************************
@@ -214,5 +208,5 @@ bool Character::CheckHitBB(Character* Object)
 //*****************************************************************************
 Mesh* Character::GetMesh()
 {
-	return m_Mesh;
+	return m_mesh;
 }

@@ -27,10 +27,10 @@ class Scene
 {
 private:
 	std::string		m_sceneName;	// シンーの名前
-	ResourcesManager*	m_resourcesManager;	// リソースマネジメント
 
 public:
 	D3DXMATRIX		m_mtxWorld;			// ワールドマトリックス
+	ResourcesManager*	m_resourcesManager;	// リソースマネジメント
 
 	Scene();
 	~Scene();
@@ -41,9 +41,8 @@ public:
 	// ファイル(blender)からシンーの資源を読み込み
 	HRESULT LoadSceneFile(std::string name);		// 未完成
 
-	ResourcesManager* GetResourcesManager();	//リソースマネジメントを取得
-	void SetSceneName(std::string name);	// シーンの名前を設定
-	std::string GetSceneName();	// シーンの名前を設定
+	void SetSceneName(std::string name);		// シーンの名前を設定
+	std::string GetSceneName();				// シーンの名前を取得
 
 	void ConsoleMessage(std::string sceneName);		// コンソールに表示するメッセージ
 };

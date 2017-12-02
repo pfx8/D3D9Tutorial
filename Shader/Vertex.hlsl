@@ -1,6 +1,7 @@
 matrix WVPMatrix;	// ワールド、ビュー、プロジェクション変換マトリックス
 
 vector LightDirection;	// 光の方向ベクトル
+
 vector Scalar;		// モーフィング計算
 					// T総時間、t変換時間
 					// Scalar = t / T

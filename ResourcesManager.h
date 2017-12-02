@@ -11,6 +11,7 @@
 #include "Engine.h"
 
 #include <map>
+#include "Mesh.h"
 
 //*****************************************************************************
 //
@@ -20,20 +21,19 @@
 class ResourcesManager
 {
 private:
-	TextureStruct m_FieldGrass = { "FieldGrass", "data/TEXTURE/field000.jpg", NULL };
-	TextureStruct m_FieldStone = { "FieldStone", "data/TEXTURE/field001.jpg", NULL };
-	TextureStruct m_FieldCheckered = { "FieldCheckered", "data/TEXTURE/field002.jpg", NULL};
+	// テクスチャ
+	std::map < std::string, std::string> m_TextureList;	// テクスチャリスト
+	std::string GetTextureStruct(std::string name);		// テクスチャパスを取得
 
-	TextureStruct m_Null = { "NULL", NULL, NULL };
-
-	std::map < std::string, TextureStruct> m_TextureList;	// テクスチャリスト
-	TextureStruct* GetTextureStruct(std::string name);	// テクスチャを取得
+	// メッシュ
+	std::map < std::string, std::string> m_MeshList;	// メッシュリスト
+	std::string GetMeshPath(std::string name);		// メッシュパスを取得
 public:
 	ResourcesManager();
 	~ResourcesManager();
 
-	LPDIRECT3DTEXTURE9	* LoadTexture(std::string name);	// テクスチャを読み込み
-	void LoadMesh(std::string name);	// メッシュを読み込み
+	HRESULT LoadTexture(std::string name, LPDIRECT3DTEXTURE9* texturePoint);	// テクスチャを読み込み
+	HRESULT LoadMesh(std::string name, Mesh* mesh);	// メッシュを読み込み
 
 };
 

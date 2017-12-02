@@ -20,7 +20,7 @@ Field::Field()
 	m_scl = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
 
 	// ポインタ
-	m_VertexBuffField = NULL;
+	m_vertexBuffField = NULL;
 }
 
 //*****************************************************************************
@@ -31,8 +31,8 @@ Field::Field()
 Field::~Field()
 {
 	// ポインタ
-	SAFE_RELEASE_POINT(m_VertexBuffField);
-	SAFE_RELEASE_POINT(m_FieldTexture);
+	SAFE_RELEASE_POINT(m_vertexBuffField);
+	SAFE_RELEASE_POINT(m_fieldTexture);
 }
 
 //*****************************************************************************
@@ -40,16 +40,13 @@ Field::~Field()
 // 座標を設定
 //
 //*****************************************************************************
-void Field::InitField(D3DXVECTOR3 pos, D3DXVECTOR2 size, LPDIRECT3DTEXTURE9* texturePoint)
+void Field::InitField(D3DXVECTOR3 pos, D3DXVECTOR2 size)
 {
 	// 位置
 	m_pos = pos;
 	
 	// 頂点作成
 	MakeVertex(size.x, size.y);
-
-	// テクスチャ
-	SetTexture(texturePoint);
 }
 
 //*****************************************************************************
@@ -62,7 +59,7 @@ HRESULT Field::MakeVertex(int width, int height)
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	// オブジェクトの頂点バッファを生成
-	if (FAILED(pDevice->CreateVertexBuffer(NUM_VERTEX * sizeof(VERTEX_3D), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_VertexBuffField, NULL)))
+	if (FAILED(pDevice->CreateVertexBuffer(NUM_VERTEX * sizeof(VERTEX_3D), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_vertexBuffField, NULL)))
 	{
 		return E_FAIL;
 	}
@@ -71,7 +68,7 @@ HRESULT Field::MakeVertex(int width, int height)
 	VERTEX_3D* VetexBuffer;
 
 	// 頂点データの範囲をロックし、頂点バッファ メモリへのポインタを取得する
-	m_VertexBuffField->Lock(0, 0, (void**)&VetexBuffer, 0);
+	m_vertexBuffField->Lock(0, 0, (void**)&VetexBuffer, 0);
 
 	// 頂点バッファの中身を埋める
 	// 頂点座標(ローカル座標 = 形を形成してる)
@@ -103,7 +100,7 @@ HRESULT Field::MakeVertex(int width, int height)
 	VetexBuffer[3].TexturePosition = D3DXVECTOR2(1.0f, 1.0f);
 
 	// 頂点データをアンロックする
-	m_VertexBuffField->Unlock();
+	m_vertexBuffField->Unlock();
 
 	return S_OK;
 }
@@ -147,13 +144,13 @@ void Field::Draw()
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	// 頂点バッファをデバイスのデータストリームにバイナリ
-	pDevice->SetStreamSource(0, m_VertexBuffField, 0, sizeof(VERTEX_3D));
+	pDevice->SetStreamSource(0, m_vertexBuffField, 0, sizeof(VERTEX_3D));
 
 	// 頂点フォーマットの設定
 	pDevice->SetFVF(FVF_VERTEX_3D);
 
 	// テクスチャの設定
-	pDevice->SetTexture(0, m_FieldTexture);
+	pDevice->SetTexture(0, m_fieldTexture);
 
 	// ポリゴンの描画
 	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, NUM_POLYGON);
@@ -166,5 +163,5 @@ void Field::Draw()
 //*****************************************************************************
 void Field::SetTexture(LPDIRECT3DTEXTURE9* point)
 {
-	m_FieldTexture = *point;
+	m_fieldTexture = *point;
 }

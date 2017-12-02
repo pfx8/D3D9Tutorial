@@ -39,11 +39,11 @@ Scene01::Scene01()
 	m_shader->LoadShaderFile();
 
 	// イルカ
-	m_dolphin = new Character();
-	m_dolphin->InitCharacter(
-		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-		GetResourcesManager()->LoadTexture("NULL"),
-		"data/MODEL/dolphin1.x");
+	//m_dolphin = new Character();
+	//m_dolphin->InitCharacter(
+	//	D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+	//	GetResourcesManager()->LoadTexture("NULL"),
+	//	"data/MODEL/dolphin1.x");
 
 	// コンソールを表示
 	Scene::ConsoleMessage(GetSceneName());

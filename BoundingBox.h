@@ -26,7 +26,7 @@ private:
 	D3DXVECTOR3	m_Size;	// バウンディングボックスサイズ
 	float		m_Alpha;	// 透明度
 
-	Mesh*		m_Mesh;	// メッシュ
+	Mesh*		m_mesh;	// メッシュ
 
 	LPDIRECT3DVERTEXBUFFER9 m_VertexBuffer;	// 頂点バッファ
 	LPDIRECT3DINDEXBUFFER9 m_IndexBuffer;	// インデックスバッファ

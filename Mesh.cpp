@@ -16,6 +16,7 @@ Mesh::Mesh()
 {
 	// ポインタ
 	m_mesh = NULL;
+	m_meshTexturePoint = NULL;
 
 	// クラスポインタ
 	m_material = new Material();
@@ -30,49 +31,10 @@ Mesh::~Mesh()
 {
 	// ポインタ
 	SAFE_RELEASE_POINT(m_mesh);
-	SAFE_RELEASE_POINT(m_MeshTexturePoint);
+	SAFE_RELEASE_POINT(m_meshTexturePoint);
 
 	// クラスポインタ
 	SAFE_RELEASE_CLASS_POINT(m_material);
-}
-
-
-//*****************************************************************************
-//
-// 使いたいメッシュを読み込み
-//
-//*****************************************************************************
-void Mesh::SetMesh(std::string path)
-{
-	m_path = " ";
-	m_path = path;
-	ReadXFile();	// パスにより、モデルを読み込み
-}
-
-//*****************************************************************************
-//
-// メッシュを初期かする
-//
-//*****************************************************************************
-HRESULT Mesh::ReadXFile()
-{
-	LPDIRECT3DDEVICE9 pDevice = GetDevice();
-
-	// Xファイルの読み込み
-	if (FAILED(D3DXLoadMeshFromX(
-		m_path.data(),					// モデルのファイル名
-		D3DXMESH_SYSTEMMEM,				// メッシュのメモリ確保オプション
-		pDevice,							// デバイスへのポインタ
-		NULL,							// 隣接性データを含むバッファへのポインタ
-		m_material->GetMaterialPoint(),
-		NULL,							// エフェクトインスタンスを含むバッファへのポインタ
-		m_material->GetMterialNumber(),
-		&m_mesh)))						// メッシュへのポインタ
-	{
-		return E_FAIL;
-	}
-
-	return S_OK;
 }
 
 //*****************************************************************************
@@ -99,21 +61,11 @@ void Mesh::DrawModel()
 		pDevice->SetMaterial(&pD3DXMat[count].MatD3D);
 
 		// テクスチャの設定
-		pDevice->SetTexture(0, m_MeshTexturePoint);
+		pDevice->SetTexture(0, m_meshTexturePoint);
 
 		// 描画
 		m_mesh->DrawSubset(count);
 	}
 
 	pDevice->SetMaterial(&matDef);	//	マテリアルを元に戻る
-}
-
-//*****************************************************************************
-//
-// メッシュにテクスチャを設定する
-//
-//*****************************************************************************
-void Mesh::SetMeshTexture(PDIRECT3DTEXTURE9* texturePoint)
-{
-	m_MeshTexturePoint = *texturePoint;
 }

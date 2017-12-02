@@ -25,15 +25,13 @@ Scene00::Scene00()
 	m_FieldStone = new Field();
 	m_FieldStone->InitField(
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-		D3DXVECTOR2(100, 100),
-		GetResourcesManager()->LoadTexture("FieldGrass"));
+		D3DXVECTOR2(100, 100));
+	m_resourcesManager->LoadTexture("FieldGrass", &m_FieldStone->m_fieldTexture);
 	
 	// 車
 	m_car1 = new Character();
-	m_car1->InitCharacter(
-		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-		GetResourcesManager()->LoadTexture("NULL"),
-		"data/MODEL/car000.x");
+	m_car1->InitCharacter(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	m_resourcesManager->LoadMesh("Car1", m_car1->m_mesh);
 
 	// ライト
 	m_light = new Light();

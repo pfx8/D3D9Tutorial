@@ -20,27 +20,18 @@
 class Mesh
 {
 private:
-	LPD3DXMESH		m_mesh;		// メッシュ情報へのポインタ
-	Material*			m_material;	// マテリアル情報へのポインタ
-	std::string		m_path;		// モデルのパス
 
-	PDIRECT3DTEXTURE9	m_MeshTexturePoint;		// テクスチャマネジメント
 
 public:
+	LPD3DXMESH		m_mesh;				// メッシュ情報へのポインタ
+	PDIRECT3DTEXTURE9	m_meshTexturePoint;	// テクスチャマネジメント
+	Material*			m_material;			// マテリアル情報へのポインタ
+
 	Mesh();
 	~Mesh();
 
-	// 使いたいメッシュを読み込み
-	void SetMesh(std::string path);
-
-	// Xファイルを読み込む
-	HRESULT ReadXFile();
-
 	// モデルを描画する
 	void DrawModel();
-
-	// メッシュにテクスチャを設定する
-	void SetMeshTexture(PDIRECT3DTEXTURE9* texturePoint);
 };
 
 #endif // !_MESH_H_

@@ -27,7 +27,7 @@ Camera::Camera()
 	D3DXMatrixIdentity(&m_viewMatrix);
 	D3DXMatrixIdentity(&m_projectionMatrix);
 
-	m_Message = new DebugMessage();
+	m_message = new DebugMessage();
 }
 
 //*****************************************************************************
@@ -37,7 +37,7 @@ Camera::Camera()
 //*****************************************************************************
 Camera::~Camera()
 {
-	SAFE_RELEASE_CLASS_POINT(m_Message);
+	SAFE_RELEASE_CLASS_POINT(m_message);
 }
 
 
@@ -255,11 +255,11 @@ void Camera::MoveAlongVecLook(float unit)
 //*****************************************************************************
 void Camera::PosToMessageAndMessageDraw(int row)
 {
-	m_Message->DrawPosMessage("CameraEye", m_posEye, D3DXVECTOR2(0, float((row + 1)* 18 * 2)));
-	m_Message->DrawPosMessage("CameraAt", m_posAt, D3DXVECTOR2(0, float((row + 2) * 18 * 2)));
-	m_Message->DrawPosMessage("->VecLook", m_vecLook, D3DXVECTOR2(0, float((row + 4) * 18 * 2)));
-	m_Message->DrawPosMessage("->VecRight", m_vecRight, D3DXVECTOR2(0, float((row + 5) * 18 * 2)));
-	m_Message->DrawPosMessage("VecUp", m_vecUp, D3DXVECTOR2(0, float((row + 7) * 18 * 2)));
-	m_Message->DrawPosMessage("Rot Radian", m_rot, D3DXVECTOR2(0, float((row + 9) * 18 * 2)));
-	m_Message->DrawPosMessage("Rot Degree", D3DXVECTOR3(0.0f, D3DXToDegree(m_rot.x), 0.0f), D3DXVECTOR2(0, float((row + 10) * 18 * 2)));
+	m_message->DrawPosMessage("CameraEye", m_posEye, D3DXVECTOR2(0, float((row + 1)* 18 * 2)));
+	m_message->DrawPosMessage("CameraAt", m_posAt, D3DXVECTOR2(0, float((row + 2) * 18 * 2)));
+	m_message->DrawPosMessage("->VecLook", m_vecLook, D3DXVECTOR2(0, float((row + 4) * 18 * 2)));
+	m_message->DrawPosMessage("->VecRight", m_vecRight, D3DXVECTOR2(0, float((row + 5) * 18 * 2)));
+	m_message->DrawPosMessage("VecUp", m_vecUp, D3DXVECTOR2(0, float((row + 6) * 18 * 2)));
+	m_message->DrawPosMessage("Rot Radian", m_rot, D3DXVECTOR2(0, float((row + 8) * 18 * 2)));
+	m_message->DrawPosMessage("Rot Degree", D3DXVECTOR3(0.0f, D3DXToDegree(m_rot.x), 0.0f), D3DXVECTOR2(0, float((row + 9) * 18 * 2)));
 }
