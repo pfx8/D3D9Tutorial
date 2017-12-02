@@ -15,17 +15,18 @@
 ResourcesManager::ResourcesManager()
 {
 	// テクスチャ検索マッピングを作る
-	m_TextureList["FieldGrass"] = "data/TEXTURE/field000.jpg";
-	m_TextureList["FieldStone"] = "data/TEXTURE/field001.jpg";
-	m_TextureList["FieldCheckered"] = "data/TEXTURE/field002.jpg";
+	m_TextureList["fieldGrass"] = "data/TEXTURE/field000.jpg";
+	m_TextureList["fieldStone"] = "data/TEXTURE/field001.jpg";
+	m_TextureList["fieldCheckered"] = "data/TEXTURE/field002.jpg";
+	m_TextureList["dolphin"] = "data/TEXTURE/dolphin.bmp";
 	m_TextureList["NULL"] = "NULL";
 
 	// メッシュ検索マッピングを作る
-	m_MeshList["Car1"] = "data/MODEL/car001.x";
-	m_MeshList["Car2"] = "data/MODEL/car002.x";
-	m_MeshList["Dolphin1"] = "data/MODEL/Dolphin1.x";
-	m_MeshList["Dolphin2"] = "data/MODEL/Dolphin2.x";
-	m_MeshList["Woman"] = "data/MODEL/Woman.x";
+	m_MeshList["car1"] = "data/MODEL/car001.x";
+	m_MeshList["car2"] = "data/MODEL/car002.x";
+	m_MeshList["dolphin1"] = "data/MODEL/Dolphin1.x";
+	m_MeshList["dolphin2"] = "data/MODEL/Dolphin3.x";
+	m_MeshList["woman"] = "data/MODEL/Woman.x";
 }
 
 //*****************************************************************************
@@ -50,18 +51,17 @@ HRESULT ResourcesManager::LoadTexture(std::string name, LPDIRECT3DTEXTURE9* text
 	if (GetTextureStruct(name).data() != "NULL")
 	{
 		// テクスチャを読み込み
-		std::cout << "Loading Texture:" << name;	// コンソールにメッセージを出す
 		if (FAILED(D3DXCreateTextureFromFile(
 			pDevice, 
 			GetTextureStruct(name).data(),
 			texturePoint)))
 		{
-			std::cout << " Failed!" << std::endl;	// コンソールにメッセージを出す
+			std::cout << "Loading Texture:" << name << " Failed!" << std::endl;	// コンソールにメッセージを出す
 			return E_FAIL;
 		}
 		else
 		{
-			std::cout << " OK!" << std::endl;	// コンソールにメッセージを出す
+			std::cout << "Loading Texture:" << name << " OK!" << std::endl;	// コンソールにメッセージを出す
 			return S_OK;
 		}
 	}
@@ -95,19 +95,39 @@ HRESULT ResourcesManager::LoadMesh(std::string name, Mesh* mesh)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
+	LPD3DXBUFFER materialBuffer;
 	// Xファイルの読み込み
 	if (FAILED(D3DXLoadMeshFromX(
 		GetMeshPath(name).data(),			// モデルのファイル名
 		D3DXMESH_SYSTEMMEM,				// メッシュのメモリ確保オプション
 		pDevice,							// デバイスへのポインタ
 		NULL,							// 隣接性データを含むバッファへのポインタ
-		mesh->m_material->GetMaterialPoint(),
+		&materialBuffer,	// マテリアルデータを含むバッファへのポインタ
 		NULL,							// エフェクトインスタンスを含むバッファへのポインタ
-		mesh->m_material->GetMterialNumber(),
-		&mesh->m_mesh)))						// メッシュへのポインタ
+		&mesh->m_material->m_materialNum,	// マテリアル構造体の数
+		&mesh->m_meshPoint)))				// メッシュへのポインタ
 	{
+		std::cout << "Loading Mesh:" << name << " Failed!" << std::endl;
 		return E_FAIL;
 	}
+
+	std::cout << "Loading Mesh:" << name << " OK!" << std::endl;
+
+	mesh->m_material->m_materialPoint = new D3DMATERIAL9[mesh->m_material->m_materialNum];
+	mesh->m_meshTexturePoint = new LPDIRECT3DTEXTURE9[mesh->m_material->m_materialNum];
+
+	D3DXMATERIAL* materials = (D3DXMATERIAL*)materialBuffer->GetBufferPointer();
+	for (DWORD count = 0; count < mesh->m_material->m_materialNum; count++)
+	{
+		mesh->m_material->m_materialPoint[count] = materials[count].MatD3D;
+		mesh->m_material->m_materialPoint[count].Ambient = mesh->m_material->m_materialPoint[count].Diffuse;
+
+		//LoadTexture("dolphin", &mesh->m_meshTexturePoint[count]);
+		::D3DXCreateTextureFromFile(pDevice, materials[count].pTextureFilename, &mesh->m_meshTexturePoint[count]);
+	}
+
+	// ッシュの面および頂点の順番変更を制御し、パフォーマンスを最適化する
+	mesh->m_meshPoint->OptimizeInplace(D3DXMESHOPT_ATTRSORT, NULL, NULL, NULL, NULL);
 
 	return S_OK;
 }

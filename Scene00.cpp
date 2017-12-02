@@ -17,21 +17,19 @@ using namespace std;
 //
 //*****************************************************************************
 Scene00::Scene00()
-{	
-	// 名前をつける
-	SetSceneName("D3DTutorial");
+{
+	SetSceneName("D3DTutorial");	// シーンに名前をつける
+	Scene::ConsoleMessage(GetSceneName());	// コンソールを表示
 
 	// フィールド
 	m_FieldStone = new Field();
-	m_FieldStone->InitField(
-		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-		D3DXVECTOR2(100, 100));
-	m_resourcesManager->LoadTexture("FieldGrass", &m_FieldStone->m_fieldTexture);
+	m_FieldStone->InitField(D3DXVECTOR3(0.0f, 0.0f, 0.0f),D3DXVECTOR2(100, 100));
+	m_resourcesManager->LoadTexture("fieldGrass", &m_FieldStone->m_fieldTexture);
 	
 	// 車
 	m_car1 = new Character();
 	m_car1->InitCharacter(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-	m_resourcesManager->LoadMesh("Car1", m_car1->m_mesh);
+	m_resourcesManager->LoadMesh("car1", m_car1->m_meshPoint);
 
 	// ライト
 	m_light = new Light();
@@ -46,8 +44,6 @@ Scene00::Scene00()
 	m_camera->SetProjMatrix();	// プロジェクション変換
 	m_camera->SetViewport();	// ビューポートを設定
 
-	Scene::ConsoleMessage(GetSceneName());
-
 	std::cout << "BoundingBox: " << std::boolalpha << m_car1->m_BoundingBoxON << std::endl;
 }
 
@@ -61,16 +57,16 @@ Scene00::~Scene00()
 	// クラスポインタ
 
 	// フィールド
-	SAFE_RELEASE_CLASS_POINT(m_FieldStone);
+	RELEASE_CLASS_POINT(m_FieldStone);
 
 	// 車
-	SAFE_RELEASE_CLASS_POINT(m_car1);
+	RELEASE_CLASS_POINT(m_car1);
 
 	// ライト
-	SAFE_RELEASE_CLASS_POINT(m_light);
+	RELEASE_CLASS_POINT(m_light);
 
 	// カメラ
-	SAFE_RELEASE_CLASS_POINT(m_camera);
+	RELEASE_CLASS_POINT(m_camera);
 }
 
 //*****************************************************************************
@@ -172,41 +168,3 @@ void Scene00::Draw()
 	// バックバッファとフロントバッファの入れ替え
 	GetDevice()->Present(NULL, NULL, NULL, NULL);
 }
-
-//*****************************************************************************
-//
-// ファイル(blender)からシンーの資源を読み込み
-//
-//*****************************************************************************
-//HRESULT Scene00::LoadSceneFile(string name)
-//{
-//	// コンソールにメッセージを出す
-//	cout << "Loading " << name << endl;
-//
-//	// 読み込みオブジェクトを作る
-//	ifstream fin;
-//	
-//	// ファイルを読み込み
-//	fin.open(name);
-//
-//	// 読み込みは失敗した場合
-//	if (fin.fail())
-//	{
-//		// コンソールにメッセージを出す
-//		cout << "エラー[ 読み込み失敗 ]" << endl;
-//		return E_FAIL;
-//	}
-//	else
-//	{
-//		// コンソールにメッセージを出す
-//		cout << name << " ok!" << endl;
-//		char PathTemp[100];
-//		while (!fin.eof())
-//		{
-//			fin.getline(PathTemp, 100);
-//			cout << PathTemp << endl;
-//		}
-//
-//		// 未完成
-//	}
-//}

@@ -1,7 +1,5 @@
 matrix WVPMatrix;	// ワールド、ビュー、プロジェクション変換マトリックス
-
 vector LightDirection;	// 光の方向ベクトル
-
 vector Scalar;		// モーフィング計算
 					// T総時間、t変換時間
 					// Scalar = t / T
@@ -28,7 +26,7 @@ struct VS_OUTPUT	// 出力頂点構造体
 	float2 uvCoords	: TEXCOORD;
 };
 
-VS_OUTPUT SetColor(VS_INPUT input)	// カラー設定と３つ変換
+VS_OUTPUT SetVertex(VS_INPUT input)	// カラー設定と３つ変換
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;	// マトリックスを初期化
 
@@ -36,9 +34,9 @@ VS_OUTPUT SetColor(VS_INPUT input)	// カラー設定と３つ変換
 	output.position = mul(output.position, WVPMatrix);					// 3つ変換
 
 	vector normal = input.normal * Scalar.x + input.position1 * Scalar.y;	// 法線計算
-    output.diffuse = dot((-LightDirection), normal);	// 法線と光の内積を計算して、色を決める
+	output.diffuse = dot((-LightDirection), normal);	// 法線と光の内積を計算して、色を決める
 
-    output.uvCoords = input.uvCoords;
+	output.uvCoords = input.uvCoords;
 
 	return output;
 }

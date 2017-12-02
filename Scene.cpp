@@ -34,7 +34,7 @@ Scene::~Scene()
 {
 	// クラスポインタ
 	// リソース
-	SAFE_RELEASE_CLASS_POINT(m_resourcesManager);
+	RELEASE_CLASS_POINT(m_resourcesManager);
 }
 
 //*****************************************************************************

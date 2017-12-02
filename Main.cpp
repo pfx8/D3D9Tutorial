@@ -320,7 +320,7 @@ HRESULT InitDiretX(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		return E_FAIL;
 	}
 
-	SAFE_RELEASE_POINT(g_pD3D); // リリースLPDIRECT3D9
+	RELEASE_POINT(g_pD3D); // リリースLPDIRECT3D9
 
 	//*****************************************************************************
 	//
@@ -366,15 +366,15 @@ void Draw(HWND hwnd)
 void Release(void)
 {
 	// ポインタ
-	SAFE_RELEASE_POINT(g_pD3D);
-	SAFE_RELEASE_POINT(g_pD3DDevice);
+	RELEASE_POINT(g_pD3D);
+	RELEASE_POINT(g_pD3DDevice);
 
 	// 入力処理の終了処理
 	UninitInput();
 
 	// コンソールの終了処理
-	SAFE_RELEASE_CLASS_POINT(g_Console);
-	SAFE_RELEASE_CLASS_POINT(g_SceneManager);
+	RELEASE_CLASS_POINT(g_Console);
+	RELEASE_CLASS_POINT(g_SceneManager);
 }
 
 //*****************************************************************************

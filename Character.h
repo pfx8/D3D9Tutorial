@@ -30,52 +30,39 @@ private:
 
 	std::string		m_name;			// キャラクターの名前、これによってメッシュとテクスチャを探す
 	
-	std::map<std::string, void*> m_MemberList;// プライベートメンバーリスト
+	std::map<std::string, void*> m_memberList;// プライベートメンバーリスト
 	void InitMemberList();// プライベートメンバーリスト初期化
 public:
 	// 固定属性
 	D3DXVECTOR3		m_pos;		// 位置
-	D3DXVECTOR3		m_Speed;		// スピード
+	D3DXVECTOR3		m_speed;		// スピード
 	D3DXVECTOR3		m_rot;		// 回転
 	D3DXVECTOR3		m_scl;		// 拡大縮小
 
-	Mesh*			m_mesh;			// メッシュ
+	Mesh*			m_meshPoint;		// メッシュ
 	Character();
 	~Character();
 
 	bool		m_BoundingBoxON;	// バウンディングボックスを描画する
 
-	// 座標を設定
-	void InitCharacter(D3DXVECTOR3 pos);
-	// 臨時ーーワールド変換
-	void SetWorldMatrix(D3DXMATRIX& mtxWorld);
+	void InitCharacter(D3DXVECTOR3 pos);	// 座標を設定
+	void SetWorldMatrix(D3DXMATRIX& mtxWorld);		// 臨時ーーワールド変換
 
 	void SetName(std::string name) { m_name = name; };
 	std::string GetName() { return m_name; };
 
-	// 座標をメッセージに渡して、画面に描画する
-	void PosToMessageAndMessageDraw(int row);
-
-	// キャラクターの描画
-	void Draw();
-
-	//  臨時ーーキャラクター移動
-	void Move();
-
-	// キャラクター更新
-	void Update();
-	// メッシュを取得
-	Mesh* GetMesh();
-
-	// 当たり判定
-	bool CheckHitBB(Character* Object);
+	void PosToMessageAndMessageDraw(int row);	// 座標をメッセージに渡して、画面に描画する
+	void Draw();	// キャラクターの描画
+	void Draw(IDirect3DVertexShader9* vertexShader, IDirect3DVertexDeclaration9* vertexDecl);	// キャラクターの描画(Shader)
+	void Move();	//  臨時ーーキャラクター移動
+	
+	void Update();	// キャラクター更新
+	Mesh* GetMesh();	// メッシュを取得
+	bool CheckHitBB(Character* Object);	// 当たり判定
 
 	// 取得
-	// キャラクターのバウンディングボックスを取得
-	BoundingBox* GetBoundingBox();
-	// キャラクター位置を取得
-	D3DXVECTOR3* GetPosition();
-
+	BoundingBox* GetBoundingBox();	// キャラクターのバウンディングボックスを取得
+	D3DXVECTOR3* GetPosition();		// キャラクター位置を取得
 
 	//*****************************************************************************
 	//
@@ -100,9 +87,9 @@ public:
 
 	auto* GetMember(std::string MemberName)
 	{
-		if (m_MemberList.find(MemberName) != m_MemberList.end())
+		if (m_memberList.find(MemberName) != m_memberList.end())
 		{
-			return m_MemberList[MemberName];
+			return m_memberList[MemberName];
 		}
 	};
 };

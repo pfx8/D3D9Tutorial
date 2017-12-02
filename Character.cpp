@@ -20,10 +20,10 @@ Character::Character()
 	
 	m_name = " ";
 
-	m_Speed = D3DXVECTOR3(1.5f, 0.0f, 0.0f);
+	m_speed = D3DXVECTOR3(1.5f, 0.0f, 0.0f);
 
 	// クラスポインタ
-	m_mesh = new Mesh();
+	m_meshPoint = new Mesh();
 	m_message = new DebugMessage();
 	m_boundingBox = new BoundingBox();
 
@@ -39,14 +39,14 @@ Character::Character()
 //*****************************************************************************
 void Character::InitMemberList()
 {
-	m_MemberList["pos"] = &m_pos;
-	m_MemberList["rot"] = &m_rot;
-	m_MemberList["scl"] = &m_scl;
-	m_MemberList["speed"] = &m_Speed;
-	m_MemberList["mesh"] = &m_mesh;
-	m_MemberList["message"] = &m_message;
-	m_MemberList["boundingBox"] = &m_boundingBox;
-	m_MemberList["name"] = &m_name;
+	m_memberList["pos"] = &m_pos;
+	m_memberList["rot"] = &m_rot;
+	m_memberList["scl"] = &m_scl;
+	m_memberList["speed"] = &m_speed;
+	m_memberList["mesh"] = &m_meshPoint;
+	m_memberList["message"] = &m_message;
+	m_memberList["boundingBox"] = &m_boundingBox;
+	m_memberList["name"] = &m_name;
 }
 
 //*****************************************************************************
@@ -57,9 +57,9 @@ void Character::InitMemberList()
 Character::~Character()
 {
 	// クラスポインタ
-	SAFE_RELEASE_CLASS_POINT(m_mesh);
-	SAFE_RELEASE_CLASS_POINT(m_message);
-	SAFE_RELEASE_CLASS_POINT(m_boundingBox);
+	RELEASE_CLASS_POINT(m_meshPoint);
+	RELEASE_CLASS_POINT(m_message);
+	RELEASE_CLASS_POINT(m_boundingBox);
 }
 
 //*****************************************************************************
@@ -124,13 +124,25 @@ void Character::InitCharacter(D3DXVECTOR3 pos)
 //*****************************************************************************
 void Character::Draw()
 {
-	// メッシュを描画する
-	m_mesh->DrawModel();
-
-	// バウンディングボックスを描画する
+	//m_meshPoint->DrawModel();	// メッシュを描画する
 	if (m_BoundingBoxON == true)
 	{
-		m_boundingBox->Draw();
+		m_boundingBox->Draw();	// バウンディングボックスを描画する
+	}
+}
+
+//*****************************************************************************
+//
+// キャラクターの描画(Shader)
+//
+//*****************************************************************************
+void Character::Draw(IDirect3DVertexShader9* vertexShader, IDirect3DVertexDeclaration9* vertexDecl)
+{
+	
+	m_meshPoint->DrawModel(vertexShader, vertexDecl);// メッシュを描画する
+	if (m_BoundingBoxON == true)
+	{
+		m_boundingBox->Draw();	// バウンディングボックスを描画する
 	}
 }
 
@@ -141,7 +153,7 @@ void Character::Draw()
 //*****************************************************************************
 void Character::Move()
 {
-	m_pos.x -= m_Speed.x;
+	m_pos.x -= m_speed.x;
 }
 
 //*****************************************************************************
@@ -208,5 +220,5 @@ bool Character::CheckHitBB(Character* Object)
 //*****************************************************************************
 Mesh* Character::GetMesh()
 {
-	return m_mesh;
+	return m_meshPoint;
 }

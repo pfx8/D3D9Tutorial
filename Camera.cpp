@@ -37,7 +37,7 @@ Camera::Camera()
 //*****************************************************************************
 Camera::~Camera()
 {
-	SAFE_RELEASE_CLASS_POINT(m_message);
+	RELEASE_CLASS_POINT(m_message);
 }
 
 

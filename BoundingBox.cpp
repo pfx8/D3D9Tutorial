@@ -22,7 +22,7 @@ BoundingBox::BoundingBox()
 	m_IndexBuffer = NULL;
 	m_VertexBuffer = NULL;
 
-	m_mesh = new Mesh();
+	m_meshPoint = new Mesh();
 }
 
 //*****************************************************************************
@@ -33,11 +33,11 @@ BoundingBox::BoundingBox()
 BoundingBox::~BoundingBox()
 {
 	// ポインタ
-	SAFE_RELEASE_POINT(m_IndexBuffer);
-	SAFE_RELEASE_POINT(m_VertexBuffer);
+	RELEASE_POINT(m_IndexBuffer);
+	RELEASE_POINT(m_VertexBuffer);
 
 	// クラスポインタ
-	SAFE_RELEASE_CLASS_POINT(m_mesh);
+	RELEASE_CLASS_POINT(m_meshPoint);
 }
 
 //*****************************************************************************

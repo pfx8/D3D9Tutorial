@@ -30,7 +30,7 @@ SceneManager::SceneManager()
 SceneManager::~SceneManager()
 {
 	// クラスポインタ
-	SAFE_RELEASE_CLASS_POINT(m_scene);
+	RELEASE_CLASS_POINT(m_scene);
 }
 
 //*****************************************************************************
@@ -54,7 +54,7 @@ void SceneManager::ChooseScene()
 	}*/
 
 	// シーンを選択する
-	char chooseScene = 'a';
+	char chooseScene = 'b';
 
 	//std::cin >> chooseScene;
 

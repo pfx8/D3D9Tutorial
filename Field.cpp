@@ -31,8 +31,8 @@ Field::Field()
 Field::~Field()
 {
 	// ƒ|ƒCƒ“ƒ^
-	SAFE_RELEASE_POINT(m_vertexBuffField);
-	SAFE_RELEASE_POINT(m_fieldTexture);
+	RELEASE_POINT(m_vertexBuffField);
+	RELEASE_POINT(m_fieldTexture);
 }
 
 //*****************************************************************************

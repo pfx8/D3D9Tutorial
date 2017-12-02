@@ -28,12 +28,10 @@ class Scene01 : public Scene
 {
 private:
 	D3DXMATRIX	m_mtxWorld;	// ワールドマトリックス
-
 	Camera*		m_camera;		// カメラ
-	Light*		m_light;		// ライト
-
 	Shader*		m_shader;		// シェーダー
 	Character*	m_dolphin;	// イルカ
+	Character*	m_dolphin2;	// イルカ
 public:
 	Scene01();
 	~Scene01();

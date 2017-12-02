@@ -18,35 +18,32 @@ using namespace std;
 //*****************************************************************************
 Scene01::Scene01()
 {	
-	// ライト
-	m_light = new Light();
+	
+	SetSceneName("ShaderTutorial");	// シーンに名前をつける
+	Scene::ConsoleMessage(GetSceneName());	// コンソールを表示
 
 	// カメラ
-	m_camera = new Camera();
+	m_camera = new Camera;
 	m_camera->InitCamera(
-		D3DXVECTOR3(0.0f, 5.0f, -10.0f),	// Eye
+		D3DXVECTOR3(0.0f, 100.0f, -400.0f),	// Eye
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f),		// At
 		D3DXVECTOR3(0.0f, 1.0f, 0.0f));		// Up
 	m_camera->SetViewMatrix();	// ビューイング変換
 	m_camera->SetProjMatrix();	// プロジェクション変換
 	m_camera->SetViewport();	// ビューポートを設定
-
-	// 名前をつける
-	SetSceneName("ShaderTutorial");
 	
 	// シェーダー
-	m_shader = new Shader();
+	m_shader = new Shader;
 	m_shader->LoadShaderFile();
 
 	// イルカ
-	//m_dolphin = new Character();
-	//m_dolphin->InitCharacter(
-	//	D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-	//	GetResourcesManager()->LoadTexture("NULL"),
-	//	"data/MODEL/dolphin1.x");
+	m_dolphin = new Character;
+	m_dolphin->InitCharacter(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	m_resourcesManager->LoadMesh("dolphin1", m_dolphin->m_meshPoint);
 
-	// コンソールを表示
-	Scene::ConsoleMessage(GetSceneName());
+	m_dolphin2 = new Character;
+	m_dolphin2->InitCharacter(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	m_resourcesManager->LoadMesh("dolphin2", m_dolphin2->m_meshPoint);
 }
 
 //*****************************************************************************
@@ -57,14 +54,12 @@ Scene01::Scene01()
 Scene01::~Scene01()
 {
 	// クラスポインタ
-	// ライト
-	SAFE_RELEASE_CLASS_POINT(m_light);
 	// カメラ
-	SAFE_RELEASE_CLASS_POINT(m_camera);
+	RELEASE_CLASS_POINT(m_camera);
 	// シェーダー
-	SAFE_RELEASE_CLASS_POINT(m_shader);
+	RELEASE_CLASS_POINT(m_shader);
 	// イルカ
-	SAFE_RELEASE_CLASS_POINT(m_dolphin);
+	RELEASE_CLASS_POINT(m_dolphin);
 }
 
 //*****************************************************************************
@@ -88,69 +83,46 @@ void Scene01::Update()
 //*****************************************************************************
 void Scene01::Draw()
 {
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();
+
 	// バックバッファ＆Ｚバッファのクリア
-	GetDevice()->Clear(0, NULL, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER), D3DCOLOR_RGBA(0, 0, 0, 1), 1.0f, 0);
+	pDevice->Clear(0, NULL, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER), D3DCOLOR_RGBA(153, 153, 153, 1), 1.0f, 0);
 
 	// Direct3Dによる描画の開始
-	if (SUCCEEDED(GetDevice()->BeginScene()))
+	if (SUCCEEDED(pDevice->BeginScene()))
 	{
-		GetDevice()->SetTransform(D3DTS_WORLD, &m_mtxWorld);
+		// シェーダーにWVPMatrixを渡す
 		D3DXMATRIX matWVP = m_mtxWorld * m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
+		m_shader->m_constTable->SetMatrix(pDevice, m_shader->m_WVPMatrixHandle, &matWVP);
 
-		// 計算
-		m_shader->m_constTable->SetMatrix(GetDevice(), m_shader->m_WVPMatrixHandle, &matWVP);	// シェーダーのWVPマトリックスを設定
+		// Scalar計算
+		float DolphinTimeFactor = (float)(timeGetTime() % 501) / 250.0f;
+		float Scalar = (DolphinTimeFactor <= 1.0f) ? DolphinTimeFactor : (2.0f - DolphinTimeFactor);
+		m_shader->m_constTable->SetVector(pDevice, m_shader->m_ScalarHandle, &D3DXVECTOR4(1.0f - Scalar, Scalar, 0.0f, 0.0f));
 
-		D3DXVECTOR4 color(1.0f, 1.0f, 0.0f, 1.0f);
-		m_shader->m_constTable->SetVector(GetDevice(), m_shader->m_LightDirectionHandle, &color);		// シェーダーの頂点カラーを設定
+		// 頂点シェーダー設定
+		pDevice->SetVertexShader(m_shader->m_vertexShader);
 
-		GetDevice()->SetVertexShader(m_shader->m_vertexShader);	// シェーダーを設定
+		// 頂点シェーダ宣言設定
+		pDevice->SetVertexDeclaration(m_shader->m_vertexDecl);
 
-		//m_teapot->DrawSubset(0);	// ティーポット
-		m_dolphin->Draw();
+		// 目標メッシュの頂点バッファをストリーム番号1にする
+		IDirect3DVertexBuffer9* Stream1 = NULL;
+		m_dolphin->m_meshPoint->m_meshPoint->GetVertexBuffer(&Stream1);
+		pDevice->SetStreamSource(1, Stream1, 0, D3DXGetFVFVertexSize(m_dolphin->m_meshPoint->m_meshPoint->GetFVF()));
+		RELEASE_POINT(Stream1);
 
-		m_camera->PosToMessageAndMessageDraw(0);
+		// 目標メッシュの頂点バッファをストリーム番号1にする
+		IDirect3DVertexBuffer9* Stream2 = NULL;
+		m_dolphin2->m_meshPoint->m_meshPoint->GetVertexBuffer(&Stream2);
+		pDevice->SetStreamSource(1, Stream2, 0, D3DXGetFVFVertexSize(m_dolphin2->m_meshPoint->m_meshPoint->GetFVF()));
+		RELEASE_POINT(Stream2);
 
-		GetDevice()->EndScene();
+		m_dolphin->Draw(m_shader->m_vertexShader, m_shader->m_vertexDecl);
+
+		pDevice->EndScene();
 	}
 
 	// バックバッファとフロントバッファの入れ替え
-	GetDevice()->Present(NULL, NULL, NULL, NULL);
+	pDevice->Present(NULL, NULL, NULL, NULL);
 }
-
-//*****************************************************************************
-//
-// ファイル(blender)からシンーの資源を読み込み
-//
-//*****************************************************************************
-//HRESULT Scene00::LoadSceneFile(string name)
-//{
-//	// コンソールにメッセージを出す
-//	cout << "Loading " << name << endl;
-//
-//	// 読み込みオブジェクトを作る
-//	ifstream fin;
-//	
-//	// ファイルを読み込み
-//	fin.open(name);
-//
-//	// 読み込みは失敗した場合
-//	if (fin.fail())
-//	{
-//		// コンソールにメッセージを出す
-//		cout << "エラー[ 読み込み失敗 ]" << endl;
-//		return E_FAIL;
-//	}
-//	else
-//	{
-//		// コンソールにメッセージを出す
-//		cout << name << " ok!" << endl;
-//		char PathTemp[100];
-//		while (!fin.eof())
-//		{
-//			fin.getline(PathTemp, 100);
-//			cout << PathTemp << endl;
-//		}
-//
-//		// 未完成
-//	}
-//}

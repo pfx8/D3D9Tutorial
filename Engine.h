@@ -57,8 +57,9 @@
 #define	FVF_VERTEX_3D		(D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE | D3DFVF_TEX1) //D3DFVF_TEX1　テクスチャー座標
 #define	FVF_VERTEX_3D_NT	(D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE)				//D3DFVF_TEX1　テクスチャー座標
 
-#define SAFE_RELEASE_POINT(ptr)					{ if(ptr) { (ptr)->Release(); (ptr) = NULL; } }
-#define SAFE_RELEASE_CLASS_POINT(cptr)			{ if(cptr) { delete cptr; } }
+#define RELEASE_POINT(ptr)					{ if(ptr) { (ptr)->Release(); (ptr) = NULL; } }
+#define RELEASE_CLASS_POINT(ptr)			{ if(ptr) { delete ptr; } }
+#define RELEASE_CLASS_ARRY_POINT(ptr)		{ if(ptr) { delete [] ptr;} }
 
 #define	NUM_VERTEX		(4)		// 頂点数
 #define	NUM_POLYGON		(2)		// ポリゴン数

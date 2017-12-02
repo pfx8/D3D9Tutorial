@@ -21,17 +21,16 @@ class Mesh
 {
 private:
 
-
 public:
-	LPD3DXMESH		m_mesh;				// メッシュ情報へのポインタ
-	PDIRECT3DTEXTURE9	m_meshTexturePoint;	// テクスチャマネジメント
-	Material*			m_material;			// マテリアル情報へのポインタ
+	LPD3DXMESH			m_meshPoint;			// メッシュ情報へのポインタ
+	LPDIRECT3DTEXTURE9*	m_meshTexturePoint;	// テクスチャマネジメント
+	Material*				m_material;			// マテリアル情報へのポインタ
 
 	Mesh();
 	~Mesh();
 
-	// モデルを描画する
-	void DrawModel();
+	//void DrawModel();	// モデルを描画する
+	void DrawModel(IDirect3DVertexShader9* vertexShader, IDirect3DVertexDeclaration9* vertexDecl);	// モデルを描画する(Shader)
 };
 
 #endif // !_MESH_H_

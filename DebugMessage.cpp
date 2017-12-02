@@ -28,7 +28,7 @@ DebugMessage::DebugMessage()
 //*****************************************************************************
 DebugMessage::~DebugMessage()
 {
-	SAFE_RELEASE_POINT(m_Font);
+	RELEASE_POINT(m_Font);
 }
 
 //*****************************************************************************
