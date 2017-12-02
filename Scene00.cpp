@@ -18,18 +18,21 @@ using namespace std;
 //*****************************************************************************
 Scene00::Scene00()
 {	
+	// 名前をつける
+	SetSceneName("D3DTutorial");
+
 	// フィールド
 	m_FieldStone = new Field();
 	m_FieldStone->InitField(
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
 		D3DXVECTOR2(100, 100),
-		GetResourcesManager()->SetTexture("FieldGrass"));
+		GetResourcesManager()->LoadTexture("FieldGrass"));
 	
 	// 車
 	m_car1 = new Character();
 	m_car1->InitCharacter(
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-		GetResourcesManager()->SetTexture("NULL"),
+		GetResourcesManager()->LoadTexture("NULL"),
 		"data/MODEL/car000.x");
 
 	// ライト
@@ -44,9 +47,6 @@ Scene00::Scene00()
 	m_camera->SetViewMatrix();	// ビューイング変換
 	m_camera->SetProjMatrix();	// プロジェクション変換
 	m_camera->SetViewport();	// ビューポートを設定
-
-	// 名前をつける
-	SetSceneName("D3DTutorial");
 
 	Scene::ConsoleMessage(GetSceneName());
 

@@ -22,7 +22,7 @@ Scene::Scene()
 	m_resourcesManager = new ResourcesManager();
 
 	// テクスチャを読み込み
-	m_resourcesManager->InitTexture();
+	// m_resourcesManager->InitTexture();
 }
 
 //*****************************************************************************

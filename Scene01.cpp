@@ -42,7 +42,7 @@ Scene01::Scene01()
 	m_dolphin = new Character();
 	m_dolphin->InitCharacter(
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-		GetResourcesManager()->SetTexture("NULL"),
+		GetResourcesManager()->LoadTexture("NULL"),
 		"data/MODEL/dolphin1.x");
 
 	// コンソールを表示

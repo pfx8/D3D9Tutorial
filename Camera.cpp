@@ -126,19 +126,19 @@ void Camera::SetViewport()
 //*****************************************************************************
 void Camera::Update()
 {
-	if (GetKeyboardPress(DIK_J))			// key J
+	if (GetKeyboardPress(DIK_J))	// key J
 	{
 		RotationVecUp(1.0f / 180.0f * D3DX_PI);
 	}
-	if (GetKeyboardPress(DIK_L))			// key L
+	if (GetKeyboardPress(DIK_L))	// key L
 	{
 		RotationVecUp(-1.0f / 180.0f * D3DX_PI);
 	}
-	if (GetKeyboardPress(DIK_I))			// key I
+	if (GetKeyboardPress(DIK_I))	// key I
 	{
 		RotationVecRight(1.0f / 180.0f * D3DX_PI);
 	}
-	if (GetKeyboardPress(DIK_K))			// key K
+	if (GetKeyboardPress(DIK_K))	// key K
 	{
 		RotationVecRight(-1.0f / 180.0f * D3DX_PI);
 	}
@@ -198,21 +198,31 @@ void Camera::RotationVecUp(float angle)
 //*****************************************************************************
 void Camera::RotationVecRight(float angle)
 {
-	if (m_rot.x > D3DXToRadian(45))
+	// 角度の移動範囲は -55 + 45(初期) ~ 45(初期) + 20
+	if (m_rot.x >= 20.0f / 180.0f * D3DX_PI && angle < 0)
 	{
-		m_rot.x = D3DXToRadian(-45);
+		m_rot.x = 20.0f / 180.0f * D3DX_PI;
 	}
-	if (m_rot.x < D3DXToRadian(-45))
-	{
-		m_rot.x = D3DXToRadian(45);
+	else if(m_rot.x <= -55.0f / 180.0f * D3DX_PI && angle > 0)
+	{ 
+		m_rot.x = -55.0f / 180.0f * D3DX_PI;
 	}
 	else
 	{
-		m_posEye.y = m_posEye.y * cosf(angle) - m_posEye.z * sinf(angle);
-		m_posEye.z = m_posEye.y * sinf(angle) + m_posEye.z * cosf(angle);
-
 		// 角度を記録する
-		m_rot.x += angle;
+		m_rot.x -= angle;
+
+		// 注視ベクトルを更新する
+		m_vecLook.z = cosf(m_rot.x);
+		m_vecLook.y = sinf(m_rot.x);
+
+		// 上方向ベクトルを更新する
+		m_vecUp.z = cosf(m_rot.x + D3DX_PI / 2);
+		m_vecUp.y = sinf(m_rot.x + D3DX_PI / 2);
+
+		// カメラ位置を更新する
+		m_posEye.z = m_posEye.z * cosf(angle) - m_posEye.y * sinf(angle);
+		m_posEye.y = m_posEye.z * sinf(angle) + m_posEye.y * cosf(angle);
 	}
 }
 
@@ -225,7 +235,6 @@ void Camera::MoveAlongVecRight(float unit)
 {
 	m_posEye += m_vecRight * unit;
 	m_posAt += m_vecRight * unit;
-	//m_posAt = m_vecRight * D3DXVec3Length(&m_posEye);
 }
 
 //*****************************************************************************
@@ -237,7 +246,6 @@ void Camera::MoveAlongVecLook(float unit)
 {
 	m_posEye += m_vecLook * unit;
 	m_posAt += m_vecLook * unit;
-	//m_posAt = m_vecRight * D3DXVec3Length(&m_posEye);
 }
 
 //*****************************************************************************
@@ -253,5 +261,5 @@ void Camera::PosToMessageAndMessageDraw(int row)
 	m_Message->DrawPosMessage("->VecRight", m_vecRight, D3DXVECTOR2(0, float((row + 5) * 18 * 2)));
 	m_Message->DrawPosMessage("VecUp", m_vecUp, D3DXVECTOR2(0, float((row + 7) * 18 * 2)));
 	m_Message->DrawPosMessage("Rot Radian", m_rot, D3DXVECTOR2(0, float((row + 9) * 18 * 2)));
-	m_Message->DrawPosMessage("Rot Degree", D3DXVECTOR3(0.0f, D3DXToDegree(m_rot.y), 0.0f), D3DXVECTOR2(0, float((row + 10) * 18 * 2)));
+	m_Message->DrawPosMessage("Rot Degree", D3DXVECTOR3(0.0f, D3DXToDegree(m_rot.x), 0.0f), D3DXVECTOR2(0, float((row + 10) * 18 * 2)));
 }

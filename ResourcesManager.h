@@ -23,23 +23,18 @@ private:
 	TextureStruct m_FieldGrass = { "FieldGrass", "data/TEXTURE/field000.jpg", NULL };
 	TextureStruct m_FieldStone = { "FieldStone", "data/TEXTURE/field001.jpg", NULL };
 	TextureStruct m_FieldCheckered = { "FieldCheckered", "data/TEXTURE/field002.jpg", NULL};
+
 	TextureStruct m_Null = { "NULL", NULL, NULL };
 
-	// テクスチャリスト
-	std::map < std::string, LPDIRECT3DTEXTURE9> m_TextureList;
-
-	// テクスチャを読み込み
-	HRESULT LoadTexture(TextureStruct* texture);
-
+	std::map < std::string, TextureStruct> m_TextureList;	// テクスチャリスト
+	TextureStruct* GetTextureStruct(std::string name);	// テクスチャを取得
 public:
 	ResourcesManager();
 	~ResourcesManager();
 
-	// テクスチャリストを初期化する
-	void InitTexture();
+	LPDIRECT3DTEXTURE9	* LoadTexture(std::string name);	// テクスチャを読み込み
+	void LoadMesh(std::string name);	// メッシュを読み込み
 
-	// テクスチャを取得
-	LPDIRECT3DTEXTURE9* SetTexture(std::string name);
 };
 
 #endif // !_RESOURCES_MANAGER_H_

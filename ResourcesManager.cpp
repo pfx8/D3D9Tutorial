@@ -14,7 +14,11 @@
 //*****************************************************************************
 ResourcesManager::ResourcesManager()
 {
-	
+	// 検索マッピングを作る
+	m_TextureList[m_FieldGrass.Name] = m_FieldGrass;
+	m_TextureList[m_FieldStone.Name] = m_FieldStone;
+	m_TextureList[m_FieldCheckered.Name] = m_FieldCheckered;
+	m_TextureList[m_Null.Name] = m_Null;
 }
 
 //*****************************************************************************
@@ -29,52 +33,43 @@ ResourcesManager::~ResourcesManager()
 
 //*****************************************************************************
 //
-// テクスチャリストを初期化する
-//
-//*****************************************************************************
-void ResourcesManager::InitTexture()
-{
-	// コンソールにメッセージを出す
-	std::cout << "Loading Texture:" << std::endl;
-
-	// テクスチャを読み込み
-	LoadTexture(&m_FieldGrass);
-	LoadTexture(&m_FieldStone);
-	LoadTexture(&m_FieldCheckered);
-
-	// 検索マッピングを作る
-	m_TextureList[m_FieldGrass.Name]	= m_FieldGrass.TexturePoint;
-	m_TextureList[m_FieldStone.Name]	= m_FieldStone.TexturePoint;
-	m_TextureList[m_FieldCheckered.Name]	= m_FieldCheckered.TexturePoint;
-	m_TextureList[m_Null.Name]			= m_Null.TexturePoint;
-}
-
-//*****************************************************************************
-//
 // テクスチャを読み込み
 //
 //*****************************************************************************
-HRESULT ResourcesManager::LoadTexture(TextureStruct* texture)
+LPDIRECT3DTEXTURE9* ResourcesManager::LoadTexture(std::string name)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
+	TextureStruct* texture = GetTextureStruct(name);	// ロードしたいテクスチャ構造体を取得
 
-	if (FAILED(D3DXCreateTextureFromFile(pDevice, texture->Path, &texture->TexturePoint)))
+	if (texture->Path != NULL)
 	{
-		return E_FAIL;
+
+		// テクスチャを読み込み
+		std::cout << "Loading Texture:" << texture->Path;	// コンソールにメッセージを出す
+		if (FAILED(D3DXCreateTextureFromFile(pDevice, texture->Path, &texture->TexturePoint)))
+		{
+			std::cout << " Failed!" << std::endl;	// コンソールにメッセージを出す
+			return NULL;
+		}
+		else
+		{
+			std::cout << " OK!" << std::endl;	// コンソールにメッセージを出す
+			return &texture->TexturePoint;
+		}
 	}
-
-	// コンソールにメッセージを出す
-	std::cout << texture->Path << " OK!" << std::endl;
-
-	return S_OK;
+	else
+	{
+		return &texture->TexturePoint;
+	}
 }
 
+
 //*****************************************************************************
 //
-// テクスチャを取得
+// テクスチャ構造体を取得
 //
 //*****************************************************************************
-LPDIRECT3DTEXTURE9* ResourcesManager::SetTexture(std::string name)
+TextureStruct* ResourcesManager::GetTextureStruct(std::string name)
 {
 	if(m_TextureList.find(name) != m_TextureList.end())
 	{
