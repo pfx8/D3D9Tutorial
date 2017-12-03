@@ -2317,7 +2317,7 @@ Frame SCENE_ROOT {
       0.050000; 0.050000; 0.050000;;
       0.000000; 0.000000; 0.000000;;
       TextureFileName {
-        "data/TEXTURE/dolphin.bmp";
+        "Dolphin.bmp";
       }
     }
    }

@@ -47,7 +47,7 @@ Scene::~Scene()
 void Scene::ConsoleMessage(std::string sceneName)
 {
 	// コンソールにシンーの名前を出す
-	cout << endl << "///////////////////////////////" << endl;
+	cout << "///////////////////////////////" << endl;
 	cout << "// Scene : " << sceneName << endl;
 	cout << "///////////////////////////////" << endl;
 }

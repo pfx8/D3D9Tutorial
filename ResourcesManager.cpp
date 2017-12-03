@@ -18,7 +18,6 @@ ResourcesManager::ResourcesManager()
 	m_TextureList["fieldGrass"] = "data/TEXTURE/field000.jpg";
 	m_TextureList["fieldStone"] = "data/TEXTURE/field001.jpg";
 	m_TextureList["fieldCheckered"] = "data/TEXTURE/field002.jpg";
-	m_TextureList["dolphin"] = "data/TEXTURE/dolphin.bmp";
 	m_TextureList["NULL"] = "NULL";
 
 	// メッシュ検索マッピングを作る
@@ -95,14 +94,14 @@ HRESULT ResourcesManager::LoadMesh(std::string name, Mesh* mesh)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
-	LPD3DXBUFFER materialBuffer;
+	LPD3DXBUFFER materialBuffer;	// マテリアルバッファ
 	// Xファイルの読み込み
 	if (FAILED(D3DXLoadMeshFromX(
 		GetMeshPath(name).data(),			// モデルのファイル名
 		D3DXMESH_SYSTEMMEM,				// メッシュのメモリ確保オプション
 		pDevice,							// デバイスへのポインタ
 		NULL,							// 隣接性データを含むバッファへのポインタ
-		&materialBuffer,	// マテリアルデータを含むバッファへのポインタ
+		&materialBuffer,					// マテリアルデータを含むバッファへのポインタ
 		NULL,							// エフェクトインスタンスを含むバッファへのポインタ
 		&mesh->m_material->m_materialNum,	// マテリアル構造体の数
 		&mesh->m_meshPoint)))				// メッシュへのポインタ
@@ -110,20 +109,27 @@ HRESULT ResourcesManager::LoadMesh(std::string name, Mesh* mesh)
 		std::cout << "Loading Mesh:" << name << " Failed!" << std::endl;
 		return E_FAIL;
 	}
+	else
+	{
+		std::cout << "Loading Mesh:" << name << " OK!" << std::endl;
+	}
 
-	std::cout << "Loading Mesh:" << name << " OK!" << std::endl;
+	mesh->m_material->m_materialPoint = new D3DMATERIAL9[mesh->m_material->m_materialNum];	// マテリアルの数によってマテリアルを格納できるメモリを確保
+	mesh->m_meshTexturePoint = new LPDIRECT3DTEXTURE9[mesh->m_material->m_materialNum];	// マテリアルの数によってテクスチャを格納できるメモリを確保
 
-	mesh->m_material->m_materialPoint = new D3DMATERIAL9[mesh->m_material->m_materialNum];
-	mesh->m_meshTexturePoint = new LPDIRECT3DTEXTURE9[mesh->m_material->m_materialNum];
+	D3DXMATERIAL* materials = (D3DXMATERIAL*)materialBuffer->GetBufferPointer();	// Xファイルに保存されているマテリアル情報構造体
 
-	D3DXMATERIAL* materials = (D3DXMATERIAL*)materialBuffer->GetBufferPointer();
 	for (DWORD count = 0; count < mesh->m_material->m_materialNum; count++)
 	{
-		mesh->m_material->m_materialPoint[count] = materials[count].MatD3D;
-		mesh->m_material->m_materialPoint[count].Ambient = mesh->m_material->m_materialPoint[count].Diffuse;
+		mesh->m_material->m_materialPoint[count] = materials[count].MatD3D; // マテリアルのプロパティをコピー
+		mesh->m_material->m_materialPoint[count].Ambient = mesh->m_material->m_materialPoint[count].Diffuse;	// アンビエント色をディフューズ色にする
 
-		//LoadTexture("dolphin", &mesh->m_meshTexturePoint[count]);
-		::D3DXCreateTextureFromFile(pDevice, materials[count].pTextureFilename, &mesh->m_meshTexturePoint[count]);
+		// Xファイルの情報によってすべてのテクスチャを読み込み
+		if (FAILED(D3DXCreateTextureFromFile(pDevice, materials[count].pTextureFilename, &mesh->m_meshTexturePoint[count])))
+		{
+			std::cout << "Material's texture read FAIL" << std::endl;
+			return E_FAIL;
+		}
 	}
 
 	// ッシュの面および頂点の順番変更を制御し、パフォーマンスを最適化する

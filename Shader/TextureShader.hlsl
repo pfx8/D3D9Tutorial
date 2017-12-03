@@ -13,7 +13,7 @@ struct VS_INPUT	// 入力頂点構造体
 
 	// 2nd頂点stream
 	vector position1	: POSITION1;
-	vector normal1	: NORMAL;
+	vector normal1	: NORMAL1;
 
 	// テクスチャ座標  
 	float2 uvCoords	: TEXCOORD;
@@ -28,12 +28,12 @@ struct VS_OUTPUT	// 出力頂点構造体
 
 VS_OUTPUT SetVertex(VS_INPUT input)	// カラー設定と３つ変換
 {
-	VS_OUTPUT output = (VS_OUTPUT)0;	// マトリックスを初期化
+    VS_OUTPUT output = (VS_OUTPUT) 0; // 出力頂点構造体を初期化
 
 	output.position = input.position*Scalar.x + input.position1*Scalar.y;	// 頂点計算
 	output.position = mul(output.position, WVPMatrix);					// 3つ変換
 
-	vector normal = input.normal * Scalar.x + input.position1 * Scalar.y;	// 法線計算
+    vector normal = input.normal * Scalar.x + input.normal1 * Scalar.y; // 法線計算
 	output.diffuse = dot((-LightDirection), normal);	// 法線と光の内積を計算して、色を決める
 
 	output.uvCoords = input.uvCoords;

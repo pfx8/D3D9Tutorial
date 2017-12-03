@@ -61,7 +61,7 @@ HRESULT Shader::LoadShaderFile()
 	};
 
 	if (FAILED(D3DXCompileShaderFromFile(
-		"Shader/VertexShader.hlsl",	//シェーダーファイルパス
+		"Shader/Vertex.hlsl",	//シェーダーファイルパス
 		0,				// デフォルト設定
 		0,				// デフォルト設定
 		"SetVertex",		// シェーダーの入り口関数

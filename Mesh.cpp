@@ -79,37 +79,34 @@ void Mesh::DrawModel(IDirect3DVertexShader9* vertexShader, IDirect3DVertexDeclar
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
-	IDirect3DVertexBuffer9* vertexBuffer = NULL;	// 頂点バッファ
-	IDirect3DIndexBuffer9* indexBuffer = NULL;	// インデックスバッファ
+	IDirect3DVertexBuffer9* vertexBuffer = NULL;
+	m_meshPoint->GetVertexBuffer(&vertexBuffer);	// 頂点バッファを取得
 
-	m_meshPoint->GetVertexBuffer(&vertexBuffer);
-	m_meshPoint->GetIndexBuffer(&indexBuffer);
+	IDirect3DIndexBuffer9* indexBuffer = NULL;
+	m_meshPoint->GetIndexBuffer(&indexBuffer);	// インデックスバッファを取得
 
-	// 
-	DWORD numAttributes;
+	DWORD attributesNum;
+	m_meshPoint->GetAttributeTable(NULL, &attributesNum);	// メッシュの属性テーブルに格納されているエントリの数を取得
+
 	D3DXATTRIBUTERANGE* attributes = NULL;
-	m_meshPoint->GetAttributeTable(NULL, &numAttributes);
-	attributes = new D3DXATTRIBUTERANGE[numAttributes];
-	m_meshPoint->GetAttributeTable(attributes, &numAttributes);
+	attributes = new D3DXATTRIBUTERANGE[attributesNum];	// メッシュの属性テーブルを格納できるメモリを作る
+	m_meshPoint->GetAttributeTable(attributes, &attributesNum);	// メッシュの属性テーブルを取得
 
-	// 頂点シェーダーと頂点シェーダ宣言を設定
-	pDevice->SetVertexShader(vertexShader);
-	pDevice->SetVertexDeclaration(vertexDecl);
+
+	pDevice->SetVertexShader(vertexShader);	// 頂点シェーダーを設定
+	pDevice->SetVertexDeclaration(vertexDecl);	// 頂点シェーダー宣言を設定
 
 	// ストリームを設定
 	pDevice->SetStreamSource(0, vertexBuffer, 0, D3DXGetFVFVertexSize(m_meshPoint->GetFVF()));
 	pDevice->SetIndices(indexBuffer);
 
-	// ドロー
-	for (WORD count = 0; count < numAttributes; count++)
+	// 描画
+	for (WORD count = 0; count < attributesNum; count++)
 	{
 		if (attributes[count].FaceCount)
 		{
-			// マテリアル数を取得
-			DWORD matNum = attributes[count].AttribId;
-
-			// テクスチャを設定
-			pDevice->SetTexture(0, m_meshTexturePoint[matNum]);
+			DWORD matNum = attributes[count].AttribId;	// マテリアル数を取得
+			pDevice->SetTexture(0, m_meshTexturePoint[matNum]);	// テクスチャを設定
 
 			// メッシュを描画する
 			pDevice->DrawIndexedPrimitive(

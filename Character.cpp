@@ -23,30 +23,9 @@ Character::Character()
 	m_speed = D3DXVECTOR3(1.5f, 0.0f, 0.0f);
 
 	// クラスポインタ
-	m_meshPoint = new Mesh();
+	m_mesh = new Mesh();
 	m_message = new DebugMessage();
 	m_boundingBox = new BoundingBox();
-
-	InitMemberList();	// メンバーリストを作る
-
-	m_BoundingBoxON = true;	// バウンディングボックスを描画する
-}
-
-//*****************************************************************************
-//
-// プライベートメンバーリスト初期化
-//
-//*****************************************************************************
-void Character::InitMemberList()
-{
-	m_memberList["pos"] = &m_pos;
-	m_memberList["rot"] = &m_rot;
-	m_memberList["scl"] = &m_scl;
-	m_memberList["speed"] = &m_speed;
-	m_memberList["mesh"] = &m_meshPoint;
-	m_memberList["message"] = &m_message;
-	m_memberList["boundingBox"] = &m_boundingBox;
-	m_memberList["name"] = &m_name;
 }
 
 //*****************************************************************************
@@ -57,7 +36,7 @@ void Character::InitMemberList()
 Character::~Character()
 {
 	// クラスポインタ
-	RELEASE_CLASS_POINT(m_meshPoint);
+	RELEASE_CLASS_POINT(m_mesh);
 	RELEASE_CLASS_POINT(m_message);
 	RELEASE_CLASS_POINT(m_boundingBox);
 }
@@ -124,8 +103,8 @@ void Character::InitCharacter(D3DXVECTOR3 pos)
 //*****************************************************************************
 void Character::Draw()
 {
-	//m_meshPoint->DrawModel();	// メッシュを描画する
-	if (m_BoundingBoxON == true)
+	//m_mesh->DrawModel();	// メッシュを描画する
+	if (m_boundingBox->m_isBoundingBoxDraw == true)
 	{
 		m_boundingBox->Draw();	// バウンディングボックスを描画する
 	}
@@ -139,8 +118,9 @@ void Character::Draw()
 void Character::Draw(IDirect3DVertexShader9* vertexShader, IDirect3DVertexDeclaration9* vertexDecl)
 {
 	
-	m_meshPoint->DrawModel(vertexShader, vertexDecl);// メッシュを描画する
-	if (m_BoundingBoxON == true)
+	m_mesh->DrawModel(vertexShader, vertexDecl);// メッシュを描画する
+
+	if (m_boundingBox->m_isBoundingBoxDraw == true)
 	{
 		m_boundingBox->Draw();	// バウンディングボックスを描画する
 	}
@@ -168,41 +148,21 @@ void Character::Update()
 
 //*****************************************************************************
 //
-// キャラクターのバウンディングボックスを取得
-//
-//*****************************************************************************
-BoundingBox* Character::GetBoundingBox()
-{
-	return m_boundingBox;
-}
-
-//*****************************************************************************
-//
-// キャラクター位置を取得
-//
-//*****************************************************************************
-D3DXVECTOR3* Character::GetPosition()
-{
-	return &m_pos;
-}
-
-//*****************************************************************************
-//
 // 当たり判定
 //
 //*****************************************************************************
 bool Character::CheckHitBB(Character* Object)
 {
-	D3DXVECTOR3* ObjectPos = Object->GetPosition();
-	D3DXVECTOR3* ObjectSize = Object->GetBoundingBox()->GetSize();
+	D3DXVECTOR3 ObjectPos = Object->m_pos;
+	D3DXVECTOR3 ObjectSize = Object->m_boundingBox->m_size;
 
 	if (
-		GetPosition()->x + GetBoundingBox()->GetSize()->x / 2 > ObjectPos->x - ObjectSize->x / 2 &&
-		GetPosition()->x - GetBoundingBox()->GetSize()->x / 2 < ObjectPos->x + ObjectSize->x / 2 &&
-		GetPosition()->y - GetBoundingBox()->GetSize()->y / 2 < ObjectPos->y + ObjectSize->y / 2 &&
-		GetPosition()->y + GetBoundingBox()->GetSize()->y / 2 > ObjectPos->y - ObjectSize->y / 2 &&
-		GetPosition()->z + GetBoundingBox()->GetSize()->z / 2 > ObjectPos->z - ObjectSize->z / 2 &&
-		GetPosition()->z - GetBoundingBox()->GetSize()->z / 2 < ObjectPos->z + ObjectSize->z / 2
+		m_pos.x + m_boundingBox->m_size.x / 2 > ObjectPos.x - ObjectSize.x / 2 &&
+		m_pos.x - m_boundingBox->m_size.x / 2 < ObjectPos.x + ObjectSize.x / 2 &&
+		m_pos.y - m_boundingBox->m_size.y / 2 < ObjectPos.y + ObjectSize.y / 2 &&
+		m_pos.y + m_boundingBox->m_size.y / 2 > ObjectPos.y - ObjectSize.y / 2 &&
+		m_pos.z + m_boundingBox->m_size.z / 2 > ObjectPos.z - ObjectSize.z / 2 &&
+		m_pos.z - m_boundingBox->m_size.z / 2 < ObjectPos.z + ObjectSize.z / 2
 		)
 	{
 		return true;
@@ -211,14 +171,4 @@ bool Character::CheckHitBB(Character* Object)
 	{
 		return false;
 	}
-}
-
-//*****************************************************************************
-//
-// メッシュを取得
-//
-//*****************************************************************************
-Mesh* Character::GetMesh()
-{
-	return m_meshPoint;
 }

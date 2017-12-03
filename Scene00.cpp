@@ -29,7 +29,7 @@ Scene00::Scene00()
 	// 車
 	m_car1 = new Character();
 	m_car1->InitCharacter(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-	m_resourcesManager->LoadMesh("car1", m_car1->m_meshPoint);
+	m_resourcesManager->LoadMesh("car1", m_car1->m_mesh);
 
 	// ライト
 	m_light = new Light();
@@ -38,13 +38,13 @@ Scene00::Scene00()
 	m_camera = new Camera();
 	m_camera->InitCamera(
 		D3DXVECTOR3(0.0f, 150.0f, -200.0f),	// Eye
-		*m_car1->GetPosition(),			// At
+		m_car1->m_pos,					// At
 		D3DXVECTOR3(0.0f, 1.0f, 0.0f));		// Up
 	m_camera->SetViewMatrix();	// ビューイング変換
 	m_camera->SetProjMatrix();	// プロジェクション変換
 	m_camera->SetViewport();	// ビューポートを設定
 
-	std::cout << "BoundingBox: " << std::boolalpha << m_car1->m_BoundingBoxON << std::endl;
+	std::cout << "BoundingBox: " << std::boolalpha << m_car1->m_boundingBox->m_isBoundingBoxDraw << std::endl;
 }
 
 //*****************************************************************************
@@ -95,8 +95,8 @@ void Scene00::UpdatePlayer(D3DXVECTOR3* Pos, D3DXVECTOR3* Speed)
 
 	if (GetKeyboardTrigger(DIK_Q))	// key Q
 	{
-		m_car1->m_BoundingBoxON = !m_car1->m_BoundingBoxON;
-		std::cout << "BoundingBox: " << std::boolalpha << m_car1->m_BoundingBoxON << std::endl;
+		m_car1->m_boundingBox->m_isBoundingBoxDraw = !m_car1->m_boundingBox->m_isBoundingBoxDraw;
+		std::cout << "BoundingBox: " << std::boolalpha << m_car1->m_boundingBox->m_isBoundingBoxDraw << std::endl;
 	}
 }
 
@@ -108,7 +108,7 @@ void Scene00::UpdatePlayer(D3DXVECTOR3* Pos, D3DXVECTOR3* Speed)
 void Scene00::Update()
 {
 	// プレーヤー操作更新
-	UpdatePlayer((D3DXVECTOR3*)m_car1->GetMember("pos"), (D3DXVECTOR3*)m_car1->GetMember("speed"));
+	UpdatePlayer(&m_car1->m_pos, &m_car1->m_speed);
 
 	// フィールド更新
 	// 無し

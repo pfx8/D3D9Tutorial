@@ -34,6 +34,7 @@ Console::Console()
 Console::~Console()
 {
 	// もしコンソールがフリーされたら、m_ConsoleStatusはfalseになる
+	//getchar();
 	m_ConsoleStatus =  FreeConsole() & 1;
 }
 

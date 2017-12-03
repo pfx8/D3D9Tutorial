@@ -247,7 +247,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 //*****************************************************************************
 HRESULT InitDiretX(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 {
-	D3DPRESENT_PARAMETERS d3dpp;
 	D3DDISPLAYMODE d3ddm;
 
 	// Direct3Dオブジェクトの作成
@@ -255,22 +254,23 @@ HRESULT InitDiretX(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	if (g_pD3D == NULL)
 	{
-		MessageBox(hWnd, _T("Direct3D初期化は失敗しました！"), _T("Main Error 1"), 0);		// エラーメッセージ
+		std::cout << "Direct3D初期化は失敗しました！" << std::endl;	// エラーメッセージ
 		return E_FAIL;
 	}
 
 	// 現在のディスプレイモードを取得
 	if (FAILED(g_pD3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &d3ddm)))
 	{
-		MessageBox(hWnd, _T("ディスプレイモードを取得できません！"), _T("Main Error 2"), 0);		// エラーメッセージ
+		std::cout << "ディスプレイモードを取得できません！" << std::endl;	// エラーメッセージ
 		return E_FAIL;
 	}
 
 	// デバイスのプレゼンテーションパラメータの設定
+	D3DPRESENT_PARAMETERS d3dpp;
 	ZeroMemory(&d3dpp, sizeof(d3dpp));					// ワークをゼロクリア
 	d3dpp.BackBufferWidth = SCREEN_WIDTH;				// ゲーム画面サイズ(幅)
 	d3dpp.BackBufferHeight = SCREEN_HEIGHT;				// ゲーム画面サイズ(高さ)
-	d3dpp.BackBufferFormat = D3DFMT_A8R8G8B8;			// バックバッファのフォーマットは現在設定されているものを使う
+	d3dpp.BackBufferFormat = D3DFMT_UNKNOWN;			// バックバッファのフォーマットは現在設定されているものを使う
 	d3dpp.BackBufferCount = 1;							// バックバッファの数
 	d3dpp.MultiSampleType = D3DMULTISAMPLE_NONE;
 	d3dpp.MultiSampleQuality = 0;
@@ -278,7 +278,7 @@ HRESULT InitDiretX(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	d3dpp.hDeviceWindow = hWnd;
 	d3dpp.Windowed = bWindow;							// ウィンドウモード
 	d3dpp.EnableAutoDepthStencil = TRUE;				// デプスバッファ（Ｚバッファ）とステンシルバッファを作成
-	d3dpp.AutoDepthStencilFormat = D3DFMT_D24S8;		// デプスバッファとして16bitを使う
+	d3dpp.AutoDepthStencilFormat = D3DFMT_D16;		// デプスバッファとして16bitを使う
 	d3dpp.Flags = 0;
 
 	if (bWindow)
@@ -296,7 +296,8 @@ HRESULT InitDiretX(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;		// インターバル
 	}
 
-	D3DCAPS9 caps; int vp = 0;
+	D3DCAPS9 caps; 
+	int vp = 0;
 	if (FAILED(g_pD3D->GetDeviceCaps(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, &caps)))
 	{
 		return E_FAIL;

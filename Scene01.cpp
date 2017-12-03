@@ -25,7 +25,7 @@ Scene01::Scene01()
 	// カメラ
 	m_camera = new Camera;
 	m_camera->InitCamera(
-		D3DXVECTOR3(0.0f, 100.0f, -400.0f),	// Eye
+		D3DXVECTOR3(0.0f, 3.0f, -700.0f),	// Eye
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f),		// At
 		D3DXVECTOR3(0.0f, 1.0f, 0.0f));		// Up
 	m_camera->SetViewMatrix();	// ビューイング変換
@@ -39,11 +39,11 @@ Scene01::Scene01()
 	// イルカ
 	m_dolphin = new Character;
 	m_dolphin->InitCharacter(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-	m_resourcesManager->LoadMesh("dolphin1", m_dolphin->m_meshPoint);
+	m_resourcesManager->LoadMesh("dolphin1", m_dolphin->m_mesh);
 
 	m_dolphin2 = new Character;
-	m_dolphin2->InitCharacter(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-	m_resourcesManager->LoadMesh("dolphin2", m_dolphin2->m_meshPoint);
+	m_dolphin2->InitCharacter(D3DXVECTOR3(300.0f, 0.0f, 0.0f));
+	m_resourcesManager->LoadMesh("dolphin2", m_dolphin2->m_mesh);
 }
 
 //*****************************************************************************
@@ -106,17 +106,16 @@ void Scene01::Draw()
 		// 頂点シェーダ宣言設定
 		pDevice->SetVertexDeclaration(m_shader->m_vertexDecl);
 
-		// 目標メッシュの頂点バッファをストリーム番号1にする
-		IDirect3DVertexBuffer9* Stream1 = NULL;
-		m_dolphin->m_meshPoint->m_meshPoint->GetVertexBuffer(&Stream1);
-		pDevice->SetStreamSource(1, Stream1, 0, D3DXGetFVFVertexSize(m_dolphin->m_meshPoint->m_meshPoint->GetFVF()));
-		RELEASE_POINT(Stream1);
+		// 目標モデルの頂点バッファをストリーム1にする
+		IDirect3DVertexBuffer9* vertexBuffer = NULL;
+		m_dolphin2->m_mesh->m_meshPoint->GetVertexBuffer(&vertexBuffer);	// 目標モデルの頂点バッファを取得
+		pDevice->SetStreamSource(1, vertexBuffer, 0, D3DXGetFVFVertexSize(m_dolphin2->m_mesh->m_meshPoint->GetFVF()));	// ストリーム2に目標モデルの頂点バッファを設定する
+		RELEASE_POINT(vertexBuffer);
 
-		// 目標メッシュの頂点バッファをストリーム番号1にする
-		IDirect3DVertexBuffer9* Stream2 = NULL;
-		m_dolphin2->m_meshPoint->m_meshPoint->GetVertexBuffer(&Stream2);
-		pDevice->SetStreamSource(1, Stream2, 0, D3DXGetFVFVertexSize(m_dolphin2->m_meshPoint->m_meshPoint->GetFVF()));
-		RELEASE_POINT(Stream2);
+		// 元モデルの頂点バッファをストリーム2にする
+		m_dolphin->m_mesh->m_meshPoint->GetVertexBuffer(&vertexBuffer);	// 目標モデルの頂点バッファを取得
+		pDevice->SetStreamSource(0, vertexBuffer, 0, D3DXGetFVFVertexSize(m_dolphin2->m_mesh->m_meshPoint->GetFVF()));	// ストリーム1に目標モデルの頂点バッファを設定する
+		RELEASE_POINT(vertexBuffer);
 
 		m_dolphin->Draw(m_shader->m_vertexShader, m_shader->m_vertexDecl);
 
