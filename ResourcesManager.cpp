@@ -18,6 +18,8 @@ ResourcesManager::ResourcesManager()
 	m_TextureList["fieldGrass"] = "data/TEXTURE/field000.jpg";
 	m_TextureList["fieldStone"] = "data/TEXTURE/field001.jpg";
 	m_TextureList["fieldCheckered"] = "data/TEXTURE/field002.jpg";
+	m_TextureList["1032"] = "data/TEXTURE/1032.jpg";
+	m_TextureList["1033"] = "data/TEXTURE/1033.jpg";
 	m_TextureList["NULL"] = "NULL";
 
 	// メッシュ検索マッピングを作る
@@ -25,7 +27,7 @@ ResourcesManager::ResourcesManager()
 	m_MeshList["car2"] = "data/MODEL/car002.x";
 	m_MeshList["dolphin1"] = "data/MODEL/Dolphin1.x";
 	m_MeshList["dolphin2"] = "data/MODEL/Dolphin3.x";
-	m_MeshList["woman"] = "data/MODEL/Woman.x";
+	m_MeshList["woman"] = "data/MODEL/woman.x";
 }
 
 //*****************************************************************************
@@ -55,12 +57,12 @@ HRESULT ResourcesManager::LoadTexture(std::string name, LPDIRECT3DTEXTURE9* text
 			GetTextureStruct(name).data(),
 			texturePoint)))
 		{
-			std::cout << "Loading Texture:" << name << " Failed!" << std::endl;	// コンソールにメッセージを出す
+			std::cout << "[Error] Loading Texture:" << name << " Failed!" << std::endl;	// コンソールにメッセージを出す
 			return E_FAIL;
 		}
 		else
 		{
-			std::cout << "Loading Texture:" << name << " OK!" << std::endl;	// コンソールにメッセージを出す
+			std::cout << "[Information] Loading Texture:" << name << " OK!" << std::endl;	// コンソールにメッセージを出す
 			return S_OK;
 		}
 	}
@@ -94,41 +96,45 @@ HRESULT ResourcesManager::LoadMesh(std::string name, Mesh* mesh)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
-	LPD3DXBUFFER materialBuffer;	// マテリアルバッファ
-	// Xファイルの読み込み
-	if (FAILED(D3DXLoadMeshFromX(
+	if (FAILED(D3DXLoadMeshFromX(			// Xファイルの読み込み
 		GetMeshPath(name).data(),			// モデルのファイル名
 		D3DXMESH_SYSTEMMEM,				// メッシュのメモリ確保オプション
 		pDevice,							// デバイスへのポインタ
 		NULL,							// 隣接性データを含むバッファへのポインタ
-		&materialBuffer,					// マテリアルデータを含むバッファへのポインタ
+		&mesh->m_material->m_materialBuffer,	// マテリアルデータを含むバッファへのポインタ
 		NULL,							// エフェクトインスタンスを含むバッファへのポインタ
 		&mesh->m_material->m_materialNum,	// マテリアル構造体の数
 		&mesh->m_meshPoint)))				// メッシュへのポインタ
 	{
-		std::cout << "Loading Mesh:" << name << " Failed!" << std::endl;
+		std::cout << "[Error] Loading Mesh:" << name << " Failed!" << std::endl;
 		return E_FAIL;
 	}
 	else
 	{
-		std::cout << "Loading Mesh:" << name << " OK!" << std::endl;
+		std::cout << "[Information] Loading Mesh:" << name << " OK!" << std::endl;
 	}
 
 	mesh->m_material->m_materialPoint = new D3DMATERIAL9[mesh->m_material->m_materialNum];	// マテリアルの数によってマテリアルを格納できるメモリを確保
 	mesh->m_meshTexturePoint = new LPDIRECT3DTEXTURE9[mesh->m_material->m_materialNum];	// マテリアルの数によってテクスチャを格納できるメモリを確保
 
-	D3DXMATERIAL* materials = (D3DXMATERIAL*)materialBuffer->GetBufferPointer();	// Xファイルに保存されているマテリアル情報構造体
-
+	D3DXMATERIAL* materials = (D3DXMATERIAL*)mesh->m_material->m_materialBuffer->GetBufferPointer();	// Xファイルに保存されているマテリアル情報構造体
 	for (DWORD count = 0; count < mesh->m_material->m_materialNum; count++)
 	{
 		mesh->m_material->m_materialPoint[count] = materials[count].MatD3D; // マテリアルのプロパティをコピー
 		mesh->m_material->m_materialPoint[count].Ambient = mesh->m_material->m_materialPoint[count].Diffuse;	// アンビエント色をディフューズ色にする
 
 		// Xファイルの情報によってすべてのテクスチャを読み込み
-		if (FAILED(D3DXCreateTextureFromFile(pDevice, materials[count].pTextureFilename, &mesh->m_meshTexturePoint[count])))
+		if (materials[count].pTextureFilename == NULL)
 		{
-			std::cout << "Material's texture read FAIL" << std::endl;
-			return E_FAIL;
+			mesh->m_meshTexturePoint[count] = NULL;	// テクスチャ無し
+		}
+		else
+		{
+			if (FAILED(D3DXCreateTextureFromFile(pDevice, materials[count].pTextureFilename, &mesh->m_meshTexturePoint[count])))
+			{
+				std::cout << "[Error] Material's texture load Fail!" << std::endl;
+				return E_FAIL;
+			}
 		}
 	}
 

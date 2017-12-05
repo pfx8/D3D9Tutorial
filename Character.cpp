@@ -103,7 +103,7 @@ void Character::InitCharacter(D3DXVECTOR3 pos)
 //*****************************************************************************
 void Character::Draw()
 {
-	//m_mesh->DrawModel();	// メッシュを描画する
+	m_mesh->DrawModel();	// メッシュを描画する
 	if (m_boundingBox->m_isBoundingBoxDraw == true)
 	{
 		m_boundingBox->Draw();	// バウンディングボックスを描画する

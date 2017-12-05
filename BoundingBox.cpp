@@ -51,6 +51,7 @@ HRESULT BoundingBox::MakeVertex()
 	// オブジェクトの頂点バッファを生成
 	if (FAILED(pDevice->CreateVertexBuffer(8 * sizeof(VERTEX_3D_NT), 0, FVF_VERTEX_3D_NT, D3DPOOL_DEFAULT, &m_vertexBuffer, NULL)))
 	{
+		std::cout << "[Error] 頂点バッファが生成できない!" << std::endl;	// エラーメッセージ
 		return E_FAIL;
 	}
 
@@ -71,9 +72,10 @@ HRESULT BoundingBox::MakeVertex()
 	// 頂点バッファポインタ作成
 	VOID* VertexBuffer;
 
-	// 頂点データの範囲をロックし、頂点バッファ メモリへのポインタを取得する
+	// 頂点データの範囲をロックして頂点バッファメモリへのポインタを取得する
 	if (FAILED(m_vertexBuffer->Lock(0, sizeof(Vetex), (void**)&VertexBuffer, 0)))
 	{
+		std::cout << "[Error] 頂点バッファがロックできない!" << std::endl;	// エラーメッセージ
 		return E_FAIL;
 	}
 
@@ -88,6 +90,7 @@ HRESULT BoundingBox::MakeVertex()
 	//オブジェクトの頂点インデックスバッファを生成
 	if (FAILED(pDevice->CreateIndexBuffer(36 * sizeof(WORD), 0, D3DFMT_INDEX16, D3DPOOL_DEFAULT, &m_indexBuffer, NULL)))
 	{
+		std::cout << "[Error] 頂点インデクスが生成できない!" << std::endl;	// エラーメッセージ
 		return E_FAIL;
 	}
 

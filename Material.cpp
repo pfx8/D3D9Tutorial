@@ -16,6 +16,7 @@ Material::Material()
 {
 	m_materialPoint = NULL;
 	m_materialNum = 0;
+	m_materialBuffer = NULL;
 }
 
 //*****************************************************************************

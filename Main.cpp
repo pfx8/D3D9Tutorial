@@ -10,13 +10,11 @@
 #include "Character.h"
 #include "Camera.h"
 #include "Light.h"
-#include "Field.h"
+#include "Plane.h"
 #include "Console.h"
 #include "SceneManager.h"
 
 using namespace std;
-
-// 臨時
 
 //*****************************************************************************
 //
@@ -122,14 +120,14 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	// DirectXの初期化(ウィンドウを作成してから行う)
 	if (FAILED(InitDiretX(hInstance, hWnd, true)))
 	{
-		return -1;
+		return E_FAIL;
 	}
 
 	// メッセージを出る為のコンソールを初期化
 	g_Console = new Console();
 	if (g_Console->GetConsoleStatue() == false)
 	{
-		// 初期化失敗ならば
+		std::cout << "[Error] コンソールが初期化失敗!" << std::endl;	// エラーメッセージ
 		return E_FAIL;
 	}
 
@@ -153,10 +151,11 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	// メッセージループ
 	while(1)
 	{
-		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))						//イベントと先生が呼んだ。
+		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))	//イベントと先生が呼んだ。
 		{
 			if (msg.message == WM_QUIT)
-			{// PostQuitMessage()が呼ばれたらループ終了
+			{
+				// PostQuitMessage()が呼ばれたらループ終了
 				break;
 			}
 			else
@@ -182,17 +181,10 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 			if ((dwCurrentTime - dwExecLastTime) >= (1000 / 60))	//1/60秒ごとに実行
 			{
 				dwExecLastTime = dwCurrentTime;	//処理した時刻を保存
-
-				// 更新処理
-				Updata();
-
-				// 描画処理
-				Draw(hWnd);
-
-				dwFrameCount++;	//処理回数のカウントを加算
-
-				// 60フレームを確定
-				if (dwFrameCount == 60)
+				Updata();						// 更新処理
+				Draw(hWnd);					// 描画処理
+				dwFrameCount++;				//処理回数のカウントを加算
+				if (dwFrameCount == 60)		// 60フレームを確定
 					continue;
 			}
 		}
@@ -227,8 +219,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_KEYDOWN:
 		switch(wParam)
 		{
-		case VK_ESCAPE:					// [ESC]キーが押された
-			DestroyWindow(hWnd);		// ウィンドウを破棄するよう指示する
+		case VK_ESCAPE:			// [ESC]キーが押された
+			DestroyWindow(hWnd);	// ウィンドウを破棄するよう指示する
 			break;
 		}
 		break;
@@ -254,14 +246,14 @@ HRESULT InitDiretX(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	if (g_pD3D == NULL)
 	{
-		std::cout << "Direct3D初期化は失敗しました！" << std::endl;	// エラーメッセージ
+		std::cout << "[Error] DirectXオブジェクトが生成できない!" << std::endl;	// エラーメッセージ
 		return E_FAIL;
 	}
 
 	// 現在のディスプレイモードを取得
 	if (FAILED(g_pD3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &d3ddm)))
 	{
-		std::cout << "ディスプレイモードを取得できません！" << std::endl;	// エラーメッセージ
+		std::cout << "[Error] ディスプレイモードを取得できない!" << std::endl;	// エラーメッセージ
 		return E_FAIL;
 	}
 
@@ -292,7 +284,7 @@ HRESULT InitDiretX(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	{
 		// フルスクリーンモード
 		// d3dpp.BackBufferFormat = D3DFMT_R5G6B5;					// バックバッファ
-		d3dpp.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;			// リフレッシュレート
+		d3dpp.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;		// リフレッシュレート
 		d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;		// インターバル
 	}
 
@@ -300,12 +292,13 @@ HRESULT InitDiretX(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	int vp = 0;
 	if (FAILED(g_pD3D->GetDeviceCaps(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, &caps)))
 	{
+		std::cout << "[Error] DirectXオハードウェアの能力表が取得できない!" << std::endl;	// エラーメッセージ
 		return E_FAIL;
 	}
 	if (caps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT)
-		vp = D3DCREATE_HARDWARE_VERTEXPROCESSING;   //支持硬件顶点运算，我们就采用硬件顶点运算，妥妥的
+		vp = D3DCREATE_HARDWARE_VERTEXPROCESSING;	// ハードウェアで頂点を処理する
 	else
-		vp = D3DCREATE_SOFTWARE_VERTEXPROCESSING; //不支持硬件顶点运算，无奈只好采用软件顶点运算
+		vp = D3DCREATE_SOFTWARE_VERTEXPROCESSING;	// ソフトウェアで頂点を処理する
 
 
 	// デバイスの生成
@@ -318,6 +311,7 @@ HRESULT InitDiretX(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		&d3dpp,										// デバイスのプレゼンテーションパラメータ
 		&g_pD3DDevice)))							// デバイスインターフェースへのポインタ
 	{
+		std::cout << "[Error] DirectXデバイスが生成できない!" << std::endl;	// エラーメッセージ
 		return E_FAIL;
 	}
 

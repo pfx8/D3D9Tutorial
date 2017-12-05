@@ -22,14 +22,14 @@ Scene00::Scene00()
 	Scene::ConsoleMessage(GetSceneName());	// コンソールを表示
 
 	// フィールド
-	m_FieldStone = new Field();
-	m_FieldStone->InitField(D3DXVECTOR3(0.0f, 0.0f, 0.0f),D3DXVECTOR2(100, 100));
+	m_FieldStone = new Plane();
+	m_FieldStone->InitPlane(D3DXVECTOR3(0.0f, 0.0f, 0.0f),D3DXVECTOR2(100, 100));
 	m_resourcesManager->LoadTexture("fieldGrass", &m_FieldStone->m_fieldTexture);
 	
 	// 車
-	m_car1 = new Character();
-	m_car1->InitCharacter(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-	m_resourcesManager->LoadMesh("car1", m_car1->m_mesh);
+	m_woman = new Character();
+	m_woman->InitCharacter(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	m_resourcesManager->LoadMesh("woman", m_woman->m_mesh);
 
 	// ライト
 	m_light = new Light();
@@ -37,14 +37,14 @@ Scene00::Scene00()
 	// カメラ
 	m_camera = new Camera();
 	m_camera->InitCamera(
-		D3DXVECTOR3(0.0f, 150.0f, -200.0f),	// Eye
-		m_car1->m_pos,					// At
+		m_woman->m_pos + D3DXVECTOR3(0.0f, 10.0f, -15.0f),	// Eye
+		m_woman->m_pos + D3DXVECTOR3(0.0f, 8.0f, 0.0f),					// At
 		D3DXVECTOR3(0.0f, 1.0f, 0.0f));		// Up
 	m_camera->SetViewMatrix();	// ビューイング変換
 	m_camera->SetProjMatrix();	// プロジェクション変換
 	m_camera->SetViewport();	// ビューポートを設定
 
-	std::cout << "BoundingBox: " << std::boolalpha << m_car1->m_boundingBox->m_isBoundingBoxDraw << std::endl;
+	std::cout << "[State] BoundingBox: " << std::boolalpha << m_woman->m_boundingBox->m_isBoundingBoxDraw << std::endl;
 }
 
 //*****************************************************************************
@@ -55,18 +55,10 @@ Scene00::Scene00()
 Scene00::~Scene00()
 {
 	// クラスポインタ
-
-	// フィールド
-	RELEASE_CLASS_POINT(m_FieldStone);
-
-	// 車
-	RELEASE_CLASS_POINT(m_car1);
-
-	// ライト
-	RELEASE_CLASS_POINT(m_light);
-
-	// カメラ
-	RELEASE_CLASS_POINT(m_camera);
+	RELEASE_CLASS_POINT(m_FieldStone);	// フィールド
+	RELEASE_CLASS_POINT(m_woman);	// 車
+	RELEASE_CLASS_POINT(m_light);	// ライト
+	RELEASE_CLASS_POINT(m_camera);	// カメラ
 }
 
 //*****************************************************************************
@@ -95,8 +87,8 @@ void Scene00::UpdatePlayer(D3DXVECTOR3* Pos, D3DXVECTOR3* Speed)
 
 	if (GetKeyboardTrigger(DIK_Q))	// key Q
 	{
-		m_car1->m_boundingBox->m_isBoundingBoxDraw = !m_car1->m_boundingBox->m_isBoundingBoxDraw;
-		std::cout << "BoundingBox: " << std::boolalpha << m_car1->m_boundingBox->m_isBoundingBoxDraw << std::endl;
+		m_woman->m_boundingBox->m_isBoundingBoxDraw = !m_woman->m_boundingBox->m_isBoundingBoxDraw;
+		std::cout << "[State] BoundingBox: " << std::boolalpha << m_woman->m_boundingBox->m_isBoundingBoxDraw << std::endl;
 	}
 }
 
@@ -107,17 +99,10 @@ void Scene00::UpdatePlayer(D3DXVECTOR3* Pos, D3DXVECTOR3* Speed)
 //*****************************************************************************
 void Scene00::Update()
 {
-	// プレーヤー操作更新
-	UpdatePlayer(&m_car1->m_pos, &m_car1->m_speed);
+	UpdatePlayer(&m_woman->m_pos, &m_woman->m_speed);	// プレーヤー操作更新
+	m_light->Update();		// ライト更新
+	m_camera->Update();	// カメラ視点移動
 
-	// フィールド更新
-	// 無し
-
-	// ライト更新
-	m_light->Update();
-
-	// カメラ視点移動
-	m_camera->Update();
 	//m_camera->UpdateAt(m_car1->m_pos);
 
 	// 当たり判定
@@ -126,7 +111,6 @@ void Scene00::Update()
 	//	// 移動
 	//	m_car2->Move();
 	//}
-
 }
 
 //*****************************************************************************
@@ -148,16 +132,16 @@ void Scene00::Draw()
 
 		// 1.
 		// キャラクターをワールド変換
-		m_car1->SetWorldMatrix(m_mtxWorld);
+		m_woman->SetWorldMatrix(m_mtxWorld);
 		// キャラクターを描画する
-		m_car1->Draw();
+		m_woman->Draw();
 
 		// フィールドをワールド変換して描画する
 		m_FieldStone->SetWorldMatrix(m_mtxWorld);
 		m_FieldStone->Draw();
 
 		// キャラクターの座標インフォメーション、括弧の中はなん行目
-		m_car1->PosToMessageAndMessageDraw(0);
+		m_woman->PosToMessageAndMessageDraw(0);
 
 		// カメラの座標インフォメーション
 		m_camera->PosToMessageAndMessageDraw(2);

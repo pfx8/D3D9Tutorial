@@ -30,9 +30,6 @@
     <ClCompile Include="Console.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Field.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="input.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -63,10 +60,13 @@
     <ClCompile Include="Scene00.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Scene01.cpp">
+    <ClCompile Include="Shader.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Shader.cpp">
+    <ClCompile Include="Scene02.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Plane.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -84,9 +84,6 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Engine.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Field.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="input.h">
@@ -116,10 +113,13 @@
     <ClInclude Include="Scene00.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Scene01.h">
+    <ClInclude Include="Shader.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Shader.h">
+    <ClInclude Include="Scene02.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Plane.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
@@ -127,7 +127,13 @@
     <None Include="Shader\Basic.hlsl">
       <Filter>シェーダー</Filter>
     </None>
-    <None Include="Shader\Vertex.hlsl">
+    <None Include="Shader\PixelShader.hlsl">
+      <Filter>シェーダー</Filter>
+    </None>
+    <None Include="Shader\VertexShader.hlsl">
+      <Filter>シェーダー</Filter>
+    </None>
+    <None Include="Shader\Scene00Shader.hlsl">
       <Filter>シェーダー</Filter>
     </None>
   </ItemGroup>

@@ -29,7 +29,7 @@ public:
 	Mesh();
 	~Mesh();
 
-	//void DrawModel();	// ƒ‚ƒfƒ‹‚ð•`‰æ‚·‚é
+	void DrawModel();	// ƒ‚ƒfƒ‹‚ð•`‰æ‚·‚é
 	void DrawModel(IDirect3DVertexShader9* vertexShader, IDirect3DVertexDeclaration9* vertexDecl);	// ƒ‚ƒfƒ‹‚ð•`‰æ‚·‚é(Shader)
 };
 

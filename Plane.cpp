@@ -1,11 +1,11 @@
 //*****************************************************************************
 //
-// フィールド処理[Field.cpp]
+// 平面処理[Plane.cpp]
 //
 // Author : LIAO HANCHEN
 //
 //*****************************************************************************
-#include "Field.h"
+#include "Plane.h"
 
 #include "ResourcesManager.h"
 //*****************************************************************************
@@ -13,14 +13,14 @@
 // コンストラクタ
 //
 //*****************************************************************************
-Field::Field()
+Plane::Plane()
 {
 	m_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_scl = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
 
 	// ポインタ
-	m_vertexBuffField = NULL;
+	m_planeVertexBuff = NULL;
 }
 
 //*****************************************************************************
@@ -28,10 +28,10 @@ Field::Field()
 // デストラクタ
 //
 //*****************************************************************************
-Field::~Field()
+Plane::~Plane()
 {
 	// ポインタ
-	RELEASE_POINT(m_vertexBuffField);
+	RELEASE_POINT(m_planeVertexBuff);
 	RELEASE_POINT(m_fieldTexture);
 }
 
@@ -40,13 +40,21 @@ Field::~Field()
 // 座標を設定
 //
 //*****************************************************************************
-void Field::InitField(D3DXVECTOR3 pos, D3DXVECTOR2 size)
+void Plane::InitPlane(D3DXVECTOR3 pos, D3DXVECTOR2 size)
 {
-	// 位置
-	m_pos = pos;
-	
-	// 頂点作成
-	MakeVertex(size.x, size.y);
+	m_pos = pos;	// 位置
+	MakeVertex(size.x, size.y);	// 頂点作成
+}
+
+//*****************************************************************************
+//
+// 座標を設定(多重テクスチャ)
+//
+//*****************************************************************************
+void Plane::InitPlaneDT(D3DXVECTOR3 pos, D3DXVECTOR2 size)
+{
+	m_pos = pos;	// 位置
+	MakeVertexDT(size.x, size.y);	// 頂点作成
 }
 
 //*****************************************************************************
@@ -54,13 +62,14 @@ void Field::InitField(D3DXVECTOR3 pos, D3DXVECTOR2 size)
 // 頂点作成
 //
 //*****************************************************************************
-HRESULT Field::MakeVertex(int width, int height)
+HRESULT Plane::MakeVertex(int width, int height)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	// オブジェクトの頂点バッファを生成
-	if (FAILED(pDevice->CreateVertexBuffer(NUM_VERTEX * sizeof(VERTEX_3D), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_vertexBuffField, NULL)))
+	if (FAILED(pDevice->CreateVertexBuffer(NUM_VERTEX * sizeof(VERTEX_3D), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_planeVertexBuff, NULL)))
 	{
+		std::cout << "[Error] 頂点バッファが生成できない!" << std::endl;	// エラーメッセージ
 		return E_FAIL;
 	}
 
@@ -68,7 +77,7 @@ HRESULT Field::MakeVertex(int width, int height)
 	VERTEX_3D* VetexBuffer;
 
 	// 頂点データの範囲をロックし、頂点バッファ メモリへのポインタを取得する
-	m_vertexBuffField->Lock(0, 0, (void**)&VetexBuffer, 0);
+	m_planeVertexBuff->Lock(0, 0, (void**)&VetexBuffer, 0);
 
 	// 頂点バッファの中身を埋める
 	// 頂点座標(ローカル座標 = 形を形成してる)
@@ -100,7 +109,58 @@ HRESULT Field::MakeVertex(int width, int height)
 	VetexBuffer[3].TexturePosition = D3DXVECTOR2(1.0f, 1.0f);
 
 	// 頂点データをアンロックする
-	m_vertexBuffField->Unlock();
+	m_planeVertexBuff->Unlock();
+
+	return S_OK;
+}
+
+//*****************************************************************************
+//
+// 頂点作成(多重テクスチャ)
+//
+//*****************************************************************************
+HRESULT Plane::MakeVertexDT(int width, int height)
+{
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();
+
+	// オブジェクトの頂点バッファを生成
+	if (FAILED(pDevice->CreateVertexBuffer(NUM_VERTEX * sizeof(VERTEX_3D_DT), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D_DT, D3DPOOL_MANAGED, &m_planeVertexBuff, NULL)))
+	{
+		std::cout << "[Error] 頂点バッファが生成できない!" << std::endl;	// エラーメッセージ
+		return E_FAIL;
+	}
+
+	// 頂点バッファ作成
+	VERTEX_3D_DT* VetexBuffer;
+
+	// 頂点データの範囲をロックし、頂点バッファ メモリへのポインタを取得する
+	m_planeVertexBuff->Lock(0, 0, (void**)&VetexBuffer, 0);
+
+	// 頂点バッファの中身を埋める
+	// 頂点座標(ローカル座標 = 形を形成してる)
+	// もの自身の座標、世界での座標には関係ない
+	// m_posFiledは世界での位置で
+
+	// position
+	VetexBuffer[0].Position = D3DXVECTOR3(-width, 0.0f, height);
+	VetexBuffer[1].Position = D3DXVECTOR3(width, 0.0f, height);
+	VetexBuffer[2].Position = D3DXVECTOR3(-width, 0.0f, -height);
+	VetexBuffer[3].Position = D3DXVECTOR3(width, 0.0f, -height);
+
+	// tex1
+	VetexBuffer[0].TexturePosition0 = D3DXVECTOR2(0.0f, 0.0f);
+	VetexBuffer[1].TexturePosition0 = D3DXVECTOR2(1.0f, 0.0f);
+	VetexBuffer[2].TexturePosition0 = D3DXVECTOR2(0.0f, 1.0f);
+	VetexBuffer[3].TexturePosition0 = D3DXVECTOR2(1.0f, 1.0f);
+
+	// tex2
+	VetexBuffer[0].TexturePosition1 = D3DXVECTOR2(0.0f, 0.0f);
+	VetexBuffer[1].TexturePosition1 = D3DXVECTOR2(1.0f, 0.0f);
+	VetexBuffer[2].TexturePosition1 = D3DXVECTOR2(0.0f, 1.0f);
+	VetexBuffer[3].TexturePosition1 = D3DXVECTOR2(1.0f, 1.0f);
+
+	// 頂点データをアンロックする
+	m_planeVertexBuff->Unlock();
 
 	return S_OK;
 }
@@ -110,7 +170,7 @@ HRESULT Field::MakeVertex(int width, int height)
 // ワールド変換
 //
 //*****************************************************************************
-void Field::SetWorldMatrix(D3DXMATRIX& mtxWorld)
+void Plane::SetWorldMatrix(D3DXMATRIX& mtxWorld)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 	D3DXMATRIX mtxScl, mtxRot, mtxTranslate;
@@ -139,12 +199,12 @@ void Field::SetWorldMatrix(D3DXMATRIX& mtxWorld)
 // テクスチャを描画する
 //
 //*****************************************************************************
-void Field::Draw()
+void Plane::Draw()
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	// 頂点バッファをデバイスのデータストリームにバイナリ
-	pDevice->SetStreamSource(0, m_vertexBuffField, 0, sizeof(VERTEX_3D));
+	pDevice->SetStreamSource(0, m_planeVertexBuff, 0, sizeof(VERTEX_3D));
 
 	// 頂点フォーマットの設定
 	pDevice->SetFVF(FVF_VERTEX_3D);
@@ -158,10 +218,30 @@ void Field::Draw()
 
 //*****************************************************************************
 //
+// テクスチャを描画する(PixelShader)
+//
+//*****************************************************************************
+void Plane::Draw(LPDIRECT3DTEXTURE9 texture, D3DXCONSTANT_DESC desc1, D3DXCONSTANT_DESC desc2)
+{
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();
+
+	pDevice->SetStreamSource(0, m_planeVertexBuff, 0, sizeof(VERTEX_3D_DT));	// 頂点バッファをデバイスのデータストリームにバイナリ
+	pDevice->SetFVF(FVF_VERTEX_3D_DT);	// 頂点フォーマットの設定
+
+	// テクスチャの設定
+	pDevice->SetTexture(desc1.RegisterIndex, m_fieldTexture);
+	pDevice->SetTexture(desc2.RegisterIndex, texture);
+
+	// ポリゴンの描画
+	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, NUM_POLYGON);
+}
+
+//*****************************************************************************
+//
 // テクスチャを設定
 //
 //*****************************************************************************
-void Field::SetTexture(LPDIRECT3DTEXTURE9* point)
-{
-	m_fieldTexture = *point;
-}
+//void Plane::SetTexture(LPDIRECT3DTEXTURE9* point)
+//{
+//	m_fieldTexture = *point;
+//}

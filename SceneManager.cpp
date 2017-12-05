@@ -37,6 +37,9 @@ SceneManager::~SceneManager()
 //
 // シーンを選択する
 //
+// Scene00 -> D3DTutorial
+// Scene01 -> VertexShader
+// Scene02 -> TextureShader
 //*****************************************************************************
 void SceneManager::ChooseScene()
 {
@@ -44,7 +47,7 @@ void SceneManager::ChooseScene()
 	/*m_sceneList[2] =
 	{
 		"D3DTutorial",
-		"ShaderTutorial",
+		"VertexShader",
 	};*/
 
 	/*std::cout << "シーンを選択してください" << std::endl;
@@ -54,7 +57,7 @@ void SceneManager::ChooseScene()
 	}*/
 
 	// シーンを選択する
-	char chooseScene = 'b';
+	char chooseScene = 'a';
 
 	//std::cin >> chooseScene;
 
@@ -62,8 +65,10 @@ void SceneManager::ChooseScene()
 	{
 	case 'a':
 	case 'A':m_scene = new Scene00(); break;	// D3DTutorial初期化
-	case 'b':
-	case 'B':m_scene = new Scene01(); break;	// ShaderTutorial初期化
+	//case 'b':
+	//case 'B':m_scene = new Scene01(); break;	// VertexShader初期化
+	case 'c':
+	case 'C':m_scene = new Scene02(); break;	// PixelShader初期化
 	default:
 		break;
 	}

@@ -42,33 +42,33 @@ Mesh::~Mesh()
 // モデルを描画する
 //
 //*****************************************************************************
-//void Mesh::DrawModel()
-//{
-//	LPDIRECT3DDEVICE9 pDevice = GetDevice();
-//
-//	D3DXMATERIAL *pD3DXMat;
-//	D3DMATERIAL9 matDef;
-//
-//	// 現在のマテリアルを取得
-//	pDevice->GetMaterial(&matDef);
-//
-//	// マテリアル情報に対するポインタを取得
-//	pD3DXMat = (D3DXMATERIAL*)m_material->m_materialPoint->GetBufferPointer();
-//
-//	for (int count = 0; count < (int)(m_material->m_materialNum); count++)
-//	{
-//		// マテリアルの設定
-//		pDevice->SetMaterial(&pD3DXMat[count].MatD3D);
-//
-//		// テクスチャの設定
-//		pDevice->SetTexture(0, NULL);
-//
-//		// 描画
-//		m_meshPoint->DrawSubset(count);
-//	}
-//
-//	pDevice->SetMaterial(&matDef);	//	マテリアルを元に戻る
-//}
+void Mesh::DrawModel()
+{
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();
+
+	D3DXMATERIAL *pD3DXMat;
+	D3DMATERIAL9 matDef;
+
+	// 現在のマテリアルを取得
+	pDevice->GetMaterial(&matDef);
+
+	// マテリアル情報に対するポインタを取得
+	pD3DXMat = (D3DXMATERIAL*)m_material->m_materialBuffer->GetBufferPointer();
+
+	for (int count = 0; count < (int)(m_material->m_materialNum); count++)
+	{
+		// マテリアルの設定
+		pDevice->SetMaterial(&pD3DXMat[count].MatD3D);
+
+		// テクスチャの設定
+		pDevice->SetTexture(0, NULL);
+
+		// 描画
+		m_meshPoint->DrawSubset(count);
+	}
+
+	pDevice->SetMaterial(&matDef);	//	マテリアルを元に戻る
+}
 
 //*****************************************************************************
 //

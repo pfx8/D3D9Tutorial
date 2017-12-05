@@ -23,6 +23,7 @@ private:
 public:
 	D3DMATERIAL9*		m_materialPoint;	// マテリアル情報へのポインタ
 	DWORD			m_materialNum;	// マテリアル情報の数
+	LPD3DXBUFFER		m_materialBuffer;	// マテリアルバッファ
 
 	Material();
 	~Material();

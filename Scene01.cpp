@@ -1,6 +1,6 @@
 ﻿//*****************************************************************************
 //
-// ShaderTutorial処理 [Scene01.cpp]
+// VertexShader [Scene01.cpp]
 //
 // Author : LIAO HANCHEN
 //
@@ -19,7 +19,7 @@ using namespace std;
 Scene01::Scene01()
 {	
 	
-	SetSceneName("ShaderTutorial");	// シーンに名前をつける
+	SetSceneName("VertexShader");	// シーンに名前をつける
 	Scene::ConsoleMessage(GetSceneName());	// コンソールを表示
 
 	// カメラ
@@ -98,10 +98,10 @@ void Scene01::Draw()
 		// Scalar計算
 		float DolphinTimeFactor = (float)(timeGetTime() % 501) / 250.0f;
 		float Scalar = (DolphinTimeFactor <= 1.0f) ? DolphinTimeFactor : (2.0f - DolphinTimeFactor);
-		m_shader->m_constTable->SetVector(pDevice, m_shader->m_ScalarHandle, &D3DXVECTOR4(1.0f - Scalar, Scalar, 0.0f, 0.0f));
+		m_shader->m_constTable->SetVector(pDevice, m_shader->m_scalarHandle, &D3DXVECTOR4(1.0f - Scalar, Scalar, 0.0f, 0.0f));
 
 		// 頂点シェーダー設定
-		pDevice->SetVertexShader(m_shader->m_vertexShader);
+		pDevice->SetVertexShader(m_shader->m_pixelShader);
 
 		// 頂点シェーダ宣言設定
 		pDevice->SetVertexDeclaration(m_shader->m_vertexDecl);
@@ -117,7 +117,7 @@ void Scene01::Draw()
 		pDevice->SetStreamSource(0, vertexBuffer, 0, D3DXGetFVFVertexSize(m_dolphin2->m_mesh->m_meshPoint->GetFVF()));	// ストリーム1に目標モデルの頂点バッファを設定する
 		RELEASE_POINT(vertexBuffer);
 
-		m_dolphin->Draw(m_shader->m_vertexShader, m_shader->m_vertexDecl);
+		m_dolphin->Draw(m_shader->m_pixelShader, m_shader->m_vertexDecl);
 
 		pDevice->EndScene();
 	}

@@ -23,17 +23,17 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Character.cpp" />
     <ClCompile Include="Console.cpp" />
-    <ClCompile Include="Field.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="DebugMessage.cpp" />
+    <ClCompile Include="Plane.cpp" />
     <ClCompile Include="ResourcesManager.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Scene00.cpp" />
-    <ClCompile Include="Scene01.cpp" />
+    <ClCompile Include="Scene02.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Shader.cpp" />
   </ItemGroup>
@@ -43,16 +43,16 @@
     <ClInclude Include="Character.h" />
     <ClInclude Include="Console.h" />
     <ClInclude Include="Engine.h" />
-    <ClInclude Include="Field.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="DebugMessage.h" />
+    <ClInclude Include="Plane.h" />
     <ClInclude Include="ResourcesManager.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Scene00.h" />
-    <ClInclude Include="Scene01.h" />
+    <ClInclude Include="Scene02.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Shader.h" />
   </ItemGroup>
@@ -64,7 +64,15 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shader\Vertex.hlsl">
+    <None Include="Shader\PixelShader.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Shader\VertexShader.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shader\Scene00Shader.hlsl">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

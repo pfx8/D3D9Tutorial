@@ -17,7 +17,7 @@
 #include "Character.h"
 #include "Camera.h"
 #include "Light.h"
-#include "Field.h"
+#include "Plane.h"
 #include "ResourcesManager.h"
 
 //*****************************************************************************
@@ -29,13 +29,11 @@ class Scene00 : public Scene
 {
 private:
 	D3DXMATRIX		m_mtxWorld;	// ワールドマトリックス
-
 	Camera*			m_camera;	// カメラ
 	Light*			m_light;	// ライト
 
-	// ゲーム素材
-	Field*			m_FieldStone;	// フィールド
-	Character*		m_car1;		// 車, プレーヤー
+	Plane*			m_FieldStone;	// フィールド
+	Character*		m_woman;		// 車, プレーヤー
 
 public:
 	Scene00();

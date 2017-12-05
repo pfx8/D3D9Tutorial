@@ -15,7 +15,7 @@
 #include "Character.h"
 #include "Camera.h"
 #include "Light.h"
-#include "Field.h"
+#include "Plane.h"
 #include "ResourcesManager.h"
 
 //*****************************************************************************
