@@ -29,7 +29,7 @@ private:
 	std::string		m_sceneName;	// シンーの名前
 
 public:
-	D3DXMATRIX		m_mtxWorld;			// ワールドマトリックス
+	D3DXMATRIX		m_worldMatrix;			// ワールドマトリックス
 	ResourcesManager*	m_resourcesManager;	// リソースマネジメント
 
 	Scene();

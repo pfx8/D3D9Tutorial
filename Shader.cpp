@@ -14,12 +14,12 @@
 //*****************************************************************************
 Shader::Shader()
 {
-	m_pixelShader = NULL;
-	m_constTable = NULL;
-
-	m_ratioHandle = NULL;
-	m_samp0Handle = NULL;
-	m_samp1Handle = NULL;
+	m_effectPoint = NULL;
+	
+	m_WVPMatrixHandle = NULL;
+	m_lightingHandle = NULL;
+	m_techniqueHandle = NULL;
+	m_textureHandle = NULL;
 }
 
 //*****************************************************************************
@@ -29,20 +29,19 @@ Shader::Shader()
 //*****************************************************************************
 Shader::~Shader()
 {
-	RELEASE_POINT(m_pixelShader);
-	RELEASE_POINT(m_constTable);
+	RELEASE_POINT(m_effectPoint);
 }
 
 //*****************************************************************************
 //
-// シェーダーファイルを読み込む
+// 頂点シェーダーファイルを読み込む
 //
 //*****************************************************************************
-HRESULT Shader::LoadShaderFile()
+HRESULT Shader::LoadEffectFile()
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
-	// ピクセルモードチェック
+	// ピクセル機能チェック
 	D3DCAPS9 caps;
 	pDevice->GetDeviceCaps(&caps);
 	if (caps.PixelShaderVersion < D3DPS_VERSION(1, 1))
@@ -50,42 +49,33 @@ HRESULT Shader::LoadShaderFile()
 		std::cout << "[Error]Not Support PixelShader Failed!" << std::endl;
 	}
 
-	ID3DXBuffer* shaderBuffer = NULL;	// シェーダーバッファ
 	ID3DXBuffer* errorBuffer = NULL;	// エラーバッファ
 
-	D3DXCompileShaderFromFile(
-		"Shader/PixelShader.hlsl",	//シェーダーファイルパス
-		0,				// デフォルト設定
-		0,				// デフォルト設定
-		"Main",			// シェーダーの入り口関数
-		"ps_2_0",			// コンパイルターゲットを含む文字列へのポインタ
-		D3DXSHADER_DEBUG,	// ンパイル オプション
-		&shaderBuffer,	// シェーダーバッファ
-		&errorBuffer,		// エラーバッファ
-		&m_constTable);	// 定数表
+	D3DXCreateEffectFromFile(pDevice,
+						"Effect.txt",	// エフェクトファイルの名前
+						0,
+						0,
+						D3DXSHADER_DEBUG,
+						0,
+						&m_effectPoint,	// エフェクトポインタ
+						&errorBuffer);	// エラー情報
+
 
 	if (errorBuffer)	// エラーをチェック
 	{
-		std::cout << "[Error] シェーダーが読み込めない" << std::endl;	// エラーメッセージ
+		std::cout << "[Error] エフェクトが読み込めない" << std::endl;	// エラーメッセージ
 		std::cout << "[Information] " << (char*)errorBuffer->GetBufferPointer() << std::endl;	// エラーメッセージ
 		RELEASE_POINT(errorBuffer);
 		return E_FAIL;
 	}
 
-	// ピクセルシェーダーを作る
-	pDevice->CreatePixelShader((DWORD*)shaderBuffer->GetBufferPointer(), &m_pixelShader);
+	// エフェクトのテクニックを設定
+	m_techniqueHandle = m_effectPoint->GetTechniqueByName("T0");
 
-	// シェーダーファイル中の変数を取得
-	m_ratioHandle = m_constTable->GetConstantByName(0, "Scalar");	// 混ざり比率
-	m_samp0Handle = m_constTable->GetConstantByName(0, "Samp0");	// サンプラー0
-	m_samp1Handle = m_constTable->GetConstantByName(0, "Samp1");	// サンプラー1
-
-	//
-	UINT count;
-	m_constTable->GetConstantDesc(m_samp0Handle, &m_samp0Desc, &count);	// 
-	m_constTable->GetConstantDesc(m_samp1Handle, &m_samp1Desc, &count);	// 
-
-	m_constTable->SetDefaults(pDevice);	// デフォルト設定
+	// シェーダー中のグローバル変数を取得
+	m_WVPMatrixHandle = m_effectPoint->GetParameterByName(0, "WVPMatrix");
+	m_lightingHandle = m_effectPoint->GetParameterByName(0, "LightDirection");
+	m_textureHandle = m_effectPoint->GetParameterByName(0, "Tex");
 
 	return S_OK;
 }

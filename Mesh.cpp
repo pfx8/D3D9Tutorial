@@ -92,7 +92,6 @@ void Mesh::DrawModel(IDirect3DVertexShader9* vertexShader, IDirect3DVertexDeclar
 	attributes = new D3DXATTRIBUTERANGE[attributesNum];	// メッシュの属性テーブルを格納できるメモリを作る
 	m_meshPoint->GetAttributeTable(attributes, &attributesNum);	// メッシュの属性テーブルを取得
 
-
 	pDevice->SetVertexShader(vertexShader);	// 頂点シェーダーを設定
 	pDevice->SetVertexDeclaration(vertexDecl);	// 頂点シェーダー宣言を設定
 
@@ -122,4 +121,14 @@ void Mesh::DrawModel(IDirect3DVertexShader9* vertexShader, IDirect3DVertexDeclar
 	RELEASE_POINT(vertexBuffer);
 	RELEASE_POINT(indexBuffer);
 	delete [] attributes;
+}
+
+//*****************************************************************************
+//
+// モデルを描画する(Effect)
+//
+//*****************************************************************************
+void DrawModel(ID3DXEffect* effect)
+{
+
 }

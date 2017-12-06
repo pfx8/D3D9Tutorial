@@ -30,6 +30,7 @@ public:
 	~Mesh();
 
 	void DrawModel();	// ƒ‚ƒfƒ‹‚ð•`‰æ‚·‚é
+	void DrawModel(ID3DXEffect* effect);	// ƒ‚ƒfƒ‹‚ð•`‰æ‚·‚é(Effect)
 	void DrawModel(IDirect3DVertexShader9* vertexShader, IDirect3DVertexDeclaration9* vertexDecl);	// ƒ‚ƒfƒ‹‚ð•`‰æ‚·‚é(Shader)
 };
 

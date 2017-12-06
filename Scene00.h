@@ -16,9 +16,9 @@
 
 #include "Character.h"
 #include "Camera.h"
-#include "Light.h"
 #include "Plane.h"
 #include "ResourcesManager.h"
+#include "Shader.h"
 
 //*****************************************************************************
 //
@@ -28,11 +28,10 @@
 class Scene00 : public Scene
 {
 private:
-	D3DXMATRIX		m_mtxWorld;	// ワールドマトリックス
 	Camera*			m_camera;	// カメラ
-	Light*			m_light;	// ライト
+	Shader*			m_shader;	// シェーダー
 
-	Plane*			m_FieldStone;	// フィールド
+	Plane*			m_fieldStone;	// フィールド
 	Character*		m_woman;		// 車, プレーヤー
 
 public:

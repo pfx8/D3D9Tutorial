@@ -57,18 +57,20 @@ void SceneManager::ChooseScene()
 	}*/
 
 	// シーンを選択する
-	char chooseScene = 'a';
+	char chooseScene = 'd';
 
 	//std::cin >> chooseScene;
 
 	switch (chooseScene)
 	{
-	case 'a':
-	case 'A':m_scene = new Scene00(); break;	// D3DTutorial初期化
+	//case 'a':
+	//case 'A':m_scene = new Scene00(); break;	// D3DTutorial
 	//case 'b':
-	//case 'B':m_scene = new Scene01(); break;	// VertexShader初期化
-	case 'c':
-	case 'C':m_scene = new Scene02(); break;	// PixelShader初期化
+	//case 'B':m_scene = new Scene01(); break;	// VertexShader
+	//case 'c':
+	//case 'C':m_scene = new Scene02(); break;	// PixelShader
+	case 'd':
+	case 'D':m_scene = new Scene03(); break;		// Effect
 	default:
 		break;
 	}

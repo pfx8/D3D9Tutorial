@@ -238,10 +238,19 @@ void Plane::Draw(LPDIRECT3DTEXTURE9 texture, D3DXCONSTANT_DESC desc1, D3DXCONSTA
 
 //*****************************************************************************
 //
-// テクスチャを設定
+// テクスチャを描画する(PixelShader)
 //
 //*****************************************************************************
-//void Plane::SetTexture(LPDIRECT3DTEXTURE9* point)
-//{
-//	m_fieldTexture = *point;
-//}
+void Plane::Draw(LPDIRECT3DTEXTURE9 texture, D3DXCONSTANT_DESC desc)
+{
+	PDIRECT3DDEVICE9 pDevice = GetDevice();
+
+	pDevice->SetStreamSource(0, m_planeVertexBuff, 0, sizeof(VERTEX_3D_DT));	// 頂点バッファをデバイスのデータストリームにバイナリ
+	pDevice->SetFVF(FVF_VERTEX_3D_DT);	// 頂点フォーマットの設定
+
+	// テクスチャの設定
+	pDevice->SetTexture(desc.RegisterIndex, m_fieldTexture);
+
+	// ポリゴンの描画
+	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, NUM_POLYGON);
+}

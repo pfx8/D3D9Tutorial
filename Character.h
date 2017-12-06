@@ -48,6 +48,7 @@ public:
 
 	void PosToMessageAndMessageDraw(int row);	// 座標をメッセージに渡して、画面に描画する
 	void Draw();	// キャラクターの描画
+	void Draw(ID3DXEffect* effect);	// キャラクターの描画(Effect)
 	void Draw(IDirect3DVertexShader9* vertexShader, IDirect3DVertexDeclaration9* vertexDecl);	// キャラクターの描画(Shader)
 	void Move();	//  臨時ーーキャラクター移動
 	

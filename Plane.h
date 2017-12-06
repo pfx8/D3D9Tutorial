@@ -36,7 +36,8 @@ public:
 	void InitPlane(D3DXVECTOR3 pos, D3DXVECTOR2 size);	// 座標を設定
 	void InitPlaneDT(D3DXVECTOR3 pos, D3DXVECTOR2 size);	// 座標を設定(多重テクスチャ)
 	void Draw();	// テクスチャを描画する
-	void Draw(LPDIRECT3DTEXTURE9 texture, D3DXCONSTANT_DESC desc1, D3DXCONSTANT_DESC desc2);	// テクスチャを描画する(PixelShader)
+	void Draw(LPDIRECT3DTEXTURE9 texture, D3DXCONSTANT_DESC desc1, D3DXCONSTANT_DESC desc2);	// 多重テクスチャを描画する(PixelShader)
+	void Draw(LPDIRECT3DTEXTURE9 texture, D3DXCONSTANT_DESC desc);	// テクスチャを描画する(PixelShader)
 	void SetWorldMatrix(D3DXMATRIX& mtxWorld);	// 臨時ーーワールド変換
 };
 #endif // !_PLANE_H_
