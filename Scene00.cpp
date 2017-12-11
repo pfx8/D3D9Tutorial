@@ -18,9 +18,6 @@ using namespace std;
 //*****************************************************************************
 Scene00::Scene00()
 {
-	SetSceneName("D3DTutorial");	// シーンに名前をつける
-	Scene::ConsoleMessage(GetSceneName());	// コンソールを表示
-
 	// フィールド
 	m_fieldStone = new Plane();
 	m_fieldStone->InitPlane(D3DXVECTOR3(0.0f, 0.0f, 0.0f),D3DXVECTOR2(100, 100));
@@ -34,7 +31,7 @@ Scene00::Scene00()
 	// カメラ
 	m_camera = new Camera();
 	m_camera->InitCamera(
-		m_woman->m_pos + D3DXVECTOR3(0.0f, 10.0f, -15.0f),	// Eye
+		m_woman->m_pos + D3DXVECTOR3(0.0f, 30.0f, -200.0f),	// Eye
 		m_woman->m_pos + D3DXVECTOR3(0.0f, 8.0f, 0.0f),		// At
 		D3DXVECTOR3(0.0f, 1.0f, 0.0f));		// Up
 	m_camera->SetViewMatrix();	// ビューイング変換
@@ -43,7 +40,7 @@ Scene00::Scene00()
 
 	// シェーダー
 	m_shader = new Shader;
-	m_shader->LoadVertexShaderFile();
+	m_shader->LoadEffectFile();
 
 	std::cout << "[State] BoundingBox: " << std::boolalpha << m_woman->m_boundingBox->m_isBoundingBoxDraw << std::endl;
 }
@@ -63,52 +60,17 @@ Scene00::~Scene00()
 
 //*****************************************************************************
 //
-// プレーヤー操作更新
-//
-//*****************************************************************************
-void Scene00::UpdatePlayer(D3DXVECTOR3* Pos, D3DXVECTOR3* Speed)
-{
-	if (GetKeyboardPress(DIK_A))	// key A
-	{
-		Pos->x -= Speed->x;
-	}
-	if (GetKeyboardPress(DIK_D))	// key D
-	{
-		Pos->x += Speed->x;
-	}
-	if (GetKeyboardPress(DIK_W))	// key W
-	{
-		Pos->z += Speed->x;
-	}
-	if (GetKeyboardPress(DIK_S))	// key S
-	{
-		Pos->z -= Speed->x;
-	}
-
-	if (GetKeyboardTrigger(DIK_Q))	// key Q
-	{
-		m_woman->m_boundingBox->m_isBoundingBoxDraw = !m_woman->m_boundingBox->m_isBoundingBoxDraw;
-		std::cout << "[State] BoundingBox: " << std::boolalpha << m_woman->m_boundingBox->m_isBoundingBoxDraw << std::endl;
-	}
-}
-
-//*****************************************************************************
-//
 // シンーの更新
 //
 //*****************************************************************************
 void Scene00::Update()
 {
-	
-	m_camera->Update();	// カメラ視点移動
-
-	UpdatePlayer(&m_woman->m_pos, &m_woman->m_speed);	// プレーヤー操作更新
-	m_woman->SetWorldMatrix(m_mtxWorld);
-	
-	m_fieldStone->SetWorldMatrix(m_mtxWorld);
-
 	//m_camera->UpdateAt(m_car1->m_pos);
+	m_camera->Update();	// カメラ更新
+	m_woman->Update(&m_woman->m_pos, &m_woman->m_speed, &m_worldMatrix);	// キャラクター更新
+	m_fieldStone->SetWorldMatrix(m_worldMatrix);	// フィールド更新
 
+	
 	// 当たり判定
 	//if (m_car1->CheckHitBB(m_car2))
 	//{
@@ -124,14 +86,46 @@ void Scene00::Update()
 //*****************************************************************************
 void Scene00::Draw()
 {
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();
+
 	// バックバッファ＆Ｚバッファのクリア
-	GetDevice()->Clear(0, NULL, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER), D3DCOLOR_RGBA(0, 0, 0, 0), 1.0f, 0);
+	pDevice->Clear(0, NULL, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER), D3DCOLOR_RGBA(153, 153, 153, 255), 1.0f, 0);
 
 	// Direct3Dによる描画の開始
 	if (SUCCEEDED(GetDevice()->BeginScene()))
 	{
-		m_fieldStone->Draw(m_shader->m_pixelShader, m_shader->m_samp0Desc);
-		m_woman->Draw(m_shader->m_vertexShader, m_shader->m_vertexDcl);
+		//---------------------------------------
+		// エフェクトに基づいてレンダリング
+		//---------------------------------------
+
+		// テクニックを設定
+		m_shader->m_effectPoint->SetTechnique(m_shader->m_techniqueHandle);
+
+		UINT passNum = 0;
+		m_shader->m_effectPoint->Begin(&passNum, 0);
+		for (int count = 0; count < passNum; count++)
+		{
+			m_shader->m_effectPoint->BeginPass(0);	// 各パスから描画する
+
+			D3DXMATRIX WVPmatrix = m_worldMatrix * m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
+			m_shader->m_effectPoint->SetMatrix(m_shader->m_WVPMatrixHandle, &WVPmatrix);
+
+			//m_shader->m_effectPoint->SetVector(m_shader->m_lightingHandle, &D3DXVECTOR4(0.0f, -1.0f, 0.0f, 0.0f));
+
+			m_fieldStone->Draw(m_shader);	// (On Shader)
+			//m_fieldStone->Draw();	// (No Shader)
+
+			m_shader->m_effectPoint->EndPass();
+		}
+		m_shader->m_effectPoint->End();
+
+		//m_woman->Draw(m_shader->m_vertexShader, m_shader->m_vertexDcl);
+		
+		char str[256];	// デバッグメッセージ
+		//sprintf(str, _T("X %.2f, Y %.2f Z %.2f"), m_fieldStone->m_pos.x, m_fieldStone->m_pos.y, m_fieldStone->m_pos.z);
+		sprintf(str, _T("X %.2f, Y %.2f Z %.2f"), m_camera->m_posEye.x, m_camera->m_posEye.y, m_camera->m_posEye.z);
+		m_message->DrawMessage(str);
+
 		GetDevice()->EndScene();
 	}
 

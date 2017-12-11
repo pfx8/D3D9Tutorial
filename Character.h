@@ -25,7 +25,7 @@
 class Character
 {
 private:
-	DebugMessage*		m_message;		// Debugメッセージ
+	DebugMessage*	m_message;		// Debugメッセージ
 	std::string		m_name;			// キャラクターの名前、これによってメッシュとテクスチャを探す
 
 public:
@@ -41,7 +41,7 @@ public:
 	~Character();
 
 	void InitCharacter(D3DXVECTOR3 pos);	// 座標を設定
-	void SetWorldMatrix(D3DXMATRIX& mtxWorld);		// 臨時ーーワールド変換
+	void SetWorldMatrix(D3DXMATRIX* mtxWorld);		// 臨時ーーワールド変換
 
 	void SetName(std::string name) { m_name = name; };
 	std::string GetName() { return m_name; };
@@ -52,7 +52,7 @@ public:
 	void Draw(IDirect3DVertexShader9* vertexShader, IDirect3DVertexDeclaration9* vertexDecl);	// キャラクターの描画(Shader)
 	void Move();	//  臨時ーーキャラクター移動
 	
-	void Update();	// キャラクター更新
+	void Update(D3DXVECTOR3* pos, D3DXVECTOR3* speed, D3DXMATRIX* worldMatrix);	// キャラクター更新
 	bool CheckHitBB(Character* Object);	// 当たり判定
 
 };

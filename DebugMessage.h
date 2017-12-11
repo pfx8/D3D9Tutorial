@@ -10,6 +10,8 @@
 
 #include "Engine.h"
 
+#include <iostream>
+
 //*****************************************************************************
 //
 // クラス宣言
@@ -25,7 +27,7 @@ public:
 	~DebugMessage();
 
 	void DrawPosMessage(const char name[], D3DXVECTOR3 OutputPos, D3DXVECTOR2 MessagePos);
-
+	void DrawMessage(const char message[]);	// デバッグメッセージ
 };
 
 #endif // !Debug_MESSAGE_H_

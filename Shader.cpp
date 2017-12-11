@@ -17,7 +17,7 @@ Shader::Shader()
 	m_effectPoint = NULL;
 	
 	m_WVPMatrixHandle = NULL;
-	m_lightingHandle = NULL;
+	//m_lightingHandle = NULL;
 	m_techniqueHandle = NULL;
 	m_textureHandle = NULL;
 }
@@ -52,7 +52,7 @@ HRESULT Shader::LoadEffectFile()
 	ID3DXBuffer* errorBuffer = NULL;	// エラーバッファ
 
 	D3DXCreateEffectFromFile(pDevice,
-						"Effect.txt",	// エフェクトファイルの名前
+						"Shader/Effect.fx",	// エフェクトファイルの名前
 						0,
 						0,
 						D3DXSHADER_DEBUG,
@@ -69,12 +69,14 @@ HRESULT Shader::LoadEffectFile()
 		return E_FAIL;
 	}
 
-	// エフェクトのテクニックを設定
-	m_techniqueHandle = m_effectPoint->GetTechniqueByName("T0");
+	//---------------------------------------------
+	// シェーダー中の変数を初期化する
+	//---------------------------------------------
+	m_techniqueHandle = m_effectPoint->GetTechniqueByName("T0");	// エフェクトのテクニックを設定
 
 	// シェーダー中のグローバル変数を取得
 	m_WVPMatrixHandle = m_effectPoint->GetParameterByName(0, "WVPMatrix");
-	m_lightingHandle = m_effectPoint->GetParameterByName(0, "LightDirection");
+	//m_lightingHandle = m_effectPoint->GetParameterByName(0, "LightDirection");
 	m_textureHandle = m_effectPoint->GetParameterByName(0, "Tex");
 
 	return S_OK;

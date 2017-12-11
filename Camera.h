@@ -22,9 +22,6 @@
 class Camera
 {
 private:
-	// 位置
-	D3DXVECTOR3	m_posEye;			// カメラの位置
-	D3DXVECTOR3	m_posAt;			// カメラの注視点
 	// ベクトル
 	D3DXVECTOR3	m_vecUp;			// カメラの上方向ベクトル
 	D3DXVECTOR3	m_vecLook;		// カメラの注視方向ベクトル
@@ -34,6 +31,9 @@ private:
 	D3DXVECTOR3	m_rot;			// カメラの回転角度
 	DebugMessage*	m_message;
 public:
+	// 位置
+	D3DXVECTOR3	m_posEye;			// カメラの位置
+	D3DXVECTOR3	m_posAt;			// カメラの注視点
 	// マトリックス
 	D3DXMATRIX	m_viewMatrix;		// ビューイング変換行列
 	D3DXMATRIX	m_projectionMatrix;	// プロジェクション変換行列

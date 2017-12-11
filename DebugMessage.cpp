@@ -48,3 +48,15 @@ void DebugMessage::DrawPosMessage(const char name[], D3DXVECTOR3 OutputPos, D3DX
 	m_Font->DrawText(NULL, &str[0], -1, &rectCoor, DT_LEFT, D3DCOLOR_RGBA(255, 0, 255, 0xff));
 
 }
+
+//*****************************************************************************
+//
+// デバッグメッセージ
+//
+//*****************************************************************************
+void DebugMessage::DrawMessage(const char message[])
+{
+	RECT rectCoor = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
+
+	m_Font->DrawText(NULL, &message[0], -1, &rectCoor, DT_LEFT, D3DCOLOR_RGBA(255, 0, 255, 0xff));	// 文字列を描画する
+}

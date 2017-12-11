@@ -21,6 +21,7 @@ BoundingBox::BoundingBox()
 
 	m_indexBuffer = NULL;
 	m_vertexBuffer = NULL;
+	m_vertexDecl = NULL;
 
 	m_isBoundingBoxDraw = true;
 }
@@ -35,99 +36,7 @@ BoundingBox::~BoundingBox()
 	// ポインタ
 	RELEASE_POINT(m_indexBuffer);
 	RELEASE_POINT(m_vertexBuffer);
-}
-
-//*****************************************************************************
-//
-// 長方体頂点を設定
-//
-//*****************************************************************************
-HRESULT BoundingBox::MakeVertex()
-{
-	LPDIRECT3DDEVICE9 pDevice = GetDevice();
-
-	// Vertex
-
-	// オブジェクトの頂点バッファを生成
-	if (FAILED(pDevice->CreateVertexBuffer(8 * sizeof(VERTEX_3D_NT), 0, FVF_VERTEX_3D_NT, D3DPOOL_DEFAULT, &m_vertexBuffer, NULL)))
-	{
-		std::cout << "[Error] 頂点バッファが生成できない!" << std::endl;	// エラーメッセージ
-		return E_FAIL;
-	}
-
-	// 頂点作成
-	VERTEX_3D_NT Vetex[] =
-	{
-		// 座標、法線、diffuse
-		{ D3DXVECTOR3(-m_size.x / 2,  m_size.y / 2, -m_size.z / 2), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(255.0f, 0.0f, 0.0f, m_alpha) },
-		{ D3DXVECTOR3(-m_size.x / 2,  m_size.y / 2,  m_size.z / 2), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(255.0f, 0.0f, 0.0f, m_alpha) },
-		{ D3DXVECTOR3( m_size.x / 2,  m_size.y / 2,  m_size.z / 2), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(255.0f, 0.0f, 0.0f, m_alpha) },
-		{ D3DXVECTOR3( m_size.x / 2,  m_size.y / 2, -m_size.z / 2), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(255.0f, 0.0f, 0.0f, m_alpha) },
-		{ D3DXVECTOR3(-m_size.x / 2,  0,           -m_size.z / 2), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(255.0f, 0.0f, 0.0f, m_alpha) },
-		{ D3DXVECTOR3(-m_size.x / 2,  0,            m_size.z / 2), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(255.0f, 0.0f, 0.0f, m_alpha) },
-		{ D3DXVECTOR3( m_size.x / 2,  0,            m_size.z / 2), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(255.0f, 0.0f, 0.0f, m_alpha) },
-		{ D3DXVECTOR3( m_size.x / 2,  0,           -m_size.z / 2), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(255.0f, 0.0f, 0.0f, m_alpha) }
-	};
-
-	// 頂点バッファポインタ作成
-	VOID* VertexBuffer;
-
-	// 頂点データの範囲をロックして頂点バッファメモリへのポインタを取得する
-	if (FAILED(m_vertexBuffer->Lock(0, sizeof(Vetex), (void**)&VertexBuffer, 0)))
-	{
-		std::cout << "[Error] 頂点バッファがロックできない!" << std::endl;	// エラーメッセージ
-		return E_FAIL;
-	}
-
-	// 作成された頂点を臨時ポインタの中に入れる
-	memcpy(VertexBuffer, Vetex, sizeof(Vetex));
-
-	// 頂点データをアンロックする
-	m_vertexBuffer->Unlock();
-
-	// Index
-
-	//オブジェクトの頂点インデックスバッファを生成
-	if (FAILED(pDevice->CreateIndexBuffer(36 * sizeof(WORD), 0, D3DFMT_INDEX16, D3DPOOL_DEFAULT, &m_indexBuffer, NULL)))
-	{
-		std::cout << "[Error] 頂点インデクスが生成できない!" << std::endl;	// エラーメッセージ
-		return E_FAIL;
-	}
-
-	// イデックスの中身を埋める
-	WORD* VertexIndex = NULL;
-
-	// インデックス データのある一定範囲をロックし、そのインデックス バッファー メモリーへのポインターを取得する
-	m_indexBuffer->Lock(0, 0, (void**)&VertexIndex, 0);
-
-	// 底面(上)
-	VertexIndex[0] = 0, VertexIndex[1] = 1, VertexIndex[2] = 2;
-	VertexIndex[3] = 0, VertexIndex[4] = 2, VertexIndex[5] = 3;
-
-	// 正面
-	VertexIndex[6] = 0, VertexIndex[7] = 3, VertexIndex[8] = 7;
-	VertexIndex[9] = 0, VertexIndex[10] = 7, VertexIndex[11] = 4;
-
-	// 侧面(左)
-	VertexIndex[12] = 0, VertexIndex[13] = 4, VertexIndex[14] = 5;
-	VertexIndex[15] = 0, VertexIndex[16] = 5, VertexIndex[17] = 1;
-
-	// 侧面(右)
-	VertexIndex[18] = 2, VertexIndex[19] = 6, VertexIndex[20] = 7;
-	VertexIndex[21] = 2, VertexIndex[22] = 7, VertexIndex[23] = 3;
-
-	// 背面
-	VertexIndex[24] = 2, VertexIndex[25] = 5, VertexIndex[26] = 6;
-	VertexIndex[27] = 2, VertexIndex[28] = 1, VertexIndex[29] = 5;
-
-	// 底面(下)
-	VertexIndex[30] = 4, VertexIndex[31] = 6, VertexIndex[32] = 5;
-	VertexIndex[33] = 4, VertexIndex[34] = 7, VertexIndex[35] = 6;
-
-	// インデックス データのロックを解除する
-	m_indexBuffer->Unlock();
-
-	return S_OK;
+	RELEASE_POINT(m_vertexDecl);
 }
 
 //*****************************************************************************
@@ -141,6 +50,99 @@ void BoundingBox::InitBox(int width, int height, int depth, float alpha)
 	m_alpha = alpha;
 
 	MakeVertex();
+}
+
+//*****************************************************************************
+//
+// 長方体頂点を設定
+//
+//*****************************************************************************
+HRESULT BoundingBox::MakeVertex()
+{
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();
+
+	D3DVERTEXELEMENT9 boundingBoxDecl[] =	// 頂点データのレイアウトを定義
+	{
+		{ 0, 0,  D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION },
+		{ 0, 12, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_NORMAL   },
+		{ 0, 24, D3DDECLTYPE_FLOAT4, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR    },
+		{ 0, 40, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD },
+		D3DDECL_END()
+	};
+	
+
+	// オブジェクトの頂点バッファを生成
+	if (FAILED(pDevice->CreateVertexBuffer(8 * sizeof(VERTEX_3D_NT), 0, FVF_VERTEX_3D_NT, D3DPOOL_DEFAULT, &m_vertexBuffer, NULL)))
+	{
+		std::cout << "[Error] 頂点バッファが生成できない!" << std::endl;	// エラーメッセージ
+		return E_FAIL;
+	}
+
+	// 頂点作成
+	VERTEX_3D_NT vertex[] =
+	{
+		// 座標、法線、diffuse
+		{ D3DXVECTOR3(-m_size.x / 2,  m_size.y / 2, -m_size.z / 2), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(255.0f, 0.0f, 0.0f, m_alpha) },
+		{ D3DXVECTOR3(-m_size.x / 2,  m_size.y / 2,  m_size.z / 2), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(255.0f, 0.0f, 0.0f, m_alpha) },
+		{ D3DXVECTOR3( m_size.x / 2,  m_size.y / 2,  m_size.z / 2), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(255.0f, 0.0f, 0.0f, m_alpha) },
+		{ D3DXVECTOR3( m_size.x / 2,  m_size.y / 2, -m_size.z / 2), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(255.0f, 0.0f, 0.0f, m_alpha) },
+		{ D3DXVECTOR3(-m_size.x / 2,  0,            -m_size.z / 2), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(255.0f, 0.0f, 0.0f, m_alpha) },
+		{ D3DXVECTOR3(-m_size.x / 2,  0,             m_size.z / 2), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(255.0f, 0.0f, 0.0f, m_alpha) },
+		{ D3DXVECTOR3( m_size.x / 2,  0,             m_size.z / 2), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(255.0f, 0.0f, 0.0f, m_alpha) },
+		{ D3DXVECTOR3( m_size.x / 2,  0,            -m_size.z / 2), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(255.0f, 0.0f, 0.0f, m_alpha) }
+	};
+
+	VOID* VertexBuffer;	// 頂点バッファポインタ作成
+
+	// 頂点データの範囲をロックして頂点バッファメモリへのポインタを取得する
+	if (FAILED(m_vertexBuffer->Lock(0, sizeof(vertex), (void**)&VertexBuffer, 0)))
+	{
+		std::cout << "[Error] 頂点バッファがロックできない!" << std::endl;	// エラーメッセージ
+		return E_FAIL;
+	}
+	memcpy(VertexBuffer, vertex, sizeof(vertex));	// 作成された頂点を臨時ポインタの中に入れる
+	m_vertexBuffer->Unlock();					// 頂点データをアンロックする
+
+
+	//オブジェクトの頂点インデックスバッファを生成
+	if (FAILED(pDevice->CreateIndexBuffer(36 * sizeof(WORD), 0, D3DFMT_INDEX16, D3DPOOL_DEFAULT, &m_indexBuffer, NULL)))
+	{
+		std::cout << "[Error] 頂点インデクスが生成できない!" << std::endl;	// エラーメッセージ
+		return E_FAIL;
+	}
+
+	
+	WORD* vertexIndex = NULL;	// イデックスの中身を埋める
+	m_indexBuffer->Lock(0, 0, (void**)&vertexIndex, 0);	// インデックス データのある一定範囲をロックし、そのインデックス バッファー メモリーへのポインターを取得する
+
+	// 底面(上)
+	vertexIndex[0] = 0, vertexIndex[1] = 1, vertexIndex[2] = 2;
+	vertexIndex[3] = 0, vertexIndex[4] = 2, vertexIndex[5] = 3;
+
+	// 正面
+	vertexIndex[6] = 0, vertexIndex[7] = 3, vertexIndex[8] = 7;
+	vertexIndex[9] = 0, vertexIndex[10] = 7, vertexIndex[11] = 4;
+
+	// 侧面(左)
+	vertexIndex[12] = 0, vertexIndex[13] = 4, vertexIndex[14] = 5;
+	vertexIndex[15] = 0, vertexIndex[16] = 5, vertexIndex[17] = 1;
+
+	// 侧面(右)
+	vertexIndex[18] = 2, vertexIndex[19] = 6, vertexIndex[20] = 7;
+	vertexIndex[21] = 2, vertexIndex[22] = 7, vertexIndex[23] = 3;
+
+	// 背面
+	vertexIndex[24] = 2, vertexIndex[25] = 5, vertexIndex[26] = 6;
+	vertexIndex[27] = 2, vertexIndex[28] = 1, vertexIndex[29] = 5;
+
+	// 底面(下)
+	vertexIndex[30] = 4, vertexIndex[31] = 6, vertexIndex[32] = 5;
+	vertexIndex[33] = 4, vertexIndex[34] = 7, vertexIndex[35] = 6;
+
+	// インデックス データのロックを解除する
+	m_indexBuffer->Unlock();
+
+	return S_OK;
 }
 
 //*****************************************************************************
@@ -181,17 +183,10 @@ void BoundingBox::Draw()
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
-	// 頂点バッファをデバイスのデータストリームにバイナリ
-	pDevice->SetStreamSource(0, m_vertexBuffer, 0, sizeof(VERTEX_3D_NT));
-
-	// 頂点フォーマットの設定
-	pDevice->SetFVF(FVF_VERTEX_3D_NT);
-
-	// 頂点イデックスの設定
-	pDevice->SetIndices(m_indexBuffer);
-
-	// バウンディングボックスの描画
-	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 17, 0, 16);
+	pDevice->SetStreamSource(0, m_vertexBuffer, 0, sizeof(VERTEX_3D_NT));	// 頂点バッファをデバイスのデータストリームにバイナリ
+	pDevice->SetFVF(FVF_VERTEX_3D_NT);										// 頂点フォーマットの設定
+	pDevice->SetIndices(m_indexBuffer);										// 頂点イデックスの設定
+	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 17, 0, 16);		// バウンディングボックスの描画
 }
 
 //*****************************************************************************

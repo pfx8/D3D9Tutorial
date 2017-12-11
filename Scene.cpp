@@ -18,8 +18,9 @@ using namespace std;
 //*****************************************************************************
 Scene::Scene()
 {	
-	// リソース
-	m_resourcesManager = new ResourcesManager();
+	m_resourcesManager = new ResourcesManager;	// リソース
+	m_message = new DebugMessage;
+	D3DXMatrixIdentity(&m_worldMatrix);	// ワールドマトリックスを初期化する
 
 	// テクスチャを読み込み
 	// m_resourcesManager->InitTexture();
@@ -35,21 +36,7 @@ Scene::~Scene()
 	// クラスポインタ
 	// リソース
 	RELEASE_CLASS_POINT(m_resourcesManager);
-}
-
-//*****************************************************************************
-//
-// コンソールに表示するメッセージ
-//
-// 修正为可以新建场景，以及场景list
-//
-//*****************************************************************************
-void Scene::ConsoleMessage(std::string sceneName)
-{
-	// コンソールにシンーの名前を出す
-	cout << "///////////////////////////////" << endl;
-	cout << "// Scene : " << sceneName << endl;
-	cout << "///////////////////////////////" << endl;
+	RELEASE_CLASS_POINT(m_message);
 }
 
 //*****************************************************************************
@@ -57,57 +44,37 @@ void Scene::ConsoleMessage(std::string sceneName)
 // ファイル(blender)からシンーの資源を読み込み
 //
 //*****************************************************************************
-HRESULT Scene::LoadSceneFile(string name)
-{
-	// コンソールにメッセージを出す
-	cout << "Loading " << name << endl;
-
-	// 読み込みオブジェクトを作る
-	ifstream fin;
-	
-	// ファイルを読み込み
-	fin.open(name);
-
-	// 読み込みは失敗した場合
-	if (fin.fail())
-	{
-		// コンソールにメッセージを出す
-		cout << "エラー[ 読み込み失敗 ]" << endl;
-		return E_FAIL;
-	}
-	else
-	{
-		// コンソールにメッセージを出す
-		cout << name << " ok!" << endl;
-		char PathTemp[100];
-		while (!fin.eof())
-		{
-			fin.getline(PathTemp, 100);
-			cout << PathTemp << endl;
-		}
-
-		// 未完成
-	}
-
-	return S_OK;
-}
-
-//*****************************************************************************
+//HRESULT Scene::LoadSceneFile(string name)
+//{
+//	// コンソールにメッセージを出す
+//	cout << "Loading " << name << endl;
 //
-// シーンの名前を設定
+//	// 読み込みオブジェクトを作る
+//	ifstream fin;
+//	
+//	// ファイルを読み込み
+//	fin.open(name);
 //
-//*****************************************************************************
-void Scene::SetSceneName(std::string name)
-{
-	m_sceneName = name;
-}
-
-//*****************************************************************************
+//	// 読み込みは失敗した場合
+//	if (fin.fail())
+//	{
+//		// コンソールにメッセージを出す
+//		cout << "エラー[ 読み込み失敗 ]" << endl;
+//		return E_FAIL;
+//	}
+//	else
+//	{
+//		// コンソールにメッセージを出す
+//		cout << name << " ok!" << endl;
+//		char PathTemp[100];
+//		while (!fin.eof())
+//		{
+//			fin.getline(PathTemp, 100);
+//			cout << PathTemp << endl;
+//		}
 //
-// シーンの名前を設定
+//		// 未完成
+//	}
 //
-//*****************************************************************************
-std::string Scene::GetSceneName()
-{
-	return m_sceneName;
-}
+//	return S_OK;
+//}

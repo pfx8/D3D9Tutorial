@@ -43,40 +43,8 @@ SceneManager::~SceneManager()
 //*****************************************************************************
 void SceneManager::ChooseScene()
 {
-	// シーンリストを初期化
-	/*m_sceneList[2] =
-	{
-		"D3DTutorial",
-		"VertexShader",
-	};*/
-
-	/*std::cout << "シーンを選択してください" << std::endl;
-	for(int count= 0; count < 2; count++)
-	{ 
-		std::cout << 'a' + count << ". "<< m_sceneList[count] << std::endl;
-	}*/
-
-	// シーンを選択する
-	char chooseScene = 'd';
-
-	//std::cin >> chooseScene;
-
-	switch (chooseScene)
-	{
-	//case 'a':
-	//case 'A':m_scene = new Scene00(); break;	// D3DTutorial
-	//case 'b':
-	//case 'B':m_scene = new Scene01(); break;	// VertexShader
-	//case 'c':
-	//case 'C':m_scene = new Scene02(); break;	// PixelShader
-	case 'd':
-	case 'D':m_scene = new Scene03(); break;		// Effect
-	default:
-		break;
-	}
-
-	// レンダリング状態を設定
-	SetState();
+	m_scene = new Scene00; // 初期化する
+	SetState();	// レンダリング状態を設定
 }
 
 //*****************************************************************************

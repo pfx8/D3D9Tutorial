@@ -25,10 +25,11 @@ private:
 
 	LPDIRECT3DVERTEXBUFFER9 m_vertexBuffer;	// 頂点バッファ
 	LPDIRECT3DINDEXBUFFER9 m_indexBuffer;	// インデックスバッファ
+	IDirect3DVertexDeclaration9* m_vertexDecl;	// 頂点シェーダー宣言
 
 public:
 	D3DXVECTOR3	m_size;	// バウンディングボックスサイズ
-	bool			m_isBoundingBoxDraw;	// バウンディングボックスの描画チェック
+	bool		m_isBoundingBoxDraw;	// バウンディングボックスの描画チェック
 
 	BoundingBox();
 	~BoundingBox();

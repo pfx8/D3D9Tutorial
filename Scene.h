@@ -17,6 +17,7 @@
 #include "Light.h"
 #include "Plane.h"
 #include "ResourcesManager.h"
+#include "DebugMessage.h" 
 
 //*****************************************************************************
 //
@@ -26,25 +27,20 @@
 class Scene
 {
 private:
-	std::string		m_sceneName;	// シンーの名前
 
 public:
-	D3DXMATRIX		m_worldMatrix;			// ワールドマトリックス
+	D3DXMATRIX			m_worldMatrix;		// ワールドマトリックス
 	ResourcesManager*	m_resourcesManager;	// リソースマネジメント
-
+	DebugMessage*		m_message;			// メッセージ
+	
 	Scene();
 	~Scene();
 
-	virtual void Update() {};
-	virtual void Draw() {};
+	virtual void Update() {};	// 仮想関数
+	virtual void Draw() {};		// 仮想関数
 
 	// ファイル(blender)からシンーの資源を読み込み
-	HRESULT LoadSceneFile(std::string name);		// 未完成
-
-	void SetSceneName(std::string name);		// シーンの名前を設定
-	std::string GetSceneName();				// シーンの名前を取得
-
-	void ConsoleMessage(std::string sceneName);		// コンソールに表示するメッセージ
+	//HRESULT LoadSceneFile(std::string name);		// 未完成
 };
 
 #endif // !_SCENE_H_

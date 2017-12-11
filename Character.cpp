@@ -46,28 +46,28 @@ Character::~Character()
 // ワールド変換
 //
 //*****************************************************************************
-void Character::SetWorldMatrix(D3DXMATRIX& mtxWorld)
+void Character::SetWorldMatrix(D3DXMATRIX* mtxWorld)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 	D3DXMATRIX mtxScl, mtxRot, mtxTranslate;
 
 	// ワールドマトリックスを初期化する
-	D3DXMatrixIdentity(&mtxWorld);
+	D3DXMatrixIdentity(mtxWorld);
 
 	// スケールを反映
 	D3DXMatrixScaling(&mtxScl, m_scl.x, m_scl.y, m_scl.z);
-	D3DXMatrixMultiply(&mtxWorld, &mtxWorld, &mtxScl);
+	D3DXMatrixMultiply(mtxWorld, mtxWorld, &mtxScl);
 
 	// 回転を反映
 	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rot.y, m_rot.x, m_rot.z); // カメラの方がもっと使う
-	D3DXMatrixMultiply(&mtxWorld, &mtxWorld, &mtxRot);
+	D3DXMatrixMultiply(mtxWorld, mtxWorld, &mtxRot);
 
 	// 平行移動を反映
 	D3DXMatrixTranslation(&mtxTranslate, m_pos.x, m_pos.y, m_pos.z);
-	D3DXMatrixMultiply(&mtxWorld, &mtxWorld, &mtxTranslate);
+	D3DXMatrixMultiply(mtxWorld, mtxWorld, &mtxTranslate);
 
 	// ワールドマトリクスの初期化
-	pDevice->SetTransform(D3DTS_WORLD, &mtxWorld);
+	pDevice->SetTransform(D3DTS_WORLD, mtxWorld);
 }
 
 //*****************************************************************************
@@ -103,7 +103,7 @@ void Character::InitCharacter(D3DXVECTOR3 pos)
 //*****************************************************************************
 void Character::Draw()
 {
-	m_mesh->DrawModel();	// メッシュを描画する
+	//m_mesh->DrawModel();	// メッシュを描画する
 	if (m_boundingBox->m_isBoundingBoxDraw == true)
 	{
 		m_boundingBox->Draw();	// バウンディングボックスを描画する
@@ -118,7 +118,7 @@ void Character::Draw()
 void Character::Draw(IDirect3DVertexShader9* vertexShader, IDirect3DVertexDeclaration9* vertexDecl)
 {
 	
-	m_mesh->DrawModel(vertexShader, vertexDecl);// メッシュを描画する
+	//m_mesh->DrawModel(vertexShader, vertexDecl);// メッシュを描画する
 
 	if (m_boundingBox->m_isBoundingBoxDraw == true)
 	{
@@ -133,7 +133,7 @@ void Character::Draw(IDirect3DVertexShader9* vertexShader, IDirect3DVertexDeclar
 //*****************************************************************************
 void Character::Draw(ID3DXEffect* effect)
 {
-	m_mesh->DrawModel(effect);// メッシュを描画する
+	//m_mesh->DrawModel(effect);// メッシュを描画する
 
 	if (m_boundingBox->m_isBoundingBoxDraw == true)
 	{
@@ -156,9 +156,32 @@ void Character::Move()
 // キャラクター更新
 //
 //*****************************************************************************
-void Character::Update()
+void Character::Update(D3DXVECTOR3* pos, D3DXVECTOR3* speed, D3DXMATRIX* worldMatrix)
 {
+	// 操作更新
+	if (GetKeyboardPress(DIK_A))	// key A
+	{
+		pos->x -= speed->x;
+	}
+	if (GetKeyboardPress(DIK_D))	// key D
+	{
+		pos->x += speed->x;
+	}
+	if (GetKeyboardPress(DIK_W))	// key W
+	{
+		pos->z += speed->x;
+	}
+	if (GetKeyboardPress(DIK_S))	// key S
+	{
+		pos->z -= speed->x;
+	}
 
+	if (GetKeyboardTrigger(DIK_Q))	// key Q
+	{
+		// バウンディングボックスをコントロール
+		m_boundingBox->m_isBoundingBoxDraw = !m_boundingBox->m_isBoundingBoxDraw;
+		std::cout << "[State] BoundingBox: " << std::boolalpha << m_boundingBox->m_isBoundingBoxDraw << std::endl;
+	}
 }
 
 //*****************************************************************************

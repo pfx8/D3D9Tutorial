@@ -40,8 +40,6 @@ public:
 
 	void Update();
 	void Draw();
-
-	void Scene00::UpdatePlayer(D3DXVECTOR3* Pos, D3DXVECTOR3* Speed);
 };
 
 #endif // !_SCENE00_H_
