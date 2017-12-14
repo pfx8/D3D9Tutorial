@@ -19,47 +19,47 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BoundingBox.cpp" />
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="Character.cpp" />
     <ClCompile Include="Console.cpp" />
-    <ClCompile Include="input.cpp" />
-    <ClCompile Include="Light.cpp" />
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Material.cpp" />
-    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="DebugMessage.cpp" />
-    <ClCompile Include="Plane.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="modules\BoundingBox.cpp" />
+    <ClCompile Include="modules\Camera.cpp" />
+    <ClCompile Include="modules\Character.cpp" />
+    <ClCompile Include="modules\input.cpp" />
+    <ClCompile Include="modules\Light.cpp" />
+    <ClCompile Include="modules\Material.cpp" />
+    <ClCompile Include="modules\Matrix.cpp" />
+    <ClCompile Include="modules\Model.cpp" />
+    <ClCompile Include="modules\Plane.cpp" />
+    <ClCompile Include="modules\Scene.cpp" />
     <ClCompile Include="ResourcesManager.cpp" />
-    <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Scene00.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BoundingBox.h" />
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="Character.h" />
     <ClInclude Include="Console.h" />
-    <ClInclude Include="Engine.h" />
-    <ClInclude Include="input.h" />
-    <ClInclude Include="Light.h" />
-    <ClInclude Include="Material.h" />
-    <ClInclude Include="Mesh.h" />
     <ClInclude Include="DebugMessage.h" />
-    <ClInclude Include="Plane.h" />
+    <ClInclude Include="Engine.h" />
+    <ClInclude Include="modules\BoundingBox.h" />
+    <ClInclude Include="modules\Camera.h" />
+    <ClInclude Include="modules\Character.h" />
+    <ClInclude Include="modules\input.h" />
+    <ClInclude Include="modules\Light.h" />
+    <ClInclude Include="modules\Material.h" />
+    <ClInclude Include="modules\Matrix.h" />
+    <ClInclude Include="modules\Model.h" />
+    <ClInclude Include="modules\Plane.h" />
+    <ClInclude Include="modules\Scene.h" />
     <ClInclude Include="ResourcesManager.h" />
-    <ClInclude Include="Scene.h" />
     <ClInclude Include="Scene00.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Shader.h" />
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="Shader\Effect.fx">
-      <FileType>Text</FileType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">2.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
-    </CustomBuild>
+    <None Include="Shader\Effect.fx">
+      <FileType>Document</FileType>
+    </None>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{AE2F5D68-7730-43CB-B207-504B5C12B285}</ProjectGuid>

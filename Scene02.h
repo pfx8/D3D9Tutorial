@@ -9,13 +9,13 @@
 #define _SCENE02_H_
 
 #include "Engine.h"
+#include "Shader.h"
 
 #include <map>
 
-#include "Scene.h"
-#include "Camera.h"
-#include "Shader.h"
-#include "Plane.h"
+#include "Modules/Scene.h"
+#include "Modules/Camera.h"
+#include "Modules/Plane.h"
 
 //*****************************************************************************
 //

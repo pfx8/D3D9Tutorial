@@ -12,11 +12,10 @@
 
 #include <map>
 
-#include "Scene.h"
-
-#include "Character.h"
-#include "Camera.h"
-#include "Plane.h"
+#include "Modules/Scene.h"
+#include "Modules/Character.h"
+#include "Modules/Camera.h"
+#include "Modules/Plane.h"
 #include "ResourcesManager.h"
 #include "Shader.h"
 
@@ -32,7 +31,7 @@ private:
 	Shader*			m_shader;	// シェーダー
 
 	Plane*			m_fieldStone;	// フィールド
-	Character*		m_woman;		// 車, プレーヤー
+	Character*		m_hero;		// プレーヤー
 
 public:
 	Scene00();
@@ -40,6 +39,7 @@ public:
 
 	void Update();
 	void Draw();
+	void Control();
 };
 
 #endif // !_SCENE00_H_

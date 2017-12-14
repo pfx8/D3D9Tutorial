@@ -21,7 +21,7 @@
 #include <tchar.h>
 #include <time.h>
 #include <dinput.h>
-#include "input.h"
+#include "Modules/input.h"
 
 // c++
 #include <iostream>

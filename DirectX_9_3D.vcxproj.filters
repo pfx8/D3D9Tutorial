@@ -14,112 +14,121 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
     <Filter Include="Shader">
-      <UniqueIdentifier>{7c5835c8-9494-40e1-a3a4-c6b9c8279ed2}</UniqueIdentifier>
+      <UniqueIdentifier>{09d9fb85-3bac-4127-96ed-81be094ec894}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Modules">
+      <UniqueIdentifier>{a974e2b8-fd5a-4a7a-b852-281c89d174f2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BoundingBox.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="modules\BoundingBox.cpp">
+      <Filter>Modules</Filter>
     </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="modules\Camera.cpp">
+      <Filter>Modules</Filter>
     </ClCompile>
-    <ClCompile Include="Character.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="modules\Character.cpp">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="modules\input.cpp">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="modules\Light.cpp">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="modules\Material.cpp">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="modules\Matrix.cpp">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="modules\Model.cpp">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="modules\Plane.cpp">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="modules\Scene.cpp">
+      <Filter>Modules</Filter>
     </ClCompile>
     <ClCompile Include="Console.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="input.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Light.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Main.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Material.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Mesh.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="ResourcesManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="SceneManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="DebugMessage.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Scene.cpp">
+    <ClCompile Include="Main.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Shader.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Plane.cpp">
+    <ClCompile Include="ResourcesManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Scene00.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BoundingBox.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="modules\BoundingBox.h">
+      <Filter>Modules</Filter>
     </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="modules\Camera.h">
+      <Filter>Modules</Filter>
     </ClInclude>
-    <ClInclude Include="Character.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="modules\Character.h">
+      <Filter>Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="modules\input.h">
+      <Filter>Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="modules\Light.h">
+      <Filter>Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="modules\Material.h">
+      <Filter>Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="modules\Matrix.h">
+      <Filter>Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="modules\Model.h">
+      <Filter>Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="modules\Plane.h">
+      <Filter>Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="modules\Scene.h">
+      <Filter>Modules</Filter>
     </ClInclude>
     <ClInclude Include="Console.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="input.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Light.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Material.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Mesh.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="ResourcesManager.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="SceneManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="DebugMessage.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Scene.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Shader.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Plane.h">
+    <ClInclude Include="ResourcesManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Scene00.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="Shader\Effect.fx">
+    <None Include="Shader\Effect.fx">
       <Filter>Shader</Filter>
-    </CustomBuild>
+    </None>
   </ItemGroup>
 </Project>

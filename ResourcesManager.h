@@ -11,7 +11,7 @@
 #include "Engine.h"
 
 #include <map>
-#include "Mesh.h"
+#include "Modules/Model.h"
 
 //*****************************************************************************
 //
@@ -22,18 +22,18 @@ class ResourcesManager
 {
 private:
 	// テクスチャ
-	std::map < std::string, std::string> m_TextureList;	// テクスチャリスト
+	std::map < std::string, std::string> m_textureList;	// テクスチャリスト
 	std::string GetTextureStruct(std::string name);		// テクスチャパスを取得
 
 	// メッシュ
-	std::map < std::string, std::string> m_MeshList;	// メッシュリスト
+	std::map < std::string, std::string> m_meshList;	// メッシュリスト
 	std::string GetMeshPath(std::string name);		// メッシュパスを取得
 public:
 	ResourcesManager();
 	~ResourcesManager();
 
 	HRESULT LoadTexture(std::string name, LPDIRECT3DTEXTURE9* texturePoint);	// テクスチャを読み込み
-	HRESULT LoadMesh(std::string name, Mesh* mesh);	// メッシュを読み込み
+	HRESULT LoadMesh(std::string name, Model* mesh);	// メッシュを読み込み
 
 };
 

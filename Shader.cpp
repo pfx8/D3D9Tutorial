@@ -17,8 +17,8 @@ Shader::Shader()
 	m_effectPoint = NULL;
 	
 	m_WVPMatrixHandle = NULL;
-	//m_lightingHandle = NULL;
-	m_techniqueHandle = NULL;
+	m_lightingHandle = NULL;
+	m_basicShaderHandle = NULL;
 	m_textureHandle = NULL;
 }
 
@@ -41,24 +41,22 @@ HRESULT Shader::LoadEffectFile()
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
-	// ピクセル機能チェック
 	D3DCAPS9 caps;
 	pDevice->GetDeviceCaps(&caps);
-	if (caps.PixelShaderVersion < D3DPS_VERSION(1, 1))
+	if (caps.PixelShaderVersion < D3DPS_VERSION(1, 1))	// ピクセル機能チェック
 	{
 		std::cout << "[Error]Not Support PixelShader Failed!" << std::endl;
 	}
 
-	ID3DXBuffer* errorBuffer = NULL;	// エラーバッファ
-
+	ID3DXBuffer* errorBuffer = NULL;		// エラーバッファ
 	D3DXCreateEffectFromFile(pDevice,
 						"Shader/Effect.fx",	// エフェクトファイルの名前
 						0,
 						0,
 						D3DXSHADER_DEBUG,
 						0,
-						&m_effectPoint,	// エフェクトポインタ
-						&errorBuffer);	// エラー情報
+						&m_effectPoint,		// エフェクトポインタ
+						&errorBuffer);		// エラー情報
 
 
 	if (errorBuffer)	// エラーをチェック
@@ -72,12 +70,14 @@ HRESULT Shader::LoadEffectFile()
 	//---------------------------------------------
 	// シェーダー中の変数を初期化する
 	//---------------------------------------------
-	m_techniqueHandle = m_effectPoint->GetTechniqueByName("T0");	// エフェクトのテクニックを設定
+	// レンダリングのテクニックを取得
+	m_basicShaderHandle = m_effectPoint->GetTechniqueByName("BasicShader");			// BasicShaderテクニックを設定
+	m_noTextureShaderHandle = m_effectPoint->GetTechniqueByName("NoTextureShader");	// NoTextureShaderテクニックを設定
 
 	// シェーダー中のグローバル変数を取得
-	m_WVPMatrixHandle = m_effectPoint->GetParameterByName(0, "WVPMatrix");
-	//m_lightingHandle = m_effectPoint->GetParameterByName(0, "LightDirection");
-	m_textureHandle = m_effectPoint->GetParameterByName(0, "Tex");
+	m_WVPMatrixHandle = m_effectPoint->GetParameterByName(0, "WVPMatrix");			// WVPマトリックス
+	m_lightingHandle = m_effectPoint->GetParameterByName(0, "LightDirection");		// 光ベクトル
+	m_textureHandle = m_effectPoint->GetParameterByName(0, "Tex");					// テクスチャ
 
 	return S_OK;
 }
