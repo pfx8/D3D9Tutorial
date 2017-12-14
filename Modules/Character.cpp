@@ -17,10 +17,7 @@ Character::Character()
 	m_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_scl = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
-	
-	m_name = " ";
-
-	m_speed = D3DXVECTOR3(1.5f, 0.0f, 0.0f);
+	m_directionVector = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
 	// クラスポインタ
 	m_model = new Model();
@@ -85,15 +82,11 @@ void Character::PosToMessageAndMessageDraw(int row)
 // 座標を設定
 //
 //*****************************************************************************
-void Character::InitCharacter(D3DXVECTOR3 pos)
+void Character::InitCharacter(D3DXVECTOR3 pos, D3DXVECTOR3 direction)
 {
-	// 位置
-	m_pos = pos;
-
-	// バウンディングボックスを初期化する
-	m_boundingBox->InitBox(20, 30, 40, 0.4f);
-
-	// DEBUG
+	m_pos = pos;	// 位置
+	m_directionVector = direction; // プレーヤーの向き
+	m_boundingBox->InitBox(20, 30, 40, 0.4f);	// バウンディングボックスを初期化
 }
 
 //*****************************************************************************
@@ -117,7 +110,7 @@ void Character::Draw(Shader* shader)
 //*****************************************************************************
 void Character::Move()
 {
-	m_pos.x -= m_speed.x;
+	m_pos.x -= m_directionVector.x;
 }
 
 //*****************************************************************************

@@ -23,6 +23,7 @@ class Camera
 {
 private:
 	// ベクトル
+
 	D3DXVECTOR3	m_upVector;		// カメラの上方向ベクトル
 	D3DXVECTOR3	m_lookVector;	// カメラの注視方向ベクトル
 	D3DXVECTOR3	m_rightVector;	// カメラの右方向ベクトル
@@ -34,7 +35,7 @@ public:
 	// 位置
 	D3DXVECTOR3	m_posEye;	// カメラの位置
 	D3DXVECTOR3	m_posAt;		// カメラの注視点
-	D3DXVECTOR3	m_eyeToAtVector;	// カメラから注視点までのベクトル
+	D3DXVECTOR3	m_atToEyeVector;	// カメラから注視点までのベクトル
 	// マトリックス
 	D3DXMATRIX	m_viewMatrix;		// ビューイング変換行列
 	D3DXMATRIX	m_projectionMatrix;	// プロジェクション変換行列
@@ -53,8 +54,10 @@ public:
 	void MoveAlongVecRight(float unit);	// 右方向に沿って移動
 	void MoveAlongVecLook(float unit);	// 注視方向に沿って移動
 
+	void isAtToEyeVectorMoreLong(bool isMoreLong);	// プレーヤーとカメラの半径を変わる
+
 public: 
-	void Update();	// カメラ更新
+	void Update(D3DXVECTOR3* playerDirectionVector);	// カメラ更新
 	void UpdateAt(D3DXVECTOR3 pos);	// 注視点座標を更新
 };
 #endif // !_CAMERA_H_

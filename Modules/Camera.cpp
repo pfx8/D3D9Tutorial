@@ -20,7 +20,7 @@ Camera::Camera()
 	m_upVector		= D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 	m_lookVector	= D3DXVECTOR3(0.0f, 0.0f, 1.0f);
 	m_rightVector	= D3DXVECTOR3(1.0f, 0.0f, 0.0f);
-	m_eyeToAtVector	= D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+	m_atToEyeVector = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 
 	D3DXMatrixIdentity(&m_viewMatrix);
 	D3DXMatrixIdentity(&m_projectionMatrix);
@@ -50,7 +50,7 @@ void Camera::InitCamera(D3DXVECTOR3 Eye, D3DXVECTOR3 At, D3DXVECTOR3 Up)
 	m_posEye = Eye;	// カメラの視点を初期化する
 	m_posAt  = At;	// カメラの注視点を初期化する
 	m_upVector  = Up;// カメラの上方向ベクトル、一般には (0, 1, 0) を定義する 
-	m_eyeToAtVector = m_posEye - m_posAt;	// 視点から注視点までのベクトル
+	m_atToEyeVector = m_posAt - m_posEye;	// 注視点から視点までのベクトル
 }
 
 //*****************************************************************************
@@ -114,43 +114,37 @@ void Camera::SetViewport()
 // カメラ更新
 //
 //*****************************************************************************
-void Camera::Update()
+void Camera::Update(D3DXVECTOR3* playerDirectionVector)
 {
-	if (GetKeyboardPress(DIK_J))	// key J
-	{
-		RotationVecUp(1.0f / 180.0f * D3DX_PI);
-	}
-	if (GetKeyboardPress(DIK_L))	// key L
-	{
-		RotationVecUp(-1.0f / 180.0f * D3DX_PI);
-	}
-	if (GetKeyboardPress(DIK_I))	// key I
-	{
-		RotationVecRight(1.0f / 180.0f * D3DX_PI);
-	}
-	if (GetKeyboardPress(DIK_K))	// key K
-	{
-		RotationVecRight(-1.0f / 180.0f * D3DX_PI);
-	}
-
-	if (GetKeyboardPress(DIK_LEFT))
-	{
-		MoveAlongVecRight(-1.0f);
-	}
-	if (GetKeyboardPress(DIK_RIGHT))
-	{
-		MoveAlongVecRight(1.0f);
-	}
-	if (GetKeyboardPress(DIK_UP))
-	{
-		MoveAlongVecLook(1.0f);
-	}
-	if (GetKeyboardPress(DIK_DOWN))
-	{
-		MoveAlongVecLook(-1.0f);
-	}
+	*playerDirectionVector = m_lookVector;// プレーヤーの向きベクトルを更新
+	// カメラの注視点を更新
 
 	SetViewMatrix();	// ビューイング変換
+
+	//if (GetKeyboardPress(DIK_I))	// key I
+	//{
+	//	RotationVecRight(1.0f / 180.0f * D3DX_PI);
+	//}
+	//if (GetKeyboardPress(DIK_K))	// key K
+	//{
+	//	RotationVecRight(-1.0f / 180.0f * D3DX_PI);
+	//}
+	//if (GetKeyboardPress(DIK_LEFT))
+	//{
+	//	MoveAlongVecRight(-1.0f);
+	//}
+	//if (GetKeyboardPress(DIK_RIGHT))
+	//{
+	//	MoveAlongVecRight(1.0f);
+	//}
+	//if (GetKeyboardPress(DIK_UP))
+	//{
+	//	MoveAlongVecLook(1.0f);
+	//}
+	//if (GetKeyboardPress(DIK_DOWN))
+	//{
+	//	MoveAlongVecLook(-1.0f);
+	//}
 }
 
 //*****************************************************************************
@@ -176,8 +170,9 @@ void Camera::RotationVecUp(float angle)
 	m_lookVector.x = cosf(m_rot.y + D3DX_PI / 2);
 	m_lookVector.z = sinf(m_rot.y + D3DX_PI / 2);
 
-	m_posEye.x = m_posEye.x * cosf(angle) + m_posEye.z * sinf(angle);
-	m_posEye.z = -m_posEye.x * sinf(angle) + m_posEye.z * cosf(angle);
+	D3DXMATRIX rotMatrix;
+	D3DXMatrixRotationAxis(&rotMatrix, &m_upVector, angle);		// 回転行列を作る
+	D3DXVec3TransformCoord(&m_posEye, &m_posEye, &rotMatrix);	// 回転行列で新しい座標を計算する
 }
 
 //*****************************************************************************
@@ -251,4 +246,31 @@ void Camera::PosToMessageAndMessageDraw(int row)
 	m_message->DrawPosMessage("VecUp", m_upVector, D3DXVECTOR2(0, float((row + 6) * 18 * 2)));
 	m_message->DrawPosMessage("Rot Radian", m_rot, D3DXVECTOR2(0, float((row + 8) * 18 * 2)));
 	m_message->DrawPosMessage("Rot Degree", D3DXVECTOR3(0.0f, D3DXToDegree(m_rot.x), 0.0f), D3DXVECTOR2(0, float((row + 9) * 18 * 2)));
+}
+
+//*****************************************************************************
+//
+// プレーヤーとカメラの半径を変わる
+//
+//*****************************************************************************
+void Camera::isAtToEyeVectorMoreLong(bool isMoreLong)
+{
+	if (isMoreLong == false)
+	{
+		m_atToEyeVector.z -= 1.0f;
+		if (m_atToEyeVector.z <= 12.0f)	// 最小値判断
+		{
+			m_atToEyeVector.z = 12.0f;
+		}
+	}
+	else
+	{
+		m_atToEyeVector.z += 1.0f;
+		if (m_atToEyeVector.z >= 20.0f)	// 最大値判断
+		{
+			m_atToEyeVector.z = 20.0f;
+		}
+	}
+
+	m_posEye = m_posAt + m_atToEyeVector;
 }
