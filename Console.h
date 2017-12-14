@@ -18,14 +18,16 @@
 class Console
 {
 private:
-	bool m_ConsoleStatus;
 
 public:
+	bool m_isConsoleRun;	// コンソール実行するかどうかを判断
+	bool m_isConsoleFront; // コンソールとゲームウィンドウの前後判断
+
 	Console();
 	~Console();
 
-	// コンソールの状態を取得
-	bool GetConsoleStatue();
+	HRESULT SetConsoleBack(HWND hwnd, int cmd);		// コンソールからゲームウインドに戻る
+	HRESULT SetConsoleFront(HWND hwnd);	// ゲームのウィンドからコンソールに変更
 };
 
 

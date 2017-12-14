@@ -18,8 +18,7 @@ ResourcesManager::ResourcesManager()
 	m_textureList["fieldGrass"] = "data/TEXTURE/field000.jpg";
 	m_textureList["fieldStone"] = "data/TEXTURE/field001.jpg";
 	m_textureList["fieldCheckered"] = "data/TEXTURE/field002.jpg";
-	m_textureList["1032"] = "data/TEXTURE/1032.jpg";
-	m_textureList["1033"] = "data/TEXTURE/1033.jpg";
+	m_textureList["fieldTransparent"] = "data/TEXTURE/field003.png";
 	m_textureList["NULL"] = "NULL";
 
 	// メッシュ検索マッピングを作る

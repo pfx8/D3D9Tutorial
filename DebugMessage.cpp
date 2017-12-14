@@ -17,7 +17,9 @@ DebugMessage::DebugMessage()
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	m_Font = NULL;
+	m_rectCoor = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
 
+	// フロントを初期化
 	D3DXCreateFont(pDevice, 18, 0, 0, 0, FALSE, SHIFTJIS_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, _T("Terminal"), &m_Font);
 }
 
@@ -56,7 +58,6 @@ void DebugMessage::DrawPosMessage(const char name[], D3DXVECTOR3 OutputPos, D3DX
 //*****************************************************************************
 void DebugMessage::DrawMessage(const char message[])
 {
-	RECT rectCoor = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
-
-	m_Font->DrawText(NULL, &message[0], -1, &rectCoor, DT_LEFT, D3DCOLOR_RGBA(255, 0, 255, 0xff));	// 文字列を描画する
+	m_Font->DrawText(NULL, &message[0], -1, &m_rectCoor, DT_LEFT, D3DCOLOR_RGBA(255, 0, 255, 0xff));	// 文字列を描画する
+	//m_rectCoor.top += 18;	// 次の文字列の位置を更新
 }

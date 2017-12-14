@@ -17,10 +17,10 @@ Camera::Camera()
 	m_posEye	= D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_posAt		= D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_rot		= D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_vecUp		= D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-	m_vecLook	= D3DXVECTOR3(0.0f, 0.0f, 1.0f);
-	m_vecRight	= D3DXVECTOR3(1.0f, 0.0f, 0.0f);
-	m_vecFromEyeToAt	= D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+	m_upVector		= D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+	m_lookVector	= D3DXVECTOR3(0.0f, 0.0f, 1.0f);
+	m_rightVector	= D3DXVECTOR3(1.0f, 0.0f, 0.0f);
+	m_eyeToAtVector	= D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 
 	D3DXMatrixIdentity(&m_viewMatrix);
 	D3DXMatrixIdentity(&m_projectionMatrix);
@@ -48,10 +48,9 @@ Camera::~Camera()
 void Camera::InitCamera(D3DXVECTOR3 Eye, D3DXVECTOR3 At, D3DXVECTOR3 Up)
 {
 	m_posEye = Eye;	// カメラの視点を初期化する
-	m_posAt  = At;		// カメラの注視点を初期化する
-	m_vecUp  = Up;		// カメラの上方向ベクトル、一般には (0, 1, 0) を定義する 
-
-	m_vecFromEyeToAt = m_posEye - m_posAt;
+	m_posAt  = At;	// カメラの注視点を初期化する
+	m_upVector  = Up;// カメラの上方向ベクトル、一般には (0, 1, 0) を定義する 
+	m_eyeToAtVector = m_posEye - m_posAt;	// 視点から注視点までのベクトル
 }
 
 //*****************************************************************************
@@ -72,7 +71,7 @@ void Camera::UpdateAt(D3DXVECTOR3 pos)
 //*****************************************************************************
 void Camera::SetViewMatrix()
 {	
-	D3DXMatrixLookAtLH(&m_viewMatrix, &m_posEye, &m_posAt, &m_vecUp);	// ビューマトリックスの作成
+	D3DXMatrixLookAtLH(&m_viewMatrix, &m_posEye, &m_posAt, &m_upVector);	// ビューマトリックスの作成
 	GetDevice()->SetTransform(D3DTS_VIEW, &m_viewMatrix);				// ビューマトリックスの設定
 }
 
@@ -151,8 +150,7 @@ void Camera::Update()
 		MoveAlongVecLook(-1.0f);
 	}
 
-	// ビューイング変換
-	SetViewMatrix();
+	SetViewMatrix();	// ビューイング変換
 }
 
 //*****************************************************************************
@@ -171,12 +169,12 @@ void Camera::RotationVecUp(float angle)
 	m_rot.y -= angle;
 
 	// 新しい右方向ベクトルを計算する
-	m_vecRight.x = cosf(m_rot.y);
-	m_vecRight.z = sinf(m_rot.y);
+	m_rightVector.x = cosf(m_rot.y);
+	m_rightVector.z = sinf(m_rot.y);
 
 	// 新しい注視方向ベクトルを計算する
-	m_vecLook.x = cosf(m_rot.y + D3DX_PI / 2);
-	m_vecLook.z = sinf(m_rot.y + D3DX_PI / 2);
+	m_lookVector.x = cosf(m_rot.y + D3DX_PI / 2);
+	m_lookVector.z = sinf(m_rot.y + D3DX_PI / 2);
 
 	m_posEye.x = m_posEye.x * cosf(angle) + m_posEye.z * sinf(angle);
 	m_posEye.z = -m_posEye.x * sinf(angle) + m_posEye.z * cosf(angle);
@@ -204,12 +202,12 @@ void Camera::RotationVecRight(float angle)
 		m_rot.x -= angle;
 
 		// 注視ベクトルを更新する
-		m_vecLook.z = cosf(m_rot.x);
-		m_vecLook.y = sinf(m_rot.x);
+		m_lookVector.z = cosf(m_rot.x);
+		m_lookVector.y = sinf(m_rot.x);
 
 		// 上方向ベクトルを更新する
-		m_vecUp.z = cosf(m_rot.x + D3DX_PI / 2);
-		m_vecUp.y = sinf(m_rot.x + D3DX_PI / 2);
+		m_upVector.z = cosf(m_rot.x + D3DX_PI / 2);
+		m_upVector.y = sinf(m_rot.x + D3DX_PI / 2);
 
 		// カメラ位置を更新する
 		m_posEye.z = m_posEye.z * cosf(angle) - m_posEye.y * sinf(angle);
@@ -224,8 +222,8 @@ void Camera::RotationVecRight(float angle)
 //*****************************************************************************
 void Camera::MoveAlongVecRight(float unit)
 {
-	m_posEye += m_vecRight * unit;
-	m_posAt += m_vecRight * unit;
+	m_posEye += m_rightVector * unit;
+	m_posAt += m_rightVector * unit;
 }
 
 //*****************************************************************************
@@ -235,8 +233,8 @@ void Camera::MoveAlongVecRight(float unit)
 //*****************************************************************************
 void Camera::MoveAlongVecLook(float unit)
 {
-	m_posEye += m_vecLook * unit;
-	m_posAt += m_vecLook * unit;
+	m_posEye += m_lookVector * unit;
+	m_posAt += m_lookVector * unit;
 }
 
 //*****************************************************************************
@@ -248,9 +246,9 @@ void Camera::PosToMessageAndMessageDraw(int row)
 {
 	m_message->DrawPosMessage("CameraEye", m_posEye, D3DXVECTOR2(0, float((row + 1)* 18 * 2)));
 	m_message->DrawPosMessage("CameraAt", m_posAt, D3DXVECTOR2(0, float((row + 2) * 18 * 2)));
-	m_message->DrawPosMessage("->VecLook", m_vecLook, D3DXVECTOR2(0, float((row + 4) * 18 * 2)));
-	m_message->DrawPosMessage("->VecRight", m_vecRight, D3DXVECTOR2(0, float((row + 5) * 18 * 2)));
-	m_message->DrawPosMessage("VecUp", m_vecUp, D3DXVECTOR2(0, float((row + 6) * 18 * 2)));
+	m_message->DrawPosMessage("->VecLook", m_lookVector, D3DXVECTOR2(0, float((row + 4) * 18 * 2)));
+	m_message->DrawPosMessage("->VecRight", m_rightVector, D3DXVECTOR2(0, float((row + 5) * 18 * 2)));
+	m_message->DrawPosMessage("VecUp", m_upVector, D3DXVECTOR2(0, float((row + 6) * 18 * 2)));
 	m_message->DrawPosMessage("Rot Radian", m_rot, D3DXVECTOR2(0, float((row + 8) * 18 * 2)));
 	m_message->DrawPosMessage("Rot Degree", D3DXVECTOR3(0.0f, D3DXToDegree(m_rot.x), 0.0f), D3DXVECTOR2(0, float((row + 9) * 18 * 2)));
 }

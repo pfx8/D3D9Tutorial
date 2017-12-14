@@ -27,7 +27,7 @@ LPDIRECT3DDEVICE9		g_pD3DDevice = NULL;				// Deviceオブジェクト(描画に
 
 //////////////////////////////////////////////////////////////////////////////////
 Console*				g_Console;				// コンソール
-SceneManager*			g_SceneManager;			// シンー管理？？？
+SceneManager*		g_SceneManager;			// シンー管理？？？
 // 臨時
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -40,9 +40,9 @@ SceneManager*			g_SceneManager;			// シンー管理？？？
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HRESULT InitDiretX(HINSTANCE hInstance, HWND hWnd, BOOL bWindow);
 
-void	Updata(void);
-void	Draw(HWND hwnd);
-void	Release(void);
+void Updata(HWND hWnd, int cmd);
+void	 Draw(HWND hWnd);
+void	 Release(void);
 
 // 臨時
 
@@ -125,7 +125,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 	// メッセージを出る為のコンソールを初期化
 	g_Console = new Console();
-	if (g_Console->GetConsoleStatue() == false)
+	if (g_Console->m_isConsoleRun == false)
 	{
 		std::cout << "[Error] コンソールが初期化失敗!" << std::endl;	// エラーメッセージ
 		return E_FAIL;
@@ -181,7 +181,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 			if ((dwCurrentTime - dwExecLastTime) >= (1000 / 60))	//1/60秒ごとに実行
 			{
 				dwExecLastTime = dwCurrentTime;	//処理した時刻を保存
-				Updata();						// 更新処理
+				Updata(hWnd, nCmdShow);						// 更新処理
 				Draw(hWnd);					// 描画処理
 				dwFrameCount++;				//処理回数のカウントを加算
 				if (dwFrameCount == 60)		// 60フレームを確定
@@ -260,11 +260,20 @@ HRESULT InitDiretX(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// デバイスのプレゼンテーションパラメータの設定
 	D3DPRESENT_PARAMETERS d3dpp;
 	ZeroMemory(&d3dpp, sizeof(d3dpp));					// ワークをゼロクリア
+
+
+	D3DMULTISAMPLE_TYPE multiSampType = D3DMULTISAMPLE_NONE; // デフォルトで使わない
+	if (g_pD3D->CheckDeviceMultiSampleType(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, D3DFMT_X8B8G8R8,
+		0, D3DMULTISAMPLE_4_SAMPLES, NULL))
+	{
+		multiSampType = D3DMULTISAMPLE_4_SAMPLES; // 4倍
+	}
+
 	d3dpp.BackBufferWidth = SCREEN_WIDTH;				// ゲーム画面サイズ(幅)
 	d3dpp.BackBufferHeight = SCREEN_HEIGHT;				// ゲーム画面サイズ(高さ)
 	d3dpp.BackBufferFormat = D3DFMT_UNKNOWN;			// バックバッファのフォーマットは現在設定されているものを使う
 	d3dpp.BackBufferCount = 1;							// バックバッファの数
-	d3dpp.MultiSampleType = D3DMULTISAMPLE_NONE;
+	d3dpp.MultiSampleType = multiSampType;
 	d3dpp.MultiSampleQuality = 0;
 	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;			// 映像信号に同期してフリップする
 	d3dpp.hDeviceWindow = hWnd;
@@ -333,13 +342,23 @@ HRESULT InitDiretX(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 // 更新処理
 //
 //*****************************************************************************
-void Updata(void)
+void Updata(HWND hWnd, int cmd)
 {
-	// 入力更新
-	UpdateInput();
+	// ウィンドウからコンソールに変更
+	if (GetKeyboardRelease(DIK_CIRCUMFLEX) && g_Console->m_isConsoleFront == false)
+	{
+		//g_Console->SetConsoleFront(hWnd);
+	}
+	if (GetKeyboardRelease(DIK_CIRCUMFLEX) && g_Console->m_isConsoleFront == true)
+	{
+		//g_Console->SetConsoleBack(hWnd, cmd);
+	}
 
-	// シンーを更新する
-	g_SceneManager->Update();
+	if (g_Console->m_isConsoleFront == false)
+	{
+		UpdateInput();			// 入力更新
+		g_SceneManager->Update();	// シンーを更新する
+	}
 }
 
 //*****************************************************************************
@@ -347,10 +366,12 @@ void Updata(void)
 // 描画処理
 //
 //*****************************************************************************
-void Draw(HWND hwnd)
+void Draw(HWND hWnd)
 {
-	// シンーをドロー
-	g_SceneManager->Draw();
+	if (g_Console->m_isConsoleFront == false)
+	{
+		g_SceneManager->Draw();	// シンーをドロー
+	}
 }
 
 //*****************************************************************************

@@ -54,7 +54,6 @@ VS_NT_OUTPUT VS_NT_Main(VS_NT_INPUT In)
     VS_NT_OUTPUT Out = (VS_NT_OUTPUT) 0; // 初期化
     Out.position = mul(float4(In.position, 1.0f), WVPMatrix);
     Out.normal = In.normal;
-    //Out.diffuse = dot((-LightDirection), In.normal); // 法線と光の内積を計算して、色を決める
 
     return Out;
 }
@@ -62,7 +61,7 @@ VS_NT_OUTPUT VS_NT_Main(VS_NT_INPUT In)
 //------------------------------------------------------
 // ピクセルシェーダー
 //------------------------------------------------------
-texture Tex;        // 使用するテクスチャ
+texture Tex;   // 使用するテクスチャ
 sampler Samp = // サンプラー
 sampler_state
 {
@@ -83,10 +82,10 @@ float4 PS_NT_Main(VS_NT_OUTPUT In) : COLOR0
         color = float4(1.0, 1.0, 1.0, 1.0) * color;
     else if(value >0.7)
         color = float4(0.7, 0.7, 0.7, 1.0) * color;
-    else if (value >0.3)
+    else if (value >0.25)
         color = float4(0.3, 0.3, 0.3, 1.0) * color;
     else
-        color = float4(0.1, 0.1, 0.1, 1.0) * color;
+        color = float4(0.2, 0.2, 0.2, 1.0) * color;
 
     return color; // 法線と光の内積を計算して、色を決める;
 }

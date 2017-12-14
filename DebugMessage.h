@@ -21,6 +21,7 @@ class DebugMessage
 {
 private:
 	LPD3DXFONT			m_Font;	// フォントのポインタ
+	RECT					m_rectCoor; // デバッグメッセージの位置
 
 public:
 	DebugMessage();
