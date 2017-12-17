@@ -35,6 +35,7 @@
     <ClCompile Include="ResourcesManager.cpp" />
     <ClCompile Include="Scene00.cpp" />
     <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="SeaField.cpp" />
     <ClCompile Include="Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -54,6 +55,7 @@
     <ClInclude Include="ResourcesManager.h" />
     <ClInclude Include="Scene00.h" />
     <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="SeaField.h" />
     <ClInclude Include="Shader.h" />
   </ItemGroup>
   <ItemGroup>

@@ -19,6 +19,7 @@ ResourcesManager::ResourcesManager()
 	m_textureList["fieldStone"] = "data/TEXTURE/field001.jpg";
 	m_textureList["fieldCheckered"] = "data/TEXTURE/field002.jpg";
 	m_textureList["fieldTransparent"] = "data/TEXTURE/field003.png";
+	m_textureList["fieldSea"] = "data/TEXTURE/sea3k.png";
 	m_textureList["NULL"] = "NULL";
 
 	// メッシュ検索マッピングを作る
@@ -28,7 +29,7 @@ ResourcesManager::ResourcesManager()
 	m_meshList["dolphin2"] = "data/MODEL/Dolphin3.x";
 	m_meshList["woman"] = "data/MODEL/woman.x";
 	m_meshList["rockman"] = "data/MODEL/rockman.x";
-	m_meshList["test"] = "data/MODEL/test.x";
+	m_meshList["test2"] = "data/MODEL/test2.x";
 }
 
 //*****************************************************************************

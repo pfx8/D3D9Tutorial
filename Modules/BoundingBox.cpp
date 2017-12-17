@@ -23,7 +23,7 @@ BoundingBox::BoundingBox()
 	m_vertexBuffer = NULL;
 	m_vertexDecl = NULL;
 
-	m_isBoundingBoxDraw = true;
+	m_isBoundingBoxDraw = false;
 }
 
 //*****************************************************************************
@@ -185,7 +185,7 @@ void BoundingBox::Draw(Shader* shader)
 	pDevice->SetVertexDeclaration(m_vertexDecl);							// 頂点シェーダー設定
 	pDevice->SetStreamSource(0, m_vertexBuffer, 0, sizeof(VERTEX_3D_NT));	// 頂点バッファをデバイスのデータストリームにバイナリ
 	pDevice->SetFVF(FVF_VERTEX_3D_NT);										// 頂点フォーマットの設定
-	pDevice->SetIndices(m_indexBuffer);										// 頂点イデックスの設定
+	pDevice->SetIndices(m_indexBuffer);									// 頂点イデックスの設定
 	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 17, 0, 16);		// バウンディングボックスの描画
 }
 

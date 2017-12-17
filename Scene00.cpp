@@ -29,13 +29,13 @@ Scene00::Scene00()
 
 	// フィールド
 	m_fieldStone = new Plane;
-	m_fieldStone->InitPlane(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-	m_resourcesManager->LoadTexture("fieldTransparent", &m_fieldStone->m_fieldTexture);
+	m_fieldStone->InitPlane(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(10.0f, 10.0f), D3DXVECTOR2(4, 4));
+	m_resourcesManager->LoadTexture("fieldSea", &m_fieldStone->m_fieldTexture);
 	
 	// 主人公
 	m_hero = new Character;
 	m_hero->InitCharacter(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, -1.0f));
-	m_resourcesManager->LoadMesh("woman", m_hero->m_model);
+	m_resourcesManager->LoadMesh("test2", m_hero->m_model);
 
 	// カメラ
 	m_camera = new Camera;
@@ -101,13 +101,13 @@ void Scene00::SetRenderState()
 	pDevice->SetRenderState(D3DRS_NORMALIZENORMALS, TRUE);
 
 	// Set the default texture stage states
-	pDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-	pDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-	pDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+	//pDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+	//pDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+	//pDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
 
 	// Set the default texture filters
-	pDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-	pDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+	//pDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+	//pDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
 }
 
 //*****************************************************************************
@@ -123,6 +123,7 @@ void Scene00::Update()
 	m_camera->Update(&m_hero->m_directionVector);
 
 	m_shader->UpdateLight(m_light->m_directionlight);
+	m_fieldStone->Update();
 
 	// 当たり判定
 	//if (m_car1->CheckHitBB(m_car2))
@@ -190,8 +191,6 @@ void Scene00::Draw()
 			m_shader->m_effectPoint->End();
 		}
 
-		m_camera->PosToMessageAndMessageDraw(9);
-
 		GetDevice()->EndScene();
 	}
 
@@ -246,11 +245,11 @@ void Scene00::Control()
 	// ライト操作更新
 	if (GetKeyboardPress(DIK_Z))	// key Z
 	{
-		m_light->RotationY(1.5f / 180.0f * D3DX_PI);
+		m_light->RotationY(0.5f / 180.0f * D3DX_PI);
 	}
 	if (GetKeyboardPress(DIK_X))	// key X
 	{
-		m_light->RotationY(-1.5f / 180.0f * D3DX_PI);
+		m_light->RotationY(-0.5f / 180.0f * D3DX_PI);
 	}
 
 	// バウンディングボックス操作更新
