@@ -229,7 +229,13 @@ void Camera::MoveAlongVecRight(float unit)
 void Camera::MoveAlongVecLook(float unit)
 {
 	m_posEye += m_lookVector * unit;
-	m_posAt += m_lookVector * unit;
+	m_atToEyeVector = m_posAt - m_posEye;	// 視点から注視点までの距離を更新
+
+	if (D3DXVec3Length(&m_atToEyeVector) < 10.6f || D3DXVec3Length(&m_atToEyeVector) > 20.0f)
+	{
+		m_posEye -= m_lookVector * unit;
+		m_atToEyeVector = m_posAt - m_posEye;
+	}
 }
 
 //*****************************************************************************
@@ -239,13 +245,7 @@ void Camera::MoveAlongVecLook(float unit)
 //*****************************************************************************
 void Camera::PosToMessageAndMessageDraw(int row)
 {
-	m_message->DrawPosMessage("CameraEye", m_posEye, D3DXVECTOR2(0, float((row + 1)* 18 * 2)));
-	m_message->DrawPosMessage("CameraAt", m_posAt, D3DXVECTOR2(0, float((row + 2) * 18 * 2)));
-	m_message->DrawPosMessage("->VecLook", m_lookVector, D3DXVECTOR2(0, float((row + 4) * 18 * 2)));
-	m_message->DrawPosMessage("->VecRight", m_rightVector, D3DXVECTOR2(0, float((row + 5) * 18 * 2)));
-	m_message->DrawPosMessage("VecUp", m_upVector, D3DXVECTOR2(0, float((row + 6) * 18 * 2)));
-	m_message->DrawPosMessage("Rot Radian", m_rot, D3DXVECTOR2(0, float((row + 8) * 18 * 2)));
-	m_message->DrawPosMessage("Rot Degree", D3DXVECTOR3(0.0f, D3DXToDegree(m_rot.x), 0.0f), D3DXVECTOR2(0, float((row + 9) * 18 * 2)));
+	m_message->DrawPosMessage("Long", D3DXVECTOR3(D3DXVec3Length(&m_atToEyeVector),0,0), D3DXVECTOR2(0, float((row + 1)* 18 * 2)));
 }
 
 //*****************************************************************************

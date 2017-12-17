@@ -18,14 +18,14 @@
 class Light
 {
 private:
-	//LightType		m_type;	// 光タイプ
+	D3DXVECTOR3	m_rot;				// 光方向の回転角度
 
 public:
-	Light();				// コンストラクタ
-	~Light();				// デストラクタ
+	D3DXVECTOR3	m_directionlight;		// 光方向ベクトル
 
-	void Update();					// 光更新
-	void ChangeLight(LightType type);	// チェンジ光
+	Light();	
+	~Light();
 
+	void RotationY(float angle);		// Y方向のベクトルにして回転
 };
 #endif // !_LIGHT_H_

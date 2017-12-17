@@ -14,7 +14,7 @@
 //*****************************************************************************
 Light::Light()
 {
-	ChangeLight(LT_PointLight);
+	m_directionlight = D3DXVECTOR3(1.0f, 0.0f, 0.0f);
 }
 
 //*****************************************************************************
@@ -29,83 +29,21 @@ Light::~Light()
 
 //*****************************************************************************
 //
-// チェンジ光
+// Y方向のベクトルにして回転
 //
 //*****************************************************************************
-void Light::ChangeLight(LightType type)
+void Light::RotationY(float angle)
 {
-	// ライト構造体を初期化する
-	static D3DLIGHT9 light;
-	ZeroMemory(&light, sizeof(light));
-
-	switch (type)
+	if (m_rot.y > D3DX_PI * 2.0f || m_rot.y < -D3DX_PI * 2.0f)
 	{
-	case LT_PointLight:
-		light.Type = D3DLIGHT_POINT;
-		light.Ambient = D3DXCOLOR(0.6f, 0.6f, 0.6f, 1.0f);
-		light.Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-		light.Specular = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);
-		light.Position = D3DXVECTOR3(0.0f, 200.0f, 0.0f);
-		light.Attenuation0 = 1.0f;
-		light.Attenuation1 = 0.0f;
-		light.Attenuation2 = 0.0f;
-		light.Range = 300.0f;
-		break;
-	case LT_DirectionalLight:
-		light.Type = D3DLIGHT_DIRECTIONAL;
-		light.Ambient = D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f);
-		light.Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-		light.Specular = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);
-		light.Direction = D3DXVECTOR3(1.0f, 0.0f, 0.0f);
-		break;
-	case LT_SpotLight:
-		light.Type = D3DLIGHT_SPOT;
-		light.Position = D3DXVECTOR3(100.0f, 100.0f, 100.0f);
-		light.Direction = D3DXVECTOR3(-1.0f, -1.0f, -1.0f);
-		light.Ambient = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);
-		light.Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-		light.Specular = D3DXCOLOR(0.3f, 0.3f, 0.3f, 0.3f);
-		light.Attenuation0 = 1.0f;
-		light.Attenuation1 = 0.6f;
-		light.Attenuation2 = 0.3f;
-		light.Range = 300.0f;
-		light.Falloff = 0.1f;
-		light.Phi = D3DX_PI / 3.0f;
-		light.Theta = D3DX_PI / 6.0f;
-		break;
+		m_rot.y = 0;
 	}
 
-	// ライトを設定
-	GetDevice()->SetLight(0, &light);
+	// 角度を記録する
+	m_rot.y -= angle;
 
-	// ライトオン
-	GetDevice()->LightEnable(0, true);
+	D3DXMATRIX rotMatrix;
+	D3DXMatrixRotationAxis(&rotMatrix, &D3DXVECTOR3(0.0f, 1.0f, 0.0f), angle);		// 回転行列を作る
+	D3DXVec3TransformCoord(&m_directionlight, &m_directionlight, &rotMatrix);	// 回転行列で新しい座標を計算する
 
-	// 環境光を設定
-	GetDevice()->SetRenderState(D3DRS_AMBIENT, D3DCOLOR_XRGB(36, 36, 36));
-}
-
-//*****************************************************************************
-//
-// 光更新
-//
-//*****************************************************************************
-void Light::Update()
-{
-	// 入力したキーによって、ライトの種類を変わる
-	if (GetKeyboardPress(DIK_7))			// key 7
-	{
-		// ポインター光源
-		ChangeLight(LT_PointLight);
-	}
-	if (GetKeyboardPress(DIK_8))			// key 8
-	{
-		// スポットライト光源
-		ChangeLight(LT_DirectionalLight);
-	}
-	if (GetKeyboardPress(DIK_9))			// key 9
-	{
-		// ディレクショナル光源
-		ChangeLight(LT_SpotLight);
-	}
 }

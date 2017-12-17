@@ -37,9 +37,10 @@ public:
 	Scene();
 	~Scene();
 
-	virtual void Update() {};	// 仮想関数
+	virtual void Update() {};		// 仮想関数
 	virtual void Draw() {};		// 仮想関数
 	virtual void Control() {};	// プレーヤー操作関数
+	virtual void SetRenderState() {};		// レンダリング状態を設定
 
 	// ファイル(blender)からシンーの資源を読み込み
 	//HRESULT LoadSceneFile(std::string name);		// 未完成

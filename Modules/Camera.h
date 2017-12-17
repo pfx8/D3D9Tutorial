@@ -49,7 +49,7 @@ public:
 	void SetViewport();	// ビューポートを設定
 	void PosToMessageAndMessageDraw(int row);	// 座標をメッセージに渡して、画面に描画する
 
-	void RotationVecUp(float angle);	// 上方向のベクトルにして回転
+	void RotationVecUp(float angle);		// 上方向のベクトルにして回転
 	void RotationVecRight(float angle);	// 注視方向のベクトルにして回転
 	void MoveAlongVecRight(float unit);	// 右方向に沿って移動
 	void MoveAlongVecLook(float unit);	// 注視方向に沿って移動

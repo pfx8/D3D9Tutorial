@@ -15,17 +15,18 @@ class Shader
 private:
 
 public:
-	ID3DXEffect* m_effectPoint;			// エフェクト(複数レンダリング保存される)
-	D3DXHANDLE m_basicShaderHandle;		// エフェクトのテクニック
-	D3DXHANDLE m_noTextureShaderHandle;	// エフェクトのテクニック()
+	ID3DXEffect* m_effectPoint;		// エフェクト(複数レンダリング保存される)
+	D3DXHANDLE m_basicShaderHandle;	// エフェクトのテクニック
+	D3DXHANDLE m_toonShaderHandle;	// エフェクトのテクニック()
 	D3DXHANDLE m_WVPMatrixHandle;		// 変換行列
 	D3DXHANDLE m_lightingHandle;		// 光の方向
-	D3DXHANDLE m_textureHandle;			// テクスチャ
+	D3DXHANDLE m_textureHandle;		// テクスチャ
 
 	Shader();
 	~Shader();
 
 	HRESULT LoadEffectFile();		// 頂点シェーダーファイルを読み込む
+	void UpdateLight(D3DXVECTOR3 direction);	// 更新ライトベクトル
 };
 
 #endif // !_SHADER_H_

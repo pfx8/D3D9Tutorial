@@ -71,13 +71,24 @@ HRESULT Shader::LoadEffectFile()
 	// シェーダー中の変数を初期化する
 	//---------------------------------------------
 	// レンダリングのテクニックを取得
-	m_basicShaderHandle = m_effectPoint->GetTechniqueByName("BasicShader");			// BasicShaderテクニックを設定
-	m_noTextureShaderHandle = m_effectPoint->GetTechniqueByName("NoTextureShader");	// NoTextureShaderテクニックを設定
+	m_basicShaderHandle = m_effectPoint->GetTechniqueByName("BasicShader");		// BasicShaderテクニックを設定
+	m_toonShaderHandle = m_effectPoint->GetTechniqueByName("CelShader");			// ToonShaderテクニックを設定
 
 	// シェーダー中のグローバル変数を取得
-	m_WVPMatrixHandle = m_effectPoint->GetParameterByName(0, "WVPMatrix");			// WVPマトリックス
-	m_lightingHandle = m_effectPoint->GetParameterByName(0, "LightDirection");		// 光ベクトル
-	m_textureHandle = m_effectPoint->GetParameterByName(0, "Tex");					// テクスチャ
+	m_WVPMatrixHandle = m_effectPoint->GetParameterByName(0, "WVPMatrix");		// WVPマトリックス
+	m_lightingHandle = m_effectPoint->GetParameterByName(0, "LightDirection");	// 光ベクトル
+	m_textureHandle = m_effectPoint->GetParameterByName(0, "Tex");				// テクスチャ
 
 	return S_OK;
+}
+
+//*****************************************************************************
+//
+// 更新ライトベクトル
+//
+//*****************************************************************************
+void Shader::UpdateLight(D3DXVECTOR3 direction)
+{
+	D3DXVECTOR4 tempLight = D3DXVECTOR4(direction.x, direction.y, direction.z, 1.0f);
+	m_effectPoint->SetVector(m_lightingHandle, &tempLight);
 }

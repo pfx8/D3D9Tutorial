@@ -8,16 +8,17 @@
 #ifndef _SCENE00_H_
 #define _SCENE00_H_
 
-#include "Engine.h"
-
 #include <map>
 
 #include "Modules/Scene.h"
 #include "Modules/Character.h"
 #include "Modules/Camera.h"
 #include "Modules/Plane.h"
+#include "Modules/Light.h"
+
 #include "ResourcesManager.h"
 #include "Shader.h"
+#include "Engine.h"
 
 //*****************************************************************************
 //
@@ -27,12 +28,11 @@
 class Scene00 : public Scene
 {
 private:
-	Camera*			m_camera;	// カメラ
-	Shader*			m_shader;	// シェーダー
-
+	Camera*			m_camera;		// カメラ
+	Shader*			m_shader;		// シェーダー
 	Plane*			m_fieldStone;	// フィールド
-	Character*		m_hero;		// プレーヤー
-
+	Character*		m_hero;			// プレーヤー
+	Light*			m_light;			// ライト
 public:
 	Scene00();
 	~Scene00();
@@ -40,6 +40,7 @@ public:
 	void Update();
 	void Draw();
 	void Control();
+	void SetRenderState();
 };
 
 #endif // !_SCENE00_H_
