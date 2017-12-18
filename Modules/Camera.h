@@ -23,12 +23,11 @@ class Camera
 {
 private:
 	// ベクトル
-
-	D3DXVECTOR3	m_upVector;		// カメラの上方向ベクトル
-	D3DXVECTOR3	m_lookVector;	// カメラの注視方向ベクトル
-	D3DXVECTOR3	m_rightVector;	// カメラの右方向ベクトル
+	D3DXVECTOR3		m_upVector;		// カメラの上方向ベクトル
+	D3DXVECTOR3		m_lookVector;	// カメラの注視方向ベクトル
+	D3DXVECTOR3		m_rightVector;	// カメラの右方向ベクトル
 	// 回転角度
-	D3DXVECTOR3	m_rot;			// カメラの回転角度
+	D3DXVECTOR3		m_rot;			// カメラの回転角度
 	DebugMessage*	m_message;
 
 public:

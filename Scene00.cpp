@@ -20,22 +20,25 @@ Scene00::Scene00()
 {
 	// シェーダー
 	m_shader = new Shader;
-	m_shader->LoadEffectFile();
+	m_shader->InitShader();
+
+	m_celShader = new CelShader;
+	m_celShader->InitShader();
 
 	// ライト
 	m_light = new Light;
 	D3DXVECTOR4 tempLight = D3DXVECTOR4(m_light->m_directionlight.x, m_light->m_directionlight.y, m_light->m_directionlight.z, 1.0f);
-	m_shader->m_effectPoint->SetVector(m_shader->m_lightingHandle, &tempLight);
+	m_celShader->m_effectPoint->SetVector(m_celShader->m_lightingHandle, &tempLight);
 
 	// フィールド
 	m_fieldStone = new Plane;
 	m_fieldStone->InitPlane(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(10.0f, 10.0f), D3DXVECTOR2(4, 4));
-	m_resourcesManager->LoadTexture("fieldSea", &m_fieldStone->m_fieldTexture);
+	m_resourcesManager->LoadTexture("fieldTransparent", &m_fieldStone->m_fieldTexture);
 	
 	// 主人公
 	m_hero = new Character;
 	m_hero->InitCharacter(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, -1.0f));
-	m_resourcesManager->LoadMesh("test2", m_hero->m_model);
+	m_resourcesManager->LoadMesh("woman", m_hero->m_model);
 
 	// カメラ
 	m_camera = new Camera;
@@ -62,7 +65,9 @@ Scene00::~Scene00()
 	RELEASE_CLASS_POINT(m_fieldStone);	// フィールド
 	RELEASE_CLASS_POINT(m_hero);		// 車
 	RELEASE_CLASS_POINT(m_camera);	// カメラ
-	RELEASE_CLASS_POINT(m_light);	// ライト
+	RELEASE_CLASS_POINT(m_light);		// ライト
+	RELEASE_CLASS_POINT(m_shader);	// ベーシックシェーダー
+	RELEASE_CLASS_POINT(m_celShader);	// トゥ―ンシェーダー
 }
 
 //*****************************************************************************
@@ -119,10 +124,10 @@ void Scene00::Update()
 {
 	Control();	// 各操作の更新
 
-	m_camera->UpdateAt(m_hero->m_pos + +D3DXVECTOR3(0.0f, 6.0f, 0.0f));	// カメラ更新
+	m_camera->UpdateAt(m_hero->m_pos + D3DXVECTOR3(0.0f, 6.0f, 0.0f));	// カメラ更新
 	m_camera->Update(&m_hero->m_directionVector);
 
-	m_shader->UpdateLight(m_light->m_directionlight);
+	m_celShader->UpdateLight(m_light->m_directionlight);
 	m_fieldStone->Update();
 
 	// 当たり判定
@@ -148,12 +153,15 @@ void Scene00::Draw()
 	// Direct3Dによる描画の開始
 	if (SUCCEEDED(GetDevice()->BeginScene()))
 	{
+		D3DXMATRIX WVPmatrix = m_worldMatrix * m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
+
 		//---------------------------------------
 		// エフェクトに基づいてレンダリング
 		//---------------------------------------
 		// BasicShader
 		{
-			m_fieldStone->SetWorldMatrix(m_worldMatrix);	// ワールド変換
+			//m_fieldStone->SetWorldMatrix(m_worldMatrix);	// ワールド変換
+			m_shader->m_effectPoint->SetMatrix(m_shader->m_WVPMatrixHandle, &WVPmatrix);	// WVPマトリックス
 
 			m_shader->m_effectPoint->SetTechnique(m_shader->m_basicShaderHandle);	// テクニックを設定
 			UINT passNum = 0;	// パスの数
@@ -162,8 +170,6 @@ void Scene00::Draw()
 			{
 				m_shader->m_effectPoint->BeginPass(0);
 
-				D3DXMATRIX WVPmatrix = m_worldMatrix * m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
-				m_shader->m_effectPoint->SetMatrix(m_shader->m_WVPMatrixHandle, &WVPmatrix);	// WVPマトリックス
 				m_fieldStone->Draw(m_shader);
 
 				m_shader->m_effectPoint->EndPass();
@@ -171,24 +177,23 @@ void Scene00::Draw()
 			m_shader->m_effectPoint->End();
 		}
 
-		// ToonShader
+		// CelShader
 		{
-			m_hero->SetWorldMatrix(&m_worldMatrix);	// ワールド変換
+			//m_hero->SetWorldMatrix(&m_worldMatrix);	// ワールド変換
+			m_celShader->m_effectPoint->SetMatrix(m_celShader->m_WVPMatrixHandle, &WVPmatrix);	// WVPマトリックス
 
-			m_shader->m_effectPoint->SetTechnique(m_shader->m_toonShaderHandle);	// テクニックを設定
+			m_celShader->m_effectPoint->SetTechnique(m_celShader->m_celShaderHandle);	// テクニックを設定
 			UINT passNum = 0;	// パスの数
-			m_shader->m_effectPoint->Begin(&passNum, 0);
+			m_celShader->m_effectPoint->Begin(&passNum, 0);
 			for (int count = 0; count < passNum; count++)	// 各パスによって描画する
 			{
-				m_shader->m_effectPoint->BeginPass(count);
+				m_celShader->m_effectPoint->BeginPass(count);
 
-				D3DXMATRIX WVPmatrix = m_worldMatrix * m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
-				m_shader->m_effectPoint->SetMatrix(m_shader->m_WVPMatrixHandle, &WVPmatrix);	// WVPマトリックス
-				m_hero->Draw(m_shader);
+				m_hero->Draw(m_celShader);
 
-				m_shader->m_effectPoint->EndPass();
+				m_celShader->m_effectPoint->EndPass();
 			}
-			m_shader->m_effectPoint->End();
+			m_celShader->m_effectPoint->End();
 		}
 
 		GetDevice()->EndScene();
@@ -209,19 +214,19 @@ void Scene00::Control()
 	// プレーヤー操作更新
 	if (GetKeyboardPress(DIK_A))	// key A
 	{
-		m_hero->m_pos.x -= m_hero->m_directionVector.x;
+		m_hero->RotationVecUp(1.5f / 180.0f * D3DX_PI);
 	}
 	if (GetKeyboardPress(DIK_D))	// key D
 	{
-		m_hero->m_pos.x += m_hero->m_directionVector.x;
+		m_hero->RotationVecUp(-1.5f / 180.0f * D3DX_PI);
 	}
 	if (GetKeyboardPress(DIK_W))	// key W
 	{
-		m_hero->m_pos.z += m_hero->m_directionVector.x;
+		m_hero->MoveAlongVecLook(-0.5f);
 	}
 	if (GetKeyboardPress(DIK_S))	// key S
 	{
-		m_hero->m_pos.z -= m_hero->m_directionVector.x;
+		m_hero->MoveAlongVecLook(0.5f);
 	}
 
 	//　カメラ操作更新

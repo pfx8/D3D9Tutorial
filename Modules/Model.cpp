@@ -50,6 +50,7 @@ void Model::DrawModel(Shader* shader)
 	m_meshPoint->GetVertexBuffer(&vertexBuffer);
 	IDirect3DIndexBuffer9* indexBuffer = NULL;					// インデックスバッファを取得
 	m_meshPoint->GetIndexBuffer(&indexBuffer);
+
 	DWORD attributesNum;										// メッシュの属性テーブルに格納されているエントリの数を取得
 	m_meshPoint->GetAttributeTable(NULL, &attributesNum);
 	D3DXATTRIBUTERANGE* attributes = NULL;						// メッシュの属性テーブルを作る

@@ -14,15 +14,19 @@
 //*****************************************************************************
 Character::Character()
 {
+	m_upVector = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+	m_lookVector = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
+	m_rightVector = D3DXVECTOR3(-1.0f, 0.0f, 0.0f);
+
 	m_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_scl = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
 	m_directionVector = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
 	// クラスポインタ
-	m_model = new Model();
-	m_message = new DebugMessage();
-	m_boundingBox = new BoundingBox();
+	m_model = new Model;
+	m_message = new DebugMessage;
+	m_boundingBox = new BoundingBox;
 }
 
 //*****************************************************************************
@@ -51,12 +55,8 @@ void Character::SetWorldMatrix(D3DXMATRIX* mtxWorld)
 	// ワールドマトリックスを初期化する
 	D3DXMatrixIdentity(mtxWorld);
 
-	// スケールを反映
-	D3DXMatrixScaling(&mtxScl, m_scl.x, m_scl.y, m_scl.z);
-	D3DXMatrixMultiply(mtxWorld, mtxWorld, &mtxScl);
-
 	// 回転を反映
-	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rot.y, m_rot.x, m_rot.z); // カメラの方がもっと使う
+	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rot.y, m_rot.x, m_rot.z);
 	D3DXMatrixMultiply(mtxWorld, mtxWorld, &mtxRot);
 
 	// 平行移動を反映
@@ -94,13 +94,34 @@ void Character::InitCharacter(D3DXVECTOR3 pos, D3DXVECTOR3 direction)
 // キャラクターの描画
 //
 //*****************************************************************************
-void Character::Draw(Shader* shader)
+void Character::Draw(CelShader* celShader)
 {
-	m_model->DrawModel(shader);			// メッシュを描画する
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();
+
+	D3DXMATRIX mtxOrgin, mtxRot, mtxTranslate;
+
+	D3DXMatrixIdentity(&mtxOrgin);
+
+	// 回転を反映
+	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rot.y, m_rot.x, m_rot.z);
+	D3DXMatrixMultiply(&mtxOrgin, &mtxOrgin, &mtxRot);
+
+	// 平行移動を反映
+	D3DXMatrixTranslation(&mtxTranslate, m_pos.x, m_pos.y, m_pos.z);
+	D3DXMatrixMultiply(&mtxOrgin, &mtxOrgin, &mtxTranslate);
+
+	celShader->m_effectPoint->SetMatrix(celShader->m_changeMatrixHandle, &mtxOrgin);
+
+	m_model->DrawModel(celShader);	// メッシュを描画する
+
 	if (m_boundingBox->m_isBoundingBoxDraw == true)
 	{
-		m_boundingBox->Draw(shader);	// バウンディングボックスを描画する
+		m_boundingBox->Draw(celShader);	// バウンディングボックスを描画する
 	}
+
+	m_message->DrawPosMessage("Vector R: ", m_rightVector, D3DXVECTOR2(0, 0));
+	m_message->DrawPosMessage("Vector L: ", m_lookVector, D3DXVECTOR2(0, 18));
+	m_message->DrawPosMessage("Rot: ", m_rot, D3DXVECTOR2(0, 36));
 }
 
 //*****************************************************************************
@@ -120,7 +141,6 @@ void Character::Move()
 //*****************************************************************************
 void Character::Update(D3DXMATRIX* worldMatrix)
 {
-	
 	SetWorldMatrix(worldMatrix);
 }
 
@@ -149,4 +169,38 @@ bool Character::CheckHitBB(Character* Object)
 	{
 		return false;
 	}
+}
+
+//*****************************************************************************
+//
+// 上方向のベクトルにして回転
+//
+//*****************************************************************************
+void Character::RotationVecUp(float angle)
+{
+	if (m_rot.y > D3DX_PI * 2.0f || m_rot.y < -D3DX_PI * 2.0f)
+	{
+		m_rot.y = 0;
+	}
+
+	// 角度を記録する
+	m_rot.y -= angle;
+
+	// 新しい右方向ベクトルを計算する
+	m_rightVector.x = cosf(m_rot.y);
+	m_rightVector.z = sinf(m_rot.y);
+
+	// 新しい注視方向ベクトルを計算する
+	m_lookVector.x = cosf(m_rot.y + D3DX_PI / 2);
+	m_lookVector.z = sinf(m_rot.y + D3DX_PI / 2);
+}
+
+//*****************************************************************************
+//
+// 注視方向に沿って移動
+//
+//*****************************************************************************
+void Character::MoveAlongVecLook(float unit)
+{
+	m_pos += m_lookVector * unit;
 }

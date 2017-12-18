@@ -3,6 +3,21 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+# Ignore-file
+shader/BasicShader.hlsl
+shader/PixelShader.hlsl
+shader/VertexShader
+Shader(basic).cpp
+Shader(basic).h
+Shader(pixel).cpp
+Shader(pixel).h
+Shader(vertex).cpp
+Shader(vertex).h
+Scene01.cpp
+Scene01.h
+Scene02.cpp
+Scene02.h
+
 # User-specific files
 *.suo
 *.user

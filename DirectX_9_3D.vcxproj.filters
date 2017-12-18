@@ -69,11 +69,11 @@
     <ClCompile Include="SceneManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Shader.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="Shader\CelShader.cpp">
+      <Filter>Shader</Filter>
     </ClCompile>
-    <ClCompile Include="SeaField.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="Modules\Shader.cpp">
+      <Filter>Modules</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -122,18 +122,21 @@
     <ClInclude Include="SceneManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Shader.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Engine.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="SeaField.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="Shader\CelShader.h">
+      <Filter>Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Modules\Shader.h">
+      <Filter>Modules</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shader\Effect.fx">
+    <None Include="Shader\BasicShader.fx">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="Shader\CelShader.fx">
       <Filter>Shader</Filter>
     </None>
   </ItemGroup>

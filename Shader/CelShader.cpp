@@ -1,25 +1,24 @@
 //*****************************************************************************
 //
-// Shader処理 [Shader.cpp]
+// トゥ―ンシェーダー処理 [CelShader.cpp]
 //
 // Author : LIAO HANCHEN
 //
 //*****************************************************************************
-#include "Shader.h"
+#include "CelShader.h"
 
 //*****************************************************************************
 //
 // コンストラクタ
 //
 //*****************************************************************************
-Shader::Shader()
+CelShader::CelShader()
 {
 	m_effectPoint = NULL;
-	
+	m_celShaderHandle = NULL;
 	m_WVPMatrixHandle = NULL;
 	m_lightingHandle = NULL;
-	m_basicShaderHandle = NULL;
-	m_textureHandle = NULL;
+	m_changeMatrixHandle = NULL;
 }
 
 //*****************************************************************************
@@ -27,9 +26,20 @@ Shader::Shader()
 // デストラクタ
 //
 //*****************************************************************************
-Shader::~Shader()
+CelShader::~CelShader()
 {
 	RELEASE_POINT(m_effectPoint);
+}
+
+//*****************************************************************************
+//
+// シェーダーを初期化
+//
+//*****************************************************************************
+void CelShader::InitShader()
+{
+	LoadEffectFile();
+	GetShaderTechniqueAndParameter();
 }
 
 //*****************************************************************************
@@ -37,7 +47,7 @@ Shader::~Shader()
 // 頂点シェーダーファイルを読み込む
 //
 //*****************************************************************************
-HRESULT Shader::LoadEffectFile()
+HRESULT CelShader::LoadEffectFile()
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
@@ -50,7 +60,7 @@ HRESULT Shader::LoadEffectFile()
 
 	ID3DXBuffer* errorBuffer = NULL;		// エラーバッファ
 	D3DXCreateEffectFromFile(pDevice,
-						"Shader/Effect.fx",	// エフェクトファイルの名前
+						"Shader/CelShader.fx",	// エフェクトファイルの名前
 						0,
 						0,
 						D3DXSHADER_DEBUG,
@@ -61,24 +71,13 @@ HRESULT Shader::LoadEffectFile()
 
 	if (errorBuffer)	// エラーをチェック
 	{
-		std::cout << "[Error] エフェクトが読み込めない" << std::endl;	// エラーメッセージ
+		std::cout << "[Error] Shader/CelShader.fx が読み込めない" << std::endl;	// エラーメッセージ
 		std::cout << "[Information] " << (char*)errorBuffer->GetBufferPointer() << std::endl;	// エラーメッセージ
 		RELEASE_POINT(errorBuffer);
 		return E_FAIL;
 	}
 
-	//---------------------------------------------
-	// シェーダー中の変数を初期化する
-	//---------------------------------------------
-	// レンダリングのテクニックを取得
-	m_basicShaderHandle = m_effectPoint->GetTechniqueByName("BasicShader");		// BasicShaderテクニックを設定
-	m_toonShaderHandle = m_effectPoint->GetTechniqueByName("CelShader");			// ToonShaderテクニックを設定
-
-	// シェーダー中のグローバル変数を取得
-	m_WVPMatrixHandle = m_effectPoint->GetParameterByName(0, "WVPMatrix");		// WVPマトリックス
-	m_lightingHandle = m_effectPoint->GetParameterByName(0, "LightDirection");	// 光ベクトル
-	m_textureHandle = m_effectPoint->GetParameterByName(0, "Tex");				// テクスチャ
-
+	std::cout << "[Information] Loading CelShader Success!" << std::endl;
 	return S_OK;
 }
 
@@ -87,8 +86,26 @@ HRESULT Shader::LoadEffectFile()
 // 更新ライトベクトル
 //
 //*****************************************************************************
-void Shader::UpdateLight(D3DXVECTOR3 direction)
+void CelShader::UpdateLight(D3DXVECTOR3 direction)
 {
 	D3DXVECTOR4 tempLight = D3DXVECTOR4(direction.x, direction.y, direction.z, 1.0f);
 	m_effectPoint->SetVector(m_lightingHandle, &tempLight);
+}
+
+//*****************************************************************************
+//
+// シェーダーを使うために、各設定をする
+//
+//*****************************************************************************
+void CelShader::GetShaderTechniqueAndParameter()
+{
+	// レンダリングのテクニックを取得
+	m_celShaderHandle = m_effectPoint->GetTechniqueByName("CelShader");			// ToonShaderテクニックを設定
+
+	// シェーダー中のグローバル変数を取得
+	m_WVPMatrixHandle = m_effectPoint->GetParameterByName(0, "WVPMatrix");		// WVPマトリックス
+	m_lightingHandle = m_effectPoint->GetParameterByName(0, "LightDirection");	// 光ベクトル
+	m_changeMatrixHandle = m_effectPoint->GetParameterByName(0, "ChangeMatrix");	// 変更行列
+	//m_textureHandle = m_effectPoint->GetParameterByName(0, "Tex");			// テクスチャ
+
 }

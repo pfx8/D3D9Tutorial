@@ -64,7 +64,7 @@ HRESULT ResourcesManager::LoadTexture(std::string name, LPDIRECT3DTEXTURE9* text
 		}
 		else
 		{
-			std::cout << "[Information] Loading Texture:" << name << " OK!" << std::endl;	// コンソールにメッセージを出す
+			std::cout << "[Information] Loading Texture:" << name << " Success!" << std::endl;	// コンソールにメッセージを出す
 			return S_OK;
 		}
 	}
@@ -113,7 +113,7 @@ HRESULT ResourcesManager::LoadMesh(std::string name, Model* model)
 	}
 	else
 	{
-		std::cout << "[Information] Loading Model:" << name << " OK!" << std::endl;
+		std::cout << "[Information] Loading Model:" << name << " Success!" << std::endl;
 	}
 
 	model->m_material->m_materialPoint = new D3DMATERIAL9[model->m_material->m_materialNum];	// マテリアルの数によってマテリアルを格納できるメモリを確保
