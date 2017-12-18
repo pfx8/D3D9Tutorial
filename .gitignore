@@ -4,9 +4,9 @@
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 # Ignore-file
-shader/BasicShader.hlsl
-shader/PixelShader.hlsl
-shader/VertexShader
+Shader/BasicShader.hlsl
+Shader/PixelShader.hlsl
+Shader/VertexShader
 Shader(basic).cpp
 Shader(basic).h
 Shader(pixel).cpp
