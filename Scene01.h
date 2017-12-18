@@ -9,7 +9,7 @@
 #define _SCENE01_H_
 
 #include "Engine.h"
-#include "Shader.h"
+#include "Modules\Shader.h"
 
 #include <map>
 

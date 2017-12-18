@@ -120,31 +120,6 @@ void Camera::Update(D3DXVECTOR3* playerDirectionVector)
 	// カメラの注視点を更新
 
 	SetViewMatrix();	// ビューイング変換
-
-	//if (GetKeyboardPress(DIK_I))	// key I
-	//{
-	//	RotationVecRight(1.0f / 180.0f * D3DX_PI);
-	//}
-	//if (GetKeyboardPress(DIK_K))	// key K
-	//{
-	//	RotationVecRight(-1.0f / 180.0f * D3DX_PI);
-	//}
-	//if (GetKeyboardPress(DIK_LEFT))
-	//{
-	//	MoveAlongVecRight(-1.0f);
-	//}
-	//if (GetKeyboardPress(DIK_RIGHT))
-	//{
-	//	MoveAlongVecRight(1.0f);
-	//}
-	//if (GetKeyboardPress(DIK_UP))
-	//{
-	//	MoveAlongVecLook(1.0f);
-	//}
-	//if (GetKeyboardPress(DIK_DOWN))
-	//{
-	//	MoveAlongVecLook(-1.0f);
-	//}
 }
 
 //*****************************************************************************

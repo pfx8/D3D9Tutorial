@@ -9,7 +9,7 @@
 #define _BOUNDING_BOX_H_
 
 #include "../Engine.h"
-#include "../Shader.h"
+#include "Shader.h"
 
 //*****************************************************************************
 //

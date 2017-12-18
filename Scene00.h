@@ -15,10 +15,12 @@
 #include "Modules/Camera.h"
 #include "Modules/Plane.h"
 #include "Modules/Light.h"
+#include "Modules/Shader.h"
 
 #include "ResourcesManager.h"
-#include "Shader.h"
 #include "Engine.h"
+
+#include "Shader/CelShader.h"
 
 //*****************************************************************************
 //
@@ -29,7 +31,8 @@ class Scene00 : public Scene
 {
 private:
 	Camera*			m_camera;		// カメラ
-	Shader*			m_shader;		// シェーダー
+	CelShader*		m_celShader;		// トゥ―ンシェーダー
+	Shader*			m_shader;		// ベーシックシェーダー
 	Plane*			m_fieldStone;	// フィールド
 	Character*		m_hero;			// プレーヤー
 	Light*			m_light;			// ライト

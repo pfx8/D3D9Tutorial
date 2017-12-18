@@ -19,6 +19,7 @@ ResourcesManager::ResourcesManager()
 	m_textureList["fieldStone"] = "data/TEXTURE/field001.jpg";
 	m_textureList["fieldCheckered"] = "data/TEXTURE/field002.jpg";
 	m_textureList["fieldTransparent"] = "data/TEXTURE/field003.png";
+	m_textureList["fieldSea"] = "data/TEXTURE/sea3k.png";
 	m_textureList["NULL"] = "NULL";
 
 	// メッシュ検索マッピングを作る
@@ -28,7 +29,7 @@ ResourcesManager::ResourcesManager()
 	m_meshList["dolphin2"] = "data/MODEL/Dolphin3.x";
 	m_meshList["woman"] = "data/MODEL/woman.x";
 	m_meshList["rockman"] = "data/MODEL/rockman.x";
-	m_meshList["test"] = "data/MODEL/test.x";
+	m_meshList["test2"] = "data/MODEL/test2.x";
 }
 
 //*****************************************************************************
@@ -63,7 +64,7 @@ HRESULT ResourcesManager::LoadTexture(std::string name, LPDIRECT3DTEXTURE9* text
 		}
 		else
 		{
-			std::cout << "[Information] Loading Texture:" << name << " OK!" << std::endl;	// コンソールにメッセージを出す
+			std::cout << "[Information] Loading Texture:" << name << " Success!" << std::endl;	// コンソールにメッセージを出す
 			return S_OK;
 		}
 	}
@@ -112,7 +113,7 @@ HRESULT ResourcesManager::LoadMesh(std::string name, Model* model)
 	}
 	else
 	{
-		std::cout << "[Information] Loading Model:" << name << " OK!" << std::endl;
+		std::cout << "[Information] Loading Model:" << name << " Success!" << std::endl;
 	}
 
 	model->m_material->m_materialPoint = new D3DMATERIAL9[model->m_material->m_materialNum];	// マテリアルの数によってマテリアルを格納できるメモリを確保
