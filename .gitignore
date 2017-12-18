@@ -17,6 +17,7 @@ Scene01.cpp
 Scene01.h
 Scene02.cpp
 Scene02.h
+/vendor/*
 
 # User-specific files
 *.suo
