@@ -26,8 +26,8 @@ class Scene02 : public Scene
 {
 private:
 	D3DXMATRIX	m_mtxWorld;	// ワールドマトリックス
-	Camera*		m_camera;		// カメラ
-	Shader*		m_shader;		// シェーダー
+	Camera*		m_camera;	// カメラ
+	Shader*		m_shader;	// シェーダー
 	Plane*		m_plane;		// 平面1
 
 	LPDIRECT3DTEXTURE9 m_plane2;	// 平面2
