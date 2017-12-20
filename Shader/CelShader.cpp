@@ -77,7 +77,7 @@ HRESULT CelShader::LoadEffectFile()
 		return E_FAIL;
 	}
 
-	std::cout << "[Information] Loading CelShader Success!" << std::endl;
+	std::cout << "[Information] Loading Shader<CelShader> Success!" << std::endl;
 	return S_OK;
 }
 
@@ -101,6 +101,7 @@ void CelShader::GetShaderTechniqueAndParameter()
 {
 	// レンダリングのテクニックを取得
 	m_celShaderHandle = m_effectPoint->GetTechniqueByName("CelShader");			// ToonShaderテクニックを設定
+	m_outLineHandle = m_effectPoint->GetTechniqueByName("Outline");
 
 	// シェーダー中のグローバル変数を取得
 	m_WVPMatrixHandle = m_effectPoint->GetParameterByName(0, "WVPMatrix");		// WVPマトリックス

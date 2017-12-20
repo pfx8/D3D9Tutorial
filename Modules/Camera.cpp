@@ -38,8 +38,6 @@ Camera::~Camera()
 	RELEASE_CLASS_POINT(m_message);
 }
 
-
-
 //*****************************************************************************
 //
 // カメラを初期化する
@@ -61,7 +59,7 @@ void Camera::InitCamera(D3DXVECTOR3 Eye, D3DXVECTOR3 At, D3DXVECTOR3 Up)
 void Camera::UpdateAt(D3DXVECTOR3 pos)
 {
 	m_posAt = pos;
-	//m_posEye = m_vecFromEyeToAt + pos;
+	//m_posEye = m_atToEyeVector + pos;
 }
 
 //*****************************************************************************
@@ -206,7 +204,7 @@ void Camera::MoveAlongVecLook(float unit)
 	m_posEye += m_lookVector * unit;
 	m_atToEyeVector = m_posAt - m_posEye;	// 視点から注視点までの距離を更新
 
-	if (D3DXVec3Length(&m_atToEyeVector) < 10.6f || D3DXVec3Length(&m_atToEyeVector) > 20.0f)
+	if (D3DXVec3Length(&m_atToEyeVector) < 15.6f || D3DXVec3Length(&m_atToEyeVector) > 25.0f)
 	{
 		m_posEye -= m_lookVector * unit;
 		m_atToEyeVector = m_posAt - m_posEye;

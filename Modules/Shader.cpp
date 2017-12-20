@@ -18,7 +18,7 @@ Shader::Shader()
 	
 	m_WVPMatrixHandle = NULL;
 	m_basicShaderHandle = NULL;
-	m_textureHandle = NULL;
+	m_texture1Handle = NULL;
 }
 
 //*****************************************************************************
@@ -77,7 +77,8 @@ HRESULT Shader::LoadEffectFile()
 		return E_FAIL;
 	}
 
-	std::cout << "[Information] Loading BasicShader Success!" << std::endl;
+	std::cout << "[Information] Loading Shader<BasicShader> Success!" << std::endl;
+
 	return S_OK;
 }
 
@@ -89,10 +90,11 @@ HRESULT Shader::LoadEffectFile()
 void Shader::GetShaderTechniqueAndParameter()
 {
 	// レンダリングのテクニックを取得
-	m_basicShaderHandle = m_effectPoint->GetTechniqueByName("BasicShader");		// BasicShaderテクニックを設定
+	m_basicShaderHandle = m_effectPoint->GetTechniqueByName("BasicShader");	// BasicShaderテクニックを設定
 
 	// シェーダー中のグローバル変数を取得
-	m_WVPMatrixHandle = m_effectPoint->GetParameterByName(0, "WVPMatrix");		// WVPマトリックス
-	m_textureHandle = m_effectPoint->GetParameterByName(0, "Tex");			// テクスチャ
+	m_WVPMatrixHandle = m_effectPoint->GetParameterByName(0, "WVPMatrix");	// WVPマトリックス
+	m_texture1Handle = m_effectPoint->GetParameterByName(0, "Tex");			// テクスチャ
+
 
 }

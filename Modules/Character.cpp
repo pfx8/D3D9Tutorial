@@ -23,6 +23,8 @@ Character::Character()
 	m_scl = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
 	m_directionVector = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
+	r = 0.0f;
+
 	// クラスポインタ
 	m_model = new Model;
 	m_message = new DebugMessage;
@@ -86,7 +88,7 @@ void Character::InitCharacter(D3DXVECTOR3 pos, D3DXVECTOR3 direction)
 {
 	m_pos = pos;	// 位置
 	m_directionVector = direction; // プレーヤーの向き
-	m_boundingBox->InitBox(20, 30, 40, 0.4f);	// バウンディングボックスを初期化
+	m_boundingBox->InitBox(3, 13, 3, 0.1f);	// バウンディングボックスを初期化
 }
 
 //*****************************************************************************
@@ -118,10 +120,6 @@ void Character::Draw(CelShader* celShader)
 	{
 		m_boundingBox->Draw(celShader);	// バウンディングボックスを描画する
 	}
-
-	m_message->DrawPosMessage("Vector R: ", m_rightVector, D3DXVECTOR2(0, 0));
-	m_message->DrawPosMessage("Vector L: ", m_lookVector, D3DXVECTOR2(0, 18));
-	m_message->DrawPosMessage("Rot: ", m_rot, D3DXVECTOR2(0, 36));
 }
 
 //*****************************************************************************
@@ -139,9 +137,14 @@ void Character::Move()
 // キャラクター更新
 //
 //*****************************************************************************
-void Character::Update(D3DXMATRIX* worldMatrix)
+void Character::Update(float rot)
 {
-	SetWorldMatrix(worldMatrix);
+	r = rot;
+
+	if (r > D3DX_PI * 2.0f)
+		r = 0.0f;
+
+	m_pos.y = 0.7 * sinf(r);
 }
 
 //*****************************************************************************
@@ -200,7 +203,9 @@ void Character::RotationVecUp(float angle)
 // 注視方向に沿って移動
 //
 //*****************************************************************************
-void Character::MoveAlongVecLook(float unit)
+D3DXVECTOR3 Character::MoveAlongVecLook(float unit)
 {
 	m_pos += m_lookVector * unit;
+
+	return m_lookVector * unit;
 }

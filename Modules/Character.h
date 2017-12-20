@@ -31,6 +31,8 @@ private:
 	D3DXVECTOR3		m_lookVector;	// カメラの注視方向ベクトル
 	D3DXVECTOR3		m_rightVector;	// カメラの右方向ベクトル
 
+	float r;
+
 	DebugMessage*	m_message;	// Debugメッセージ
 
 public:
@@ -52,11 +54,11 @@ public:
 	void Draw(CelShader* celShader);				// キャラクターの描画(Shader)
 	void Move();								// 臨時ーーキャラクター移動
 	
-	void Update(D3DXMATRIX* worldMatrix);	// キャラクター更新
+	void Update(float rot);	// キャラクター更新
 	bool CheckHitBB(Character* Object);	// 当たり判定
 
 	void RotationVecUp(float angle);		// 上方向のベクトルにして回転
-	void MoveAlongVecLook(float unit);	// 注視方向に沿って移動
+	D3DXVECTOR3  MoveAlongVecLook(float unit);	// 注視方向に沿って移動
 };
 #endif // !_CHARACTER_H_
 

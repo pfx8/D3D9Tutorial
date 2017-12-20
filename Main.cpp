@@ -54,7 +54,8 @@ void	 Release(void);
 //*****************************************************************************
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-	srand(timeGetTime());
+	//srand(timeGetTime());
+	srand((unsigned)time(NULL));
 
 	// ウィンドウを初期化
 	UNREFERENCED_PARAMETER(hPrevInstance);	// 無くても良いけど、警告が出る（未使用宣言）

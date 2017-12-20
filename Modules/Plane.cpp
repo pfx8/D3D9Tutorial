@@ -25,6 +25,7 @@ Plane::Plane()
 	// ポインタ
 	m_vertexBuffer = NULL;
 	m_indexBuffer = NULL;
+	m_fieldTexture1 = NULL;
 }
 
 //*****************************************************************************
@@ -36,7 +37,7 @@ Plane::~Plane()
 {
 	// ポインタ
 	RELEASE_POINT(m_vertexBuffer);
-	RELEASE_POINT(m_fieldTexture);
+	RELEASE_POINT(m_fieldTexture1);
 	RELEASE_POINT(m_indexBuffer);
 }
 
@@ -112,7 +113,7 @@ HRESULT Plane::MakeVertexDecl(D3DXVECTOR2 planeSize, D3DXVECTOR2 planeNum)
 				VertexBuffer[numY * (int(planeNum.x) + 1) + numX].normalVector = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 				// 反射光の設定
 				VertexBuffer[numY * (int(planeNum.x) + 1) + numX].diffuse = D3DXCOLOR(0.5f, 1.0f, 1.0f, 1.0f);
-				// テクスチャ座標の設定
+				// テクスチャ1座標の設定
 				VertexBuffer[numY * (int(planeNum.x) + 1) + numX].texturePosition.x = numX * 1.0f;
 				VertexBuffer[numY * (int(planeNum.x) + 1) + numX].texturePosition.y = numY * 1.0f;
 			}
@@ -206,7 +207,7 @@ void Plane::Draw(Shader* shader)
 	pDevice->SetStreamSource(0, m_vertexBuffer, 0, sizeof(VERTEX_3D));			// 頂点バッファをデバイスのデータストリームにバイナリ
 	pDevice->SetFVF(FVF_VERTEX_3D);											// 頂点フォーマットの設定
 	pDevice->SetIndices(m_indexBuffer);										// 頂点インデックスバッファを設定
-	shader->m_effectPoint->SetTexture(shader->m_textureHandle, m_fieldTexture);	// テクスチャの設定
+	shader->m_effectPoint->SetTexture(shader->m_texture1Handle, m_fieldTexture1);	// テクスチャ1の設定
 	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, 0, 0, m_vertexNum, 0, m_polygonNum);	// ポリゴンの描画
 }
 
@@ -219,8 +220,26 @@ void Plane::Update()
 {
 	PDIRECT3DDEVICE9 pDevice = GetDevice();
 
-	r += 1.0f / 180.0f * D3DX_PI;
+	r += (rand()%5 + 10) / 10.0f / 180.0f * D3DX_PI;
 
 	if (r > D3DX_PI * 2.0f)
 		r = 0.0f;
+
+	VERTEX_3D* VertexBuffer;
+
+	// 頂点データの範囲をロックし、頂点バッファ メモリへのポインタを取得する
+	m_vertexBuffer->Lock(0, 0, (void**)&VertexBuffer, 0);
+
+	// 頂点バッファの中身を埋める
+	// 頂点座標(ローカル座標 = 形を形成してる)
+	// もの自身の座標、世界での座標には関係ない
+	// m_posFiledは世界での位置で
+
+	for (int numY = 0; numY < (m_planeNum.y + 1); numY++)
+	{
+		for (int numX = 0; numX < (m_planeNum.x + 1); numX++)
+		{
+			VertexBuffer[numY * (int(m_planeNum.x) + 1) + numX].position.y = 0.8 * sinf(numY + numX + r);
+		}
+	}
 }

@@ -35,7 +35,10 @@ private:
 	Shader*			m_shader;		// ベーシックシェーダー
 	Plane*			m_fieldStone;	// フィールド
 	Character*		m_hero;			// プレーヤー
+	//Character*		m_ball;			// プレーヤー
 	Light*			m_light;			// ライト
+
+	bool				m_isGameStart;
 public:
 	Scene00();
 	~Scene00();

@@ -30,6 +30,7 @@ CelVertexOUT CelVertexShader(CelVertexIN In)
     CelVertexOUT Out = (CelVertexOUT) 0; // 初期化
     Out.position = mul(mul(float4(In.position, 1.0), ChangeMatrix), WVPMatrix);
     Out.normal = mul(float4(In.normal, 1.0), ChangeMatrix);
+    //Out.normal = In.normal;
 
     return Out;
 }
@@ -39,7 +40,7 @@ float4 CelPixelShader(CelVertexOUT In) : COLOR0
     float value = dot(-LightDirection, In.normal); // 法線と光の内積を計算して、色を決める;
     float4 color = float4(0.89, 0.69, 0.1, 1.0) * LightIntensity; // 赤
 
-    if(value >0.85)
+    if(value >0.75)
         color = float4(1.0, 1.0, 1.0, 1.0) * color;
     else if(value > 0.6)
         color = float4(0.8, 0.8, 0.8, 1.0) * color;
@@ -70,21 +71,31 @@ float4 OutlinePixelShader(CelVertexOUT In) : COLOR0
     return float4(0, 0, 0, 1); // 法線と光の内積を計算して、色を決める;
 }
 
-
-technique CelShader // トゥ―ンシェーダー
+technique Outline // トゥ―ンシェーダー
 {
     pass P0 // OutLine
     {
         VertexShader = compile vs_3_0 OutlineVertexShader();
         PixelShader = compile ps_3_0 OutlinePixelShader();
 
-        CullMode = CW;
+        CullMode = CW; // 背面を右回りでカリングする
     }
-    pass P1 // モデル
+}
+
+technique CelShader // トゥ―ンシェーダー
+{
+    //pass P0 // OutLine
+    //{
+    //    VertexShader = compile vs_3_0 OutlineVertexShader();
+    //    PixelShader = compile ps_3_0 OutlinePixelShader();
+
+    //    CullMode = CW;
+    //}
+    pass P0 // モデル
     {
         VertexShader = compile vs_3_0 CelVertexShader();
         PixelShader = compile ps_3_0 CelPixelShader();
 
-        CullMode = CCW;
+        CullMode = CCW; // 背面を左回りでカリングする
     }
 }

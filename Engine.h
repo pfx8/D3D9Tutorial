@@ -64,7 +64,6 @@ typedef struct VERTEX_3D
 	D3DXVECTOR2 texturePosition;	// テクスチャ座標
 }VERTEX_3D;
 
-
 #define	FVF_VERTEX_3D_2T		(D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE | D3DFVF_TEX1 | D3DFVF_TEX2)
 typedef struct VERTEX_3D_2T
 {

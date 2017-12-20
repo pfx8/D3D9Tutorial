@@ -47,7 +47,7 @@ void DebugMessage::DrawPosMessage(const char name[], D3DXVECTOR3 OutputPos, D3DX
 	sprintf(str, _T("%s X:%.2f,Y:%.2f,Z:%.2f"), name, OutputPos.x, OutputPos.y, OutputPos.z);
 
 	// •¶Žš—ñ‚ð•`‰æ‚·‚é
-	m_Font->DrawText(NULL, &str[0], -1, &rectCoor, DT_LEFT, D3DCOLOR_RGBA(255, 0, 255, 0xff));
+	m_Font->DrawText(NULL, &str[0], -1, &rectCoor, DT_LEFT, D3DCOLOR_RGBA(0, 0, 0, 0));
 
 }
 

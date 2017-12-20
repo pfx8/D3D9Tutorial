@@ -20,9 +20,10 @@ class Plane
 {
 private:
 	int				m_scala;
-	float			r;
 
 public:
+	float			r;
+
 	D3DXVECTOR3		m_pos;	// 位置
 	D3DXVECTOR3		m_rot;	// 回転
 	D3DXVECTOR3		m_scl;	// 拡大縮小
@@ -35,7 +36,7 @@ public:
 	IDirect3DVertexDeclaration9*	m_vertexDecl;	// 頂点シェーダー宣言
 	LPDIRECT3DVERTEXBUFFER9		m_vertexBuffer;	// 頂点バッファへのポインタ
 	LPDIRECT3DINDEXBUFFER9		m_indexBuffer;	// 頂点インデックスバッファ
-	LPDIRECT3DTEXTURE9			m_fieldTexture;	// フィールドテクスチャ
+	LPDIRECT3DTEXTURE9			m_fieldTexture1;	// フィールドテクスチャ
 
 	Plane();
 	~Plane();
