@@ -8,14 +8,12 @@
 #ifndef _CHARACTER_H_
 #define _CHARACTER_H_
 
-#include "../Engine.h"
-#include "../DebugMessage.h"
-
 #include <map>
 
 #include "Model.h"
 #include "BoundingBox.h"
-
+#include "../Engine.h"
+#include "../DebugMessage.h"
 #include "../Shader/CelShader.h"
 
 //*****************************************************************************
@@ -26,29 +24,30 @@
 class Character
 {
 private:
-	// ベクトル
-	D3DXVECTOR3		m_upVector;		// カメラの上方向ベクトル
-	D3DXVECTOR3		m_lookVector;	// カメラの注視方向ベクトル
-	D3DXVECTOR3		m_rightVector;	// カメラの右方向ベクトル
+
 
 	float r;
 
 	DebugMessage*	m_message;	// Debugメッセージ
 
 public:
+	// ベクトル
+	D3DXVECTOR3		m_upVector;		// カメラの上方向ベクトル
+	D3DXVECTOR3		m_lookVector;	// カメラの注視方向ベクトル
+	D3DXVECTOR3		m_rightVector;	// カメラの右方向ベクトル
+
 	// 固定属性
 	D3DXVECTOR3		m_pos;		// 位置
 	D3DXVECTOR3		m_rot;		// 回転
 	D3DXVECTOR3		m_scl;		// 拡大縮小
 	Model*			m_model;		// メッシュ
-	D3DXVECTOR3		m_directionVector;	// プレーヤーの向きベクトル
+	//D3DXVECTOR3		m_directionVector;	// プレーヤーの向きベクトル
 	BoundingBox*		m_boundingBox;		// バウンディングボックス
 
 	Character();
 	~Character();
 
 	void InitCharacter(D3DXVECTOR3 pos, D3DXVECTOR3 direction);		// 座標を設定
-	void SetWorldMatrix(D3DXMATRIX* mtxWorld);	// 臨時ーーワールド変換
 
 	void PosToMessageAndMessageDraw(int row);	// 座標をメッセージに渡して、画面に描画する
 	void Draw(CelShader* celShader);				// キャラクターの描画(Shader)

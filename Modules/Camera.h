@@ -9,10 +9,11 @@
 #ifndef _CAMERA_CLASS_H_
 #define _CAMERA_CLASS_H_
 
+#include "Matrix.h"
+
+#include "Character.h"
 #include "../Engine.h"
 #include "../DebugMessage.h"
-
-#include "Matrix.h"
 
 //*****************************************************************************
 //
@@ -34,7 +35,6 @@ public:
 	// 位置
 	D3DXVECTOR3	m_posEye;	// カメラの位置
 	D3DXVECTOR3	m_posAt;		// カメラの注視点
-	D3DXVECTOR3	m_atToEyeVector;	// カメラから注視点までのベクトル
 	// マトリックス
 	D3DXMATRIX	m_viewMatrix;		// ビューイング変換行列
 	D3DXMATRIX	m_projectionMatrix;	// プロジェクション変換行列
@@ -42,7 +42,7 @@ public:
 	Camera();
 	~Camera();
 
-	void InitCamera(D3DXVECTOR3 Eye, D3DXVECTOR3 At, D3DXVECTOR3 Up);	// カメラを初期化関数
+	void InitCameraByPlayer(Character* player);	// カメラを初期化関数
 	void SetViewMatrix();	// ビューイング変換
 	void SetProjMatrix();	// プロジェクション変換(投影変換)
 	void SetViewport();	// ビューポートを設定
@@ -56,7 +56,6 @@ public:
 	void isAtToEyeVectorMoreLong(bool isMoreLong);	// プレーヤーとカメラの半径を変わる
 
 public: 
-	void Update(D3DXVECTOR3* playerDirectionVector);	// カメラ更新
-	void UpdateAt(D3DXVECTOR3 pos);	// 注視点座標を更新
+	void UpdateByPlayer(Character* player);	// キャラクターによってカメラを更新
 };
 #endif // !_CAMERA_H_

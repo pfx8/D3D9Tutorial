@@ -38,7 +38,17 @@ Scene00::Scene00()
 	// 主人公
 	m_hero = new Character;
 	m_hero->InitCharacter(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, -1.0f));
-	m_resourcesManager->LoadMesh("test2", m_hero->m_model);
+	m_resourcesManager->LoadMesh("woman", m_hero->m_model);
+
+	// 参考キャラクター
+	m_object = new Character;
+	m_object->InitCharacter(D3DXVECTOR3(20.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, -1.0f));
+	m_resourcesManager->LoadMesh("woman", m_object->m_model);
+
+	// 矢印
+	m_arrow = new Character;
+	m_arrow->InitCharacter(m_hero->m_pos + D3DXVECTOR3(0.0f, 10.0f, 2.0f), D3DXVECTOR3(0.0f, 0.0f, -1.0f));
+	m_resourcesManager->LoadMesh("arrow", m_arrow->m_model);
 
 	//// 弾
 	//m_ball = new Character;
@@ -47,13 +57,7 @@ Scene00::Scene00()
 
 	// カメラ
 	m_camera = new Camera;
-	m_camera->InitCamera(
-		m_hero->m_pos + D3DXVECTOR3(0.0f, 8.0f, 16.0f),	// Eye
-		m_hero->m_pos + D3DXVECTOR3(0.0f, 6.0f, 0.0f),		// At
-		D3DXVECTOR3(0.0f, 1.0f, 0.0f));					// Up
-	m_camera->SetViewMatrix();	// ビューイング変換
-	m_camera->SetProjMatrix();	// プロジェクション変換
-	//m_camera->SetViewport();	// ビューポートを設定
+	m_camera->InitCameraByPlayer(m_hero);
 
 	m_isGameStart = true;
 
@@ -70,6 +74,8 @@ Scene00::~Scene00()
 	// クラスポインタ
 	RELEASE_CLASS_POINT(m_fieldStone);	// フィールド
 	RELEASE_CLASS_POINT(m_hero);		// 車
+	RELEASE_CLASS_POINT(m_object);	// 車
+	RELEASE_CLASS_POINT(m_arrow);		// 矢印
 	RELEASE_CLASS_POINT(m_camera);	// カメラ
 	RELEASE_CLASS_POINT(m_light);		// ライト
 	RELEASE_CLASS_POINT(m_shader);	// ベーシックシェーダー
@@ -130,13 +136,12 @@ void Scene00::Update()
 {
 	Control();	// 各操作の更新
 
-	m_camera->UpdateAt(m_hero->m_pos + D3DXVECTOR3(0.0f, 6.0f, 0.0f));	// カメラ更新
-	m_camera->Update(&m_hero->m_directionVector);
+	m_camera->UpdateByPlayer(m_hero);
 
 	m_celShader->UpdateLight(m_light->m_directionlight);
 	m_fieldStone->Update();
 
-	m_hero->Update(m_fieldStone->r);
+	//m_hero->Update(m_fieldStone->r);
 
 	// 当たり判定
 	//if (m_car1->CheckHitBB(m_car2))
@@ -172,6 +177,7 @@ void Scene00::Draw()
 
 			m_shader->m_effectPoint->SetTechnique(m_shader->m_basicShaderHandle);	// テクニックを設定
 			UINT passNum = 0;	// パスの数
+
 			m_shader->m_effectPoint->Begin(&passNum, 0);
 			for (int count = 0; count < passNum; count++)	// 各パスによって描画する
 			{
@@ -190,12 +196,16 @@ void Scene00::Draw()
 
 			m_celShader->m_effectPoint->SetTechnique(m_celShader->m_celShaderHandle);	// テクニックを設定
 			UINT passNum = 0;	// パスの数
+
 			m_celShader->m_effectPoint->Begin(&passNum, 0);
 			for (int count = 0; count < passNum; count++)	// 各パスによって描画する
 			{
 				m_celShader->m_effectPoint->BeginPass(count);
 
 				m_hero->Draw(m_celShader);
+				m_object->Draw(m_celShader);
+				//m_celShader->m_effectPoint->SetMatrix(m_celShader->m_WVPMatrixHandle, &WVPmatrix);	// WVPマトリックス
+				//m_arrow->Draw(m_celShader);
 
 				m_celShader->m_effectPoint->EndPass();
 			}
@@ -203,29 +213,31 @@ void Scene00::Draw()
 		}
 
 		// Outline
-		{
-			m_celShader->m_effectPoint->SetMatrix(m_celShader->m_WVPMatrixHandle, &WVPmatrix);	// WVPマトリックス
+		//{
+		//	m_celShader->m_effectPoint->SetMatrix(m_celShader->m_WVPMatrixHandle, &WVPmatrix);	// WVPマトリックス
 
-			m_celShader->m_effectPoint->SetTechnique(m_celShader->m_outLineHandle);	// テクニックを設定
-			UINT passNum = 0;	// パスの数
-			m_celShader->m_effectPoint->Begin(&passNum, 0);
-			for (int count = 0; count < passNum; count++)	// 各パスによって描画する
-			{
-				m_celShader->m_effectPoint->BeginPass(count);
+		//	m_celShader->m_effectPoint->SetTechnique(m_celShader->m_outLineHandle);	// テクニックを設定
+		//	UINT passNum = 0;	// パスの数
+		//	m_celShader->m_effectPoint->Begin(&passNum, 0);
+		//	for (int count = 0; count < passNum; count++)	// 各パスによって描画する
+		//	{
+		//		m_celShader->m_effectPoint->BeginPass(count);
 
-				m_hero->Draw(m_celShader);
+		//		m_hero->Draw(m_celShader);
 
-				m_celShader->m_effectPoint->EndPass();
-			}
-			m_celShader->m_effectPoint->End();
-		}
+		//		m_celShader->m_effectPoint->EndPass();
+		//	}
+		//	m_celShader->m_effectPoint->End();
+		//}
 
 		if (m_isGameStart == false)
 		{
 			
 		}
-		m_message->DrawMessage("光方向調整 [Z] [X]\nカメラ回転 [J] [L]\nモデル回転 [A] [D]\n近遠変換   [I] [K]\nバウンディングボックス ON/OFF [Q]");
-
+		//m_message->DrawMessage("光方向調整 [Z] [X]\nカメラ回転 [J] [L]\nモデル回転 [A] [D]\n近遠変換   [I] [K]\nバウンディングボックス ON/OFF [Q]");
+		//m_message->DrawPosMessage("プレーヤー方向ベクトル: ", m_hero->m_directionVector, D3DXVECTOR2(0.0f, 18.0f));
+		m_hero->PosToMessageAndMessageDraw(0);
+		m_camera->PosToMessageAndMessageDraw(2);
 		GetDevice()->EndScene();
 	}
 
@@ -246,22 +258,20 @@ void Scene00::Control()
 		// プレーヤー操作更新
 		if (GetKeyboardPress(DIK_A))	// key A
 		{
-			m_hero->RotationVecUp(1.5f / 180.0f * D3DX_PI);
-			m_camera->RotationVecUp(-1.5f / 180.0f * D3DX_PI);
+			m_hero->RotationVecUp(-1.5f / 180.0f * D3DX_PI);
 		}
 		if (GetKeyboardPress(DIK_D))	// key D
 		{
-			m_hero->RotationVecUp(-1.5f / 180.0f * D3DX_PI);
-			m_camera->RotationVecUp(1.5f / 180.0f * D3DX_PI);
+			m_hero->RotationVecUp(1.5f / 180.0f * D3DX_PI);
 		}
-		//if (GetKeyboardPress(DIK_W))	// key W
-		//{
-		//	m_camera->m_posEye += m_hero->MoveAlongVecLook(-0.5f);
-		//}
-		//if (GetKeyboardPress(DIK_S))	// key S
-		//{
-		//	m_camera->m_posEye -= m_hero->MoveAlongVecLook(0.5f);
-		//}
+		if (GetKeyboardPress(DIK_W))	// key W
+		{
+			m_camera->m_posEye += m_hero->MoveAlongVecLook(-0.5f);
+		}
+		if (GetKeyboardPress(DIK_S))	// key S
+		{
+			m_camera->m_posEye -= m_hero->MoveAlongVecLook(0.5f);
+		}
 
 		//　カメラ操作更新
 		if (GetKeyboardPress(DIK_J))	// key J

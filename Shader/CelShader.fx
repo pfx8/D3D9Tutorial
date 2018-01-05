@@ -73,13 +73,13 @@ float4 OutlinePixelShader(CelVertexOUT In) : COLOR0
 
 technique Outline // トゥ―ンシェーダー
 {
-    pass P0 // OutLine
-    {
-        VertexShader = compile vs_3_0 OutlineVertexShader();
-        PixelShader = compile ps_3_0 OutlinePixelShader();
+    //pass P0 // OutLine
+    //{
+    //    VertexShader = compile vs_3_0 OutlineVertexShader();
+    //    PixelShader = compile ps_3_0 OutlinePixelShader();
 
-        CullMode = CW; // 背面を右回りでカリングする
-    }
+    //    CullMode = CW; // 背面を右回りでカリングする
+    //}
 }
 
 technique CelShader // トゥ―ンシェーダー
@@ -96,6 +96,6 @@ technique CelShader // トゥ―ンシェーダー
         VertexShader = compile vs_3_0 CelVertexShader();
         PixelShader = compile ps_3_0 CelPixelShader();
 
-        CullMode = CCW; // 背面を左回りでカリングする
+        //CullMode = CCW; // 背面を左回りでカリングする
     }
 }

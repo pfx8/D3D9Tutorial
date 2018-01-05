@@ -34,6 +34,7 @@ ResourcesManager::ResourcesManager()
 	m_meshList["rockman"] = "data/MODEL/rockman.x";
 	m_meshList["test2"] = "data/MODEL/test2.x";
 	m_meshList["ball"] = "data/MODEL/ball.x";
+	m_meshList["arrow"] = "data/MODEL/arrow.x";
 }
 
 //*****************************************************************************

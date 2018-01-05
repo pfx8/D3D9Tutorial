@@ -35,6 +35,8 @@ private:
 	Shader*			m_shader;		// ベーシックシェーダー
 	Plane*			m_fieldStone;	// フィールド
 	Character*		m_hero;			// プレーヤー
+	Character*		m_object;
+	Character*		m_arrow;			// 方向矢印
 	//Character*		m_ball;			// プレーヤー
 	Light*			m_light;			// ライト
 

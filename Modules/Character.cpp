@@ -15,13 +15,13 @@
 Character::Character()
 {
 	m_upVector = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-	m_lookVector = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
-	m_rightVector = D3DXVECTOR3(-1.0f, 0.0f, 0.0f);
+	m_lookVector = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
+	m_rightVector = D3DXVECTOR3(1.0f, 0.0f, 0.0f);
 
 	m_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_scl = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
-	m_directionVector = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	//m_directionVector = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
 	r = 0.0f;
 
@@ -46,37 +46,13 @@ Character::~Character()
 
 //*****************************************************************************
 //
-// ワールド変換
-//
-//*****************************************************************************
-void Character::SetWorldMatrix(D3DXMATRIX* mtxWorld)
-{
-	LPDIRECT3DDEVICE9 pDevice = GetDevice();
-	D3DXMATRIX mtxScl, mtxRot, mtxTranslate;
-
-	// ワールドマトリックスを初期化する
-	D3DXMatrixIdentity(mtxWorld);
-
-	// 回転を反映
-	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rot.y, m_rot.x, m_rot.z);
-	D3DXMatrixMultiply(mtxWorld, mtxWorld, &mtxRot);
-
-	// 平行移動を反映
-	D3DXMatrixTranslation(&mtxTranslate, m_pos.x, m_pos.y, m_pos.z);
-	D3DXMatrixMultiply(mtxWorld, mtxWorld, &mtxTranslate);
-
-	// ワールドマトリクスの初期化
-	pDevice->SetTransform(D3DTS_WORLD, mtxWorld);
-}
-
-//*****************************************************************************
-//
 // 座標をメッセージに渡して、画面に描画する
 //
 //*****************************************************************************
 void Character::PosToMessageAndMessageDraw(int row)
 {
-	m_message->DrawPosMessage("Car1", m_pos, D3DXVECTOR2(0, float(row * 18 * 2)));
+	m_message->DrawPosMessage("Hero Pos", m_pos, D3DXVECTOR2(0, float(row * 18)));
+	m_message->DrawPosMessage("H-look", m_lookVector, D3DXVECTOR2(0, float((row + 1) * 18)));
 }
 
 //*****************************************************************************
@@ -87,7 +63,7 @@ void Character::PosToMessageAndMessageDraw(int row)
 void Character::InitCharacter(D3DXVECTOR3 pos, D3DXVECTOR3 direction)
 {
 	m_pos = pos;	// 位置
-	m_directionVector = direction; // プレーヤーの向き
+	//m_directionVector = direction; // プレーヤーの向き
 	m_boundingBox->InitBox(3, 13, 3, 0.1f);	// バウンディングボックスを初期化
 }
 
@@ -129,7 +105,8 @@ void Character::Draw(CelShader* celShader)
 //*****************************************************************************
 void Character::Move()
 {
-	m_pos.x -= m_directionVector.x;
+	//m_pos.x -= m_directionVector.x;
+	//m_pos.z -= m_directionVector.z;
 }
 
 //*****************************************************************************
@@ -196,6 +173,9 @@ void Character::RotationVecUp(float angle)
 	// 新しい注視方向ベクトルを計算する
 	m_lookVector.x = cosf(m_rot.y + D3DX_PI / 2);
 	m_lookVector.z = sinf(m_rot.y + D3DX_PI / 2);
+
+	//m_directionVector.x = cosf(m_rot.y + D3DX_PI / 2);
+	//m_directionVector.z = sinf(m_rot.y + D3DX_PI / 2);
 }
 
 //*****************************************************************************

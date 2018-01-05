@@ -14,13 +14,12 @@
 //*****************************************************************************
 Camera::Camera()
 {
-	m_posEye	= D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_posAt		= D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_rot		= D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_posEye			= D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_posAt			= D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_rot			= D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_upVector		= D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-	m_lookVector	= D3DXVECTOR3(0.0f, 0.0f, 1.0f);
+	m_lookVector		= D3DXVECTOR3(0.0f, 0.0f, 1.0f);
 	m_rightVector	= D3DXVECTOR3(1.0f, 0.0f, 0.0f);
-	m_atToEyeVector = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 
 	D3DXMatrixIdentity(&m_viewMatrix);
 	D3DXMatrixIdentity(&m_projectionMatrix);
@@ -43,23 +42,17 @@ Camera::~Camera()
 // カメラを初期化する
 //
 //*****************************************************************************
-void Camera::InitCamera(D3DXVECTOR3 Eye, D3DXVECTOR3 At, D3DXVECTOR3 Up)
+void Camera::InitCameraByPlayer(Character* player)
 {
-	m_posEye = Eye;	// カメラの視点を初期化する
-	m_posAt  = At;	// カメラの注視点を初期化する
-	m_upVector  = Up;// カメラの上方向ベクトル、一般には (0, 1, 0) を定義する 
-	m_atToEyeVector = m_posAt - m_posEye;	// 注視点から視点までのベクトル
-}
+	m_posEye = player->m_lookVector + D3DXVECTOR3(0.0f, 6.0f, 11.0f);
+	m_posAt = player->m_pos + D3DXVECTOR3(0.0f, 6.0f, 0.0f);
+	m_rot = player->m_rot;
+	m_lookVector = player->m_lookVector;
+	m_rightVector = player->m_rightVector;
 
-//*****************************************************************************
-//
-// 注視点座標を更新
-//
-//*****************************************************************************
-void Camera::UpdateAt(D3DXVECTOR3 pos)
-{
-	m_posAt = pos;
-	//m_posEye = m_atToEyeVector + pos;
+	SetViewMatrix();	// ビューイング変換
+	SetProjMatrix();	// プロジェクション変換
+	SetViewport();	// ビューポートを設定
 }
 
 //*****************************************************************************
@@ -109,13 +102,19 @@ void Camera::SetViewport()
 
 //*****************************************************************************
 //
-// カメラ更新
+// キャラクターによってカメラを更新
 //
 //*****************************************************************************
-void Camera::Update(D3DXVECTOR3* playerDirectionVector)
+void Camera::UpdateByPlayer(Character* player)
 {
-	*playerDirectionVector = m_lookVector;// プレーヤーの向きベクトルを更新
-	// カメラの注視点を更新
+	m_posEye.x = player->m_pos.x + cosf(m_rot.y + D3DX_PI / 2) * 11.0f;
+	m_posEye.y = player->m_pos.y + 6.0f;
+	m_posEye.z = player->m_pos.z + sinf(m_rot.y + D3DX_PI / 2) * 11.0f;
+
+	m_posAt = player->m_pos + D3DXVECTOR3(0.0f, 6.0f, 0.0f);
+	m_rot = player->m_rot;
+	m_lookVector = player->m_lookVector;
+	m_rightVector = player->m_rightVector;
 
 	SetViewMatrix();	// ビューイング変換
 }
@@ -202,13 +201,6 @@ void Camera::MoveAlongVecRight(float unit)
 void Camera::MoveAlongVecLook(float unit)
 {
 	m_posEye += m_lookVector * unit;
-	m_atToEyeVector = m_posAt - m_posEye;	// 視点から注視点までの距離を更新
-
-	if (D3DXVec3Length(&m_atToEyeVector) < 15.6f || D3DXVec3Length(&m_atToEyeVector) > 25.0f)
-	{
-		m_posEye -= m_lookVector * unit;
-		m_atToEyeVector = m_posAt - m_posEye;
-	}
 }
 
 //*****************************************************************************
@@ -218,7 +210,8 @@ void Camera::MoveAlongVecLook(float unit)
 //*****************************************************************************
 void Camera::PosToMessageAndMessageDraw(int row)
 {
-	m_message->DrawPosMessage("Long", D3DXVECTOR3(D3DXVec3Length(&m_atToEyeVector),0,0), D3DXVECTOR2(0, float((row + 1)* 18 * 2)));
+	m_message->DrawPosMessage("C-look", m_lookVector, D3DXVECTOR2(0, float(row * 18)));
+	m_message->DrawPosMessage("CameraPos", m_posEye, D3DXVECTOR2(0, float((row + 1) * 18)));
 }
 
 //*****************************************************************************
@@ -228,22 +221,5 @@ void Camera::PosToMessageAndMessageDraw(int row)
 //*****************************************************************************
 void Camera::isAtToEyeVectorMoreLong(bool isMoreLong)
 {
-	if (isMoreLong == false)
-	{
-		m_atToEyeVector.z -= 1.0f;
-		if (m_atToEyeVector.z <= 12.0f)	// 最小値判断
-		{
-			m_atToEyeVector.z = 12.0f;
-		}
-	}
-	else
-	{
-		m_atToEyeVector.z += 1.0f;
-		if (m_atToEyeVector.z >= 20.0f)	// 最大値判断
-		{
-			m_atToEyeVector.z = 20.0f;
-		}
-	}
-
-	m_posEye = m_posAt + m_atToEyeVector;
+	
 }
