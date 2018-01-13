@@ -16,7 +16,7 @@
 Plane::Plane()
 {
 	m_scala = 2;
-	r = 0.0f;
+	m_waveAngle = 0.0f;
 
 	m_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
@@ -170,28 +170,28 @@ HRESULT Plane::MakeVertexDecl(D3DXVECTOR2 planeSize, D3DXVECTOR2 planeNum)
 // ワールド変換
 //
 //*****************************************************************************
-void Plane::SetWorldMatrix(D3DXMATRIX& mtxWorld)
+void Plane::SetWorldMatrix()
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 	D3DXMATRIX mtxScl, mtxRot, mtxTranslate;
 
 	// ワールドマトリックスを初期化する
-	D3DXMatrixIdentity(&mtxWorld);
+	D3DXMatrixIdentity(&m_worldMatrix);
 
 	// スケールを反映
 	D3DXMatrixScaling(&mtxScl, m_scl.x, m_scl.y, m_scl.z);
-	D3DXMatrixMultiply(&mtxWorld, &mtxWorld, &mtxScl);
+	D3DXMatrixMultiply(&m_worldMatrix, &m_worldMatrix, &mtxScl);
 
 	// 回転を反映
 	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rot.y, m_rot.x, m_rot.z);
-	D3DXMatrixMultiply(&mtxWorld, &mtxWorld, &mtxRot);
+	D3DXMatrixMultiply(&m_worldMatrix, &m_worldMatrix, &mtxRot);
 
 	// 平行移動を反映
 	D3DXMatrixTranslation(&mtxTranslate, m_pos.x, m_pos.y, m_pos.z);
-	D3DXMatrixMultiply(&mtxWorld, &mtxWorld, &mtxTranslate);
+	D3DXMatrixMultiply(&m_worldMatrix, &m_worldMatrix, &mtxTranslate);
 
 	// ワールドマトリクスの初期化
-	pDevice->SetTransform(D3DTS_WORLD, &mtxWorld);
+	//pDevice->SetTransform(D3DTS_WORLD, &m_worldMatrix);
 }
 
 //*****************************************************************************
@@ -202,6 +202,8 @@ void Plane::SetWorldMatrix(D3DXMATRIX& mtxWorld)
 void Plane::Draw(Shader* shader)
 {
 	PDIRECT3DDEVICE9 pDevice = GetDevice();
+
+	SetWorldMatrix();
 
 	pDevice->SetVertexDeclaration(m_vertexDecl);								// 頂点宣言を設定
 	pDevice->SetStreamSource(0, m_vertexBuffer, 0, sizeof(VERTEX_3D));			// 頂点バッファをデバイスのデータストリームにバイナリ
@@ -220,10 +222,10 @@ void Plane::Update()
 {
 	PDIRECT3DDEVICE9 pDevice = GetDevice();
 
-	r += (rand()%5 + 10) / 10.0f / 180.0f * D3DX_PI;
+	m_waveAngle += (rand()%5 + 10) / 10.0f / 180.0f * D3DX_PI;
 
-	if (r > D3DX_PI * 2.0f)
-		r = 0.0f;
+	if (m_waveAngle > D3DX_PI * 2.0f)
+		m_waveAngle = 0.0f;
 
 	VERTEX_3D* VertexBuffer;
 
@@ -239,7 +241,7 @@ void Plane::Update()
 	{
 		for (int numX = 0; numX < (m_planeNum.x + 1); numX++)
 		{
-			VertexBuffer[numY * (int(m_planeNum.x) + 1) + numX].position.y = 0.8 * sinf(numY + numX + r);
+			VertexBuffer[numY * (int(m_planeNum.x) + 1) + numX].position.y = 0.8 * sinf(numY + numX + m_waveAngle);
 		}
 	}
 }

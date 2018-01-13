@@ -44,8 +44,13 @@ Camera::~Camera()
 //*****************************************************************************
 void Camera::InitCameraByPlayer(Character* player)
 {
-	m_posEye = player->m_lookVector + D3DXVECTOR3(0.0f, 6.0f, 11.0f);
-	m_posAt = player->m_pos + D3DXVECTOR3(0.0f, 6.0f, 0.0f);
+	// woman
+	//m_posEye = player->m_lookVector + D3DXVECTOR3(0.0f, 6.0f, 11.0f);
+	//m_posAt = player->m_pos + D3DXVECTOR3(0.0f, 6.0f, 0.0f);
+	
+	// ship
+	m_posEye = player->m_lookVector + D3DXVECTOR3(0.0f, 10.0f, 25.0f);
+	m_posAt = player->m_pos + D3DXVECTOR3(0.0f, 10.0f, 0.0f);
 	m_rot = player->m_rot;
 	m_lookVector = player->m_lookVector;
 	m_rightVector = player->m_rightVector;
@@ -107,11 +112,22 @@ void Camera::SetViewport()
 //*****************************************************************************
 void Camera::UpdateByPlayer(Character* player)
 {
-	m_posEye.x = player->m_pos.x + cosf(m_rot.y + D3DX_PI / 2) * 11.0f;
+	// woman
+	/*m_posEye.x = player->m_pos.x + cosf(m_rot.y + D3DX_PI / 2) * 11.0f;
 	m_posEye.y = player->m_pos.y + 6.0f;
 	m_posEye.z = player->m_pos.z + sinf(m_rot.y + D3DX_PI / 2) * 11.0f;
 
 	m_posAt = player->m_pos + D3DXVECTOR3(0.0f, 6.0f, 0.0f);
+	m_rot = player->m_rot;
+	m_lookVector = player->m_lookVector;
+	m_rightVector = player->m_rightVector;*/
+
+	// ship
+	m_posEye.x = player->m_pos.x + cosf(m_rot.y + D3DX_PI / 2) * 25.0f;
+	m_posEye.y = player->m_pos.y + 10.0f;
+	m_posEye.z = player->m_pos.z + sinf(m_rot.y + D3DX_PI / 2) * 25.0f;
+
+	m_posAt = player->m_pos + D3DXVECTOR3(0.0f, 10.0f, 0.0f);
 	m_rot = player->m_rot;
 	m_lookVector = player->m_lookVector;
 	m_rightVector = player->m_rightVector;
@@ -210,8 +226,8 @@ void Camera::MoveAlongVecLook(float unit)
 //*****************************************************************************
 void Camera::PosToMessageAndMessageDraw(int row)
 {
-	m_message->DrawPosMessage("C-look", m_lookVector, D3DXVECTOR2(0, float(row * 18)));
-	m_message->DrawPosMessage("CameraPos", m_posEye, D3DXVECTOR2(0, float((row + 1) * 18)));
+	//m_message->DrawPosMessage("C-look", m_lookVector, D3DXVECTOR2(0, float(row * 18)));
+	m_message->DrawPosMessage("CameraPos", m_posEye, D3DXVECTOR2(0, float((row + 0) * 18)));
 }
 
 //*****************************************************************************

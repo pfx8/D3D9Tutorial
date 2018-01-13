@@ -22,7 +22,6 @@ public:
 	D3DXHANDLE	m_outLineHandle;	// エフェクトのテクニック
 	D3DXHANDLE	m_WVPMatrixHandle;	// 変換行列
 	D3DXHANDLE	m_lightingHandle;		// 光の方向
-	D3DXHANDLE	m_changeMatrixHandle;	// 変更行列
 	//D3DXHANDLE	m_textureHandle;		// テクスチャ
 
 	CelShader();

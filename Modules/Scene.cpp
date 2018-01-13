@@ -20,7 +20,6 @@ Scene::Scene()
 {	
 	m_resourcesManager = new ResourcesManager;	// リソース
 	m_message = new DebugMessage;
-	D3DXMatrixIdentity(&m_worldMatrix);	// ワールドマトリックスを初期化する
 
 	// テクスチャを読み込み
 	// m_resourcesManager->InitTexture();

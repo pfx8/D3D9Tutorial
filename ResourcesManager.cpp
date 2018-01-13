@@ -28,13 +28,10 @@ ResourcesManager::ResourcesManager()
 	// メッシュ検索マッピングを作る
 	m_meshList["car1"] = "data/MODEL/car001.x";
 	m_meshList["car2"] = "data/MODEL/car002.x";
-	m_meshList["dolphin1"] = "data/MODEL/Dolphin1.x";
-	m_meshList["dolphin2"] = "data/MODEL/Dolphin3.x";
 	m_meshList["woman"] = "data/MODEL/woman.x";
 	m_meshList["rockman"] = "data/MODEL/rockman.x";
-	m_meshList["test2"] = "data/MODEL/test2.x";
-	m_meshList["ball"] = "data/MODEL/ball.x";
-	m_meshList["arrow"] = "data/MODEL/arrow.x";
+	m_meshList["ship"] = "data/MODEL/ship.x";
+	m_meshList["lowP"] = "data/MODEL/lowP.x";
 }
 
 //*****************************************************************************
@@ -137,6 +134,8 @@ HRESULT ResourcesManager::LoadMesh(std::string name, Model* model)
 		}
 		else
 		{
+			model->m_meshTexturePoint[count] = NULL;
+
 			if (FAILED(D3DXCreateTextureFromFile(pDevice, materials[count].pTextureFilename, &model->m_meshTexturePoint[count])))
 			{
 				std::cout << "[Error] Material's texture load Fail!" << std::endl;

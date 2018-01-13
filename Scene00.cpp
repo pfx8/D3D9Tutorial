@@ -32,36 +32,30 @@ Scene00::Scene00()
 
 	// フィールド
 	m_fieldStone = new Plane;
-	m_fieldStone->InitPlane(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(20.0f, 20.0f), D3DXVECTOR2(6, 6));
+	m_fieldStone->InitPlane(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(10.0f, 10.0f), D3DXVECTOR2(1, 1));
 	m_resourcesManager->LoadTexture("fieldSea", &m_fieldStone->m_fieldTexture1);
 	
 	// 主人公
-	m_hero = new Character;
-	m_hero->InitCharacter(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, -1.0f));
-	m_resourcesManager->LoadMesh("woman", m_hero->m_model);
+	m_ship = new Character;
+	m_ship->InitCharacter(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, -1.0f));
+	m_resourcesManager->LoadMesh("ship", m_ship->m_model);
 
-	// 参考キャラクター
-	m_object = new Character;
-	m_object->InitCharacter(D3DXVECTOR3(20.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, -1.0f));
-	m_resourcesManager->LoadMesh("woman", m_object->m_model);
-
-	// 矢印
-	m_arrow = new Character;
-	m_arrow->InitCharacter(m_hero->m_pos + D3DXVECTOR3(0.0f, 10.0f, 2.0f), D3DXVECTOR3(0.0f, 0.0f, -1.0f));
-	m_resourcesManager->LoadMesh("arrow", m_arrow->m_model);
-
-	//// 弾
-	//m_ball = new Character;
-	//m_ball->InitCharacter(m_hero->m_pos + D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, -1.0f));
-	//m_resourcesManager->LoadMesh("test2", m_ball->m_model);
+	// test
+	m_test = new Character;
+	m_test->InitCharacter(D3DXVECTOR3(-15.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, -1.0f));
+	m_resourcesManager->LoadMesh("car1", m_test->m_model);
+	// test2
+	m_test2 = new Character;
+	m_test2->InitCharacter(D3DXVECTOR3(15.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, -1.0f));
+	m_resourcesManager->LoadMesh("car2", m_test2->m_model);
 
 	// カメラ
 	m_camera = new Camera;
-	m_camera->InitCameraByPlayer(m_hero);
+	m_camera->InitCameraByPlayer(m_ship);
 
 	m_isGameStart = true;
 
-	std::cout << "[State] BoundingBox: " << std::boolalpha << m_hero->m_boundingBox->m_isBoundingBoxDraw << std::endl;
+	std::cout << "[State] BoundingBox: " << std::boolalpha << m_ship->m_boundingBox->m_isBoundingBoxDraw << std::endl;
 }
 
 //*****************************************************************************
@@ -73,13 +67,15 @@ Scene00::~Scene00()
 {
 	// クラスポインタ
 	RELEASE_CLASS_POINT(m_fieldStone);	// フィールド
-	RELEASE_CLASS_POINT(m_hero);		// 車
-	RELEASE_CLASS_POINT(m_object);	// 車
-	RELEASE_CLASS_POINT(m_arrow);		// 矢印
+	RELEASE_CLASS_POINT(m_ship);		// プレーヤー
 	RELEASE_CLASS_POINT(m_camera);	// カメラ
 	RELEASE_CLASS_POINT(m_light);		// ライト
 	RELEASE_CLASS_POINT(m_shader);	// ベーシックシェーダー
 	RELEASE_CLASS_POINT(m_celShader);	// トゥ―ンシェーダー
+
+	// test
+	RELEASE_CLASS_POINT(m_test);
+	RELEASE_CLASS_POINT(m_test2);
 }
 
 //*****************************************************************************
@@ -136,7 +132,7 @@ void Scene00::Update()
 {
 	Control();	// 各操作の更新
 
-	m_camera->UpdateByPlayer(m_hero);
+	m_camera->UpdateByPlayer(m_ship);
 
 	m_celShader->UpdateLight(m_light->m_directionlight);
 	m_fieldStone->Update();
@@ -166,15 +162,11 @@ void Scene00::Draw()
 	// Direct3Dによる描画の開始
 	if (SUCCEEDED(GetDevice()->BeginScene()))
 	{
-		D3DXMATRIX WVPmatrix = m_worldMatrix * m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
-
 		//---------------------------------------
 		// エフェクトに基づいてレンダリング
 		//---------------------------------------
 		// BasicShader
 		{
-			m_shader->m_effectPoint->SetMatrix(m_shader->m_WVPMatrixHandle, &WVPmatrix);	// WVPマトリックス
-
 			m_shader->m_effectPoint->SetTechnique(m_shader->m_basicShaderHandle);	// テクニックを設定
 			UINT passNum = 0;	// パスの数
 
@@ -183,6 +175,8 @@ void Scene00::Draw()
 			{
 				m_shader->m_effectPoint->BeginPass(0);
 
+				D3DXMATRIX fieldWVPmatrix = m_fieldStone->m_worldMatrix * m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
+				m_shader->m_effectPoint->SetMatrix(m_shader->m_WVPMatrixHandle, &fieldWVPmatrix);	// WVPマトリックス
 				m_fieldStone->Draw(m_shader);
 
 				m_shader->m_effectPoint->EndPass();
@@ -190,10 +184,8 @@ void Scene00::Draw()
 			m_shader->m_effectPoint->End();
 		}
 
-		// CelShader
+		// ship
 		{
-			m_celShader->m_effectPoint->SetMatrix(m_celShader->m_WVPMatrixHandle, &WVPmatrix);	// WVPマトリックス
-
 			m_celShader->m_effectPoint->SetTechnique(m_celShader->m_celShaderHandle);	// テクニックを設定
 			UINT passNum = 0;	// パスの数
 
@@ -202,10 +194,50 @@ void Scene00::Draw()
 			{
 				m_celShader->m_effectPoint->BeginPass(count);
 
-				m_hero->Draw(m_celShader);
-				m_object->Draw(m_celShader);
-				//m_celShader->m_effectPoint->SetMatrix(m_celShader->m_WVPMatrixHandle, &WVPmatrix);	// WVPマトリックス
-				//m_arrow->Draw(m_celShader);
+				m_ship->SetWorldMatrix();
+				D3DXMATRIX shipWVPmatrix = m_ship->m_worldMatrix * m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
+				m_celShader->m_effectPoint->SetMatrix(m_celShader->m_WVPMatrixHandle, &shipWVPmatrix);	// WVPマトリックス
+				m_ship->Draw(m_celShader);
+
+				m_celShader->m_effectPoint->EndPass();
+			}
+			m_celShader->m_effectPoint->End();
+		}
+
+		// test
+		{
+			m_celShader->m_effectPoint->SetTechnique(m_celShader->m_celShaderHandle);	// テクニックを設定
+			UINT passNum = 0;	// パスの数
+
+			m_celShader->m_effectPoint->Begin(&passNum, 0);
+			for (int count = 0; count < passNum; count++)	// 各パスによって描画する
+			{
+				m_celShader->m_effectPoint->BeginPass(count);
+
+				m_test->SetWorldMatrix();
+				D3DXMATRIX testWVPmatrix = m_test->m_worldMatrix * m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
+				m_celShader->m_effectPoint->SetMatrix(m_celShader->m_WVPMatrixHandle, &testWVPmatrix);	// WVPマトリックス
+				m_test->Draw(m_celShader);
+
+				m_celShader->m_effectPoint->EndPass();
+			}
+			m_celShader->m_effectPoint->End();
+		}
+
+		// test2
+		{
+			m_celShader->m_effectPoint->SetTechnique(m_celShader->m_celShaderHandle);	// テクニックを設定
+			UINT passNum = 0;	// パスの数
+
+			m_celShader->m_effectPoint->Begin(&passNum, 0);
+			for (int count = 0; count < passNum; count++)	// 各パスによって描画する
+			{
+				m_celShader->m_effectPoint->BeginPass(count);
+
+				m_test2->SetWorldMatrix();
+				D3DXMATRIX test2WVPmatrix = m_test2->m_worldMatrix * m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
+				m_celShader->m_effectPoint->SetMatrix(m_celShader->m_WVPMatrixHandle, &test2WVPmatrix);	// WVPマトリックス
+				m_test2->Draw(m_celShader);
 
 				m_celShader->m_effectPoint->EndPass();
 			}
@@ -213,22 +245,22 @@ void Scene00::Draw()
 		}
 
 		// Outline
-		//{
-		//	m_celShader->m_effectPoint->SetMatrix(m_celShader->m_WVPMatrixHandle, &WVPmatrix);	// WVPマトリックス
+		/*{
+			m_celShader->m_effectPoint->SetMatrix(m_celShader->m_WVPMatrixHandle, &WVPmatrix);	// WVPマトリックス
 
-		//	m_celShader->m_effectPoint->SetTechnique(m_celShader->m_outLineHandle);	// テクニックを設定
-		//	UINT passNum = 0;	// パスの数
-		//	m_celShader->m_effectPoint->Begin(&passNum, 0);
-		//	for (int count = 0; count < passNum; count++)	// 各パスによって描画する
-		//	{
-		//		m_celShader->m_effectPoint->BeginPass(count);
+			m_celShader->m_effectPoint->SetTechnique(m_celShader->m_outLineHandle);	// テクニックを設定
+			UINT passNum = 0;	// パスの数
+			m_celShader->m_effectPoint->Begin(&passNum, 0);
+			for (int count = 0; count < passNum; count++)	// 各パスによって描画する
+			{
+				m_celShader->m_effectPoint->BeginPass(count);
 
-		//		m_hero->Draw(m_celShader);
+				m_hero->Draw(m_celShader);
 
-		//		m_celShader->m_effectPoint->EndPass();
-		//	}
-		//	m_celShader->m_effectPoint->End();
-		//}
+				m_celShader->m_effectPoint->EndPass();
+			}
+			m_celShader->m_effectPoint->End();
+		}*/
 
 		if (m_isGameStart == false)
 		{
@@ -236,8 +268,11 @@ void Scene00::Draw()
 		}
 		//m_message->DrawMessage("光方向調整 [Z] [X]\nカメラ回転 [J] [L]\nモデル回転 [A] [D]\n近遠変換   [I] [K]\nバウンディングボックス ON/OFF [Q]");
 		//m_message->DrawPosMessage("プレーヤー方向ベクトル: ", m_hero->m_directionVector, D3DXVECTOR2(0.0f, 18.0f));
-		m_hero->PosToMessageAndMessageDraw(0);
-		m_camera->PosToMessageAndMessageDraw(2);
+		
+		//m_ship->PosToMessageAndMessageDraw(0);
+		m_camera->PosToMessageAndMessageDraw(0);
+		m_ship->PosToMessageAndMessageDraw(2);
+		m_test->PosToMessageAndMessageDraw(8);
 		GetDevice()->EndScene();
 	}
 
@@ -258,19 +293,19 @@ void Scene00::Control()
 		// プレーヤー操作更新
 		if (GetKeyboardPress(DIK_A))	// key A
 		{
-			m_hero->RotationVecUp(-1.5f / 180.0f * D3DX_PI);
+			m_ship->RotationVecUp(-1.5f / 180.0f * D3DX_PI);
 		}
 		if (GetKeyboardPress(DIK_D))	// key D
 		{
-			m_hero->RotationVecUp(1.5f / 180.0f * D3DX_PI);
+			m_ship->RotationVecUp(1.5f / 180.0f * D3DX_PI);
 		}
 		if (GetKeyboardPress(DIK_W))	// key W
 		{
-			m_camera->m_posEye += m_hero->MoveAlongVecLook(-0.5f);
+			m_camera->m_posEye += m_ship->MoveAlongVecLook(-0.5f);
 		}
 		if (GetKeyboardPress(DIK_S))	// key S
 		{
-			m_camera->m_posEye -= m_hero->MoveAlongVecLook(0.5f);
+			m_camera->m_posEye -= m_ship->MoveAlongVecLook(0.5f);
 		}
 
 		//　カメラ操作更新
@@ -310,8 +345,8 @@ void Scene00::Control()
 		// バウンディングボックス操作更新
 		if (GetKeyboardTrigger(DIK_Q))	// key Q
 		{
-			m_hero->m_boundingBox->m_isBoundingBoxDraw = !m_hero->m_boundingBox->m_isBoundingBoxDraw;	// バウンディングボックスをコントロール
-			std::cout << "[State] BoundingBox: " << std::boolalpha << m_hero->m_boundingBox->m_isBoundingBoxDraw << std::endl;
+			m_ship->m_boundingBox->m_isBoundingBoxDraw = !m_ship->m_boundingBox->m_isBoundingBoxDraw;	// バウンディングボックスをコントロール
+			std::cout << "[State] BoundingBox: " << std::boolalpha << m_ship->m_boundingBox->m_isBoundingBoxDraw << std::endl;
 		}
 	}
 	else

@@ -35,7 +35,7 @@ DebugMessage::~DebugMessage()
 
 //*****************************************************************************
 //
-// •¶Žš‚ð•`‰æ‚·‚é
+// À•W‚ð•`‰æ‚·‚é
 //
 //*****************************************************************************
 void DebugMessage::DrawPosMessage(const char name[], D3DXVECTOR3 OutputPos, D3DXVECTOR2 MessagePos)
@@ -48,7 +48,42 @@ void DebugMessage::DrawPosMessage(const char name[], D3DXVECTOR3 OutputPos, D3DX
 
 	// •¶Žš—ñ‚ð•`‰æ‚·‚é
 	m_Font->DrawText(NULL, &str[0], -1, &rectCoor, DT_LEFT, D3DCOLOR_RGBA(255, 0, 0, 255));
+}
 
+//*****************************************************************************
+//
+// s—ñ‚ð•`‰æ
+//
+//*****************************************************************************
+void DebugMessage::DrawMatrixMessage(D3DXMATRIX* matrix, D3DXVECTOR2 MessagePos)
+{
+	D3DXMATRIX* mat = matrix;
+
+	RECT rectCoor = { int(MessagePos.x), int(MessagePos.y), SCREEN_WIDTH, SCREEN_HEIGHT };
+	char str[256];
+
+	// •¶Žš—ñ‚ðì‚é
+	sprintf(str, _T("%.2f,%.2f,%.2f,%.2f"), mat->_11, mat->_12, mat->_13, mat->_14);
+	// •¶Žš—ñ‚ð•`‰æ‚·‚é
+	m_Font->DrawText(NULL, &str[0], -1, &rectCoor, DT_LEFT, D3DCOLOR_RGBA(255, 0, 0, 255));
+	
+	rectCoor.top += 18;
+	// •¶Žš—ñ‚ðì‚é
+	sprintf(str, _T("%.2f,%.2f,%.2f,%.2f"), mat->_21, mat->_22, mat->_23, mat->_24);
+	// •¶Žš—ñ‚ð•`‰æ‚·‚é
+	m_Font->DrawText(NULL, &str[0], -1, &rectCoor, DT_LEFT, D3DCOLOR_RGBA(255, 0, 0, 255));
+
+	rectCoor.top += 18;
+	// •¶Žš—ñ‚ðì‚é
+	sprintf(str, _T("%.2f,%.2f,%.2f,%.2f"), mat->_31, mat->_32, mat->_33, mat->_34);
+	// •¶Žš—ñ‚ð•`‰æ‚·‚é
+	m_Font->DrawText(NULL, &str[0], -1, &rectCoor, DT_LEFT, D3DCOLOR_RGBA(255, 0, 0, 255));
+
+	rectCoor.top += 18;
+	// •¶Žš—ñ‚ðì‚é
+	sprintf(str, _T("%.2f,%.2f,%.2f,%.2f"), mat->_41, mat->_42, mat->_43, mat->_44);
+	// •¶Žš—ñ‚ð•`‰æ‚·‚é
+	m_Font->DrawText(NULL, &str[0], -1, &rectCoor, DT_LEFT, D3DCOLOR_RGBA(255, 0, 0, 255));
 }
 
 //*****************************************************************************

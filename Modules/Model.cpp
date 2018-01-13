@@ -67,13 +67,14 @@ void Model::DrawModel(Shader* shader)
 		if (attributes[count].FaceCount)
 		{
 			DWORD matNum = attributes[count].AttribId;			// マテリアル数を取得
+			//shader->m_effectPoint->SetTexture(shader->m_texture1Handle, m_meshTexturePoint[matNum]);	// テクスチャを設定
 			pDevice->SetTexture(0, m_meshTexturePoint[matNum]);	// テクスチャを設定
 			pDevice->DrawIndexedPrimitive(					// メッシュを描画する
 				D3DPT_TRIANGLELIST,
 				0,
 				attributes[count].VertexStart,
 				attributes[count].VertexCount,
-				attributes[count].FaceStart * 3, // ?
+				attributes[count].FaceStart * 3,
 				attributes[count].FaceCount);
 		}
 	}

@@ -23,7 +23,7 @@ Character::Character()
 	m_scl = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
 	//m_directionVector = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
-	r = 0.0f;
+	m_waveAngle = 0.0f;
 
 	// クラスポインタ
 	m_model = new Model;
@@ -51,8 +51,9 @@ Character::~Character()
 //*****************************************************************************
 void Character::PosToMessageAndMessageDraw(int row)
 {
-	m_message->DrawPosMessage("Hero Pos", m_pos, D3DXVECTOR2(0, float(row * 18)));
-	m_message->DrawPosMessage("H-look", m_lookVector, D3DXVECTOR2(0, float((row + 1) * 18)));
+	m_message->DrawPosMessage("Pos", m_pos, D3DXVECTOR2(0, float(row * 18)));
+	//m_message->DrawPosMessage("H-look", m_lookVector, D3DXVECTOR2(0, float((row + 1) * 18)));
+	//m_message->DrawMatrixMessage(&m_worldMatrix, D3DXVECTOR2(0, float((row + 2) * 18)));
 }
 
 //*****************************************************************************
@@ -63,7 +64,6 @@ void Character::PosToMessageAndMessageDraw(int row)
 void Character::InitCharacter(D3DXVECTOR3 pos, D3DXVECTOR3 direction)
 {
 	m_pos = pos;	// 位置
-	//m_directionVector = direction; // プレーヤーの向き
 	m_boundingBox->InitBox(3, 13, 3, 0.1f);	// バウンディングボックスを初期化
 }
 
@@ -74,22 +74,6 @@ void Character::InitCharacter(D3DXVECTOR3 pos, D3DXVECTOR3 direction)
 //*****************************************************************************
 void Character::Draw(CelShader* celShader)
 {
-	LPDIRECT3DDEVICE9 pDevice = GetDevice();
-
-	D3DXMATRIX mtxOrgin, mtxRot, mtxTranslate;
-
-	D3DXMatrixIdentity(&mtxOrgin);
-
-	// 回転を反映
-	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rot.y, m_rot.x, m_rot.z);
-	D3DXMatrixMultiply(&mtxOrgin, &mtxOrgin, &mtxRot);
-
-	// 平行移動を反映
-	D3DXMatrixTranslation(&mtxTranslate, m_pos.x, m_pos.y, m_pos.z);
-	D3DXMatrixMultiply(&mtxOrgin, &mtxOrgin, &mtxTranslate);
-
-	celShader->m_effectPoint->SetMatrix(celShader->m_changeMatrixHandle, &mtxOrgin);
-
 	m_model->DrawModel(celShader);	// メッシュを描画する
 
 	if (m_boundingBox->m_isBoundingBoxDraw == true)
@@ -105,8 +89,7 @@ void Character::Draw(CelShader* celShader)
 //*****************************************************************************
 void Character::Move()
 {
-	//m_pos.x -= m_directionVector.x;
-	//m_pos.z -= m_directionVector.z;
+	
 }
 
 //*****************************************************************************
@@ -116,12 +99,12 @@ void Character::Move()
 //*****************************************************************************
 void Character::Update(float rot)
 {
-	r = rot;
+	m_waveAngle = rot;
 
-	if (r > D3DX_PI * 2.0f)
-		r = 0.0f;
+	if (m_waveAngle > D3DX_PI * 2.0f)
+		m_waveAngle = 0.0f;
 
-	m_pos.y = 0.7 * sinf(r);
+	m_pos.y = 0.7 * sinf(m_waveAngle);
 }
 
 //*****************************************************************************
@@ -173,9 +156,6 @@ void Character::RotationVecUp(float angle)
 	// 新しい注視方向ベクトルを計算する
 	m_lookVector.x = cosf(m_rot.y + D3DX_PI / 2);
 	m_lookVector.z = sinf(m_rot.y + D3DX_PI / 2);
-
-	//m_directionVector.x = cosf(m_rot.y + D3DX_PI / 2);
-	//m_directionVector.z = sinf(m_rot.y + D3DX_PI / 2);
 }
 
 //*****************************************************************************
@@ -188,4 +168,34 @@ D3DXVECTOR3 Character::MoveAlongVecLook(float unit)
 	m_pos += m_lookVector * unit;
 
 	return m_lookVector * unit;
+}
+
+//*****************************************************************************
+//
+// ワールド変換を設定
+//
+//*****************************************************************************
+void Character::SetWorldMatrix()
+{
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();
+
+	D3DXMATRIX mtxScl, mtxRot, mtxTranslate;
+
+	// ワールドマトリックスの初期化
+	D3DXMatrixIdentity(&m_worldMatrix);
+
+	// スケールを反映
+	D3DXMatrixScaling(&mtxScl, m_scl.x, m_scl.y, m_scl.z);
+	D3DXMatrixMultiply(&m_worldMatrix, &m_worldMatrix, &mtxScl);
+
+	// 回転を反映
+	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rot.y, m_rot.x, m_rot.z);
+	D3DXMatrixMultiply(&m_worldMatrix, &m_worldMatrix, &mtxRot);
+
+	// 移動を反映
+	D3DXMatrixTranslation(&mtxTranslate, m_pos.x, m_pos.y, m_pos.z);
+	D3DXMatrixMultiply(&m_worldMatrix, &m_worldMatrix, &mtxTranslate);
+
+	// ワールドマトリックスの設定
+	//pDevice->SetTransform(D3DTS_WORLD, &m_worldMatrix);
 }

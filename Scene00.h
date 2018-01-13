@@ -34,13 +34,15 @@ private:
 	CelShader*		m_celShader;		// トゥ―ンシェーダー
 	Shader*			m_shader;		// ベーシックシェーダー
 	Plane*			m_fieldStone;	// フィールド
-	Character*		m_hero;			// プレーヤー
-	Character*		m_object;
-	Character*		m_arrow;			// 方向矢印
-	//Character*		m_ball;			// プレーヤー
+	Character*		m_ship;			// プレーヤー
 	Light*			m_light;			// ライト
 
 	bool				m_isGameStart;
+
+	// test
+	Character* m_test;
+	Character* m_test2;
+	//Character* m_test3;
 public:
 	Scene00();
 	~Scene00();

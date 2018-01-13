@@ -22,8 +22,8 @@ private:
 	int				m_scala;
 
 public:
-	float			r;
-
+	float			m_waveAngle;
+	D3DXMATRIX		m_worldMatrix;	// ワールド変換マトリックス
 	D3DXVECTOR3		m_pos;	// 位置
 	D3DXVECTOR3		m_rot;	// 回転
 	D3DXVECTOR3		m_scl;	// 拡大縮小
@@ -44,7 +44,7 @@ public:
 	virtual HRESULT MakeVertexDecl(D3DXVECTOR2 planeSize, D3DXVECTOR2 planeNum);	// 頂点宣言
 	virtual HRESULT InitPlane(D3DXVECTOR3 pos, D3DXVECTOR2 planeSize, D3DXVECTOR2 planeNum);	// 座標を設定
 	virtual void Draw(Shader* shader);				// テクスチャを描画する(PixelShader)
-	void SetWorldMatrix(D3DXMATRIX& mtxWorld);	// 臨時ーーワールド変換
+	void SetWorldMatrix();	// 臨時ーーワールド変換
 	void Update();
 };
 #endif // !_PLANE_H_

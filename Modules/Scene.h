@@ -30,7 +30,6 @@ class Scene
 private:
 
 public:
-	D3DXMATRIX			m_worldMatrix;	// ワールドマトリックス
 	ResourcesManager*		m_resourcesManager;	// リソースマネジメント
 	DebugMessage*		m_message;		// メッセージ
 	
