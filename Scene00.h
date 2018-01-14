@@ -10,18 +10,17 @@
 
 #include <map>
 
+#include "ResourcesManager.h"
+#include "Engine.h"
 #include "Modules/Scene.h"
 #include "Modules/Character.h"
 #include "Modules/Camera.h"
 #include "Modules/Plane.h"
 #include "Modules/Light.h"
 #include "Modules/Shader.h"
-
-#include "ResourcesManager.h"
-#include "Engine.h"
-
 #include "Shader/CelShader.h"
 
+#define ENEMY_SHIP_MAX 2
 //*****************************************************************************
 //
 // クラス宣言
@@ -38,11 +37,7 @@ private:
 	Light*			m_light;			// ライト
 
 	bool				m_isGameStart;
-
-	// test
-	Character* m_test;
-	Character* m_test2;
-	//Character* m_test3;
+	Character*		m_enemyShip;		// 敵
 public:
 	Scene00();
 	~Scene00();

@@ -123,14 +123,20 @@ void Camera::UpdateByPlayer(Character* player)
 	m_rightVector = player->m_rightVector;*/
 
 	// ship
+	/*m_rot = player->m_rot;
+	m_posEye.x = player->m_pos.x + cosf(m_rot.y + D3DX_PI / 2) * 25.0f;
+	m_posEye.y = player->m_pos.y + 10.0f;
+	m_posEye.z = player->m_pos.z + sinf(m_rot.y + D3DX_PI / 2) * 25.0f;*/
+	//m_rot = player->m_rot;
 	m_posEye.x = player->m_pos.x + cosf(m_rot.y + D3DX_PI / 2) * 25.0f;
 	m_posEye.y = player->m_pos.y + 10.0f;
 	m_posEye.z = player->m_pos.z + sinf(m_rot.y + D3DX_PI / 2) * 25.0f;
 
 	m_posAt = player->m_pos + D3DXVECTOR3(0.0f, 10.0f, 0.0f);
-	m_rot = player->m_rot;
-	m_lookVector = player->m_lookVector;
-	m_rightVector = player->m_rightVector;
+	/*m_lookVector = player->m_lookVector;
+	m_rightVector = player->m_rightVector;*/
+	player->m_lookVector = m_lookVector;
+	player->m_rightVector = m_rightVector;
 
 	SetViewMatrix();	// ビューイング変換
 }
@@ -159,8 +165,10 @@ void Camera::RotationVecUp(float angle)
 	m_lookVector.z = sinf(m_rot.y + D3DX_PI / 2);
 
 	D3DXMATRIX rotMatrix;
-	D3DXMatrixRotationAxis(&rotMatrix, &m_upVector, angle);		// 回転行列を作る
+	D3DXMatrixRotationAxis(&rotMatrix, &m_upVector, angle);	// 回転行列を作る
 	D3DXVec3TransformCoord(&m_posEye, &m_posEye, &rotMatrix);	// 回転行列で新しい座標を計算する
+
+	SetViewMatrix();	// ビューイング変換
 }
 
 //*****************************************************************************
@@ -216,7 +224,10 @@ void Camera::MoveAlongVecRight(float unit)
 //*****************************************************************************
 void Camera::MoveAlongVecLook(float unit)
 {
+	// 判断
 	m_posEye += m_lookVector * unit;
+
+	SetViewMatrix();	// ビューイング変換
 }
 
 //*****************************************************************************
@@ -227,6 +238,7 @@ void Camera::MoveAlongVecLook(float unit)
 void Camera::PosToMessageAndMessageDraw(int row)
 {
 	//m_message->DrawPosMessage("C-look", m_lookVector, D3DXVECTOR2(0, float(row * 18)));
+	//m_posEye.y = m_rot.y;
 	m_message->DrawPosMessage("CameraPos", m_posEye, D3DXVECTOR2(0, float((row + 0) * 18)));
 }
 
@@ -238,4 +250,27 @@ void Camera::PosToMessageAndMessageDraw(int row)
 void Camera::isAtToEyeVectorMoreLong(bool isMoreLong)
 {
 	
+}
+
+//*****************************************************************************
+//
+// 
+//
+//*****************************************************************************
+void Camera::UpdateAngle(float angle)
+{
+	if (m_rot.y > D3DX_PI * 2.0f || m_rot.y < -D3DX_PI * 2.0f)
+	{
+		m_rot.y = 0;
+	}
+
+	m_rot.y -= angle;
+
+	// 新しい右方向ベクトルを計算する
+	m_rightVector.x = cosf(m_rot.y);
+	m_rightVector.z = sinf(m_rot.y);
+
+	// 新しい注視方向ベクトルを計算する
+	m_lookVector.x = cosf(m_rot.y + D3DX_PI / 2);
+	m_lookVector.z = sinf(m_rot.y + D3DX_PI / 2);
 }

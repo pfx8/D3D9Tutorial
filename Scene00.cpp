@@ -32,7 +32,7 @@ Scene00::Scene00()
 
 	// フィールド
 	m_fieldStone = new Plane;
-	m_fieldStone->InitPlane(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(10.0f, 10.0f), D3DXVECTOR2(1, 1));
+	m_fieldStone->InitPlane(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(20.0f, 20.0f), D3DXVECTOR2(1, 1));
 	m_resourcesManager->LoadTexture("fieldSea", &m_fieldStone->m_fieldTexture1);
 	
 	// 主人公
@@ -40,14 +40,13 @@ Scene00::Scene00()
 	m_ship->InitCharacter(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, -1.0f));
 	m_resourcesManager->LoadMesh("ship", m_ship->m_model);
 
-	// test
-	m_test = new Character;
-	m_test->InitCharacter(D3DXVECTOR3(-15.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, -1.0f));
-	m_resourcesManager->LoadMesh("car1", m_test->m_model);
-	// test2
-	m_test2 = new Character;
-	m_test2->InitCharacter(D3DXVECTOR3(15.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, -1.0f));
-	m_resourcesManager->LoadMesh("car2", m_test2->m_model);
+	// 敵
+	m_enemyShip = new Character[ENEMY_SHIP_MAX];
+	for (int count = 0; count < ENEMY_SHIP_MAX; count++)
+	{
+		m_enemyShip[count].InitCharacter(D3DXVECTOR3(0.0f, 0.0f, float(count * 40.0f)), D3DXVECTOR3(0.0f, 0.0f, -1.0f));
+		m_resourcesManager->LoadMesh("ship", m_enemyShip[count].m_model);
+	}
 
 	// カメラ
 	m_camera = new Camera;
@@ -73,9 +72,7 @@ Scene00::~Scene00()
 	RELEASE_CLASS_POINT(m_shader);	// ベーシックシェーダー
 	RELEASE_CLASS_POINT(m_celShader);	// トゥ―ンシェーダー
 
-	// test
-	RELEASE_CLASS_POINT(m_test);
-	RELEASE_CLASS_POINT(m_test2);
+	RELEASE_CLASS_ARRY_POINT(m_enemyShip); // エネミー
 }
 
 //*****************************************************************************
@@ -204,44 +201,27 @@ void Scene00::Draw()
 			m_celShader->m_effectPoint->End();
 		}
 
-		// test
+		// エネミー
 		{
-			m_celShader->m_effectPoint->SetTechnique(m_celShader->m_celShaderHandle);	// テクニックを設定
-			UINT passNum = 0;	// パスの数
-
-			m_celShader->m_effectPoint->Begin(&passNum, 0);
-			for (int count = 0; count < passNum; count++)	// 各パスによって描画する
+			for (int count1 = 0; count1 < ENEMY_SHIP_MAX; count1++)
 			{
-				m_celShader->m_effectPoint->BeginPass(count);
+				m_celShader->m_effectPoint->SetTechnique(m_celShader->m_celShaderHandle);	// テクニックを設定
+				UINT passNum = 0;	// パスの数
 
-				m_test->SetWorldMatrix();
-				D3DXMATRIX testWVPmatrix = m_test->m_worldMatrix * m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
-				m_celShader->m_effectPoint->SetMatrix(m_celShader->m_WVPMatrixHandle, &testWVPmatrix);	// WVPマトリックス
-				m_test->Draw(m_celShader);
+				m_celShader->m_effectPoint->Begin(&passNum, 0);
+				for (int count = 0; count < passNum; count++)	// 各パスによって描画する
+				{
+					m_celShader->m_effectPoint->BeginPass(count);
 
-				m_celShader->m_effectPoint->EndPass();
+					m_enemyShip[count1].SetWorldMatrix();
+					D3DXMATRIX enemyWVPmatrix = m_enemyShip[count1].m_worldMatrix * m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
+					m_celShader->m_effectPoint->SetMatrix(m_celShader->m_WVPMatrixHandle, &enemyWVPmatrix);	// WVPマトリックス
+					m_enemyShip[count1].Draw(m_celShader);
+
+					m_celShader->m_effectPoint->EndPass();
+				}
+				m_celShader->m_effectPoint->End();
 			}
-			m_celShader->m_effectPoint->End();
-		}
-
-		// test2
-		{
-			m_celShader->m_effectPoint->SetTechnique(m_celShader->m_celShaderHandle);	// テクニックを設定
-			UINT passNum = 0;	// パスの数
-
-			m_celShader->m_effectPoint->Begin(&passNum, 0);
-			for (int count = 0; count < passNum; count++)	// 各パスによって描画する
-			{
-				m_celShader->m_effectPoint->BeginPass(count);
-
-				m_test2->SetWorldMatrix();
-				D3DXMATRIX test2WVPmatrix = m_test2->m_worldMatrix * m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
-				m_celShader->m_effectPoint->SetMatrix(m_celShader->m_WVPMatrixHandle, &test2WVPmatrix);	// WVPマトリックス
-				m_test2->Draw(m_celShader);
-
-				m_celShader->m_effectPoint->EndPass();
-			}
-			m_celShader->m_effectPoint->End();
 		}
 
 		// Outline
@@ -272,7 +252,8 @@ void Scene00::Draw()
 		//m_ship->PosToMessageAndMessageDraw(0);
 		m_camera->PosToMessageAndMessageDraw(0);
 		m_ship->PosToMessageAndMessageDraw(2);
-		m_test->PosToMessageAndMessageDraw(8);
+		m_enemyShip[0].PosToMessageAndMessageDraw(4);
+		m_enemyShip[0].PosToMessageAndMessageDraw(6);
 		GetDevice()->EndScene();
 	}
 
@@ -293,29 +274,35 @@ void Scene00::Control()
 		// プレーヤー操作更新
 		if (GetKeyboardPress(DIK_A))	// key A
 		{
-			m_ship->RotationVecUp(-1.5f / 180.0f * D3DX_PI);
+			// 更新キャラクターをカメラの回転角度
+			m_ship->RotationVecUp(1.5f / 180.0f * D3DX_PI);
+			m_camera->UpdateAngle(-1.5f / 180.0f * D3DX_PI);
 		}
 		if (GetKeyboardPress(DIK_D))	// key D
 		{
-			m_ship->RotationVecUp(1.5f / 180.0f * D3DX_PI);
+			// 更新キャラクターをカメラの回転角度
+			m_ship->RotationVecUp(-1.5f / 180.0f * D3DX_PI);
+			m_camera->UpdateAngle(1.5f / 180.0f * D3DX_PI);
 		}
 		if (GetKeyboardPress(DIK_W))	// key W
 		{
-			m_camera->m_posEye += m_ship->MoveAlongVecLook(-0.5f);
+			//m_camera->m_posEye += m_ship->MoveAlongVecLook(-0.5f);
+			m_ship->MoveAlongVecLook(-0.5f);
 		}
 		if (GetKeyboardPress(DIK_S))	// key S
 		{
-			m_camera->m_posEye -= m_ship->MoveAlongVecLook(0.5f);
+			//m_camera->m_posEye -= m_ship->MoveAlongVecLook(0.5f);
+			m_ship->MoveAlongVecLook(0.5f);
 		}
 
 		//　カメラ操作更新
 		if (GetKeyboardPress(DIK_J))	// key J
 		{
-			m_camera->RotationVecUp(1.5f / 180.0f * D3DX_PI);
+			m_camera->RotationVecUp(1.0f / 180.0f * D3DX_PI);
 		}
 		if (GetKeyboardPress(DIK_L))	// key L
 		{
-			m_camera->RotationVecUp(-1.5f / 180.0f * D3DX_PI);
+			m_camera->RotationVecUp(-1.0f / 180.0f * D3DX_PI);
 		}
 		if (GetKeyboardPress(DIK_I))	// key I
 		{

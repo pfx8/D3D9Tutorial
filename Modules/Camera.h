@@ -23,11 +23,10 @@
 class Camera
 {
 private:
-	// 回転角度
-	D3DXVECTOR3		m_rot;			// カメラの回転角度
 	DebugMessage*	m_message;
 
 public:
+	D3DXVECTOR3		m_rot;			// カメラの回転角度
 	// ベクトル
 	D3DXVECTOR3		m_upVector;		// カメラの上方向ベクトル
 	D3DXVECTOR3		m_lookVector;	// カメラの注視方向ベクトル
@@ -54,8 +53,8 @@ public:
 	void MoveAlongVecLook(float unit);	// 注視方向に沿って移動
 
 	void isAtToEyeVectorMoreLong(bool isMoreLong);	// プレーヤーとカメラの半径を変わる
-
-public: 
 	void UpdateByPlayer(Character* player);	// キャラクターによってカメラを更新
+
+	void UpdateAngle(float angle);
 };
 #endif // !_CAMERA_H_

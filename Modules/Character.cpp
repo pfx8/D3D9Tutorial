@@ -51,6 +51,7 @@ Character::~Character()
 //*****************************************************************************
 void Character::PosToMessageAndMessageDraw(int row)
 {
+	//m_pos.y = m_rot.y;
 	m_message->DrawPosMessage("Pos", m_pos, D3DXVECTOR2(0, float(row * 18)));
 	//m_message->DrawPosMessage("H-look", m_lookVector, D3DXVECTOR2(0, float((row + 1) * 18)));
 	//m_message->DrawMatrixMessage(&m_worldMatrix, D3DXVECTOR2(0, float((row + 2) * 18)));
@@ -64,6 +65,7 @@ void Character::PosToMessageAndMessageDraw(int row)
 void Character::InitCharacter(D3DXVECTOR3 pos, D3DXVECTOR3 direction)
 {
 	m_pos = pos;	// 位置
+	std::cout << "<X: " << m_pos.x << ", Y:" << m_pos.y << ", Z:" << m_pos.z << ">";
 	m_boundingBox->InitBox(3, 13, 3, 0.1f);	// バウンディングボックスを初期化
 }
 
