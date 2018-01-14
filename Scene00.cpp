@@ -32,7 +32,7 @@ Scene00::Scene00()
 
 	// フィールド
 	m_fieldStone = new Plane;
-	m_fieldStone->InitPlane(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(20.0f, 20.0f), D3DXVECTOR2(1, 1));
+	m_fieldStone->InitPlane(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(20.0f, 20.0f), D3DXVECTOR2(10, 10));
 	m_resourcesManager->LoadTexture("fieldSea", &m_fieldStone->m_fieldTexture1);
 	
 	// 主人公
@@ -44,8 +44,10 @@ Scene00::Scene00()
 	m_enemyShip = new Enemy[ENEMY_MAX];
 	for (int count = 0; count < ENEMY_MAX; count++)
 	{
-		m_enemyShip[count].InitEnemy(D3DXVECTOR3(0.0f, 0.0f, float(20.0f + count * 40.0f)), D3DXVECTOR3(0.0f, 0.0f, -1.0f));
+		m_enemyShip[count].InitEnemy(D3DXVECTOR3(float(rand()%60), 0.0f, float(rand()%100)));
 		m_resourcesManager->LoadMesh("ship2", m_enemyShip[count].m_model);
+		// 向きを決める
+		m_enemyShip[count].RotationVecUp(-1 * rand() % 160 / 180.0f * D3DX_PI);
 	}
 
 	// 弾
@@ -144,12 +146,46 @@ void Scene00::Update()
 	{
 		if (m_bullet[count].m_isUse == true)
 		{
-			m_bullet[count].BulletMove();
+			m_bullet[count].BulletMove(D3DXVECTOR2(100.0f, 100.0f));
+		}
+	}
+
+	// 敵移動更新
+	for (int count = 0; count < ENEMY_MAX; count++)
+	{
+		if (m_enemyShip[count].m_isLife == true)
+		{
+			m_enemyShip[count].EnemyMove(D3DXVECTOR2(100.0f, 100.0f));
+		}
+	}
+
+	// 弾と敵の当たり判定
+	for (int count = 0; count < BULLET_MAX; count++)
+	{
+		if (m_bullet[count].m_isUse == true)
+		{
+			for (int count2 = 0; count2 < ENEMY_MAX; count2++)
+			{
+				if (m_enemyShip[count2].m_isLife == true)
+				{
+					if (CheckBB((m_bullet + count), (m_enemyShip + count2)))
+					{
+						m_bullet[count].m_isUse = false;
+						m_enemyShip[count2].m_isLife = false;
+					}
+				}
+			}
 		}
 	}
 
 	//m_celShader->UpdateLight(m_light->m_directionlight);	// 光ベクトル更新
-	//m_hero->Update(m_fieldStone->r);
+	
+	// 揺れる状況
+	m_ship->Update(m_fieldStone->m_waveAngle);
+	for (int count = 0; count < ENEMY_MAX; count++)
+	{
+		m_enemyShip[count].Update(m_fieldStone->m_waveAngle);
+	}
 }
 
 //*****************************************************************************
@@ -189,6 +225,8 @@ void Scene00::Draw()
 			m_shader->m_effectPoint->End();
 		}
 
+		// オブジェクト種類番号
+		int ship = 0, enemy = 1, cannon = 2, boundingBox = 3;
 		// ship
 		{
 			m_celShader->m_effectPoint->SetTechnique(m_celShader->m_celShaderHandle);	// テクニックを設定
@@ -197,6 +235,8 @@ void Scene00::Draw()
 			m_ship->SetWorldMatrix();
 			D3DXMATRIX shipWVPmatrix = m_ship->m_worldMatrix * m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
 			m_celShader->m_effectPoint->SetMatrix(m_celShader->m_WVPMatrixHandle, &shipWVPmatrix);	// WVPマトリックス
+
+			m_celShader->m_effectPoint->SetInt(m_celShader->m_typeHandle, ship);
 
 			m_celShader->m_effectPoint->Begin(&passNum, 0);
 			for (int count = 0; count < passNum; count++)	// 各パスによって描画する
@@ -214,23 +254,29 @@ void Scene00::Draw()
 		{
 			for (int count1 = 0; count1 < ENEMY_MAX; count1++)
 			{
-				m_celShader->m_effectPoint->SetTechnique(m_celShader->m_celShaderHandle);	// テクニックを設定
-				UINT passNum = 0;	// パスの数
-
-				m_enemyShip[count1].SetWorldMatrix();
-				D3DXMATRIX enemyWVPmatrix = m_enemyShip[count1].m_worldMatrix * m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
-				m_celShader->m_effectPoint->SetMatrix(m_celShader->m_WVPMatrixHandle, &enemyWVPmatrix);	// WVPマトリックス
-
-				m_celShader->m_effectPoint->Begin(&passNum, 0);
-				for (int count = 0; count < passNum; count++)	// 各パスによって描画する
+				if (m_enemyShip[count1].m_isLife == true)
 				{
-					m_celShader->m_effectPoint->BeginPass(count);
+					m_celShader->m_effectPoint->SetTechnique(m_celShader->m_celShaderHandle);	// テクニックを設定
+					UINT passNum = 0;	// パスの数
 
-					m_enemyShip[count1].Draw(m_celShader);
+					m_enemyShip[count1].SetWorldMatrix();
+					D3DXMATRIX enemyWVPmatrix = m_enemyShip[count1].m_worldMatrix * m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
+					m_celShader->m_effectPoint->SetMatrix(m_celShader->m_WVPMatrixHandle, &enemyWVPmatrix);	// WVPマトリックス
 
-					m_celShader->m_effectPoint->EndPass();
+					bool isShip = true;
+					m_celShader->m_effectPoint->SetInt(m_celShader->m_typeHandle, enemy);
+
+					m_celShader->m_effectPoint->Begin(&passNum, 0);
+					for (int count = 0; count < passNum; count++)	// 各パスによって描画する
+					{
+						m_celShader->m_effectPoint->BeginPass(count);
+
+						m_enemyShip[count1].Draw(m_celShader);
+
+						m_celShader->m_effectPoint->EndPass();
+					}
+					m_celShader->m_effectPoint->End();
 				}
-				m_celShader->m_effectPoint->End();
 			}
 		}
 
@@ -246,6 +292,9 @@ void Scene00::Draw()
 					m_bullet[count1].SetWorldMatrix();
 					D3DXMATRIX bulletWVPmatrix = m_bullet[count1].m_worldMatrix * m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
 					m_celShader->m_effectPoint->SetMatrix(m_celShader->m_WVPMatrixHandle, &bulletWVPmatrix);	// WVPマトリックス
+
+					bool isShip = false;
+					m_celShader->m_effectPoint->SetInt(m_celShader->m_typeHandle, cannon);
 
 					m_celShader->m_effectPoint->Begin(&passNum, 0);
 					for (int count = 0; count < passNum; count++)	// 各パスによって描画する
@@ -270,7 +319,7 @@ void Scene00::Draw()
 		m_camera->PosToMessageAndMessageDraw(0);
 		m_ship->PosToMessageAndMessageDraw(2);
 		m_enemyShip[0].PosToMessageAndMessageDraw(4);
-		m_enemyShip[0].PosToMessageAndMessageDraw(6);
+		m_enemyShip[1].PosToMessageAndMessageDraw(6);
 		m_light->message(8);
 
 		GetDevice()->EndScene();
@@ -297,18 +346,18 @@ void Scene00::Control()
 			m_ship->RotationVecUp(1.5f / 180.0f * D3DX_PI);
 			m_camera->UpdateAngle(-1.5f / 180.0f * D3DX_PI);
 		}
-		if (GetKeyboardPress(DIK_D))	// key D
+		else if (GetKeyboardPress(DIK_D))	// key D
 		{
 			// 更新キャラクターをカメラの回転角度
 			m_ship->RotationVecUp(-1.5f / 180.0f * D3DX_PI);
 			m_camera->UpdateAngle(1.5f / 180.0f * D3DX_PI);
 		}
-		if (GetKeyboardPress(DIK_W))	// key W
+		else if (GetKeyboardPress(DIK_W))	// key W
 		{
 			//m_camera->m_posEye += m_ship->MoveAlongVecLook(-0.5f);
 			m_ship->MoveAlongVecLook(-0.5f);
 		}
-		if (GetKeyboardPress(DIK_S))	// key S
+		else if (GetKeyboardPress(DIK_S))	// key S
 		{
 			//m_camera->m_posEye -= m_ship->MoveAlongVecLook(0.5f);
 			m_ship->MoveAlongVecLook(0.5f);
@@ -319,15 +368,15 @@ void Scene00::Control()
 		{
 			m_camera->RotationVecUp(1.0f / 180.0f * D3DX_PI);
 		}
-		if (GetKeyboardPress(DIK_L))	// key L
+		else if (GetKeyboardPress(DIK_L))	// key L
 		{
 			m_camera->RotationVecUp(-1.0f / 180.0f * D3DX_PI);
 		}
-		if (GetKeyboardPress(DIK_I))	// key I
+		else if (GetKeyboardPress(DIK_I))	// key I
 		{
 			m_camera->MoveAlongVecLook(-0.5f);
 		}
-		if (GetKeyboardPress(DIK_K))	// key K
+		else if (GetKeyboardPress(DIK_K))	// key K
 		{
 			m_camera->MoveAlongVecLook(0.5f);
 		}
@@ -358,7 +407,20 @@ void Scene00::Control()
 		// バウンディングボックス操作更新
 		if (GetKeyboardTrigger(DIK_Q))	// key Q
 		{
+			// プレーヤー
 			m_ship->m_boundingBox->m_isBoundingBoxDraw = !m_ship->m_boundingBox->m_isBoundingBoxDraw;	// バウンディングボックスをコントロール
+			
+			// エネミー
+			for (int count = 0; count < ENEMY_MAX; count++)
+			{
+				m_enemyShip[count].m_boundingBox->m_isBoundingBoxDraw = !m_enemyShip[count].m_boundingBox->m_isBoundingBoxDraw;
+			}
+			
+			// 弾
+			for (int count = 0; count < ENEMY_MAX; count++)
+			{
+				m_bullet[count].m_boundingBox->m_isBoundingBoxDraw = !m_bullet[count].m_boundingBox->m_isBoundingBoxDraw;
+			}
 			std::cout << "[State] BoundingBox: " << std::boolalpha << m_ship->m_boundingBox->m_isBoundingBoxDraw << std::endl;
 		}
 	}
@@ -376,18 +438,22 @@ void Scene00::Control()
 // 当たり判定
 //
 //*****************************************************************************
-bool Scene00::CheckBB(D3DXVECTOR3 boundingBox1, D3DXVECTOR3 boundingBox2)
+bool Scene00::CheckBB(Bullet* bullet, Enemy* enemy)
 {
-	/*D3DXVECTOR3 ObjectPos = Object->m_pos;
-	D3DXVECTOR3 ObjectSize = Object->m_boundingBox->m_size;
+	// 弾
+	D3DXVECTOR3 bulletPos = bullet->m_pos;
+	D3DXVECTOR3 bulletBoxSize = bullet->m_boundingBox->m_size;
+	// エネミー
+	D3DXVECTOR3 enemyPos = enemy->m_pos;
+	D3DXVECTOR3 enemyBoxSize = enemy->m_boundingBox->m_size;
 
 	if (
-		m_pos.x + m_boundingBox->m_size.x / 2 > ObjectPos.x - ObjectSize.x / 2 &&
-		m_pos.x - m_boundingBox->m_size.x / 2 < ObjectPos.x + ObjectSize.x / 2 &&
-		m_pos.y - m_boundingBox->m_size.y / 2 < ObjectPos.y + ObjectSize.y / 2 &&
-		m_pos.y + m_boundingBox->m_size.y / 2 > ObjectPos.y - ObjectSize.y / 2 &&
-		m_pos.z + m_boundingBox->m_size.z / 2 > ObjectPos.z - ObjectSize.z / 2 &&
-		m_pos.z - m_boundingBox->m_size.z / 2 < ObjectPos.z + ObjectSize.z / 2
+		bulletPos.x + bulletBoxSize.x / 2 > enemyPos.x - enemyBoxSize.x / 2 &&
+		bulletPos.x - bulletBoxSize.x / 2 < enemyPos.x + enemyBoxSize.x / 2 &&
+		bulletPos.y - bulletBoxSize.y / 2 < enemyPos.y + enemyBoxSize.y / 2 &&
+		bulletPos.y + bulletBoxSize.y / 2 > enemyPos.y - enemyBoxSize.y / 2 &&
+		bulletPos.z + bulletBoxSize.z / 2 > enemyPos.z - enemyBoxSize.z / 2 &&
+		bulletPos.z - bulletBoxSize.z / 2 < enemyPos.z + enemyBoxSize.z / 2
 		)
 	{
 		return true;
@@ -395,7 +461,5 @@ bool Scene00::CheckBB(D3DXVECTOR3 boundingBox1, D3DXVECTOR3 boundingBox2)
 	else
 	{
 		return false;
-	}*/
-
-	return false;
+	}
 }

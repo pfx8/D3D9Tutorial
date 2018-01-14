@@ -14,15 +14,16 @@
 #include "Engine.h"
 #include "Enemy.h"
 #include "Bullet.h"
-#include "Modules/Scene.h"
-#include "Modules/Character.h"
-#include "Modules/Camera.h"
-#include "Modules/Plane.h"
-#include "Modules/Light.h"
-#include "Modules/Shader.h"
-#include "Shader/CelShader.h"
+#include "Modules\Scene.h"
+#include "Modules\Character.h"
+#include "Modules\BoundingBox.h"
+#include "Modules\Camera.h"
+#include "Modules\Plane.h"
+#include "Modules\Light.h"
+#include "Modules\Shader.h"
+#include "Shader\CelShader.h"
 
-#define ENEMY_MAX 2
+#define ENEMY_MAX 10
 #define BULLET_MAX 14
 
 //*****************************************************************************
@@ -51,7 +52,7 @@ public:
 	void Control();			// ‘€ìŠÖ”
 	void SetRenderState();	// ƒŒƒ“ƒ_ƒŠƒ“ƒO‚ğİ’è
 
-	bool CheckBB(D3DXVECTOR3 boundingBox1, D3DXVECTOR3 boundingBox2);		// “–‚½‚è”»’è
+	bool CheckBB(Bullet* bullet, Enemy* enemy);		// “–‚½‚è”»’è
 };
 
 #endif // !_SCENE00_H_

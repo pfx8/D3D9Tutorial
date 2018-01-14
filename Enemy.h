@@ -27,11 +27,13 @@ class Enemy : public Character
 private:
 
 public:
+	bool m_isLife;	// 生存フラグ
+
 	Enemy();
 	~Enemy();
 
-	void InitEnemy(D3DXVECTOR3 pos, D3DXVECTOR3 direction);	// エネミー座標を設定
-	void EnemyMove();	// エネミー移動
+	void InitEnemy(D3DXVECTOR3 pos);	// エネミー座標を設定
+	void EnemyMove(D3DXVECTOR2 planeSize);	// エネミー移動
 	void EnemyAttack();	// エネミー攻撃
 };
 #endif // !_ENEMY_H_

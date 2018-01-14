@@ -24,6 +24,7 @@ Enemy::Enemy()
 	//m_directionVector = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
 	m_waveAngle = 0.0f;
+	m_isLife = true;
 
 	// クラスポインタ
 	m_model = new Model;
@@ -49,11 +50,10 @@ Enemy::~Enemy()
 // エネミー座標を設定
 //
 //*****************************************************************************
-void Enemy::InitEnemy(D3DXVECTOR3 pos, D3DXVECTOR3 direction)
+void Enemy::InitEnemy(D3DXVECTOR3 pos)
 {
-
 	m_pos = pos;	// 位置
-	m_boundingBox->InitBox(3, 13, 3, 0.1f);	// バウンディングボックスを初期化
+	m_boundingBox->InitBox(5, 11, 10, 0.1f);	// バウンディングボックスを初期化
 }
 
 //*****************************************************************************
@@ -61,9 +61,15 @@ void Enemy::InitEnemy(D3DXVECTOR3 pos, D3DXVECTOR3 direction)
 // エネミー移動
 //
 //*****************************************************************************
-void Enemy::EnemyMove()
+void Enemy::EnemyMove(D3DXVECTOR2 planeSize)
 {
+	// 地図の範囲を超えたら、逆方向に行く
+	if (m_pos.x >= planeSize.x * 0.8f || m_pos.x <= -planeSize.x * 0.8f || m_pos.z >= planeSize.y * 0.8f || m_pos.z <= -planeSize.y * 0.8f)
+	{
+		RotationVecUp(D3DX_PI);
+	}
 
+	m_pos += m_lookVector * 0.15;	// 行き方向へ移動
 }
 
 //*****************************************************************************

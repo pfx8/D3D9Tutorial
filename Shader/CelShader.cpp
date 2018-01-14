@@ -100,12 +100,13 @@ void CelShader::UpdateLight(D3DXVECTOR3 direction)
 void CelShader::GetShaderTechniqueAndParameter()
 {
 	// レンダリングのテクニックを取得
-	m_celShaderHandle = m_effectPoint->GetTechniqueByName("CelShader");			// ToonShaderテクニックを設定
+	m_celShaderHandle = m_effectPoint->GetTechniqueByName("CelShader");
 	m_outLineHandle = m_effectPoint->GetTechniqueByName("Outline");
 
 	// シェーダー中のグローバル変数を取得
-	m_WVPMatrixHandle = m_effectPoint->GetParameterByName(0, "WVPMatrix");		// WVPマトリックス
-	m_lightingHandle = m_effectPoint->GetParameterByName(0, "LightDirection");	// 光ベクトル
-	//m_textureHandle = m_effectPoint->GetParameterByName(0, "Tex");				// テクスチャ
+	m_WVPMatrixHandle = m_effectPoint->GetParameterByName(0, "WVPMatrix");
+	m_lightingHandle = m_effectPoint->GetParameterByName(0, "LightDirection");
+	m_typeHandle = m_effectPoint->GetParameterByName(0, "type");
+	//m_textureHandle = m_effectPoint->GetParameterByName(0, "Tex");
 
 }

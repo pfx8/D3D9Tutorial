@@ -22,7 +22,7 @@ Bullet::Bullet()
 	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
 	m_isUse = false;
-	m_upSpeed = FIRST_SPEED;
+	m_upSpeed = FIRST_UP_SPEED;
 
 	// クラスポインタ
 	m_model = new Model;
@@ -58,7 +58,7 @@ void Bullet::InitBulletByCharacter(D3DXVECTOR3 pos, D3DXVECTOR3 moveVector)
 	m_pos.y = 3.5f;
 	m_lookVector = moveVector;	// 行き方向を設定
 
-	m_boundingBox->InitBox(3, 13, 3, 0.1f);	// バウンディングボックスを初期化
+	m_boundingBox->InitBox(2, 3, 2, 0.1f);	// バウンディングボックスを初期化
 }
 
 //*****************************************************************************
@@ -66,20 +66,20 @@ void Bullet::InitBulletByCharacter(D3DXVECTOR3 pos, D3DXVECTOR3 moveVector)
 // エネミー移動
 //
 //*****************************************************************************
-void Bullet::BulletMove()
+void Bullet::BulletMove(D3DXVECTOR2 planeSize)
 {
-	m_pos -= m_lookVector * 0.1f;	// 行き方向へ移動
+	m_pos -= m_lookVector * MOVE_SPEED;	// 行き方向へ移動
 	
 	// 垂直位置の計算 
 	m_upSpeed += ACCELERARION;
 	m_pos.y += 0.5f * (m_upSpeed)* ONE_FRAME_TIME;
 
 	// 地図の範囲を超えたら、弾を消す
-	if (m_pos.x >= 90.0f || m_pos.x <= -90.0f || m_pos.z >= 90.0f || m_pos.z <= -90.0f || m_pos.y <= 0.0f)
+	if (m_pos.x >= planeSize.x || m_pos.x <= -planeSize.x || m_pos.z >= planeSize.y || m_pos.z <= -planeSize.y || m_pos.y <= 0.0f)
 	{
 		// 消したら数値を全部初期化
 		m_isUse = false;
-		m_upSpeed = FIRST_SPEED;
+		m_upSpeed = FIRST_UP_SPEED;
 		m_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		m_lookVector = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
 	}

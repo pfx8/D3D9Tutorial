@@ -1,6 +1,7 @@
 // プログラムからもらう変数
 matrix WVPMatrix;       // WVP変換行列
 float3 LightDirection;  // 光方向ベクトル
+int    type;           // 描画するオブジェクトの種類を判断する
 
 // シェーダー中の変数
 float LightIntensity = 1.0f; // 光の強さ
@@ -49,7 +50,25 @@ CelVertexOUT CelVertexShader(CelVertexIN In)
 float4 CelPixelShader(CelVertexOUT In) : COLOR0
 {
     float value = dot(-LightDirection, In.normal); // 法線と光の内積を計算して、色を決める;
-    float4 color = float4(0.43, 0.2, 0.0, 1.0) * LightIntensity;
+    
+    float4 color;
+    if (type == 0) // ship
+    {
+        color = float4(0.43, 0.2, 0.0, 1.0) * LightIntensity;
+    }
+    else if(type == 1) // 敵
+    {
+        color = float4(0.63, 0.4, 0.2, 1.0) * LightIntensity;
+    }
+    else if (type == 2) // 大砲
+    {
+        color = float4(0.4, 0.4, 0.4, 1.0) * LightIntensity;
+    }
+    else // バウンディングボックス
+    {
+        color = float4(0.8, 0.0, 0.0, 0.4) * LightIntensity;
+    }
+
     if (value > 0.35)
         color = float4(1.0, 1.0, 1.0, 1.0) * color; // 普段の色
     else
@@ -63,7 +82,7 @@ float4 CelPixelShader(CelVertexOUT In) : COLOR0
     //else
     //    diffuse = float4(0.6, 0.6, 0.6, 0.5) * diffuse; // シャドーの色
     //return diffuse;
-}
+    }
 
 // アウトライン
 // 頂点シェーダー

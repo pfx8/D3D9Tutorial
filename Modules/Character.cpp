@@ -66,7 +66,7 @@ void Character::InitCharacter(D3DXVECTOR3 pos, D3DXVECTOR3 direction)
 {
 	m_pos = pos;	// 位置
 	//std::cout << "<X: " << m_pos.x << ", Y:" << m_pos.y << ", Z:" << m_pos.z << ">";
-	m_boundingBox->InitBox(30, 30, 32, 0.1f);	// バウンディングボックスを初期化
+	m_boundingBox->InitBox(5, 11, 10, 0.1f);	// バウンディングボックスを初期化
 }
 
 //*****************************************************************************
@@ -96,7 +96,7 @@ void Character::Update(float rot)
 	if (m_waveAngle > D3DX_PI * 2.0f)
 		m_waveAngle = 0.0f;
 
-	m_pos.y = 0.7 * sinf(m_waveAngle);
+	m_pos.y = 0.8 * sinf(m_waveAngle);
 }
 
 //*****************************************************************************
