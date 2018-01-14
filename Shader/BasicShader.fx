@@ -9,7 +9,7 @@ struct BasicVertexIN
     float3 position	: POSITION0;
     float3 normal	: NORMAL0;
     float4 diffuse	: COLOR0;
-    float2 uvCoords	: TEXCOORD0; // テクスチャ1座標
+    float2 uvCoords	: TEXCOORD0; // テクスチャ座標
 };
 
 struct BasicVertexOUT
@@ -17,7 +17,7 @@ struct BasicVertexOUT
     float4 position  : POSITION0;
     float3 normal    : NORMAL0;
     float4 diffuse   : COLOR0;
-    float2 uvCoords  : TEXCOORD0; // テクスチャ1座標
+    float2 uvCoords  : TEXCOORD0; // テクスチャ座標
 };
 
 texture Tex; // 使用するテクスチャ

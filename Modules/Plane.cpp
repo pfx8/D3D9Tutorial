@@ -123,6 +123,10 @@ HRESULT Plane::MakeVertexDecl(D3DXVECTOR2 planeSize, D3DXVECTOR2 planeNum)
 		m_vertexBuffer->Unlock();
 	}
 
+	/*D3DVERTEXBUFFER_DESC pDesc;
+	m_vertexBuffer->GetDesc(&pDesc);
+	std::cout << "licl" << pDesc.Size << std::endl;*/
+
 	// 頂点インデックスバッファ作成
 	{
 		if (FAILED(pDevice->CreateIndexBuffer(m_indexNum * sizeof(WORD), 0, D3DFMT_INDEX16, D3DPOOL_DEFAULT, &m_indexBuffer, NULL)))
@@ -222,7 +226,7 @@ void Plane::Update()
 {
 	PDIRECT3DDEVICE9 pDevice = GetDevice();
 
-	m_waveAngle += (rand()%5 + 10) / 10.0f / 180.0f * D3DX_PI;
+	m_waveAngle += (rand()%5 + 10) / 5.0f / 180.0f * D3DX_PI;
 
 	if (m_waveAngle > D3DX_PI * 2.0f)
 		m_waveAngle = 0.0f;

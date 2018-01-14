@@ -23,6 +23,7 @@ ResourcesManager::ResourcesManager()
 	m_textureList["fieldSea2"] = "data/TEXTURE/sea3k2.png";
 	m_textureList["title"] = "data/TEXTURE/TitleName.png";
 	m_textureList["press"] = "data/TEXTURE/Presskey.png";
+	m_textureList["tex"] = "data/TEXTURE/shipdiffuse.png";
 	m_textureList["NULL"] = "NULL";
 
 	// メッシュ検索マッピングを作る
@@ -31,7 +32,8 @@ ResourcesManager::ResourcesManager()
 	m_meshList["woman"] = "data/MODEL/woman.x";
 	m_meshList["rockman"] = "data/MODEL/rockman.x";
 	m_meshList["ship"] = "data/MODEL/ship.x";
-	m_meshList["lowP"] = "data/MODEL/lowP.x";
+	m_meshList["ship2"] = "data/MODEL/ship2.x";
+	m_meshList["ball"] = "data/MODEL/ball.x";
 }
 
 //*****************************************************************************
@@ -58,7 +60,8 @@ HRESULT ResourcesManager::LoadTexture(std::string name, LPDIRECT3DTEXTURE9* text
 		// テクスチャを読み込み
 		if (FAILED(D3DXCreateTextureFromFile(
 			pDevice, 
-			GetTextureStruct(name).data(),
+			//GetTextureStruct(name).data(),
+			GetTextureStruct(name).c_str(),
 			texturePoint)))
 		{
 			std::cout << "[Error] Loading Texture<" << name << "> Failed!" << std::endl;	// コンソールにメッセージを出す
@@ -100,22 +103,25 @@ HRESULT ResourcesManager::LoadMesh(std::string name, Model* model)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
-	if (FAILED(D3DXLoadMeshFromX(			// Xファイルの読み込み
-		GetMeshPath(name).data(),			// モデルのファイル名
-		D3DXMESH_SYSTEMMEM,					// メッシュのメモリ確保オプション
-		pDevice,							// デバイスへのポインタ
-		NULL,								// 隣接性データを含むバッファへのポインタ
-		&model->m_material->m_materialBuffer,// マテリアルデータを含むバッファへのポインタ
-		NULL,								// エフェクトインスタンスを含むバッファへのポインタ
-		&model->m_material->m_materialNum,	// マテリアル構造体の数
-		&model->m_meshPoint)))				// メッシュへのポインタ
+	if (GetMeshPath(name).c_str() != "NULL")
 	{
-		std::cout << "[Error] Loading Model<" << name << "> Failed!" << std::endl;
-		return E_FAIL;
-	}
-	else
-	{
-		std::cout << "[Information] Loading Model<" << name << "> Success!" << std::endl;
+		if (FAILED(D3DXLoadMeshFromX(			// Xファイルの読み込み
+			GetMeshPath(name).c_str(),			// モデルのファイル名
+			D3DXMESH_SYSTEMMEM,					// メッシュのメモリ確保オプション
+			pDevice,							// デバイスへのポインタ
+			NULL,								// 隣接性データを含むバッファへのポインタ
+			&model->m_material->m_materialBuffer,// マテリアルデータを含むバッファへのポインタ
+			NULL,								// エフェクトインスタンスを含むバッファへのポインタ
+			&model->m_material->m_materialNum,	// マテリアル構造体の数
+			&model->m_meshPoint)))				// メッシュへのポインタ
+		{
+			std::cout << "[Error] Loading Model<" << name << "> Failed!" << std::endl;
+			return E_FAIL;
+		}
+		else
+		{
+			std::cout << "[Information] Loading Model<" << name << "> Success!" << std::endl;
+		}
 	}
 
 	model->m_material->m_materialPoint = new D3DMATERIAL9[model->m_material->m_materialNum];	// マテリアルの数によってマテリアルを格納できるメモリを確保

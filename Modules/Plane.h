@@ -33,7 +33,7 @@ public:
 	int				m_polygonNum;	// ポリゴン数
 	int				m_indexNum;		// インデックス数
 
-	IDirect3DVertexDeclaration9*	m_vertexDecl;	// 頂点シェーダー宣言
+	IDirect3DVertexDeclaration9*m_vertexDecl;	// 頂点シェーダー宣言
 	LPDIRECT3DVERTEXBUFFER9		m_vertexBuffer;	// 頂点バッファへのポインタ
 	LPDIRECT3DINDEXBUFFER9		m_indexBuffer;	// 頂点インデックスバッファ
 	LPDIRECT3DTEXTURE9			m_fieldTexture1;	// フィールドテクスチャ

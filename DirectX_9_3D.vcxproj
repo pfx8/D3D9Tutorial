@@ -19,8 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Console.cpp" />
     <ClCompile Include="DebugMessage.cpp" />
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="modules\BoundingBox.cpp" />
     <ClCompile Include="modules\Camera.cpp" />
@@ -39,8 +41,10 @@
     <ClCompile Include="Shader\CelShader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bullet.h" />
     <ClInclude Include="Console.h" />
     <ClInclude Include="DebugMessage.h" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="modules\BoundingBox.h" />
     <ClInclude Include="modules\Camera.h" />

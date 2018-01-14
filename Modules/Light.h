@@ -8,7 +8,8 @@
 #ifndef _LIGHT_H_
 #define _LIGHT_H_
 
-#include "../Engine.h"
+#include "..\Engine.h"
+#include "..\DebugMessage.h"
 
 //*****************************************************************************
 //
@@ -19,7 +20,7 @@ class Light
 {
 private:
 	D3DXVECTOR3	m_rot;				// 光方向の回転角度
-
+	DebugMessage* mes;
 public:
 	D3DXVECTOR3	m_directionlight;		// 光方向ベクトル
 
@@ -27,5 +28,6 @@ public:
 	~Light();
 
 	void RotationY(float angle);		// Y方向のベクトルにして回転
+	void message(int row);
 };
 #endif // !_LIGHT_H_

@@ -12,9 +12,9 @@
 
 #include "Model.h"
 #include "BoundingBox.h"
-#include "../Engine.h"
-#include "../DebugMessage.h"
-#include "../Shader/CelShader.h"
+#include "..\Engine.h"
+#include "..\DebugMessage.h"
+#include "..\Shader\CelShader.h"
 
 //*****************************************************************************
 //
@@ -24,10 +24,11 @@
 class Character
 {
 private:
-	DebugMessage*	m_message;	// Debugメッセージ
-	float			m_waveAngle;
+
 
 public:
+	DebugMessage*	m_message;	// Debugメッセージ
+	float			m_waveAngle;		// 揺れ係数
 	D3DXMATRIX		m_worldMatrix;	// ワールド変換マトリックス
 
 	// ベクトル
@@ -50,7 +51,6 @@ public:
 	void PosToMessageAndMessageDraw(int row);	// 座標をメッセージに渡して、画面に描画する
 	void SetWorldMatrix();					// ワールド変換を設定
 	void Draw(CelShader* celShader);			// キャラクターの描画(Shader)
-	void Move();								// 臨時ーーキャラクター移動
 	
 	void Update(float rot);	// キャラクター更新
 	bool CheckHitBB(Character* Object);	// 当たり判定

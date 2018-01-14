@@ -8,10 +8,10 @@
 #ifndef _MODEL_H_
 #define _MODEL_H_
 
-#include "../Engine.h"
-
 #include "Material.h"
-#include "Shader.h"
+#include "..\Engine.h"
+#include "..\Shader\CelShader.h"
+
 
 //*****************************************************************************
 //
@@ -30,7 +30,7 @@ public:
 	Model();
 	~Model();
 
-	void DrawModel(Shader* shader);	// ƒ‚ƒfƒ‹‚ð•`‰æ‚·‚é
+	void DrawModel(CelShader* celShader);	// ƒ‚ƒfƒ‹‚ð•`‰æ‚·‚é
 };
 
 #endif // !_MODEL_H_

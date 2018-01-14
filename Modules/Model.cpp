@@ -42,7 +42,7 @@ Model::~Model()
 // モデルを描画する(Effect)
 //
 //*****************************************************************************
-void Model::DrawModel(Shader* shader)
+void Model::DrawModel(CelShader* celShader)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
@@ -57,6 +57,11 @@ void Model::DrawModel(Shader* shader)
 	attributes = new D3DXATTRIBUTERANGE[attributesNum];		// エントリ数によって、属性テーブル配列メモリを作り
 	m_meshPoint->GetAttributeTable(attributes, &attributesNum);	// メッシュの属性テーブルを取得
 
+	// test
+	//D3DVERTEXBUFFER_DESC pDesc;
+	//vertexBuffer->GetDesc(&pDesc);
+	//std::cout << "licl" << pDesc.Size << std::endl;
+
 	// ストリームを設定
 	pDevice->SetStreamSource(0, vertexBuffer, 0, D3DXGetFVFVertexSize(m_meshPoint->GetFVF()));
 	pDevice->SetIndices(indexBuffer);
@@ -67,8 +72,8 @@ void Model::DrawModel(Shader* shader)
 		if (attributes[count].FaceCount)
 		{
 			DWORD matNum = attributes[count].AttribId;			// マテリアル数を取得
-			//shader->m_effectPoint->SetTexture(shader->m_texture1Handle, m_meshTexturePoint[matNum]);	// テクスチャを設定
-			pDevice->SetTexture(0, m_meshTexturePoint[matNum]);	// テクスチャを設定
+			//celShader->m_effectPoint->SetTexture(celShader->m_texture1Handle, m_meshTexturePoint[matNum]);	// テクスチャを設定
+			//pDevice->SetTexture(0, m_meshTexturePoint[matNum]);	// テクスチャを設定
 			pDevice->DrawIndexedPrimitive(					// メッシュを描画する
 				D3DPT_TRIANGLELIST,
 				0,

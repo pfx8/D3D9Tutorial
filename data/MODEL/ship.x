@@ -2036,7 +2036,7 @@ Frame Root {
            96.078431;
            0.500000; 0.500000; 0.500000;;
            0.000000; 0.000000; 0.000000;;
-          TextureFilename {"ship_diffuse.png";}
+          TextureFilename {"data/TEXTURE/shipdiffuse.png";}
         }
       } // End of cloth material list
     } // End of cloth mesh

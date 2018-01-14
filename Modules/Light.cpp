@@ -15,6 +15,8 @@
 Light::Light()
 {
 	m_directionlight = D3DXVECTOR3(1.0f, 0.0f, 0.0f);
+
+	mes = new DebugMessage;
 }
 
 //*****************************************************************************
@@ -46,4 +48,14 @@ void Light::RotationY(float angle)
 	D3DXMatrixRotationAxis(&rotMatrix, &D3DXVECTOR3(0.0f, 1.0f, 0.0f), angle);		// 回転行列を作る
 	D3DXVec3TransformCoord(&m_directionlight, &m_directionlight, &rotMatrix);	// 回転行列で新しい座標を計算する
 
+}
+
+//*****************************************************************************
+//
+// 
+//
+//*****************************************************************************
+void Light::message(int row)
+{
+	mes->DrawPosMessage("lightVector", m_directionlight, D3DXVECTOR2(0, float((row + 0) * 18)));
 }

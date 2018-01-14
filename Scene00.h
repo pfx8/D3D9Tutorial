@@ -12,6 +12,8 @@
 
 #include "ResourcesManager.h"
 #include "Engine.h"
+#include "Enemy.h"
+#include "Bullet.h"
 #include "Modules/Scene.h"
 #include "Modules/Character.h"
 #include "Modules/Camera.h"
@@ -20,7 +22,9 @@
 #include "Modules/Shader.h"
 #include "Shader/CelShader.h"
 
-#define ENEMY_SHIP_MAX 2
+#define ENEMY_MAX 2
+#define BULLET_MAX 14
+
 //*****************************************************************************
 //
 // クラス宣言
@@ -35,17 +39,19 @@ private:
 	Plane*			m_fieldStone;	// フィールド
 	Character*		m_ship;			// プレーヤー
 	Light*			m_light;			// ライト
-
+	Enemy*			m_enemyShip;		// 敵
+	Bullet*			m_bullet;		// 弾
 	bool				m_isGameStart;
-	Character*		m_enemyShip;		// 敵
 public:
 	Scene00();
 	~Scene00();
 
-	void Update();
-	void Draw();
-	void Control();
-	void SetRenderState();
+	void Update();			// 更新
+	void Draw();				// 描画
+	void Control();			// 操作関数
+	void SetRenderState();	// レンダリングを設定
+
+	bool CheckBB(D3DXVECTOR3 boundingBox1, D3DXVECTOR3 boundingBox2);		// 当たり判定
 };
 
 #endif // !_SCENE00_H_

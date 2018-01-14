@@ -65,8 +65,8 @@ void Character::PosToMessageAndMessageDraw(int row)
 void Character::InitCharacter(D3DXVECTOR3 pos, D3DXVECTOR3 direction)
 {
 	m_pos = pos;	// 位置
-	std::cout << "<X: " << m_pos.x << ", Y:" << m_pos.y << ", Z:" << m_pos.z << ">";
-	m_boundingBox->InitBox(3, 13, 3, 0.1f);	// バウンディングボックスを初期化
+	//std::cout << "<X: " << m_pos.x << ", Y:" << m_pos.y << ", Z:" << m_pos.z << ">";
+	m_boundingBox->InitBox(30, 30, 32, 0.1f);	// バウンディングボックスを初期化
 }
 
 //*****************************************************************************
@@ -82,16 +82,6 @@ void Character::Draw(CelShader* celShader)
 	{
 		m_boundingBox->Draw(celShader);	// バウンディングボックスを描画する
 	}
-}
-
-//*****************************************************************************
-//
-// キャラクター移動
-//
-//*****************************************************************************
-void Character::Move()
-{
-	
 }
 
 //*****************************************************************************

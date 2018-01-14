@@ -13,6 +13,7 @@ struct CelVertexIN
     float3 position : POSITION;
     float3 normal   : NORMAL0;
     float4 diffuse  : COLOR0;
+    float2 uvCoords : TEXCOORD0; // テクスチャ座標
 };
 
 struct CelVertexOUT
@@ -20,7 +21,18 @@ struct CelVertexOUT
     float4 position : POSITION0;
     float3 normal   : NORMAL0;
     float4 diffuse  : COLOR0;
+    float2 uvCoords : TEXCOORD0; // テクスチャ座標
 };
+
+//texture Tex; // 使用するテクスチャ
+//sampler Samp = // サンプラー
+//sampler_state
+//{
+//    Texture = <Tex>;
+//    MipFilter = LINEAR;
+//    MinFilter = LINEAR;
+//    MagFilter = LINEAR;
+//};
 
 // モデル
 // 頂点シェーダー
@@ -28,7 +40,8 @@ CelVertexOUT CelVertexShader(CelVertexIN In)
 {
     CelVertexOUT Out = (CelVertexOUT) 0; // 初期化
     Out.position = mul(float4(In.position, 1.0), WVPMatrix);
-    Out.normal = In.normal;
+    Out.normal = mul(float4(In.normal, 1.0), WVPMatrix);;
+    Out.uvCoords = In.uvCoords;
 
     return Out;
 }
@@ -36,23 +49,20 @@ CelVertexOUT CelVertexShader(CelVertexIN In)
 float4 CelPixelShader(CelVertexOUT In) : COLOR0
 {
     float value = dot(-LightDirection, In.normal); // 法線と光の内積を計算して、色を決める;
-    float4 color = float4(0.89, 0.69, 0.1, 1.0) * LightIntensity; // 赤
-
-    //if(value >0.75)
-    //    color = float4(1.0, 1.0, 1.0, 1.0) * color;
-    //else if(value > 0.6)
-    //    color = float4(0.8, 0.8, 0.8, 1.0) * color;
-    //else if(value > 0.35)
-    //    color = float4(0.5, 0.5, 0.5, 1.0) * color;
-    //else
-    //    color = float4(0.2, 0.2, 0.2, 1.0) * color;
-
+    float4 color = float4(0.43, 0.2, 0.0, 1.0) * LightIntensity;
     if (value > 0.35)
         color = float4(1.0, 1.0, 1.0, 1.0) * color; // 普段の色
     else
         color = float4(0.6, 0.6, 0.6, 0.5) * color; // シャドーの色
+    return color; // 色だけを戻る
 
-    return color; // 色を戻る
+    //float4 diffuse = tex2D(Samp, In.uvCoords) *LightIntensity;
+    //float4 diffuse = In.diffuse * LightIntensity;
+    //if (value > 0.35)
+    //    diffuse = float4(1.0, 1.0, 1.0, 1.0) * diffuse; // 普段の色
+    //else
+    //    diffuse = float4(0.6, 0.6, 0.6, 0.5) * diffuse; // シャドーの色
+    //return diffuse;
 }
 
 // アウトライン
