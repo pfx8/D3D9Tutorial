@@ -13,9 +13,9 @@
 #include "Engine.h"
 #include "Modules\Character.h"
 
-#define FIRST_UP_SPEED	7.0f
-#define MOVE_SPEED		0.4f
-#define ACCELERARION		-0.05f
+#define FIRST_UP_SPEED	10.0f
+#define MOVE_SPEED		0.5f
+#define ACCELERARION		-0.2f
 #define ONE_FRAME_TIME	(1.0f / 60.0f)
 //*****************************************************************************
 //
@@ -29,11 +29,12 @@ private:
 
 public:
 	bool m_isUse;	// 使われてるかどうかを判断する
+	bool m_isEnemyBullet;
 
 	Bullet();
 	~Bullet();
 
-	void InitBulletByCharacter(D3DXVECTOR3 pos, D3DXVECTOR3 moveVector);	// エネミー座標を設定
+	void InitBulletByCharacter(D3DXVECTOR3 pos, D3DXVECTOR3 moveVector, bool isShip);	// エネミー座標を設定
 	void BulletMove(D3DXVECTOR2 planeSize);	// エネミー移動
 	void CheckBulletAndShip();	// エネミー攻撃
 };

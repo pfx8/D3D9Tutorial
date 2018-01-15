@@ -32,7 +32,7 @@ Scene00::Scene00()
 
 	// フィールド
 	m_fieldStone = new Plane;
-	m_fieldStone->InitPlane(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(20.0f, 20.0f), D3DXVECTOR2(10, 10));
+	m_fieldStone->InitPlane(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(20.0f, 20.0f), D3DXVECTOR2(30, 30));
 	m_resourcesManager->LoadTexture("fieldSea", &m_fieldStone->m_fieldTexture1);
 	
 	// 主人公
@@ -44,10 +44,19 @@ Scene00::Scene00()
 	m_enemyShip = new Enemy[ENEMY_MAX];
 	for (int count = 0; count < ENEMY_MAX; count++)
 	{
-		m_enemyShip[count].InitEnemy(D3DXVECTOR3(float(rand()%60), 0.0f, float(rand()%100)));
+		D3DXVECTOR3 temp = D3DXVECTOR3(float(rand() % 150), 0.0f, float(rand() % 120));
+		if (rand() % 1 == 0 && rand() % 1 == 0)
+		{
+			temp.x *= -1;
+		}
+		if (rand() % 1 == 0 && rand() % 1 != 0)
+		{
+			temp.z *= -1;
+		}
+		m_enemyShip[count].InitEnemy(temp);
 		m_resourcesManager->LoadMesh("ship2", m_enemyShip[count].m_model);
 		// 向きを決める
-		m_enemyShip[count].RotationVecUp(-1 * rand() % 160 / 180.0f * D3DX_PI);
+		m_enemyShip[count].Trans((rand() % 80) / 180.0f * D3DX_PI);
 	}
 
 	// 弾
@@ -146,7 +155,7 @@ void Scene00::Update()
 	{
 		if (m_bullet[count].m_isUse == true)
 		{
-			m_bullet[count].BulletMove(D3DXVECTOR2(100.0f, 100.0f));
+			m_bullet[count].BulletMove(D3DXVECTOR2(200.0f, 200.0f));
 		}
 	}
 
@@ -155,23 +164,24 @@ void Scene00::Update()
 	{
 		if (m_enemyShip[count].m_isLife == true)
 		{
-			m_enemyShip[count].EnemyMove(D3DXVECTOR2(100.0f, 100.0f));
+			m_enemyShip[count].EnemyMove(D3DXVECTOR2(150.0f, 150.0f));
 		}
 	}
 
 	// 弾と敵の当たり判定
 	for (int count = 0; count < BULLET_MAX; count++)
 	{
-		if (m_bullet[count].m_isUse == true)
+		if (m_bullet[count].m_isUse == true && m_bullet[count].m_isEnemyBullet == false)
 		{
 			for (int count2 = 0; count2 < ENEMY_MAX; count2++)
 			{
-				if (m_enemyShip[count2].m_isLife == true)
+				if (m_enemyShip[count2].m_isLife == true && m_enemyShip[count2].m_isAttack == false)
 				{
 					if (CheckBB((m_bullet + count), (m_enemyShip + count2)))
 					{
 						m_bullet[count].m_isUse = false;
 						m_enemyShip[count2].m_isLife = false;
+						m_enemyShip[count2].m_time = 0.016f * 120;
 					}
 				}
 			}
@@ -316,10 +326,8 @@ void Scene00::Draw()
 		}
 		
 		// デッバグメッセージ
-		m_camera->PosToMessageAndMessageDraw(0);
-		m_ship->PosToMessageAndMessageDraw(2);
-		m_enemyShip[0].PosToMessageAndMessageDraw(4);
-		m_enemyShip[1].PosToMessageAndMessageDraw(6);
+		m_enemyShip[0].PosToMessageAndMessageDraw(0);
+		//m_enemyShip[1].PosToMessageAndMessageDraw(3);
 		m_light->message(8);
 
 		GetDevice()->EndScene();
@@ -343,24 +351,24 @@ void Scene00::Control()
 		if (GetKeyboardPress(DIK_A))	// key A
 		{
 			// 更新キャラクターをカメラの回転角度
-			m_ship->RotationVecUp(1.5f / 180.0f * D3DX_PI);
-			m_camera->UpdateAngle(-1.5f / 180.0f * D3DX_PI);
+			m_ship->RotationVecUp(0.5f / 180.0f * D3DX_PI);
+			m_camera->UpdateAngle(-0.5f / 180.0f * D3DX_PI);
 		}
 		else if (GetKeyboardPress(DIK_D))	// key D
 		{
 			// 更新キャラクターをカメラの回転角度
-			m_ship->RotationVecUp(-1.5f / 180.0f * D3DX_PI);
-			m_camera->UpdateAngle(1.5f / 180.0f * D3DX_PI);
+			m_ship->RotationVecUp(-0.5f / 180.0f * D3DX_PI);
+			m_camera->UpdateAngle(0.5f / 180.0f * D3DX_PI);
 		}
 		else if (GetKeyboardPress(DIK_W))	// key W
 		{
 			//m_camera->m_posEye += m_ship->MoveAlongVecLook(-0.5f);
-			m_ship->MoveAlongVecLook(-0.5f);
+			m_ship->MoveAlongVecLook(-0.25f);
 		}
 		else if (GetKeyboardPress(DIK_S))	// key S
 		{
 			//m_camera->m_posEye -= m_ship->MoveAlongVecLook(0.5f);
-			m_ship->MoveAlongVecLook(0.5f);
+			m_ship->MoveAlongVecLook(0.25f);
 		}
 
 		//　カメラ操作更新
@@ -391,18 +399,36 @@ void Scene00::Control()
 		//	m_light->RotationY(-0.5f / 180.0f * D3DX_PI);
 		//}
 
-		// 攻撃
+		// プレーヤー攻撃
 		if (GetKeyboardTrigger(DIK_SPACE))	// key space
 		{
 			for (int count = 0; count < BULLET_MAX; count++)
 			{
 				if (m_bullet[count].m_isUse == false)
 				{
-					m_bullet[count].InitBulletByCharacter(m_ship->m_pos, m_ship->m_lookVector); // プレーヤーによって弾を初期化
+					m_bullet[count].InitBulletByCharacter(m_ship->m_pos, m_ship->m_lookVector, true); // プレーヤーによって弾を初期化
 					break;
 				}
 			}
 		}
+
+		// 敵の攻撃
+		for (int count = 0; count < ENEMY_MAX; count++)
+		{
+			if (m_enemyShip[count].EnemyAttack(m_ship) == true && m_enemyShip[count].m_isAttack == false)
+			{
+				for (int count2 = 0; count2 < BULLET_MAX; count2++)
+				{
+					if (m_bullet[count2].m_isUse == false)
+					{
+						m_bullet[count2].InitBulletByCharacter(m_enemyShip[count].m_pos, m_enemyShip[count].m_lookVector, false); // プレーヤーによって弾を初期化
+						m_enemyShip[count].m_isAttack = true;
+						break;
+					}
+				}
+			}
+		}
+		
 
 		// バウンディングボックス操作更新
 		if (GetKeyboardTrigger(DIK_Q))	// key Q
@@ -417,7 +443,7 @@ void Scene00::Control()
 			}
 			
 			// 弾
-			for (int count = 0; count < ENEMY_MAX; count++)
+			for (int count = 0; count < BULLET_MAX; count++)
 			{
 				m_bullet[count].m_boundingBox->m_isBoundingBoxDraw = !m_bullet[count].m_boundingBox->m_isBoundingBoxDraw;
 			}

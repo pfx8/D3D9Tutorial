@@ -23,8 +23,8 @@
 #include "Modules\Shader.h"
 #include "Shader\CelShader.h"
 
-#define ENEMY_MAX 10
-#define BULLET_MAX 14
+#define ENEMY_MAX 14
+#define BULLET_MAX 10
 
 //*****************************************************************************
 //

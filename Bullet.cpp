@@ -49,10 +49,15 @@ Bullet::~Bullet()
 // プレーヤーによってエネミーの座標を設定
 //
 //*****************************************************************************
-void Bullet::InitBulletByCharacter(D3DXVECTOR3 pos, D3DXVECTOR3 moveVector)
+void Bullet::InitBulletByCharacter(D3DXVECTOR3 pos, D3DXVECTOR3 moveVector, bool isShip)
 {
 	m_isUse = true;	// 使えるようになる
-	
+
+	if(isShip == true)
+		m_isEnemyBullet = false;
+	else
+		m_isEnemyBullet = true;
+
 	// 位置を設定
 	m_pos = pos;
 	m_pos.y = 3.5f;

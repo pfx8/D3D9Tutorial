@@ -11,6 +11,7 @@
 #include <map>
 
 #include "Engine.h"
+#include "Bullet.h"
 #include "DebugMessage.h"
 #include "Modules\Character.h"
 #include "Modules\BoundingBox.h"
@@ -27,14 +28,21 @@ class Enemy : public Character
 private:
 
 public:
-	bool m_isLife;	// 生存フラグ
+	bool		m_isLife;	// 生存フラグ
+	float	m_time;		// タイムチェック
+	bool		m_isAttack;	// 攻撃フラグ
+	float	m_attackTime;	// 連続攻撃タイム
 
 	Enemy();
 	~Enemy();
 
 	void InitEnemy(D3DXVECTOR3 pos);	// エネミー座標を設定
 	void EnemyMove(D3DXVECTOR2 planeSize);	// エネミー移動
-	void EnemyAttack();	// エネミー攻撃
+	bool EnemyAttack(Character* player);	// エネミー攻撃
+
+	// 臨時
+	void Trans(float angle);
+	bool CheckBB(Character* player);
 };
 #endif // !_ENEMY_H_
 
