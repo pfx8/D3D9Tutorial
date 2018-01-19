@@ -21,7 +21,6 @@ Character::Character()
 	m_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_scl = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
-	//m_directionVector = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
 	m_waveAngle = 0.0f;
 
@@ -134,13 +133,17 @@ bool Character::CheckHitBB(Character* Object)
 //*****************************************************************************
 void Character::RotationVecUp(float angle)
 {
-	if (m_rot.y > D3DX_PI * 2.0f || m_rot.y < -D3DX_PI * 2.0f)
-	{
-		m_rot.y = 0;
-	}
-
 	// 角度を記録する
 	m_rot.y -= angle;
+
+	if (m_rot.y > D3DX_PI / 6.0f)
+	{
+		m_rot.y = D3DX_PI / 6.0f;
+	}
+	if (m_rot.y < -D3DX_PI / 6.0f)
+	{
+		m_rot.y = -D3DX_PI / 6.0f;
+	}
 
 	// 新しい右方向ベクトルを計算する
 	m_rightVector.x = cosf(m_rot.y);

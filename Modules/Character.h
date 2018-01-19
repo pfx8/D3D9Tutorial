@@ -27,8 +27,8 @@ private:
 
 
 public:
-	DebugMessage*	m_message;	// Debugメッセージ
-	float			m_waveAngle;		// 揺れ係数
+	DebugMessage*	m_message;		// Debugメッセージ
+	float			m_waveAngle;	// 揺れ係数
 	D3DXMATRIX		m_worldMatrix;	// ワールド変換マトリックス
 
 	// ベクトル
@@ -41,7 +41,7 @@ public:
 	D3DXVECTOR3		m_rot;		// 回転
 	D3DXVECTOR3		m_scl;		// 拡大縮小
 	Model*			m_model;		// メッシュ
-	BoundingBox*		m_boundingBox;		// バウンディングボックス
+	BoundingBox*	m_boundingBox;	// バウンディングボックス
 
 	Character();
 	~Character();
@@ -49,13 +49,13 @@ public:
 	void InitCharacter(D3DXVECTOR3 pos, D3DXVECTOR3 direction);		// 座標を設定
 
 	void PosToMessageAndMessageDraw(int row);	// 座標をメッセージに渡して、画面に描画する
-	void SetWorldMatrix();					// ワールド変換を設定
+	void SetWorldMatrix();						// ワールド変換を設定
 	void Draw(CelShader* celShader);			// キャラクターの描画(Shader)
 	
-	void Update(float rot);	// キャラクター更新
+	void Update(float rot);				// キャラクター更新
 	bool CheckHitBB(Character* Object);	// 当たり判定
 
-	void RotationVecUp(float angle);		// 上方向のベクトルにして回転
+	void RotationVecUp(float angle);			// 上方向のベクトルにして回転
 	D3DXVECTOR3  MoveAlongVecLook(float unit);	// 注視方向に沿って移動
 };
 #endif // !_CHARACTER_H_

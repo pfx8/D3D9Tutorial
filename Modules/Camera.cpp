@@ -49,7 +49,7 @@ void Camera::InitCameraByPlayer(Character* player)
 	//m_posAt = player->m_pos + D3DXVECTOR3(0.0f, 6.0f, 0.0f);
 	
 	// ship
-	m_posEye = player->m_lookVector + D3DXVECTOR3(0.0f, 10.0f, 25.0f);
+	m_posEye = player->m_lookVector + D3DXVECTOR3(0.0f, 10.0f, 35.0f);
 	m_posAt = player->m_pos + D3DXVECTOR3(0.0f, 10.0f, 0.0f);
 	m_rot = player->m_rot;
 	m_lookVector = player->m_lookVector;
@@ -112,25 +112,15 @@ void Camera::SetViewport()
 //*****************************************************************************
 void Camera::UpdateByPlayer(Character* player)
 {
-	// woman
-	/*m_posEye.x = player->m_pos.x + cosf(m_rot.y + D3DX_PI / 2) * 11.0f;
-	m_posEye.y = player->m_pos.y + 6.0f;
-	m_posEye.z = player->m_pos.z + sinf(m_rot.y + D3DX_PI / 2) * 11.0f;
-
-	m_posAt = player->m_pos + D3DXVECTOR3(0.0f, 6.0f, 0.0f);
-	m_rot = player->m_rot;
-	m_lookVector = player->m_lookVector;
-	m_rightVector = player->m_rightVector;*/
-
 	// ship
 	/*m_rot = player->m_rot;
 	m_posEye.x = player->m_pos.x + cosf(m_rot.y + D3DX_PI / 2) * 25.0f;
 	m_posEye.y = player->m_pos.y + 10.0f;
 	m_posEye.z = player->m_pos.z + sinf(m_rot.y + D3DX_PI / 2) * 25.0f;*/
 	//m_rot = player->m_rot;
-	m_posEye.x = player->m_pos.x + cosf(m_rot.y + D3DX_PI / 2) * 25.0f;
+	m_posEye.x = player->m_pos.x + cosf(m_rot.y + D3DX_PI / 2) * 35.0f;
 	m_posEye.y = player->m_pos.y + 10.0f;
-	m_posEye.z = player->m_pos.z + sinf(m_rot.y + D3DX_PI / 2) * 25.0f;
+	m_posEye.z = player->m_pos.z + sinf(m_rot.y + D3DX_PI / 2) * 35.0f;
 
 	m_posAt = player->m_pos + D3DXVECTOR3(0.0f, 10.0f, 0.0f);
 	/*m_lookVector = player->m_lookVector;

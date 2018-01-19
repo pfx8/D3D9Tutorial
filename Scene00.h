@@ -21,9 +21,10 @@
 #include "Modules\Plane.h"
 #include "Modules\Light.h"
 #include "Modules\Shader.h"
+#include "Modules\SkyBox.h"
 #include "Shader\CelShader.h"
 
-#define ENEMY_MAX 14
+#define ENEMY_MAX 1
 #define BULLET_MAX 10
 
 //*****************************************************************************
@@ -35,14 +36,16 @@ class Scene00 : public Scene
 {
 private:
 	Camera*			m_camera;		// カメラ
-	CelShader*		m_celShader;		// トゥ―ンシェーダー
+	CelShader*		m_celShader;	// トゥ―ンシェーダー
 	Shader*			m_shader;		// ベーシックシェーダー
 	Plane*			m_fieldStone;	// フィールド
 	Character*		m_ship;			// プレーヤー
-	Light*			m_light;			// ライト
-	Enemy*			m_enemyShip;		// 敵
+	Light*			m_light;		// ライト
+	Enemy*			m_enemyShip;	// 敵
 	Bullet*			m_bullet;		// 弾
-	bool				m_isGameStart;
+	SkyBox*			m_skyBox;		// スカイボックス
+
+	bool			m_isGameStart;
 public:
 	Scene00();
 	~Scene00();

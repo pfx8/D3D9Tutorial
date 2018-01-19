@@ -30,9 +30,18 @@ Scene00::Scene00()
 	D3DXVECTOR4 tempLight = D3DXVECTOR4(m_light->m_directionlight.x, m_light->m_directionlight.y, m_light->m_directionlight.z, 1.0f);
 	m_celShader->m_effectPoint->SetVector(m_celShader->m_lightingHandle, &tempLight);
 
+	// スカイボックス
+	m_skyBox = new SkyBox;
+	m_skyBox->InitSkyBox(10000.0f);
+	m_resourcesManager->LoadTexture("front", &m_skyBox->m_texture[0]);	// [0]前
+	m_resourcesManager->LoadTexture("back",  &m_skyBox->m_texture[1]);	// [1]後ろ
+	m_resourcesManager->LoadTexture("left",  &m_skyBox->m_texture[2]);	// [2]左
+	m_resourcesManager->LoadTexture("right", &m_skyBox->m_texture[3]);	// [3]右
+	m_resourcesManager->LoadTexture("top",   &m_skyBox->m_texture[4]);	// [4]上
+
 	// フィールド
 	m_fieldStone = new Plane;
-	m_fieldStone->InitPlane(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(20.0f, 20.0f), D3DXVECTOR2(30, 30));
+	m_fieldStone->InitPlane(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(20.0f, 20.0f), D3DXVECTOR2(50, 50));
 	m_resourcesManager->LoadTexture("fieldSea", &m_fieldStone->m_fieldTexture1);
 	
 	// 主人公
@@ -146,8 +155,8 @@ void Scene00::SetRenderState()
 //*****************************************************************************
 void Scene00::Update()
 {
-	m_camera->UpdateByPlayer(m_ship);
 	Control();	// 各操作の更新
+	m_camera->UpdateByPlayer(m_ship);
 	m_fieldStone->Update();	// 波の更新
 
 	// 弾移動更新
@@ -165,6 +174,23 @@ void Scene00::Update()
 		if (m_enemyShip[count].m_isLife == true)
 		{
 			m_enemyShip[count].EnemyMove(D3DXVECTOR2(150.0f, 150.0f));
+		}
+	}
+
+	// 敵の攻撃
+	for (int count = 0; count < ENEMY_MAX; count++)
+	{
+		if (m_enemyShip[count].EnemyAttack(m_ship) == true && m_enemyShip[count].m_isAttack == false)
+		{
+			for (int count2 = 0; count2 < BULLET_MAX; count2++)
+			{
+				if (m_bullet[count2].m_isUse == false)
+				{
+					m_bullet[count2].InitBulletByCharacter(m_enemyShip[count].m_pos, m_enemyShip[count].m_lookVector, false); // プレーヤーによって弾を初期化
+					m_enemyShip[count].m_isAttack = true;
+					break;
+				}
+			}
 		}
 	}
 
@@ -216,19 +242,38 @@ void Scene00::Draw()
 		//---------------------------------------
 		// エフェクトに基づいてレンダリング
 		//---------------------------------------
-		// BasicShader
+		// フィールドBasicShader
 		{
 			m_shader->m_effectPoint->SetTechnique(m_shader->m_basicShaderHandle);	// テクニックを設定
 			UINT passNum = 0;	// パスの数
+
+			D3DXMATRIX fieldWVPmatrix = m_fieldStone->m_worldMatrix * m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
+			m_shader->m_effectPoint->SetMatrix(m_shader->m_WVPMatrixHandle, &fieldWVPmatrix);	// WVPマトリックス
 
 			m_shader->m_effectPoint->Begin(&passNum, 0);
 			for (int count = 0; count < passNum; count++)	// 各パスによって描画する
 			{
 				m_shader->m_effectPoint->BeginPass(0);
-
-				D3DXMATRIX fieldWVPmatrix = m_fieldStone->m_worldMatrix * m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
-				m_shader->m_effectPoint->SetMatrix(m_shader->m_WVPMatrixHandle, &fieldWVPmatrix);	// WVPマトリックス
 				m_fieldStone->Draw(m_shader);
+
+				m_shader->m_effectPoint->EndPass();
+			}
+			m_shader->m_effectPoint->End();
+		}
+
+		// スカイボックス
+		{
+			m_shader->m_effectPoint->SetTechnique(m_shader->m_basicShaderHandle);	// テクニックを設定
+			UINT passNum = 0;	// パスの数
+			SetWorldMatrix(&m_skyBox->m_worldMatrix);	// ワールド変換
+			D3DXMATRIX skyBoxWVPmatrix = m_skyBox->m_worldMatrix * m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
+			m_shader->m_effectPoint->SetMatrix(m_shader->m_WVPMatrixHandle, &skyBoxWVPmatrix);	// WVPマトリックス
+
+			m_shader->m_effectPoint->Begin(&passNum, 0);
+			for (int count = 0; count < passNum; count++)	// 各パスによって描画する
+			{
+				m_shader->m_effectPoint->BeginPass(0);
+				m_skyBox->Draw(m_shader);
 
 				m_shader->m_effectPoint->EndPass();
 			}
@@ -347,44 +392,39 @@ void Scene00::Control()
 {
 	if (m_isGameStart == true)
 	{
-		// プレーヤー操作更新
-		if (GetKeyboardPress(DIK_A))	// key A
+		// プレーヤー操作
+		if (GetKeyboardPress(DIK_W))	// 前に進む
+		{
+			//m_camera->m_posEye += m_ship->MoveAlongVecLook(-0.5f);
+			m_ship->MoveAlongVecLook(-0.25f);
+		}
+		if (GetKeyboardPress(DIK_A))	// 左回転
 		{
 			// 更新キャラクターをカメラの回転角度
 			m_ship->RotationVecUp(0.5f / 180.0f * D3DX_PI);
 			m_camera->UpdateAngle(-0.5f / 180.0f * D3DX_PI);
 		}
-		else if (GetKeyboardPress(DIK_D))	// key D
+		else if (GetKeyboardPress(DIK_D))	// 右回転
 		{
 			// 更新キャラクターをカメラの回転角度
 			m_ship->RotationVecUp(-0.5f / 180.0f * D3DX_PI);
 			m_camera->UpdateAngle(0.5f / 180.0f * D3DX_PI);
 		}
-		else if (GetKeyboardPress(DIK_W))	// key W
-		{
-			//m_camera->m_posEye += m_ship->MoveAlongVecLook(-0.5f);
-			m_ship->MoveAlongVecLook(-0.25f);
-		}
-		else if (GetKeyboardPress(DIK_S))	// key S
-		{
-			//m_camera->m_posEye -= m_ship->MoveAlongVecLook(0.5f);
-			m_ship->MoveAlongVecLook(0.25f);
-		}
 
-		//　カメラ操作更新
-		if (GetKeyboardPress(DIK_J))	// key J
+		//　カメラ操作
+		if (GetKeyboardPress(DIK_J))	// 左回転
 		{
 			m_camera->RotationVecUp(1.0f / 180.0f * D3DX_PI);
 		}
-		else if (GetKeyboardPress(DIK_L))	// key L
+		else if (GetKeyboardPress(DIK_L))	// 右回転
 		{
 			m_camera->RotationVecUp(-1.0f / 180.0f * D3DX_PI);
 		}
-		else if (GetKeyboardPress(DIK_I))	// key I
+		else if (GetKeyboardPress(DIK_I))	// カメラを上に移動
 		{
 			m_camera->MoveAlongVecLook(-0.5f);
 		}
-		else if (GetKeyboardPress(DIK_K))	// key K
+		else if (GetKeyboardPress(DIK_K))	// カメラを下に移動
 		{
 			m_camera->MoveAlongVecLook(0.5f);
 		}
@@ -400,7 +440,7 @@ void Scene00::Control()
 		//}
 
 		// プレーヤー攻撃
-		if (GetKeyboardTrigger(DIK_SPACE))	// key space
+		if (GetKeyboardTrigger(DIK_SPACE))	// 攻撃
 		{
 			for (int count = 0; count < BULLET_MAX; count++)
 			{
@@ -412,26 +452,8 @@ void Scene00::Control()
 			}
 		}
 
-		// 敵の攻撃
-		for (int count = 0; count < ENEMY_MAX; count++)
-		{
-			if (m_enemyShip[count].EnemyAttack(m_ship) == true && m_enemyShip[count].m_isAttack == false)
-			{
-				for (int count2 = 0; count2 < BULLET_MAX; count2++)
-				{
-					if (m_bullet[count2].m_isUse == false)
-					{
-						m_bullet[count2].InitBulletByCharacter(m_enemyShip[count].m_pos, m_enemyShip[count].m_lookVector, false); // プレーヤーによって弾を初期化
-						m_enemyShip[count].m_isAttack = true;
-						break;
-					}
-				}
-			}
-		}
-		
-
 		// バウンディングボックス操作更新
-		if (GetKeyboardTrigger(DIK_Q))	// key Q
+		if (GetKeyboardTrigger(DIK_Q))	// バウンディングボックスをコントロール
 		{
 			// プレーヤー
 			m_ship->m_boundingBox->m_isBoundingBoxDraw = !m_ship->m_boundingBox->m_isBoundingBoxDraw;	// バウンディングボックスをコントロール

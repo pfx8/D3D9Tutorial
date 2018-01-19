@@ -15,9 +15,11 @@
 ResourcesManager::ResourcesManager()
 {
 	// テクスチャ検索マッピングを作る
-	m_textureList["fieldGrass"] = "data/TEXTURE/field000.jpg";
-	m_textureList["fieldStone"] = "data/TEXTURE/field001.jpg";
-	m_textureList["fieldCheckered"] = "data/TEXTURE/field002.jpg";
+	m_textureList["back"] = "data/TEXTURE/skybox/back.jpg";
+	m_textureList["front"] = "data/TEXTURE/skybox/front.jpg";
+	m_textureList["left"] = "data/TEXTURE/skybox/left.jpg";
+	m_textureList["right"] = "data/TEXTURE/skybox/right.jpg";
+	m_textureList["top"] = "data/TEXTURE/skybox/top.jpg";
 	m_textureList["fieldTransparent"] = "data/TEXTURE/field003.png";
 	m_textureList["fieldSea"] = "data/TEXTURE/sea3k.png";
 	m_textureList["fieldSea2"] = "data/TEXTURE/sea3k2.png";

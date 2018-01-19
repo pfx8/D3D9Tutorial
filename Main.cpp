@@ -23,7 +23,7 @@ using namespace std;
 //*****************************************************************************
 int					g_nCountFPS;						// FPSカウンタ
 LPDIRECT3D9			g_pD3D = NULL;					// Direct3Dオブジェクト
-LPDIRECT3DDEVICE9		g_pD3DDevice = NULL;				// Deviceオブジェクト(描画に必要)
+LPDIRECT3DDEVICE9	g_pD3DDevice = NULL;				// Deviceオブジェクト(描画に必要)
 
 //////////////////////////////////////////////////////////////////////////////////
 Console*				g_Console;				// コンソール
@@ -40,9 +40,9 @@ SceneManager*		g_SceneManager;			// シンー管理？？？
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HRESULT InitDiretX(HINSTANCE hInstance, HWND hWnd, BOOL bWindow);
 
-void Updata(HWND hWnd, int cmd);
-void	 Draw(HWND hWnd);
-void	 Release(void);
+void	Updata(HWND hWnd, int cmd);
+void	Draw(HWND hWnd);
+void	Release(void);
 
 // 臨時
 

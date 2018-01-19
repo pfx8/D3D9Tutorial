@@ -19,8 +19,8 @@ Plane::Plane()
 	m_waveAngle = 0.0f;
 
 	m_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_scl = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
+	//m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	//m_scl = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
 
 	// ポインタ
 	m_vertexBuffer = NULL;
@@ -183,12 +183,12 @@ void Plane::SetWorldMatrix()
 	D3DXMatrixIdentity(&m_worldMatrix);
 
 	// スケールを反映
-	D3DXMatrixScaling(&mtxScl, m_scl.x, m_scl.y, m_scl.z);
-	D3DXMatrixMultiply(&m_worldMatrix, &m_worldMatrix, &mtxScl);
+	//D3DXMatrixScaling(&mtxScl, m_scl.x, m_scl.y, m_scl.z);
+	//D3DXMatrixMultiply(&m_worldMatrix, &m_worldMatrix, &mtxScl);
 
 	// 回転を反映
-	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rot.y, m_rot.x, m_rot.z);
-	D3DXMatrixMultiply(&m_worldMatrix, &m_worldMatrix, &mtxRot);
+	//D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rot.y, m_rot.x, m_rot.z);
+	//D3DXMatrixMultiply(&m_worldMatrix, &m_worldMatrix, &mtxRot);
 
 	// 平行移動を反映
 	D3DXMatrixTranslation(&mtxTranslate, m_pos.x, m_pos.y, m_pos.z);

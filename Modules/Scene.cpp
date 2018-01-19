@@ -40,41 +40,29 @@ Scene::~Scene()
 
 //*****************************************************************************
 //
-// ファイル(blender)からシンーの資源を読み込み
+// ワールド変換
 //
 //*****************************************************************************
-//HRESULT Scene::LoadSceneFile(string name)
-//{
-//	// コンソールにメッセージを出す
-//	cout << "Loading " << name << endl;
-//
-//	// 読み込みオブジェクトを作る
-//	ifstream fin;
-//	
-//	// ファイルを読み込み
-//	fin.open(name);
-//
-//	// 読み込みは失敗した場合
-//	if (fin.fail())
-//	{
-//		// コンソールにメッセージを出す
-//		cout << "エラー[ 読み込み失敗 ]" << endl;
-//		return E_FAIL;
-//	}
-//	else
-//	{
-//		// コンソールにメッセージを出す
-//		cout << name << " ok!" << endl;
-//		char PathTemp[100];
-//		while (!fin.eof())
-//		{
-//			fin.getline(PathTemp, 100);
-//			cout << PathTemp << endl;
-//		}
-//
-//		// 未完成
-//	}
-//
-//	return S_OK;
-//}
+void Scene::SetWorldMatrix(D3DXMATRIX* worldMatrix, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 scl)
+{
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();
+
+	// 計算用マトリックス
+	D3DXMATRIX mtxScl, mtxRot, mtxTranslate;
+
+	// ワールドマトリックスを初期化する
+	D3DXMatrixIdentity(worldMatrix);
+
+	// スケールを反映
+	D3DXMatrixScaling(&mtxScl, scl.x, scl.y, scl.z);
+	D3DXMatrixMultiply(worldMatrix, worldMatrix, &mtxScl);
+
+	// 回転を反映
+	D3DXMatrixRotationYawPitchRoll(&mtxRot, rot.y, rot.x, rot.z);
+	D3DXMatrixMultiply(worldMatrix, worldMatrix, &mtxRot);
+
+	// 平行移動を反映
+	D3DXMatrixTranslation(&mtxTranslate, pos.x, pos.y, pos.z);
+	D3DXMatrixMultiply(worldMatrix, worldMatrix, &mtxTranslate);
+}
 

@@ -25,8 +25,8 @@ public:
 	float			m_waveAngle;
 	D3DXMATRIX		m_worldMatrix;	// ワールド変換マトリックス
 	D3DXVECTOR3		m_pos;	// 位置
-	D3DXVECTOR3		m_rot;	// 回転
-	D3DXVECTOR3		m_scl;	// 拡大縮小
+	//D3DXVECTOR3		m_rot;	// 回転
+	//D3DXVECTOR3		m_scl;	// 拡大縮小
 	D3DXVECTOR2		m_planeSize;
 	D3DXVECTOR2		m_planeNum;
 	int				m_vertexNum;		// 頂点数
