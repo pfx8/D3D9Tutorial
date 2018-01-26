@@ -66,7 +66,7 @@ float4 CelPixelShader(CelVertexOUT In) : COLOR0
     }
     else // バウンディングボックス
     {
-        color = float4(0.8, 0.0, 0.0, 0.4) * LightIntensity;
+        color = float4(0.8, 0.0, 0.0, 0.1) * LightIntensity;
     }
 
     if (value > 0.35)

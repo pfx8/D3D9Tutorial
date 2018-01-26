@@ -31,23 +31,21 @@ Scene00::Scene00()
 	m_celShader->m_effectPoint->SetVector(m_celShader->m_lightingHandle, &tempLight);
 
 	// スカイボックス
-	m_skyBox = new SkyBox;
-	m_skyBox->InitSkyBox(10000.0f);
-	m_resourcesManager->LoadTexture("front", &m_skyBox->m_texture[0]);	// [0]前
-	m_resourcesManager->LoadTexture("back",  &m_skyBox->m_texture[1]);	// [1]後ろ
-	m_resourcesManager->LoadTexture("left",  &m_skyBox->m_texture[2]);	// [2]左
-	m_resourcesManager->LoadTexture("right", &m_skyBox->m_texture[3]);	// [3]右
-	m_resourcesManager->LoadTexture("top",   &m_skyBox->m_texture[4]);	// [4]上
+	//m_skyBox = new SkyBox;
+	//m_skyBox->InitSkyBox(50.0f);
+	//m_resourcesManager->LoadTexture("skybox", &m_skyBox->m_texture);
+
 
 	// フィールド
 	m_fieldStone = new Plane;
 	m_fieldStone->InitPlane(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(20.0f, 20.0f), D3DXVECTOR2(50, 50));
-	m_resourcesManager->LoadTexture("fieldSea", &m_fieldStone->m_fieldTexture1);
+	m_resourcesManager->LoadTexture("fieldSea", &m_fieldStone->m_texture);
 	
 	// 主人公
 	m_ship = new Character;
 	m_ship->InitCharacter(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, -1.0f));
-	m_resourcesManager->LoadMesh("ship2", m_ship->m_model);
+	m_ship->m_boundingBox->InitBox(4, 7, 8, 0.1f);	// バウンディングボックスを初期化
+	m_resourcesManager->LoadMesh("ship2", m_ship->m_model); // モデルを初期化
 
 	// 敵
 	m_enemyShip = new Enemy[ENEMY_MAX];
@@ -64,8 +62,8 @@ Scene00::Scene00()
 		}
 		m_enemyShip[count].InitEnemy(temp);
 		m_resourcesManager->LoadMesh("ship2", m_enemyShip[count].m_model);
-		// 向きを決める
-		m_enemyShip[count].Trans((rand() % 80) / 180.0f * D3DX_PI);
+		m_enemyShip[count].m_boundingBox->InitBox(4, 7, 8, 0.1f);	// バウンディングボックスを初期化
+		m_enemyShip[count].Trans((rand() % 80) / 180.0f * D3DX_PI);		// 向きを決める
 	}
 
 	// 弾
@@ -112,40 +110,16 @@ void Scene00::SetRenderState()
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
-	//// レンダーステートパラメータの設定
-	//GetDevice()->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);			// 裏面をカリング
-	//GetDevice()->SetRenderState(D3DRS_ZENABLE, TRUE);					// Zバッファを使用
-	//GetDevice()->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);			// αブレンドを行う
-	//GetDevice()->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);		// αソースカラーの指定
-	//GetDevice()->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);	// αデスティネーションカラーの指定
+	// レンダーステートパラメータの設定
+	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);					// 光を使う
+	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);			// 裏面をカリング
+	pDevice->SetRenderState(D3DRS_ZENABLE, TRUE);					// Zバッファを使用
+	pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);			// αブレンドを行う
+	//pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+	//pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+	pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);		// αソースカラーの指定
+	pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);	// αデスティネーションカラーの指定
 
-	//// サンプラーステートパラメータの設定
-	//GetDevice()->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);	// テクスチャアドレッシング方法(U値)を設定
-	//GetDevice()->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);	// テクスチャアドレッシング方法(V値)を設定
-	//GetDevice()->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);	// テクスチャ縮小フィルタモードを設定
-	//GetDevice()->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);	// テクスチャ拡大フィルタモードを設定
-
-	//// テクスチャステージステートの設定
-	//GetDevice()->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);	// アルファブレンディング処理
-	//GetDevice()->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);	// 最初のアルファ引数
-	//GetDevice()->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_CURRENT);	// ２番目のアルファ引数
-
-	// Set the default render states
-	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
-	//pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
-	pDevice->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
-	pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-	pDevice->SetRenderState(D3DRS_NORMALIZENORMALS, TRUE);
-
-	// Set the default texture stage states
-	//pDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-	//pDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-	//pDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
-
-	// Set the default texture filters
-	//pDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-	//pDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
 }
 
 //*****************************************************************************
@@ -239,22 +213,29 @@ void Scene00::Draw()
 	// Direct3Dによる描画の開始
 	if (SUCCEEDED(GetDevice()->BeginScene()))
 	{
-		//---------------------------------------
-		// エフェクトに基づいてレンダリング
-		//---------------------------------------
-		// フィールドBasicShader
+		// フィールド
 		{
-			m_shader->m_effectPoint->SetTechnique(m_shader->m_basicShaderHandle);	// テクニックを設定
-			UINT passNum = 0;	// パスの数
-
-			D3DXMATRIX fieldWVPmatrix = m_fieldStone->m_worldMatrix * m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
-			m_shader->m_effectPoint->SetMatrix(m_shader->m_WVPMatrixHandle, &fieldWVPmatrix);	// WVPマトリックス
-
+			// テクニックを設定
+			m_shader->m_shaderHandle = m_shader->m_effectPoint->GetTechniqueByName("RenderWithTextrue");
+			m_shader->m_effectPoint->SetTechnique(m_shader->m_shaderHandle);
+			
+			// ワールド変換、ビューイング変換、プロジェクション変換マトリックス
+			m_shader->m_effectPoint->SetMatrix(m_shader->m_WMatrixHandle, &m_fieldStone->m_worldMatrix);	
+			D3DXMATRIX fieldVPmatrix = m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
+			m_shader->m_effectPoint->SetMatrix(m_shader->m_VPMatrixHandle, &fieldVPmatrix);
+			
+			// テクスチャ、アルファ値の設定
+			m_shader->m_effectPoint->SetTexture(m_shader->m_textureHandle, m_fieldStone->m_texture);
+			m_shader->m_effectPoint->SetFloat(m_shader->m_alphaHandle, 1.0f);
+			
+			// 描画
+			UINT passNum = 0;
 			m_shader->m_effectPoint->Begin(&passNum, 0);
-			for (int count = 0; count < passNum; count++)	// 各パスによって描画する
+			// 各パスを実行する
+			for (int count = 0; count < passNum; count++)
 			{
 				m_shader->m_effectPoint->BeginPass(0);
-				m_fieldStone->Draw(m_shader);
+				m_fieldStone->Draw();
 
 				m_shader->m_effectPoint->EndPass();
 			}
@@ -262,28 +243,39 @@ void Scene00::Draw()
 		}
 
 		// スカイボックス
-		{
-			m_shader->m_effectPoint->SetTechnique(m_shader->m_basicShaderHandle);	// テクニックを設定
-			UINT passNum = 0;	// パスの数
-			SetWorldMatrix(&m_skyBox->m_worldMatrix);	// ワールド変換
-			D3DXMATRIX skyBoxWVPmatrix = m_skyBox->m_worldMatrix * m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
-			m_shader->m_effectPoint->SetMatrix(m_shader->m_WVPMatrixHandle, &skyBoxWVPmatrix);	// WVPマトリックス
+		//{
+		//	// テクニックを設定
+		//	m_shader->m_effectPoint->SetTechnique(m_shader->m_basicShaderHandle);
 
-			m_shader->m_effectPoint->Begin(&passNum, 0);
-			for (int count = 0; count < passNum; count++)	// 各パスによって描画する
-			{
-				m_shader->m_effectPoint->BeginPass(0);
-				m_skyBox->Draw(m_shader);
+		//	// ワールド変換、ビューイング変換、プロジェクション変換マトリックス
+		//	SetWorldMatrix(&m_skyBox->m_worldMatrix);
+		//	m_shader->m_effectPoint->SetMatrix(m_shader->m_WMatrixHandle, &m_skyBox->m_worldMatrix);
+		//	D3DXMATRIX skyBoxVPmatrix = m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
+		//	m_shader->m_effectPoint->SetMatrix(m_shader->m_VPMatrixHandle, &skyBoxVPmatrix);
 
-				m_shader->m_effectPoint->EndPass();
-			}
-			m_shader->m_effectPoint->End();
-		}
+		//	// テクスチャの設定
+		//	m_shader->m_effectPoint->SetTexture(m_shader->m_texture1Handle, m_skyBox->m_texture);
+
+		//	// 描画
+		//	UINT passNum = 0;
+		//	m_shader->m_effectPoint->Begin(&passNum, 0);
+		//	// 各パスを実行する
+		//	for (int count = 0; count < passNum; count++)
+		//	{
+		//		m_shader->m_effectPoint->BeginPass(0);
+		//		m_skyBox->Draw(m_shader);
+
+		//		m_shader->m_effectPoint->EndPass();
+		//	}
+		//	m_shader->m_effectPoint->End();
+		//}
 
 		// オブジェクト種類番号
 		int ship = 0, enemy = 1, cannon = 2, boundingBox = 3;
+
 		// ship
 		{
+			// モデル
 			m_celShader->m_effectPoint->SetTechnique(m_celShader->m_celShaderHandle);	// テクニックを設定
 			UINT passNum = 0;	// パスの数
 
@@ -303,6 +295,36 @@ void Scene00::Draw()
 				m_celShader->m_effectPoint->EndPass();
 			}
 			m_celShader->m_effectPoint->End();
+
+			// バウンディングボックス
+			if (m_ship->m_boundingBox->m_isBoundingBoxDraw == true)
+			{
+				// テクニックを設定
+				m_shader->m_shaderHandle = m_shader->m_effectPoint->GetTechniqueByName("RenderWithoutTextrue");
+				m_shader->m_effectPoint->SetTechnique(m_shader->m_shaderHandle);
+
+				// ワールド変換、ビューイング変換、プロジェクション変換マトリックス
+				m_shader->m_effectPoint->SetMatrix(m_shader->m_WMatrixHandle, &m_ship->m_worldMatrix);
+				D3DXMATRIX VPmatrix = m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
+				m_shader->m_effectPoint->SetMatrix(m_shader->m_VPMatrixHandle, &VPmatrix);
+
+				// アルファ値の設定(テクスチャ無し)
+				m_shader->m_effectPoint->SetFloat(m_shader->m_alphaHandle, 0.5f);
+
+				// 描画
+				UINT passNum = 0;
+				m_shader->m_effectPoint->Begin(&passNum, 0);
+				// 各パスを実行する
+				for (int count = 0; count < passNum; count++)
+				{
+					m_shader->m_effectPoint->BeginPass(0);
+
+					m_ship->m_boundingBox->Draw();
+
+					m_shader->m_effectPoint->EndPass();
+				}
+				m_shader->m_effectPoint->End();
+			}		
 		}
 
 		// エネミー
@@ -371,9 +393,8 @@ void Scene00::Draw()
 		}
 		
 		// デッバグメッセージ
-		m_enemyShip[0].PosToMessageAndMessageDraw(0);
-		//m_enemyShip[1].PosToMessageAndMessageDraw(3);
-		m_light->message(8);
+		m_ship->PosToMessageAndMessageDraw(0);
+		m_light->message(4);
 
 		GetDevice()->EndScene();
 	}
@@ -392,23 +413,31 @@ void Scene00::Control()
 {
 	if (m_isGameStart == true)
 	{
-		// プレーヤー操作
-		if (GetKeyboardPress(DIK_W))	// 前に進む
+		// プレーヤー操作 逆
+		if (GetKeyboardTrigger(DIK_S))	// 前に進む
 		{
 			//m_camera->m_posEye += m_ship->MoveAlongVecLook(-0.5f);
-			m_ship->MoveAlongVecLook(-0.25f);
+			//m_ship->MoveAlongVecLook(-0.25f);
+			m_ship->ChangeLever(LL_FRONT);
 		}
+		if (GetKeyboardTrigger(DIK_W))	// 後ろに進む
+		{
+			//m_camera->m_posEye += m_ship->MoveAlongVecLook(-0.5f);
+			//m_ship->MoveAlongVecLook(-0.25f);
+			m_ship->ChangeLever(LL_BACK);
+		}
+
 		if (GetKeyboardPress(DIK_A))	// 左回転
 		{
 			// 更新キャラクターをカメラの回転角度
 			m_ship->RotationVecUp(0.5f / 180.0f * D3DX_PI);
-			m_camera->UpdateAngle(-0.5f / 180.0f * D3DX_PI);
+			//m_camera->UpdateAngle(-0.5f / 180.0f * D3DX_PI);
 		}
 		else if (GetKeyboardPress(DIK_D))	// 右回転
 		{
 			// 更新キャラクターをカメラの回転角度
 			m_ship->RotationVecUp(-0.5f / 180.0f * D3DX_PI);
-			m_camera->UpdateAngle(0.5f / 180.0f * D3DX_PI);
+			//m_camera->UpdateAngle(0.5f / 180.0f * D3DX_PI);
 		}
 
 		//　カメラ操作

@@ -1,6 +1,6 @@
-//*****************************************************************************
+ï»¿//*****************************************************************************
 //
-// ƒXƒJƒCƒ{ƒbƒNƒXˆ— [SkyBox.cpp]
+// ã‚¹ã‚«ã‚¤ãƒœãƒƒã‚¯ã‚¹å‡¦ç† [SkyBox.cpp]
 //
 // Author : LIAO HANCHEN
 //
@@ -9,37 +9,34 @@
 
 //*****************************************************************************
 //
-// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 //
 //*****************************************************************************
 SkyBox::SkyBox()
 {
-	// ‰Šú‰»
+	// åˆæœŸåŒ–
 	m_vertexBuffer = NULL;
-	for (int count = 0; count < 5; count++)
-	{
-		m_texture[count] = NULL;
-	}
+	m_indexBuffer = NULL;
+	m_vertexDecl = NULL;
+	m_texture = NULL;
 	m_length = 0.0f;
+	m_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 }
 
 //*****************************************************************************
 //
-// ƒfƒXƒgƒ‰ƒNƒ^
+// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 //
 //*****************************************************************************
 SkyBox::~SkyBox()
 {
 	RELEASE_POINT(m_vertexBuffer);
-	for (int count = 0; count < 5; count++)
-	{
-		RELEASE_POINT(m_texture[count]);
-	}
+	RELEASE_POINT(m_texture);
 }
 
 //*****************************************************************************
 //
-// ƒXƒJƒCƒ{ƒbƒNƒX‚ğ‰Šú‰»
+// ã‚¹ã‚«ã‚¤ãƒœãƒƒã‚¯ã‚¹ã‚’åˆæœŸåŒ–
 //
 //*****************************************************************************
 HRESULT SkyBox::InitSkyBox(float length)
@@ -47,86 +44,98 @@ HRESULT SkyBox::InitSkyBox(float length)
 	LPDIRECT3DDEVICE9 device = GetDevice();
 	m_length = length;
 	
-	// ’¸“_ƒVƒF[ƒ_[éŒ¾
+	// é ‚ç‚¹ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼å®£è¨€
 	{
-		D3DVERTEXELEMENT9 planeDecl[] =		// ’¸“_ƒf[ƒ^‚ÌƒŒƒCƒAƒEƒg‚ğ’è‹`
+		D3DVERTEXELEMENT9 skyBoxDecl[] =		// é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿ã®ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆã‚’å®šç¾©
 		{
 			{ 0,  0, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0 },
-			{ 0, 12, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_NORMAL,   0 },
-			{ 0, 24, D3DDECLTYPE_FLOAT4, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR,    0 },
-			{ 0, 40, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0 },
+			{ 0, 12, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0 },
 			D3DDECL_END()
 		};
-		device->CreateVertexDeclaration(planeDecl, &m_vertexDecl);
+		device->CreateVertexDeclaration(skyBoxDecl, &m_vertexDecl);
 	}
 
-	//’¸“_ƒoƒbƒtƒ@‚ğì¬
+	//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ä½œæˆ
 	if (FAILED(device->CreateVertexBuffer(20 * sizeof(SKYBOXVERTEX), 0,
 		FVF_SKYBOX, D3DPOOL_MANAGED, &m_vertexBuffer, 0)))
 	{
-		std::cout << "[Error] ’¸“_ƒoƒbƒtƒ@‚ª¶¬‚Å‚«‚È‚¢!" << std::endl;	// ƒGƒ‰[ƒƒbƒZ[ƒW
+		std::cout << "[Error] é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ãŒç”Ÿæˆã§ããªã„!" << std::endl;	// ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
 		return E_FAIL;
 	}
 
-	// ’¸“_ƒoƒbƒtƒ@‚Ì’†g‚ğ–„‚ß‚é
+	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ä¸­èº«ã‚’åŸ‹ã‚ã‚‹
 	SKYBOXVERTEX vertices[] =
 	{
-		// ‘O
-		{ {-m_length / 2, 0.0f,			m_length / 2}, {0.0f, 1.0f} },
-		{ {-m_length / 2, m_length / 2,	m_length / 2}, {0.0f, 0.0f} },
-		{ { m_length / 2, 0.0f,         m_length / 2}, {1.0f, 1.0f} },
-		{ { m_length / 2, m_length / 2, m_length / 2}, {1.0f, 0.0f} },
+		// å‰
+		{ { -m_length / 2, 0.0f,			m_length / 2 },{ 0.0f, 1.0f } },
+		{ { -m_length / 2, m_length / 2,	m_length / 2 },{ 0.0f, 0.0f } },
+		{ { m_length / 2, 0.0f,         m_length / 2 },{ 0.2f, 1.0f } },
+		{ { m_length / 2, m_length / 2, m_length / 2 },{ 0.2f, 0.0f } },
 
-		// Œã‚ë
-		{ { m_length / 2, 0.0f,         -m_length / 2}, {0.0f, 1.0f} },
-		{ { m_length / 2, m_length / 2, -m_length / 2}, {0.0f, 0.0f} },
-		{ {-m_length / 2, 0.0f,         -m_length / 2}, {1.0f, 1.0f} },
-		{ {-m_length / 2, m_length / 2, -m_length / 2}, {1.0f, 0.0f} },
+		// å¾Œã‚
+		{ { m_length / 2, 0.0f,         -m_length / 2 },{ 0.2f, 1.0f } },
+		{ { m_length / 2, m_length / 2, -m_length / 2 },{ 0.2f, 0.0f } },
+		{ { -m_length / 2, 0.0f,         -m_length / 2 },{ 0.4f, 1.0f } },
+		{ { -m_length / 2, m_length / 2, -m_length / 2 },{ 0.4f, 0.0f } },
 
-		// ¶
-		{ {-m_length / 2, 0.0f,         -m_length / 2}, {0.0f, 1.0f} },
-		{ {-m_length / 2, m_length / 2, -m_length / 2}, {0.0f, 0.0f} },
-		{ {-m_length / 2, 0.0f,          m_length / 2}, {1.0f, 1.0f} },
-		{ {-m_length / 2, m_length / 2,  m_length / 2}, {1.0f, 0.0f} },
+		// å·¦
+		{ { -m_length / 2, 0.0f,         -m_length / 2 },{ 0.4f, 1.0f } },
+		{ { -m_length / 2, m_length / 2, -m_length / 2 },{ 0.4f, 0.0f } },
+		{ { -m_length / 2, 0.0f,          m_length / 2 },{ 0.6f, 1.0f } },
+		{ { -m_length / 2, m_length / 2,  m_length / 2 },{ 0.6f, 0.0f } },
 
-		// ‰E
-		{ {m_length / 2, 0.0f,          m_length / 2}, {0.0f, 1.0f} },
-		{ {m_length / 2, m_length / 2,  m_length / 2}, {0.0f, 0.0f} },
-		{ {m_length / 2, 0.0f,         -m_length / 2}, {1.0f, 1.0f} },
-		{ {m_length / 2, m_length / 2, -m_length / 2}, {1.0f, 0.0f} },
+		// å³
+		{ { m_length / 2, 0.0f,          m_length / 2 },{ 0.6f, 1.0f } },
+		{ { m_length / 2, m_length / 2,  m_length / 2 },{ 0.6f, 0.0f } },
+		{ { m_length / 2, 0.0f,         -m_length / 2 },{ 0.8f, 1.0f } },
+		{ { m_length / 2, m_length / 2, -m_length / 2 },{ 0.8f, 0.0f } },
 
-		// ã
-		{ {m_length / 2,  m_length / 2, -m_length / 2}, {1.0f, 0.0f} },
-		{ {m_length / 2,  m_length / 2,  m_length / 2}, {1.0f, 1.0f} },
-		{ {-m_length / 2, m_length / 2, -m_length / 2}, {0.0f, 0.0f} },
-		{ {-m_length / 2, m_length / 2,  m_length / 2}, {0.0f, 1.0f} },
-
+		// ä¸Š
+		{ { m_length / 2,  m_length / 2, -m_length / 2 },{ 1.0f, 0.0f } },
+		{ { m_length / 2,  m_length / 2,  m_length / 2 },{ 1.0f, 1.0f } },
+		{ { -m_length / 2, m_length / 2, -m_length / 2 },{ 0.8f, 0.0f } },
+		{ { -m_length / 2, m_length / 2,  m_length / 2 },{ 0.8f, 1.0f } },
 	};
 
 	void* pVertices;
-	m_vertexBuffer->Lock(0, 0, (void**)&pVertices, 0);
-	// ’¸“_\‘¢‘Ì‚Ìƒf[ƒ^‚ğ’¸“_ƒoƒbƒtƒ@‚ÉƒRƒs[
+	m_vertexBuffer->Lock(0, sizeof(vertices), (void**)&pVertices, 0);
+	
+	// é ‚ç‚¹æ§‹é€ ä½“ã®ãƒ‡ãƒ¼ã‚¿ã‚’é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã«ã‚³ãƒ”ãƒ¼
 	memcpy(pVertices, vertices, sizeof(vertices));
 	m_vertexBuffer->Unlock();
 }
 
+
 //*****************************************************************************
 //
-// ƒXƒJƒCƒ{ƒbƒNƒX‚ğ•`‰æ
+// ãƒ¯ãƒ¼ãƒ«ãƒ‰å¤‰æ›
+//
+//*****************************************************************************
+void SkyBox::SetWorldMatrix(D3DXMATRIX& mtxWorld)
+{
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();
+	D3DXMATRIX mtxTranslate;
+
+	// ãƒ¯ãƒ¼ãƒ«ãƒ‰ãƒãƒˆãƒªãƒƒã‚¯ã‚¹ã‚’åˆæœŸåŒ–ã™ã‚‹
+	D3DXMatrixIdentity(&m_mtxWorld);
+
+	// å¹³è¡Œç§»å‹•ã‚’åæ˜ 
+	D3DXMatrixTranslation(&mtxTranslate, m_pos.x, m_pos.y, m_pos.z);
+	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTranslate);
+}
+
+//*****************************************************************************
+//
+// ã‚¹ã‚«ã‚¤ãƒœãƒƒã‚¯ã‚¹ã‚’æç”»
 //
 //*****************************************************************************
 void SkyBox::Draw(Shader *shader)
 {
 	PDIRECT3DDEVICE9 pDevice = GetDevice();
 
-	pDevice->SetVertexDeclaration(m_vertexDecl);							// ’¸“_éŒ¾‚ğİ’è
-	pDevice->SetStreamSource(0, m_vertexBuffer, 0, sizeof(SKYBOXVERTEX));	// ’¸“_ƒoƒbƒtƒ@‚ğƒfƒoƒCƒX‚Ìƒf[ƒ^ƒXƒgƒŠ[ƒ€‚ÉƒoƒCƒiƒŠ
-	pDevice->SetFVF(FVF_SKYBOX);											// ’¸“_ƒtƒH[ƒ}ƒbƒg‚Ìİ’è
-
-	// •`‰æ
-	for (int count = 0; count < 5; count++)
-	{
-		shader->m_effectPoint->SetTexture(shader->m_texture1Handle, m_texture[count]);	// ƒeƒNƒXƒ`ƒƒ‚Ìİ’è
-		pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, count * 4, 2);
-	}
+	pDevice->SetVertexDeclaration(m_vertexDecl);							// é ‚ç‚¹å®£è¨€ã‚’è¨­å®š
+	pDevice->SetStreamSource(0, m_vertexBuffer, 0, sizeof(SKYBOXVERTEX));	// é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ãƒ‡ãƒã‚¤ã‚¹ã®ãƒ‡ãƒ¼ã‚¿ã‚¹ãƒˆãƒªãƒ¼ãƒ ã«ãƒã‚¤ãƒŠãƒª
+	//pDevice->SetFVF(FVF_SKYBOX);											// é ‚ç‚¹ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆã®è¨­å®š
+	pDevice->SetIndices(m_indexBuffer);										// é ‚ç‚¹ã‚¤ãƒ‡ãƒƒã‚¯ã‚¹ã®è¨­å®š
+	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 17, 0, 16);		// ãƒã‚¦ãƒ³ãƒ‡ã‚£ãƒ³ã‚°ãƒœãƒƒã‚¯ã‚¹ã®æç”»
 }

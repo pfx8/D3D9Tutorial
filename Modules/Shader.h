@@ -13,15 +13,17 @@
 class Shader
 {
 private:
-	virtual HRESULT LoadEffectFile();					// 頂点シェーダーファイルを読み込む
-	virtual void GetShaderTechniqueAndParameter();		// シェーダーを使うために、各設定をする
+	virtual HRESULT LoadEffectFile();		// 頂点シェーダーファイルを読み込む
+	virtual void GetShaderParameter();		// シェーダー中の変数を取得
 
 public:
 	ID3DXEffect* m_effectPoint;		// エフェクト(複数レンダリング保存される)
-	D3DXHANDLE m_basicShaderHandle;	// エフェクトのテクニック
 
-	D3DXHANDLE m_WVPMatrixHandle;		// 変換行列
-	D3DXHANDLE m_texture1Handle;		// テクスチャ
+	D3DXHANDLE   m_shaderHandle;	// エフェクトのテクニック
+	D3DXHANDLE   m_WMatrixHandle;	// ワールド変換行列
+	D3DXHANDLE   m_VPMatrixHandle;	// ビューイング変換とプロジェクション変換行列
+	D3DXHANDLE   m_textureHandle;	// テクスチャ
+	D3DXHANDLE   m_alphaHandle;		// カラーのアルファ値
 
 	Shader();
 	~Shader();

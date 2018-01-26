@@ -1,62 +1,79 @@
-// プログラムからもらう変数
-matrix WVPMatrix;    // WVP変換行列
+float    alpha; // カラーアルファ値
 
-//------------------------------------------------------
-// BsaicShader(テクスチャ付き)
-//------------------------------------------------------
-struct BasicVertexIN
+float4x4 WMatrix : WORLD;
+float4x4 VPMatrix : VIEWPROJECTION;
+
+struct VS_OUTPUT
 {
-    float3 position	: POSITION0;
-    float3 normal	: NORMAL0;
-    float4 diffuse	: COLOR0;
+    float4 position	: POSITION0;
     float2 uvCoords	: TEXCOORD0; // テクスチャ座標
 };
 
-struct BasicVertexOUT
+// 頂点シェーダー
+VS_OUTPUT BasicVertexShader(float4 pos : POSITION0,
+                            float2 uvCoords : TEXCOORD0)
 {
-    float4 position  : POSITION0;
-    float3 normal    : NORMAL0;
-    float4 diffuse   : COLOR0;
-    float2 uvCoords  : TEXCOORD0; // テクスチャ座標
-};
+    VS_OUTPUT vout = (VS_OUTPUT) 0;
 
-texture Tex; // 使用するテクスチャ
+    // ワールド変換、ビューイング変換、プロジェクション変換
+    vout.position = mul(pos, WMatrix);
+    vout.position = mul(vout.position, VPMatrix);
+    vout.uvCoords = uvCoords;
+
+	return vout;
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+texture tex; // テクスチャ
 sampler Samp = // サンプラー
 sampler_state
 {
-    Texture = <Tex>;
+    Texture = <tex>;
     MipFilter = LINEAR;
     MinFilter = LINEAR;
     MagFilter = LINEAR;
 };
 
-// 頂点シェーダー
-BasicVertexOUT BasicVertexShader(BasicVertexIN In)
+struct PS_OUTPUT
 {
-	BasicVertexOUT Out = (BasicVertexOUT) 0;
-
-    Out.position = mul(float4(In.position, 1.0f), WVPMatrix);
-    Out.normal = In.normal;
-	Out.uvCoords = In.uvCoords;
-
-	return Out;
-}
+    float4 diffuse : COLOR0;
+};
 
 // ピクセルシェーダー
-float4 BasicPixelShader(BasicVertexOUT In) : COLOR0
+PS_OUTPUT BasicPixelShader(VS_OUTPUT vsout, uniform bool withTextrue)
 {
-    return tex2D(Samp, In.uvCoords);
-}
+    PS_OUTPUT pout = (PS_OUTPUT) 0;
 
+    if (withTextrue == true)
+    {
+        pout.diffuse = tex2D(Samp, vsout.uvCoords) * alpha; // textrue sRGB * Alpha
+    }
+    else
+    {
+        pout.diffuse = float4(1.0, 0.0, 0.0, 1.0) * alpha; // 赤を出る
+    }
+
+    return pout;
+}
 
 //------------------------------------------------------
 // エフェクト
 //------------------------------------------------------
-technique BasicShader
+technique RenderWithoutTextrue
 {
 	pass P0
 	{
         VertexShader = compile vs_3_0 BasicVertexShader();
-        PixelShader = compile ps_3_0 BasicPixelShader();
+        PixelShader = compile ps_3_0 BasicPixelShader(false);
+    }
+}
+
+technique RenderWithTextrue
+{
+    pass P0
+    {
+        VertexShader = compile vs_3_0 BasicVertexShader();
+        PixelShader = compile ps_3_0 BasicPixelShader(true);
     }
 }

@@ -16,9 +16,10 @@ Shader::Shader()
 {
 	m_effectPoint = NULL;
 	
-	m_WVPMatrixHandle = NULL;
-	m_basicShaderHandle = NULL;
-	m_texture1Handle = NULL;
+	m_WMatrixHandle = NULL;
+	m_VPMatrixHandle = NULL;
+	m_shaderHandle = NULL;
+	m_textureHandle = NULL;
 }
 
 //*****************************************************************************
@@ -39,7 +40,7 @@ Shader::~Shader()
 void Shader::InitShader()
 {
 	LoadEffectFile();
-	GetShaderTechniqueAndParameter();
+	GetShaderParameter();
 }
 
 //*****************************************************************************
@@ -84,17 +85,13 @@ HRESULT Shader::LoadEffectFile()
 
 //*****************************************************************************
 //
-// シェーダーを使うために、各設定をする
+// シェーダー中の変数を取得
 //
 //*****************************************************************************
-void Shader::GetShaderTechniqueAndParameter()
+void Shader::GetShaderParameter()
 {
-	// レンダリングのテクニックを取得
-	m_basicShaderHandle = m_effectPoint->GetTechniqueByName("BasicShader");	// BasicShaderテクニックを設定
-
-	// シェーダー中のグローバル変数を取得
-	m_WVPMatrixHandle = m_effectPoint->GetParameterByName(0, "WVPMatrix");	// WVPマトリックス
-	m_texture1Handle = m_effectPoint->GetParameterByName(0, "Tex");			// テクスチャ
-
-
+	m_WMatrixHandle  = m_effectPoint->GetParameterByName(0, "WMatrix");
+	m_VPMatrixHandle = m_effectPoint->GetParameterByName(0, "VPMatrix");
+	m_textureHandle  = m_effectPoint->GetParameterByName(0, "tex");
+	m_alphaHandle    = m_effectPoint->GetParameterByName(0, "alpha");
 }

@@ -125,8 +125,8 @@ void Camera::UpdateByPlayer(Character* player)
 	m_posAt = player->m_pos + D3DXVECTOR3(0.0f, 10.0f, 0.0f);
 	/*m_lookVector = player->m_lookVector;
 	m_rightVector = player->m_rightVector;*/
-	player->m_lookVector = m_lookVector;
-	player->m_rightVector = m_rightVector;
+	//player->m_lookVector = m_lookVector;
+	//player->m_rightVector = m_rightVector;
 
 	SetViewMatrix();	// ビューイング変換
 }

@@ -64,42 +64,41 @@ HRESULT BoundingBox::MakeVertex()
 	D3DVERTEXELEMENT9 boundingBoxDecl[] =	// 頂点データのレイアウトを定義
 	{
 		{ 0, 0,  D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION },
-		{ 0, 12, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_NORMAL   },
-		{ 0, 24, D3DDECLTYPE_FLOAT4, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR    },
+		{ 0, 12, D3DDECLTYPE_FLOAT4, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR    },
 		D3DDECL_END()
 	};
-	
+	pDevice->CreateVertexDeclaration(boundingBoxDecl, &m_vertexDecl);
 
 	// オブジェクトの頂点バッファを生成
-	if (FAILED(pDevice->CreateVertexBuffer(8 * sizeof(VERTEX_3D_NT), 0, FVF_VERTEX_3D_NT, D3DPOOL_DEFAULT, &m_vertexBuffer, NULL)))
+	if (FAILED(pDevice->CreateVertexBuffer(8 * sizeof(BOUNDINGBOXVERTEX), 0, FVF_BOUNDINGBOX, D3DPOOL_DEFAULT, &m_vertexBuffer, NULL)))
 	{
 		std::cout << "[Error] 頂点バッファが生成できない!" << std::endl;	// エラーメッセージ
 		return E_FAIL;
 	}
 
 	// 頂点作成
-	VERTEX_3D_NT vertex[] =
+	BOUNDINGBOXVERTEX vertex[] =
 	{
-		// 座標、法線、diffuse
-		{ D3DXVECTOR3(-m_size.x / 2,  m_size.y / 2, -m_size.z / 2), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(1.0f, 0.0f, 0.0f, m_alpha) },
-		{ D3DXVECTOR3(-m_size.x / 2,  m_size.y / 2,  m_size.z / 2), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(1.0f, 0.0f, 0.0f, m_alpha) },
-		{ D3DXVECTOR3( m_size.x / 2,  m_size.y / 2,  m_size.z / 2), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(1.0f, 0.0f, 0.0f, m_alpha) },
-		{ D3DXVECTOR3( m_size.x / 2,  m_size.y / 2, -m_size.z / 2), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(1.0f, 0.0f, 0.0f, m_alpha) },
-		{ D3DXVECTOR3(-m_size.x / 2,  0,            -m_size.z / 2), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(1.0f, 0.0f, 0.0f, m_alpha) },
-		{ D3DXVECTOR3(-m_size.x / 2,  0,             m_size.z / 2), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(1.0f, 0.0f, 0.0f, m_alpha) },
-		{ D3DXVECTOR3( m_size.x / 2,  0,             m_size.z / 2), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(1.0f, 0.0f, 0.0f, m_alpha) },
-		{ D3DXVECTOR3( m_size.x / 2,  0,            -m_size.z / 2), D3DXVECTOR3(0.0f, 1.0f, 0.0f), D3DXCOLOR(1.0f, 0.0f, 0.0f, m_alpha) }
+		// 座標、diffuse
+		{ D3DXVECTOR3(-m_size.x / 2,  m_size.y / 2, -m_size.z / 2), D3DXCOLOR(1.0f, 0.0f, 0.0f, m_alpha) },
+		{ D3DXVECTOR3(-m_size.x / 2,  m_size.y / 2,  m_size.z / 2), D3DXCOLOR(1.0f, 0.0f, 0.0f, m_alpha) },
+		{ D3DXVECTOR3( m_size.x / 2,  m_size.y / 2,  m_size.z / 2), D3DXCOLOR(1.0f, 0.0f, 0.0f, m_alpha) },
+		{ D3DXVECTOR3( m_size.x / 2,  m_size.y / 2, -m_size.z / 2), D3DXCOLOR(1.0f, 0.0f, 0.0f, m_alpha) },
+		{ D3DXVECTOR3(-m_size.x / 2,  0,            -m_size.z / 2), D3DXCOLOR(1.0f, 0.0f, 0.0f, m_alpha) },
+		{ D3DXVECTOR3(-m_size.x / 2,  0,             m_size.z / 2), D3DXCOLOR(1.0f, 0.0f, 0.0f, m_alpha) },
+		{ D3DXVECTOR3( m_size.x / 2,  0,             m_size.z / 2), D3DXCOLOR(1.0f, 0.0f, 0.0f, m_alpha) },
+		{ D3DXVECTOR3( m_size.x / 2,  0,            -m_size.z / 2), D3DXCOLOR(1.0f, 0.0f, 0.0f, m_alpha) }
 	};
 
-	VOID* VertexBuffer;	// 頂点バッファポインタ作成
+	VOID* vertexBuffer;	// 頂点バッファポインタ作成
 
 	// 頂点データの範囲をロックして頂点バッファメモリへのポインタを取得する
-	if (FAILED(m_vertexBuffer->Lock(0, sizeof(vertex), (void**)&VertexBuffer, 0)))
+	if (FAILED(m_vertexBuffer->Lock(0, sizeof(vertex), (void**)&vertexBuffer, 0)))
 	{
 		std::cout << "[Error] 頂点バッファがロックできない!" << std::endl;	// エラーメッセージ
 		return E_FAIL;
 	}
-	memcpy(VertexBuffer, vertex, sizeof(vertex));	// 作成された頂点を臨時ポインタの中に入れる
+	memcpy(vertexBuffer, vertex, sizeof(vertex));	// 作成された頂点を臨時ポインタの中に入れる
 	m_vertexBuffer->Unlock();					// 頂点データをアンロックする
 
 
@@ -149,28 +148,28 @@ HRESULT BoundingBox::MakeVertex()
 // ワールド変換
 //
 //*****************************************************************************
-void BoundingBox::SetWorldMatrix(D3DXMATRIX& mtxWorld)
+void BoundingBox::SetWorldMatrix()
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 	D3DXMATRIX mtxScl, mtxRot, mtxTranslate;
 
 	// ワールドマトリックスを初期化する
-	D3DXMatrixIdentity(&mtxWorld);
+	D3DXMatrixIdentity(&m_mtxWorld);
 
 	// スケールを反映
 	D3DXMatrixScaling(&mtxScl, m_scl.x, m_scl.y, m_scl.z);
-	D3DXMatrixMultiply(&mtxWorld, &mtxWorld, &mtxScl);
+	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxScl);
 
 	// 回転を反映
 	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rot.y, m_rot.x, m_rot.z);
-	D3DXMatrixMultiply(&mtxWorld, &mtxWorld, &mtxRot);
+	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
 
 	// 平行移動を反映
 	D3DXMatrixTranslation(&mtxTranslate, m_pos.x, m_pos.y, m_pos.z);
-	D3DXMatrixMultiply(&mtxWorld, &mtxWorld, &mtxTranslate);
+	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTranslate);
 
 	// ワールドマトリクスの初期化
-	pDevice->SetTransform(D3DTS_WORLD, &mtxWorld);
+	//pDevice->SetTransform(D3DTS_WORLD, &mtxWorld);
 }
 
 //*****************************************************************************
@@ -178,23 +177,13 @@ void BoundingBox::SetWorldMatrix(D3DXMATRIX& mtxWorld)
 // テクスチャを描画する
 //
 //*****************************************************************************
-void BoundingBox::Draw(Shader* shader)
+void BoundingBox::Draw()
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	pDevice->SetVertexDeclaration(m_vertexDecl);							// 頂点シェーダー設定
-	pDevice->SetStreamSource(0, m_vertexBuffer, 0, sizeof(VERTEX_3D_NT));	// 頂点バッファをデバイスのデータストリームにバイナリ
-	pDevice->SetFVF(FVF_VERTEX_3D_NT);										// 頂点フォーマットの設定
-	pDevice->SetIndices(m_indexBuffer);									// 頂点イデックスの設定
+	pDevice->SetStreamSource(0, m_vertexBuffer, 0, sizeof(BOUNDINGBOXVERTEX));	// 頂点バッファをデバイスのデータストリームにバイナリ
+	//pDevice->SetFVF(FVF_VERTEX_3D_NT);										// 頂点フォーマットの設定
+	pDevice->SetIndices(m_indexBuffer);										// 頂点イデックスの設定
 	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 17, 0, 16);		// バウンディングボックスの描画
 }
-
-//*****************************************************************************
-//
-// 当たり判定(長方体)
-//
-//*****************************************************************************
-//bool BoundingBox::CheckHitBB(Character* Object)
-//{
-//
-//}

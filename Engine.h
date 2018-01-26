@@ -54,13 +54,10 @@
 #define SCREEN_HEIGHT	(800)				// ウインドウの高さ
 
 // 頂点フォーマット( 頂点座標[3D] / 法線 / 反射光 / テクスチャ座標 )
-#define	FVF_VERTEX_3D		(D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE | D3DFVF_TEX1)
+#define	FVF_VERTEX_3D		(D3DFVF_XYZ | D3DFVF_TEX1)
 typedef struct VERTEX_3D
 {
-	// 頂点楮体変数の順番は頂点フォーマットのと同じ
-	D3DXVECTOR3 position;			// 頂点座標
-	D3DXVECTOR3 normalVector;		// 法線ベクトル
-	D3DCOLOR diffuse;				// 反射光
+	D3DXVECTOR4 position;			// 頂点座標
 	D3DXVECTOR2 texturePosition;	// テクスチャ座標
 }VERTEX_3D;
 
@@ -75,14 +72,14 @@ typedef struct VERTEX_3D_2T
 	D3DXVECTOR2 texturePosition2;	// テクスチャ座標
 }VERTEX_2D_NT;
 
-#define	FVF_VERTEX_3D_NT		(D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE)
-typedef struct VERTEX_3D_NT
-{
-	// 頂点楮体変数の順番は頂点フォーマットのと同じ
-	D3DXVECTOR3 position;			// 頂点座標
-	D3DXVECTOR3 normalVector;		// 法線ベクトル
-	D3DCOLOR diffuse;			// 反射光
-}VERTEX_3D_NT;
+//#define	FVF_VERTEX_3D_NT(D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE)
+//typedef struct VERTEX_3D_NT
+//{
+//	// 頂点楮体変数の順番は頂点フォーマットのと同じ
+//	D3DXVECTOR3 position;		// 頂点座標
+//	D3DXVECTOR3 normalVector;	// 法線ベクトル
+//	D3DCOLOR diffuse;			// 反射光
+//}VERTEX_3D_NT;
 
 #define RELEASE_POINT(ptr)					{ if(ptr) { (ptr)->Release(); (ptr) = NULL; } }
 #define RELEASE_CLASS_POINT(ptr)			{ if(ptr) { delete ptr; } }

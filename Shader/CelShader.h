@@ -14,7 +14,7 @@ class CelShader : public Shader
 {
 private:
 	HRESULT LoadEffectFile();					// 頂点シェーダーファイルを読み込む
-	void GetShaderTechniqueAndParameter();		// シェーダーを使うために、各設定をする
+	void GetShaderParameter();		// シェーダーを使うために、各設定をする
 
 public:
 	ID3DXEffect* m_effectPoint;		// エフェクト(複数レンダリング保存される)

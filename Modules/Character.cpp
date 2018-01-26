@@ -23,6 +23,8 @@ Character::Character()
 	m_scl = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
 
 	m_waveAngle = 0.0f;
+	m_speedCoefficient = 0.0f;
+	m_leverLevel = 0;
 
 	// クラスポインタ
 	m_model = new Model;
@@ -50,11 +52,10 @@ Character::~Character()
 //*****************************************************************************
 void Character::PosToMessageAndMessageDraw(int row)
 {
-	//m_pos.y = m_rot.y;
-	m_message->DrawPosMessage("Pos", m_pos, D3DXVECTOR2(0, float(row * 18)));
-	m_message->DrawPosMessage("Vec", m_lookVector, D3DXVECTOR2(0, float((row+1) * 18)));
-	//m_message->DrawPosMessage("H-look", m_lookVector, D3DXVECTOR2(0, float((row + 1) * 18)));
-	//m_message->DrawMatrixMessage(&m_worldMatrix, D3DXVECTOR2(0, float((row + 2) * 18)));
+	//m_message->DrawPosMessage("Pos", m_pos, D3DXVECTOR2(0, float(row * 18)));
+	m_message->DrawPosMessage("Vec", m_lookVector, D3DXVECTOR2(0, float((row) * 18)));
+	//D3DXVec3Normalize(&m_lookVector, &m_lookVector);
+	//m_message->DrawPosMessage("Vec", m_lookVector, D3DXVECTOR2(0, float((row + 1) * 18)));
 }
 
 //*****************************************************************************
@@ -65,8 +66,6 @@ void Character::PosToMessageAndMessageDraw(int row)
 void Character::InitCharacter(D3DXVECTOR3 pos, D3DXVECTOR3 direction)
 {
 	m_pos = pos;	// 位置
-	//std::cout << "<X: " << m_pos.x << ", Y:" << m_pos.y << ", Z:" << m_pos.z << ">";
-	m_boundingBox->InitBox(5, 11, 10, 0.1f);	// バウンディングボックスを初期化
 }
 
 //*****************************************************************************
@@ -77,11 +76,6 @@ void Character::InitCharacter(D3DXVECTOR3 pos, D3DXVECTOR3 direction)
 void Character::Draw(CelShader* celShader)
 {
 	m_model->DrawModel(celShader);	// メッシュを描画する
-
-	if (m_boundingBox->m_isBoundingBoxDraw == true)
-	{
-		m_boundingBox->Draw(celShader);	// バウンディングボックスを描画する
-	}
 }
 
 //*****************************************************************************
@@ -91,12 +85,32 @@ void Character::Draw(CelShader* celShader)
 //*****************************************************************************
 void Character::Update(float rot)
 {
+	// 波
 	m_waveAngle = rot;
-
 	if (m_waveAngle > D3DX_PI * 2.0f)
 		m_waveAngle = 0.0f;
-
 	m_pos.y = 0.8 * sinf(m_waveAngle);
+
+	// 移動
+	switch (m_leverLevel)
+	{
+	case LL_BACK:
+		m_speedCoefficient -= 0.0001f;
+		if (m_speedCoefficient <= MAX_BACK_COEFFICIENT)
+			m_speedCoefficient = MAX_BACK_COEFFICIENT;
+		break;
+	case LL_STOP:
+		m_speedCoefficient = 0.0f;
+		break;
+	case LL_FRONT:
+		m_speedCoefficient += 0.0001f;
+		if (m_speedCoefficient >= MAX_FRONT_COEFFICIENT)
+			m_speedCoefficient = MAX_FRONT_COEFFICIENT;
+		break;
+	default:
+		break;
+	}
+	MoveAlongVecLook(m_speedCoefficient);
 }
 
 //*****************************************************************************
@@ -134,7 +148,7 @@ bool Character::CheckHitBB(Character* Object)
 void Character::RotationVecUp(float angle)
 {
 	// 角度を記録する
-	m_rot.y -= angle;
+	m_rot.y += angle;
 
 	if (m_rot.y > D3DX_PI / 6.0f)
 	{
@@ -152,6 +166,82 @@ void Character::RotationVecUp(float angle)
 	// 新しい注視方向ベクトルを計算する
 	m_lookVector.x = cosf(m_rot.y + D3DX_PI / 2);
 	m_lookVector.z = sinf(m_rot.y + D3DX_PI / 2);
+}
+
+//*****************************************************************************
+//
+// レバーの操作によってスピードを変わる
+//
+//*****************************************************************************
+void Character::ChangeLever(LEVER_LEVEL scalars)
+{
+	switch (m_leverLevel)
+	{
+	case LL_BACK:
+		if (scalars == LL_STOP)
+		{
+			m_leverLevel = LL_STOP;
+			m_speedCoefficient += 0.0001f;
+			if (m_speedCoefficient >= 0.0f)
+				m_speedCoefficient = 0.0f;
+		}
+		if (scalars == LL_FRONT)
+		{
+			m_leverLevel = LL_FRONT;
+			m_speedCoefficient += 0.0001f;
+			if (m_speedCoefficient >= MAX_FRONT_COEFFICIENT)
+				m_speedCoefficient = MAX_FRONT_COEFFICIENT;
+		}
+		break;
+	case LL_STOP:
+		if (scalars == LL_BACK)
+		{
+			m_leverLevel = LL_BACK;
+			m_speedCoefficient -= 0.0001f;
+			if (m_speedCoefficient <= MAX_BACK_COEFFICIENT)
+				m_speedCoefficient = MAX_BACK_COEFFICIENT;
+		}
+		if (scalars == LL_FRONT)
+		{
+			m_leverLevel = LL_FRONT;
+			m_speedCoefficient += 0.0001f;
+			if (m_speedCoefficient >= MAX_FRONT_COEFFICIENT)
+				m_speedCoefficient = MAX_FRONT_COEFFICIENT;
+		}
+		break;
+	case LL_FRONT:
+		if (scalars == LL_BACK)
+		{
+			m_leverLevel = LL_BACK;
+			m_speedCoefficient -= 0.0001f;
+			if (m_speedCoefficient <= MAX_BACK_COEFFICIENT)
+				m_speedCoefficient = MAX_BACK_COEFFICIENT;
+		}
+		if (scalars == LL_STOP)
+		{
+			m_leverLevel = LL_STOP;
+			m_speedCoefficient -= 0.0001f;
+			if (m_speedCoefficient <= 0.0f)
+				m_speedCoefficient = 0.0f;
+		}
+		break;
+	default:
+		break;
+	}
+
+	// test
+	switch (m_leverLevel)
+	{
+	case LL_BACK:
+		std::cout << "後" << std::endl; break;
+	case LL_STOP:
+		std::cout << "停" << std::endl; break;
+	case LL_FRONT:
+		std::cout << "前" << std::endl; break;
+	default:
+		break;
+	}
+
 }
 
 //*****************************************************************************

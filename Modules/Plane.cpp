@@ -25,7 +25,7 @@ Plane::Plane()
 	// ポインタ
 	m_vertexBuffer = NULL;
 	m_indexBuffer = NULL;
-	m_fieldTexture1 = NULL;
+	m_texture = NULL;
 }
 
 //*****************************************************************************
@@ -37,7 +37,7 @@ Plane::~Plane()
 {
 	// ポインタ
 	RELEASE_POINT(m_vertexBuffer);
-	RELEASE_POINT(m_fieldTexture1);
+	RELEASE_POINT(m_texture);
 	RELEASE_POINT(m_indexBuffer);
 }
 
@@ -74,10 +74,8 @@ HRESULT Plane::MakeVertexDecl(D3DXVECTOR2 planeSize, D3DXVECTOR2 planeNum)
 	{
 		D3DVERTEXELEMENT9 planeDecl[] =		// 頂点データのレイアウトを定義
 		{
-			{ 0,  0, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0 },
-			{ 0, 12, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_NORMAL,   0 },
-			{ 0, 24, D3DDECLTYPE_FLOAT4, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR,    0 },
-			{ 0, 40, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0 },
+			{ 0,  0, D3DDECLTYPE_FLOAT4, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0 },
+			{ 0, 16, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0 },
 			D3DDECL_END()
 		};
 		pDevice->CreateVertexDeclaration(planeDecl, &m_vertexDecl);
@@ -109,10 +107,11 @@ HRESULT Plane::MakeVertexDecl(D3DXVECTOR2 planeSize, D3DXVECTOR2 planeNum)
 				VertexBuffer[numY * (int(planeNum.x) + 1) + numX].position.x = -(planeNum.x / 2.0f) * planeSize.x + numX * planeSize.x;
 				VertexBuffer[numY * (int(planeNum.x) + 1) + numX].position.y = 0;
 				VertexBuffer[numY * (int(planeNum.x) + 1) + numX].position.z = (planeNum.y / 2.0f) * planeSize.y - numY * planeSize.y;
+				VertexBuffer[numY * (int(planeNum.x) + 1) + numX].position.w = 1.0f;
 				// 法線ベクトルの設定
-				VertexBuffer[numY * (int(planeNum.x) + 1) + numX].normalVector = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+				//VertexBuffer[numY * (int(planeNum.x) + 1) + numX].normalVector = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 				// 反射光の設定
-				VertexBuffer[numY * (int(planeNum.x) + 1) + numX].diffuse = D3DXCOLOR(0.5f, 1.0f, 1.0f, 1.0f);
+				//VertexBuffer[numY * (int(planeNum.x) + 1) + numX].diffuse = D3DXCOLOR(0.5f, 1.0f, 1.0f, 1.0f);
 				// テクスチャ1座標の設定
 				VertexBuffer[numY * (int(planeNum.x) + 1) + numX].texturePosition.x = numX * 1.0f;
 				VertexBuffer[numY * (int(planeNum.x) + 1) + numX].texturePosition.y = numY * 1.0f;
@@ -200,20 +199,19 @@ void Plane::SetWorldMatrix()
 
 //*****************************************************************************
 //
-// テクスチャを描画する(Shader)
+// テクスチャを描画する
 //
 //*****************************************************************************
-void Plane::Draw(Shader* shader)
+void Plane::Draw()
 {
 	PDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	SetWorldMatrix();
 
-	pDevice->SetVertexDeclaration(m_vertexDecl);								// 頂点宣言を設定
-	pDevice->SetStreamSource(0, m_vertexBuffer, 0, sizeof(VERTEX_3D));			// 頂点バッファをデバイスのデータストリームにバイナリ
-	pDevice->SetFVF(FVF_VERTEX_3D);											// 頂点フォーマットの設定
+	pDevice->SetVertexDeclaration(m_vertexDecl);							// 頂点宣言を設定
+	pDevice->SetStreamSource(0, m_vertexBuffer, 0, sizeof(VERTEX_3D));		// 頂点バッファをデバイスのデータストリームにバイナリ
+	//pDevice->SetFVF(FVF_VERTEX_3D);										// 頂点フォーマットの設定
 	pDevice->SetIndices(m_indexBuffer);										// 頂点インデックスバッファを設定
-	shader->m_effectPoint->SetTexture(shader->m_texture1Handle, m_fieldTexture1);	// テクスチャ1の設定
 	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, 0, 0, m_vertexNum, 0, m_polygonNum);	// ポリゴンの描画
 }
 

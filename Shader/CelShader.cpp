@@ -39,7 +39,7 @@ CelShader::~CelShader()
 void CelShader::InitShader()
 {
 	LoadEffectFile();
-	GetShaderTechniqueAndParameter();
+	GetShaderParameter();
 }
 
 //*****************************************************************************
@@ -97,7 +97,7 @@ void CelShader::UpdateLight(D3DXVECTOR3 direction)
 // シェーダーを使うために、各設定をする
 //
 //*****************************************************************************
-void CelShader::GetShaderTechniqueAndParameter()
+void CelShader::GetShaderParameter()
 {
 	// レンダリングのテクニックを取得
 	m_celShaderHandle = m_effectPoint->GetTechniqueByName("CelShader");

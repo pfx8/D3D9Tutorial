@@ -35,7 +35,9 @@
     <ClCompile Include="modules\Plane.cpp" />
     <ClCompile Include="modules\Scene.cpp" />
     <ClCompile Include="Modules\Shader.cpp" />
-    <ClCompile Include="Modules\SkyBox.cpp" />
+    <ClCompile Include="Modules\SkyBox.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="ResourcesManager.cpp" />
     <ClCompile Include="Scene00.cpp" />
     <ClCompile Include="SceneManager.cpp" />
@@ -58,7 +60,9 @@
     <ClInclude Include="modules\Plane.h" />
     <ClInclude Include="modules\Scene.h" />
     <ClInclude Include="Modules\Shader.h" />
-    <ClInclude Include="Modules\SkyBox.h" />
+    <ClInclude Include="Modules\SkyBox.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="ResourcesManager.h" />
     <ClInclude Include="Scene00.h" />
     <ClInclude Include="SceneManager.h" />
