@@ -26,7 +26,7 @@ LPDIRECT3D9			g_pD3D = NULL;					// Direct3Dオブジェクト
 LPDIRECT3DDEVICE9	g_pD3DDevice = NULL;				// Deviceオブジェクト(描画に必要)
 
 //////////////////////////////////////////////////////////////////////////////////
-Console*				g_Console;				// コンソール
+Console*			g_Console;				// コンソール
 SceneManager*		g_SceneManager;			// シンー管理？？？
 // 臨時
 
@@ -184,7 +184,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 			if ((dwCurrentTime - dwExecLastTime) >= (1000 / 60))	//1/60秒ごとに実行
 			{
 				char str[256] = {};
-				sprintf(str, _T("%d"), g_nCountFPS);
+				sprintf(str, _T("Under the sky ... %d"), g_nCountFPS);
 				SetWindowText(hWnd, str);
 				dwExecLastTime = dwCurrentTime;	//処理した時刻を保存
 				Updata(hWnd, nCmdShow);						// 更新処理

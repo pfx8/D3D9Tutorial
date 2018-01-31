@@ -7,10 +7,6 @@
 //*****************************************************************************
 #include "SceneManager.h"
 
-#include "fstream"
-
-using namespace std;
-
 //*****************************************************************************
 //
 // コンストラクタ
@@ -18,7 +14,18 @@ using namespace std;
 //*****************************************************************************
 SceneManager::SceneManager()
 {
-	ChooseScene();	// シーンを選択
+	// 最初はタイトルから
+	m_sceneTitle = new SceneTitle;
+	m_scene00 = new Scene00;
+	m_sceneEnding = new SceneEnding;
+
+	// 最初のシーンを設定
+	m_sceneState = SS_Title;
+
+	// シーンリストを作る
+	m_sceneList[SS_Title] = m_sceneTitle;
+	m_sceneList[SS_Run] = m_scene00;
+	m_sceneList[SS_Ending] = m_sceneEnding;
 }
 
 //*****************************************************************************
@@ -28,22 +35,38 @@ SceneManager::SceneManager()
 //*****************************************************************************
 SceneManager::~SceneManager()
 {
-	// クラスポインタ
-	RELEASE_CLASS_POINT(m_scene);
+	RELEASE_CLASS_POINT(m_sceneList[m_sceneState]);
 }
 
 //*****************************************************************************
 //
 // シーンを選択する
 //
-// Scene00 -> D3DTutorial
-// Scene01 -> VertexShader
-// Scene02 -> TextureShader
 //*****************************************************************************
-void SceneManager::ChooseScene()
+void SceneManager::ChooseScene(SCENESTATE state)
 {
-	m_scene = new Scene00; // 初期化する
-	m_scene->SetRenderState();	// レンダリング状態を設定
+	// まずは前のシーンを削除する
+	//RELEASE_CLASS_POINT(m_sceneList[m_sceneState]);
+
+	switch (state)
+	{
+	case SS_Title:
+		m_sceneState = SS_Title;
+		m_sceneTitle->SetRenderState();	// レンダリング状態を設定
+
+		break;
+	case SS_Run:
+		m_sceneState = SS_Run;
+		m_scene00->SetRenderState();
+
+		break;
+	case SS_Ending:
+		m_sceneState = SS_Ending;
+
+		break;
+	default:
+		break;
+	}
 }
 
 //*****************************************************************************
@@ -53,7 +76,7 @@ void SceneManager::ChooseScene()
 //*****************************************************************************
 void SceneManager::Update()
 {
-	m_scene->Update();		// シンー01更新
+	m_sceneList[m_sceneState]->Update();		// シンー01更新
 	ChangeRenderState();	// レンダリング状態更新
 }
 
@@ -80,10 +103,27 @@ void SceneManager::ChangeRenderState()
 		// バウンディングボックスを表示
 
 	}
-	if (GetKeyboardPress(DIK_4))			// key 4
-	{
-		// バウンディングボックスを消す
 
+	if (GetKeyboardTrigger(DIK_RETURN))
+	{
+		// 次のシーンに進み
+		if (m_sceneState == SS_Title)
+			ChooseScene(SS_Run);
+		if (m_sceneState == SS_Ending)
+			ChooseScene(SS_Title);
+	}
+
+	if (GetKeyboardTrigger(DIK_BACK) && m_sceneState == SS_Run)
+	{
+		// 戻るメニュー
+		ChooseScene(SS_Title);
+	}
+
+	// テスト用キー、ゲームが終了
+	if (GetKeyboardTrigger(DIK_RSHIFT) && m_sceneState == SS_Run)
+	{
+		// ゲームをクリアすると、Endingへ行く
+		ChooseScene(SS_Ending);
 	}
 }
 
@@ -94,5 +134,19 @@ void SceneManager::ChangeRenderState()
 //*****************************************************************************
 void SceneManager::Draw()
 {
-	m_scene->Draw();	// シンー01描画
+	PDIRECT3DDEVICE9 pDevice = GetDevice();
+
+	// バックバッファ＆Ｚバッファのクリア
+	pDevice->Clear(0, NULL, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER), D3DCOLOR_RGBA(162, 236, 238, 255), 1.0f, 0);
+
+	// Direct3Dによる描画の開始
+	if (SUCCEEDED(GetDevice()->BeginScene()))
+	{
+		m_sceneList[m_sceneState]->Draw();
+
+		GetDevice()->EndScene();
+	}
+
+	// バックバッファとフロントバッファの入れ替え
+	GetDevice()->Present(NULL, NULL, NULL, NULL);
 }

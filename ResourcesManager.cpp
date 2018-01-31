@@ -27,14 +27,12 @@ ResourcesManager::ResourcesManager()
 	m_textureList["title"] = "data/TEXTURE/TitleName.png";
 	m_textureList["press"] = "data/TEXTURE/Presskey.png";
 	m_textureList["tex"] = "data/TEXTURE/shipdiffuse.png";
+	m_textureList["title"] = "data/TEXTURE/title.jpg";
+	m_textureList["ending"] = "data/TEXTURE/ending.jpg";
 	m_textureList["NULL"] = "NULL";
 
 	// メッシュ検索マッピングを作る
-	m_meshList["car1"] = "data/MODEL/car001.x";
-	m_meshList["car2"] = "data/MODEL/car002.x";
-	m_meshList["woman"] = "data/MODEL/woman.x";
-	m_meshList["rockman"] = "data/MODEL/rockman.x";
-	m_meshList["ship"] = "data/MODEL/ship.x";
+	m_meshList["ship"] = "data/MODEL/PirateShip.x";
 	m_meshList["ship2"] = "data/MODEL/ship2.x";
 	m_meshList["ball"] = "data/MODEL/ball.x";
 }
@@ -58,28 +56,31 @@ HRESULT ResourcesManager::LoadTexture(std::string name, LPDIRECT3DTEXTURE9* text
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
-	if (GetTextureStruct(name).data() != "NULL")
+	if (*texturePoint == NULL)
 	{
-		// テクスチャを読み込み
-		if (FAILED(D3DXCreateTextureFromFile(
-			pDevice, 
-			//GetTextureStruct(name).data(),
-			GetTextureStruct(name).c_str(),
-			texturePoint)))
+		if (GetTextureStruct(name).data() != "NULL")
 		{
-			std::cout << "[Error] Loading Texture<" << name << "> Failed!" << std::endl;	// コンソールにメッセージを出す
-			return E_FAIL;
+			// テクスチャを読み込み
+			if (FAILED(D3DXCreateTextureFromFile(
+				pDevice,
+				//GetTextureStruct(name).data(),
+				GetTextureStruct(name).c_str(),
+				texturePoint)))
+			{
+				std::cout << "[Error] Loading Texture<" << name << "> Failed!" << std::endl;	// コンソールにメッセージを出す
+				return E_FAIL;
+			}
+			else
+			{
+				std::cout << "[Information] Loading Texture<" << name << "> Success!" << std::endl;	// コンソールにメッセージを出す
+				return S_OK;
+			}
 		}
 		else
 		{
-			std::cout << "[Information] Loading Texture<" << name << "> Success!" << std::endl;	// コンソールにメッセージを出す
+			*texturePoint = NULL;
 			return S_OK;
 		}
-	}
-	else
-	{
-		*texturePoint = NULL;
-		return S_OK;
 	}
 }
 

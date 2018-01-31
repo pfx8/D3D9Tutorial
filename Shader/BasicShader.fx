@@ -47,7 +47,13 @@ PS_OUTPUT BasicPixelShader(VS_OUTPUT vsout, uniform bool withTextrue)
 
     if (withTextrue == true)
     {
-        pout.diffuse = tex2D(Samp, vsout.uvCoords) * alpha; // textrue sRGB * Alpha
+        pout.diffuse = tex2D(Samp, vsout.uvCoords + float2(0.5f, 0.5f)) * alpha; // textrue sRGB * Alpha
+
+        //float4 tex1 = tex2D(Samp, vsout.uvCoords) * alpha;                      // メインカラー
+        //float4 tex2 = tex2D(Samp, vsout.uvCoords + float2(0.2f, 0.2f)) * alpha; // 底の薄いカラー
+
+        //float temp = tex1.a * 0.9 - tex2.a * 0.02;
+        //pout.diffuse = float4(tex1.r + temp, tex1.g + temp, tex1.b + temp, 1.0f);
     }
     else
     {

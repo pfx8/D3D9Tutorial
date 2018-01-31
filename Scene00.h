@@ -24,8 +24,8 @@
 #include "Modules\SkyBox.h"
 #include "Shader\CelShader.h"
 
-#define ENEMY_MAX 1
-#define BULLET_MAX 10
+#define ENEMY_MAX 5
+#define BULLET_MAX 21
 
 //*****************************************************************************
 //

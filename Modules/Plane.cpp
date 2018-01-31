@@ -210,7 +210,6 @@ void Plane::Draw()
 
 	pDevice->SetVertexDeclaration(m_vertexDecl);							// 頂点宣言を設定
 	pDevice->SetStreamSource(0, m_vertexBuffer, 0, sizeof(VERTEX_3D));		// 頂点バッファをデバイスのデータストリームにバイナリ
-	//pDevice->SetFVF(FVF_VERTEX_3D);										// 頂点フォーマットの設定
 	pDevice->SetIndices(m_indexBuffer);										// 頂点インデックスバッファを設定
 	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, 0, 0, m_vertexNum, 0, m_polygonNum);	// ポリゴンの描画
 }
@@ -243,7 +242,42 @@ void Plane::Update()
 	{
 		for (int numX = 0; numX < (m_planeNum.x + 1); numX++)
 		{
-			VertexBuffer[numY * (int(m_planeNum.x) + 1) + numX].position.y = 0.8 * sinf(numY + numX + m_waveAngle);
+			VertexBuffer[numY * (int(m_planeNum.x) + 1) + numX].position.y = 1.4f * (sinf(numY + numX + m_waveAngle) + sinf(numY + m_waveAngle) + sinf(numX + m_waveAngle)) / 3.0f;
+
+			//VertexBuffer[numY * (int(m_planeNum.x) + 1) + numX].texturePosition.x += 0.4f * (sinf(m_waveAngle) + sinf(m_waveAngle * 1.2f) + sinf(m_waveAngle * 3.2f)) / 3.0f;
+			//VertexBuffer[numY * (int(m_planeNum.x) + 1) + numX].texturePosition.y += 0.4f * (sinf(m_waveAngle) + sinf(m_waveAngle * 1.2f) + sinf(m_waveAngle * 3.2f)) / 3.0f;
+			
+			/*VertexBuffer[numY * (int(m_planeNum.x) + 1) + numX].position.y = 
+				(sinf(m_waveAngle * 1.0f + time * 1.0f) + sinf(m_waveAngle * 2.3f + time * 1.5f) + sinf(m_waveAngle * 3.0f + time * 0.4f)) / 3.0f;*/
+
+			//// システム時間を取得
+			//float time = timeGetTime();
+			//time = time / 1000.0f; // 秒数になる
+
+			//// 時間により各頂点のZ座標を変更する
+			//D3DXVECTOR3 posTemp = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+			//posTemp.x = VertexBuffer[numY * (int(m_planeNum.x) + 1) + numX].position.x;
+			//posTemp.y = 0.0f;
+			//posTemp.z = VertexBuffer[numY * (int(m_planeNum.x) + 1) + numX].position.z;
+
+			//// sin関数により、平面を伸ばしたり、縮小したり
+			//posTemp.y += (sinf(posTemp.x * 1.0f / WAVE_SCALE + time * 1.0f) + sinf(posTemp.x * 2.3f / WAVE_SCALE + time * 1.5f) + sinf(posTemp.x * 3.3f / WAVE_SCALE + time * 0.4f)) / 3.0f;
+			//posTemp.y += (sinf(posTemp.z * 0.2f / WAVE_SCALE + time * 1.8f) + sinf(posTemp.z * 1.8f / WAVE_SCALE + time * 1.8f) + sinf(posTemp.z * 2.8f / WAVE_SCALE + time * 0.8f)) / 3.0f;
+			//
+			////VertexBuffer[numY * (int(m_planeNum.x) + 1) + numX].position.y = posTemp.y;
+			//VertexBuffer[numY * (int(m_planeNum.x) + 1) + numX].position.z += WAVE_STRENGTH * posTemp.y;
+
+			//// 時間によりUV座標を変更する
+			//D3DXVECTOR2 uvTemp = D3DXVECTOR2(0.0f, 0.0f);
+			//uvTemp = VertexBuffer[numY * (int(m_planeNum.x) + 1) + numX].texturePosition * 10.0f;
+			////uvTemp = VertexBuffer[numY * (int(m_planeNum.x) + 1) + numX].texturePosition;
+			//
+			//// sin関数により、UVを伸ばしたり、縮小したり
+			//uvTemp.y += 0.01f * (sin(uvTemp.x * 3.5f + time * 0.35f) + sin(uvTemp.x * 4.8f + time * 1.05f) + sin(uvTemp.x * 7.3f  + time * 0.45f)) / 3.0f;
+			//uvTemp.x += 0.12f * (sin(uvTemp.y * 4.0f + time * 0.5f ) + sin(uvTemp.y * 6.8f + time * 0.75f) + sin(uvTemp.y * 11.3f + time * 0.2f )) / 3.0f;
+			//uvTemp.y += 0.12f * (sin(uvTemp.x * 4.2f + time * 0.64f) + sin(uvTemp.x * 6.3f + time * 1.65f) + sin(uvTemp.x * 8.2f  + time * 0.45f)) / 3.0f;
+
+			//VertexBuffer[numY * (int(m_planeNum.x) + 1) + numX].texturePosition = uvTemp;
 		}
 	}
 }

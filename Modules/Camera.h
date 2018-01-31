@@ -24,7 +24,6 @@ class Camera
 {
 private:
 	DebugMessage*	m_message;
-
 public:
 	D3DXVECTOR3		m_rot;			// カメラの回転角度
 	// ベクトル
@@ -37,6 +36,9 @@ public:
 	// マトリックス
 	D3DXMATRIX	m_viewMatrix;		// ビューイング変換行列
 	D3DXMATRIX	m_projectionMatrix;	// プロジェクション変換行列
+
+	float		m_radius;			// カメラと船の半径
+	bool		m_isShooting;
 
 	Camera();
 	~Camera();
@@ -56,5 +58,6 @@ public:
 	void UpdateByPlayer(Character* player);	// キャラクターによってカメラを更新
 
 	void UpdateAngle(float angle);
+	void ChangeRadius(bool isPlus);
 };
 #endif // !_CAMERA_H_

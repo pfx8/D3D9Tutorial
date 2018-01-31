@@ -19,7 +19,7 @@ Character::Character()
 	m_rightVector = D3DXVECTOR3(1.0f, 0.0f, 0.0f);
 
 	m_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_rot = D3DXVECTOR3(0.0f, -23.0f /180.0f * D3DX_PI, 0.0f);
 	m_scl = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
 
 	m_waveAngle = 0.0f;
@@ -53,7 +53,8 @@ Character::~Character()
 void Character::PosToMessageAndMessageDraw(int row)
 {
 	//m_message->DrawPosMessage("Pos", m_pos, D3DXVECTOR2(0, float(row * 18)));
-	m_message->DrawPosMessage("Vec", m_lookVector, D3DXVECTOR2(0, float((row) * 18)));
+	m_message->DrawPosMessage("Pos", m_pos, D3DXVECTOR2(0, float((row) * 18)));
+	m_message->DrawPosMessage("Look", m_lookVector, D3DXVECTOR2(0, float((row + 1) * 18)));
 	//D3DXVec3Normalize(&m_lookVector, &m_lookVector);
 	//m_message->DrawPosMessage("Vec", m_lookVector, D3DXVECTOR2(0, float((row + 1) * 18)));
 }
@@ -160,12 +161,12 @@ void Character::RotationVecUp(float angle)
 	}
 
 	// 新しい右方向ベクトルを計算する
-	m_rightVector.x = cosf(m_rot.y);
-	m_rightVector.z = sinf(m_rot.y);
+	m_rightVector.x = cosf(m_rot.y + D3DX_PI / 2);
+	m_rightVector.z = sinf(m_rot.y + D3DX_PI / 2);
 
 	// 新しい注視方向ベクトルを計算する
-	m_lookVector.x = cosf(m_rot.y + D3DX_PI / 2);
-	m_lookVector.z = sinf(m_rot.y + D3DX_PI / 2);
+	m_lookVector.x = cosf(m_rot.y);
+	m_lookVector.z = sinf(m_rot.y);
 }
 
 //*****************************************************************************

@@ -19,6 +19,9 @@
     <Filter Include="Modules">
       <UniqueIdentifier>{a974e2b8-fd5a-4a7a-b852-281c89d174f2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader\Fx file">
+      <UniqueIdentifier>{cbfd9abb-ba96-4ac7-adb5-9ded95414462}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="modules\BoundingBox.cpp">
@@ -83,6 +86,15 @@
     </ClCompile>
     <ClCompile Include="Modules\SkyBox.cpp">
       <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneEnding.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneTitle.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader\RHWShader.cpp">
+      <Filter>Shader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -149,13 +161,25 @@
     <ClInclude Include="Modules\SkyBox.h">
       <Filter>Modules</Filter>
     </ClInclude>
+    <ClInclude Include="SceneEnding.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneTitle.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader\RHWShader.h">
+      <Filter>Shader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\BasicShader.fx">
-      <Filter>Shader</Filter>
+      <Filter>Shader\Fx file</Filter>
     </None>
     <None Include="Shader\CelShader.fx">
-      <Filter>Shader</Filter>
+      <Filter>Shader\Fx file</Filter>
+    </None>
+    <None Include="Shader\RHWShader.fx">
+      <Filter>Shader\Fx file</Filter>
     </None>
   </ItemGroup>
 </Project>

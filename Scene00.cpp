@@ -38,14 +38,14 @@ Scene00::Scene00()
 
 	// フィールド
 	m_fieldStone = new Plane;
-	m_fieldStone->InitPlane(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(20.0f, 20.0f), D3DXVECTOR2(50, 50));
+	m_fieldStone->InitPlane(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(34.0f, 34.0f), D3DXVECTOR2(50, 50));
 	m_resourcesManager->LoadTexture("fieldSea", &m_fieldStone->m_texture);
 	
 	// 主人公
 	m_ship = new Character;
 	m_ship->InitCharacter(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, -1.0f));
 	m_ship->m_boundingBox->InitBox(4, 7, 8, 0.1f);	// バウンディングボックスを初期化
-	m_resourcesManager->LoadMesh("ship2", m_ship->m_model); // モデルを初期化
+	m_resourcesManager->LoadMesh("ship", m_ship->m_model); // モデルを初期化
 
 	// 敵
 	m_enemyShip = new Enemy[ENEMY_MAX];
@@ -114,12 +114,19 @@ void Scene00::SetRenderState()
 	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);					// 光を使う
 	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);			// 裏面をカリング
 	pDevice->SetRenderState(D3DRS_ZENABLE, TRUE);					// Zバッファを使用
-	pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);			// αブレンドを行う
-	//pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-	//pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+	//pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);			// αブレンドを行う
+	pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 	pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);		// αソースカラーの指定
 	pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);	// αデスティネーションカラーの指定
 
+	//float Start = 0.5f;
+	//float End = 0.8f;
+	//pDevice->SetRenderState(D3DRS_FOGENABLE, TRUE);
+	////g_pDevice->SetRenderState(D3DRS_FOGCOLOR, *(DWORD *));
+	//pDevice->SetRenderState(D3DRS_FOGTABLEMODE, D3DFOG_EXP2);
+	//pDevice->SetRenderState(D3DRS_FOGSTART, *(DWORD *)(&Start));
+	//pDevice->SetRenderState(D3DRS_FOGEND, *(DWORD *)(&End));
 }
 
 //*****************************************************************************
@@ -208,11 +215,11 @@ void Scene00::Draw()
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	// バックバッファ＆Ｚバッファのクリア
-	pDevice->Clear(0, NULL, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER), D3DCOLOR_RGBA(153, 153, 153, 255), 1.0f, 0);
+	//pDevice->Clear(0, NULL, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER), D3DCOLOR_RGBA(162, 236, 238, 255), 1.0f, 0);
 
-	// Direct3Dによる描画の開始
-	if (SUCCEEDED(GetDevice()->BeginScene()))
-	{
+	//// Direct3Dによる描画の開始
+	//if (SUCCEEDED(GetDevice()->BeginScene()))
+	//{
 		// フィールド
 		{
 			// テクニックを設定
@@ -394,13 +401,10 @@ void Scene00::Draw()
 		
 		// デッバグメッセージ
 		m_ship->PosToMessageAndMessageDraw(0);
-		m_light->message(4);
+		m_camera->PosToMessageAndMessageDraw(3);
 
-		GetDevice()->EndScene();
-	}
+		/*GetDevice()->EndScene();*/
 
-	// バックバッファとフロントバッファの入れ替え
-	GetDevice()->Present(NULL, NULL, NULL, NULL);
 }
 
 
@@ -449,13 +453,28 @@ void Scene00::Control()
 		{
 			m_camera->RotationVecUp(-1.0f / 180.0f * D3DX_PI);
 		}
-		else if (GetKeyboardPress(DIK_I))	// カメラを上に移動
+		
+		if (GetKeyboardPress(DIK_I))	// カメラを上に移動
 		{
 			m_camera->MoveAlongVecLook(-0.5f);
 		}
 		else if (GetKeyboardPress(DIK_K))	// カメラを下に移動
 		{
 			m_camera->MoveAlongVecLook(0.5f);
+		}
+
+		if (GetKeyboardPress(DIK_O))	// カメラを上に移動
+		{
+			m_camera->ChangeRadius(true);
+		}
+		else if (GetKeyboardPress(DIK_P))	// カメラを下に移動
+		{
+			m_camera->ChangeRadius(false);
+		}
+
+		if (GetKeyboardTrigger(DIK_R))
+		{
+			m_camera->m_isShooting = !m_camera->m_isShooting;
 		}
 
 		// ライト操作更新
@@ -469,15 +488,33 @@ void Scene00::Control()
 		//}
 
 		// プレーヤー攻撃
-		if (GetKeyboardTrigger(DIK_SPACE))	// 攻撃
+ 		if (GetKeyboardTrigger(DIK_SPACE))	// 攻撃
 		{
+			int i = 0;
 			for (int count = 0; count < BULLET_MAX; count++)
 			{
 				if (m_bullet[count].m_isUse == false)
 				{
-					m_bullet[count].InitBulletByCharacter(m_ship->m_pos, m_ship->m_lookVector, true); // プレーヤーによって弾を初期化
-					break;
+					// プレーヤーによって弾を初期化,1回は3発で
+					switch (i)
+					{
+					case 0:
+						m_bullet[count].InitBulletByCharacter(m_ship->m_pos, -1 * m_ship->m_rightVector, true);
+						i++;
+						break;
+					case 1:
+						m_bullet[count].InitBulletByCharacter(m_ship->m_pos + m_ship->m_lookVector * 10.0f, -1 * m_ship->m_rightVector, true);
+						i++;
+						break;
+					case 2:
+						m_bullet[count].InitBulletByCharacter(m_ship->m_pos - m_ship->m_lookVector * 10.0f, -1 * m_ship->m_rightVector, true);
+						i++;
+						break;
+					}
 				}
+
+				if (i == 3)
+					break;
 			}
 		}
 

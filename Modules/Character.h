@@ -16,8 +16,8 @@
 #include "..\DebugMessage.h"
 #include "..\Shader\CelShader.h"
 
-#define MAX_BACK_COEFFICIENT	(-0.18f)
-#define MAX_FRONT_COEFFICIENT	(0.3f)
+#define MAX_BACK_COEFFICIENT	(-0.38f)
+#define MAX_FRONT_COEFFICIENT	(1.0f)
 
 typedef enum
 {

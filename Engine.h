@@ -72,14 +72,12 @@ typedef struct VERTEX_3D_2T
 	D3DXVECTOR2 texturePosition2;	// テクスチャ座標
 }VERTEX_2D_NT;
 
-//#define	FVF_VERTEX_3D_NT(D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE)
-//typedef struct VERTEX_3D_NT
-//{
-//	// 頂点楮体変数の順番は頂点フォーマットのと同じ
-//	D3DXVECTOR3 position;		// 頂点座標
-//	D3DXVECTOR3 normalVector;	// 法線ベクトル
-//	D3DCOLOR diffuse;			// 反射光
-//}VERTEX_3D_NT;
+// POSITTIONT専用、RHW頂点シェーダー処理をとび
+typedef struct VERTEX_2D
+{
+	D3DXVECTOR2 position;			// 頂点座標
+	D3DXVECTOR2 texturePosition;	// テクスチャ座標
+}VERTEX_2D;
 
 #define RELEASE_POINT(ptr)					{ if(ptr) { (ptr)->Release(); (ptr) = NULL; } }
 #define RELEASE_CLASS_POINT(ptr)			{ if(ptr) { delete ptr; } }

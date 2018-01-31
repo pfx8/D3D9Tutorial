@@ -13,8 +13,15 @@
 #include <map>
 
 #include "Scene00.h"
-#include "Scene01.h"
-#include "Scene02.h"
+#include "SceneTitle.h"
+#include "SceneEnding.h"
+
+enum SCENESTATE
+{
+	SS_Title = 1,
+	SS_Run,
+	SS_Ending,
+};
 
 //*****************************************************************************
 //
@@ -24,10 +31,15 @@
 class SceneManager
 {
 private:
-	Scene* m_scene;			// シーン
+	SceneTitle*		m_sceneTitle;
+	Scene00*		m_scene00;
+	SceneEnding*	m_sceneEnding;
+	SCENESTATE		m_sceneState;
+
+	std::map <SCENESTATE, Scene*> m_sceneList;
 
 	void ChangeRenderState();	// レンダリング状態更新
-	void ChooseScene();		// シーンを選択する
+	void ChooseScene(SCENESTATE state);		// シーンを選択する
 public:
 	SceneManager();
 	~SceneManager();
