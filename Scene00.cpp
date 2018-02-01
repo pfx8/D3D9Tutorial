@@ -33,12 +33,7 @@ Scene00::Scene00()
 	// スカイボックス
 	m_skyBox = new SkyBox;
 	m_skyBox->InitSkyBox(500.0f);
-	//m_resourcesManager->LoadTexture("skybox", &m_skyBox->m_texture);
-	m_resourcesManager->LoadTexture("front", &m_skyBox->m_texture[0]);
-	m_resourcesManager->LoadTexture("back", &m_skyBox->m_texture[1]);
-	m_resourcesManager->LoadTexture("left", &m_skyBox->m_texture[2]);
-	m_resourcesManager->LoadTexture("right", &m_skyBox->m_texture[3]);
-	m_resourcesManager->LoadTexture("top", &m_skyBox->m_texture[4]);
+	m_resourcesManager->LoadTexture("skybox", &m_skyBox->m_texture);
 
 	// フィールド
 	m_fieldStone = new Plane;

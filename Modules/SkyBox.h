@@ -32,7 +32,7 @@ private:
 
 public:
 	D3DXMATRIX						m_worldMatrix;	// ワールド変換マトリックス
-	LPDIRECT3DTEXTURE9				m_texture[5];	// テクスチャ配列
+	LPDIRECT3DTEXTURE9				m_texture;	// テクスチャ配列
 	
 	SkyBox();
 	~SkyBox();
