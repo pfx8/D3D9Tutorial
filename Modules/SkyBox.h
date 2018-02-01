@@ -15,8 +15,11 @@ typedef struct SKYBOXVERTEX
 	D3DXVECTOR2 uv;		// UV座標
 }SKYBOXVERTEX;
 
-#define FVF_SKYBOX (D3DFVF_XYZ | D3DFVF_TEX1)
-
+//*****************************************************************************
+//
+// クラス宣言
+//
+//*****************************************************************************
 class SkyBox
 {
 private:
@@ -29,12 +32,12 @@ private:
 
 public:
 	D3DXMATRIX						m_worldMatrix;	// ワールド変換マトリックス
-	LPDIRECT3DTEXTURE9				m_texture;	// テクスチャ配列
+	LPDIRECT3DTEXTURE9				m_texture[5];	// テクスチャ配列
 	
 	SkyBox();
 	~SkyBox();
 
 	HRESULT InitSkyBox(float length);			// スカイボックスを初期化
-	void SetWorldMatrix(D3DXMATRIX& mtxWorld);	// 臨時ーーワールド変換
-	void Draw(Shader *shader);					// スカイボックスを描画
+	void SetWorldMatrix();	// 臨時ーーワールド変換
+	void Draw();					// スカイボックスを描画
 };

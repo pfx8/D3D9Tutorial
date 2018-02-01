@@ -43,9 +43,8 @@ private:
 	Light*			m_light;		// ライト
 	Enemy*			m_enemyShip;	// 敵
 	Bullet*			m_bullet;		// 弾
-	//SkyBox*			m_skyBox;		// スカイボックス
+	SkyBox*			m_skyBox;		// スカイボックス
 
-	bool			m_isGameStart;
 public:
 	Scene00();
 	~Scene00();

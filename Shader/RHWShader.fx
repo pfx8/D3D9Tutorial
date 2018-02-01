@@ -1,24 +1,3 @@
-struct VS_OUTPUT
-{
-    float2 position	: POSITIONT;
-    float2 uvCoords	: TEXCOORD0; // テクスチャ座標
-};
-
-// 頂点シェーダー
-VS_OUTPUT RHWVertexShader(float2 pos : POSITIONT,
-                            float2 uvCoords : TEXCOORD0)
-{
-    VS_OUTPUT vout = (VS_OUTPUT) 0;
-
-    // 画面座標なので、ここで変更とか一切なし
-    vout.position = pos;
-    vout.uvCoords = uvCoords;
-
-	return vout;
-}
-
-
-//////////////////////////////////////////////////////////////////////////
 texture tex; // テクスチャ
 sampler Samp = // サンプラー
 sampler_state
@@ -44,7 +23,7 @@ technique RHWRender
 {
 	pass P0
 	{
-        //VertexShader = compile vs_3_0 RHWVertexShader();
+        // POSITIONTなので、頂点シェーダーの処理をされてない
         PixelShader = compile ps_3_0 RHWPixelShader();
     }
 }

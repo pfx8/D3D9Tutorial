@@ -167,9 +167,6 @@ void BoundingBox::SetWorldMatrix()
 	// 平行移動を反映
 	D3DXMatrixTranslation(&mtxTranslate, m_pos.x, m_pos.y, m_pos.z);
 	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTranslate);
-
-	// ワールドマトリクスの初期化
-	//pDevice->SetTransform(D3DTS_WORLD, &mtxWorld);
 }
 
 //*****************************************************************************

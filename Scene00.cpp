@@ -31,10 +31,14 @@ Scene00::Scene00()
 	m_celShader->m_effectPoint->SetVector(m_celShader->m_lightingHandle, &tempLight);
 
 	// スカイボックス
-	//m_skyBox = new SkyBox;
-	//m_skyBox->InitSkyBox(50.0f);
+	m_skyBox = new SkyBox;
+	m_skyBox->InitSkyBox(500.0f);
 	//m_resourcesManager->LoadTexture("skybox", &m_skyBox->m_texture);
-
+	m_resourcesManager->LoadTexture("front", &m_skyBox->m_texture[0]);
+	m_resourcesManager->LoadTexture("back", &m_skyBox->m_texture[1]);
+	m_resourcesManager->LoadTexture("left", &m_skyBox->m_texture[2]);
+	m_resourcesManager->LoadTexture("right", &m_skyBox->m_texture[3]);
+	m_resourcesManager->LoadTexture("top", &m_skyBox->m_texture[4]);
 
 	// フィールド
 	m_fieldStone = new Plane;
@@ -77,8 +81,6 @@ Scene00::Scene00()
 	m_camera = new Camera;
 	m_camera->InitCameraByPlayer(m_ship);
 
-	m_isGameStart = true;
-
 	std::cout << "[State] BoundingBox: " << std::boolalpha << m_ship->m_boundingBox->m_isBoundingBoxDraw << std::endl;
 }
 
@@ -96,6 +98,7 @@ Scene00::~Scene00()
 	RELEASE_CLASS_POINT(m_light);		// ライト
 	RELEASE_CLASS_POINT(m_shader);	// ベーシックシェーダー
 	RELEASE_CLASS_POINT(m_celShader);	// トゥ―ンシェーダー
+	RELEASE_CLASS_POINT(m_skyBox);	// トゥ―ンシェーダー
 
 	RELEASE_CLASS_ARRY_POINT(m_enemyShip); // エネミー
 	RELEASE_CLASS_ARRY_POINT(m_bullet); // エネミー
@@ -214,27 +217,105 @@ void Scene00::Draw()
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
-	// バックバッファ＆Ｚバッファのクリア
-	//pDevice->Clear(0, NULL, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER), D3DCOLOR_RGBA(162, 236, 238, 255), 1.0f, 0);
+	// フィールド
+	{
+		// テクニックを設定
+		m_shader->m_shaderHandle = m_shader->m_effectPoint->GetTechniqueByName("RenderWithTextrue");
+		m_shader->m_effectPoint->SetTechnique(m_shader->m_shaderHandle);
+			
+		// ワールド変換、ビューイング変換、プロジェクション変換マトリックス
+		m_shader->m_effectPoint->SetMatrix(m_shader->m_WMatrixHandle, &m_fieldStone->m_worldMatrix);	
+		D3DXMATRIX fieldVPmatrix = m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
+		m_shader->m_effectPoint->SetMatrix(m_shader->m_VPMatrixHandle, &fieldVPmatrix);
+			
+		// テクスチャ、アルファ値の設定
+		m_shader->m_effectPoint->SetTexture(m_shader->m_textureHandle, m_fieldStone->m_texture);
+		m_shader->m_effectPoint->SetFloat(m_shader->m_alphaHandle, 1.0f);
+			
+		// 描画
+		UINT passNum = 0;
+		m_shader->m_effectPoint->Begin(&passNum, 0);
+		// 各パスを実行する
+		for (int count = 0; count < passNum; count++)
+		{
+			m_shader->m_effectPoint->BeginPass(0);
+			m_fieldStone->Draw();
 
-	//// Direct3Dによる描画の開始
-	//if (SUCCEEDED(GetDevice()->BeginScene()))
-	//{
-		// フィールド
+			m_shader->m_effectPoint->EndPass();
+		}
+		m_shader->m_effectPoint->End();
+	}
+
+	// スカイボックス
+	{
+		// テクニックを設定
+		//m_shader->m_shaderHandle = m_shader->m_effectPoint->GetTechniqueByName("RenderWithTextrue");
+		//m_shader->m_effectPoint->SetTechnique(m_shader->m_shaderHandle);
+
+		//// ワールド変換、ビューイング変換、プロジェクション変換マトリックス
+		//m_skyBox->SetWorldMatrix();
+		//m_shader->m_effectPoint->SetMatrix(m_shader->m_WMatrixHandle, &m_skyBox->m_worldMatrix);
+		//D3DXMATRIX skyBoxVPmatrix = m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
+		//m_shader->m_effectPoint->SetMatrix(m_shader->m_VPMatrixHandle, &skyBoxVPmatrix);
+
+		//// テクスチャの設定
+		//m_shader->m_effectPoint->SetTexture(m_shader->m_textureHandle, m_skyBox->m_texture);
+
+		//// 描画
+		//UINT passNum = 0;
+		//m_shader->m_effectPoint->Begin(&passNum, 0);
+		//// 各パスを実行する
+		//for (int count = 0; count < passNum; count++)
+		//{
+		//	m_shader->m_effectPoint->BeginPass(0);
+		//	m_skyBox->Draw(m_shader);
+
+		//	m_shader->m_effectPoint->EndPass();
+		//}
+		//m_shader->m_effectPoint->End();
+	}
+
+	// オブジェクト種類番号
+	int ship = 0, enemy = 1, cannon = 2, boundingBox = 3;
+
+	// ship
+	{
+		// モデル
+		m_celShader->m_effectPoint->SetTechnique(m_celShader->m_celShaderHandle);	// テクニックを設定
+		UINT passNum = 0;	// パスの数
+
+		m_ship->SetWorldMatrix();
+		D3DXMATRIX shipWVPmatrix = m_ship->m_worldMatrix * m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
+		m_celShader->m_effectPoint->SetMatrix(m_celShader->m_WVPMatrixHandle, &shipWVPmatrix);	// WVPマトリックス
+
+		m_celShader->m_effectPoint->SetInt(m_celShader->m_typeHandle, ship);
+
+		m_celShader->m_effectPoint->Begin(&passNum, 0);
+		for (int count = 0; count < passNum; count++)	// 各パスによって描画する
+		{
+			m_celShader->m_effectPoint->BeginPass(count);
+
+			m_ship->Draw(m_celShader);
+
+			m_celShader->m_effectPoint->EndPass();
+		}
+		m_celShader->m_effectPoint->End();
+
+		// バウンディングボックス
+		if (m_ship->m_boundingBox->m_isBoundingBoxDraw == true)
 		{
 			// テクニックを設定
-			m_shader->m_shaderHandle = m_shader->m_effectPoint->GetTechniqueByName("RenderWithTextrue");
+			m_shader->m_shaderHandle = m_shader->m_effectPoint->GetTechniqueByName("RenderWithoutTextrue");
 			m_shader->m_effectPoint->SetTechnique(m_shader->m_shaderHandle);
-			
+
 			// ワールド変換、ビューイング変換、プロジェクション変換マトリックス
-			m_shader->m_effectPoint->SetMatrix(m_shader->m_WMatrixHandle, &m_fieldStone->m_worldMatrix);	
-			D3DXMATRIX fieldVPmatrix = m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
-			m_shader->m_effectPoint->SetMatrix(m_shader->m_VPMatrixHandle, &fieldVPmatrix);
-			
-			// テクスチャ、アルファ値の設定
-			m_shader->m_effectPoint->SetTexture(m_shader->m_textureHandle, m_fieldStone->m_texture);
-			m_shader->m_effectPoint->SetFloat(m_shader->m_alphaHandle, 1.0f);
-			
+			m_shader->m_effectPoint->SetMatrix(m_shader->m_WMatrixHandle, &m_ship->m_worldMatrix);
+			D3DXMATRIX VPmatrix = m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
+			m_shader->m_effectPoint->SetMatrix(m_shader->m_VPMatrixHandle, &VPmatrix);
+
+			// アルファ値の設定(テクスチャ無し)
+			m_shader->m_effectPoint->SetFloat(m_shader->m_alphaHandle, 0.5f);
+
 			// 描画
 			UINT passNum = 0;
 			m_shader->m_effectPoint->Begin(&passNum, 0);
@@ -242,168 +323,79 @@ void Scene00::Draw()
 			for (int count = 0; count < passNum; count++)
 			{
 				m_shader->m_effectPoint->BeginPass(0);
-				m_fieldStone->Draw();
+
+				m_ship->m_boundingBox->Draw();
 
 				m_shader->m_effectPoint->EndPass();
 			}
 			m_shader->m_effectPoint->End();
-		}
+		}		
+	}
 
-		// スカイボックス
-		//{
-		//	// テクニックを設定
-		//	m_shader->m_effectPoint->SetTechnique(m_shader->m_basicShaderHandle);
-
-		//	// ワールド変換、ビューイング変換、プロジェクション変換マトリックス
-		//	SetWorldMatrix(&m_skyBox->m_worldMatrix);
-		//	m_shader->m_effectPoint->SetMatrix(m_shader->m_WMatrixHandle, &m_skyBox->m_worldMatrix);
-		//	D3DXMATRIX skyBoxVPmatrix = m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
-		//	m_shader->m_effectPoint->SetMatrix(m_shader->m_VPMatrixHandle, &skyBoxVPmatrix);
-
-		//	// テクスチャの設定
-		//	m_shader->m_effectPoint->SetTexture(m_shader->m_texture1Handle, m_skyBox->m_texture);
-
-		//	// 描画
-		//	UINT passNum = 0;
-		//	m_shader->m_effectPoint->Begin(&passNum, 0);
-		//	// 各パスを実行する
-		//	for (int count = 0; count < passNum; count++)
-		//	{
-		//		m_shader->m_effectPoint->BeginPass(0);
-		//		m_skyBox->Draw(m_shader);
-
-		//		m_shader->m_effectPoint->EndPass();
-		//	}
-		//	m_shader->m_effectPoint->End();
-		//}
-
-		// オブジェクト種類番号
-		int ship = 0, enemy = 1, cannon = 2, boundingBox = 3;
-
-		// ship
+	// エネミー
+	{
+		for (int count1 = 0; count1 < ENEMY_MAX; count1++)
 		{
-			// モデル
-			m_celShader->m_effectPoint->SetTechnique(m_celShader->m_celShaderHandle);	// テクニックを設定
-			UINT passNum = 0;	// パスの数
-
-			m_ship->SetWorldMatrix();
-			D3DXMATRIX shipWVPmatrix = m_ship->m_worldMatrix * m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
-			m_celShader->m_effectPoint->SetMatrix(m_celShader->m_WVPMatrixHandle, &shipWVPmatrix);	// WVPマトリックス
-
-			m_celShader->m_effectPoint->SetInt(m_celShader->m_typeHandle, ship);
-
-			m_celShader->m_effectPoint->Begin(&passNum, 0);
-			for (int count = 0; count < passNum; count++)	// 各パスによって描画する
+			if (m_enemyShip[count1].m_isLife == true)
 			{
-				m_celShader->m_effectPoint->BeginPass(count);
+				m_celShader->m_effectPoint->SetTechnique(m_celShader->m_celShaderHandle);	// テクニックを設定
+				UINT passNum = 0;	// パスの数
 
-				m_ship->Draw(m_celShader);
+				m_enemyShip[count1].SetWorldMatrix();
+				D3DXMATRIX enemyWVPmatrix = m_enemyShip[count1].m_worldMatrix * m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
+				m_celShader->m_effectPoint->SetMatrix(m_celShader->m_WVPMatrixHandle, &enemyWVPmatrix);	// WVPマトリックス
 
-				m_celShader->m_effectPoint->EndPass();
-			}
-			m_celShader->m_effectPoint->End();
+				bool isShip = true;
+				m_celShader->m_effectPoint->SetInt(m_celShader->m_typeHandle, enemy);
 
-			// バウンディングボックス
-			if (m_ship->m_boundingBox->m_isBoundingBoxDraw == true)
-			{
-				// テクニックを設定
-				m_shader->m_shaderHandle = m_shader->m_effectPoint->GetTechniqueByName("RenderWithoutTextrue");
-				m_shader->m_effectPoint->SetTechnique(m_shader->m_shaderHandle);
-
-				// ワールド変換、ビューイング変換、プロジェクション変換マトリックス
-				m_shader->m_effectPoint->SetMatrix(m_shader->m_WMatrixHandle, &m_ship->m_worldMatrix);
-				D3DXMATRIX VPmatrix = m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
-				m_shader->m_effectPoint->SetMatrix(m_shader->m_VPMatrixHandle, &VPmatrix);
-
-				// アルファ値の設定(テクスチャ無し)
-				m_shader->m_effectPoint->SetFloat(m_shader->m_alphaHandle, 0.5f);
-
-				// 描画
-				UINT passNum = 0;
-				m_shader->m_effectPoint->Begin(&passNum, 0);
-				// 各パスを実行する
-				for (int count = 0; count < passNum; count++)
+				m_celShader->m_effectPoint->Begin(&passNum, 0);
+				for (int count = 0; count < passNum; count++)	// 各パスによって描画する
 				{
-					m_shader->m_effectPoint->BeginPass(0);
+					m_celShader->m_effectPoint->BeginPass(count);
 
-					m_ship->m_boundingBox->Draw();
+					m_enemyShip[count1].Draw(m_celShader);
 
-					m_shader->m_effectPoint->EndPass();
+					m_celShader->m_effectPoint->EndPass();
 				}
-				m_shader->m_effectPoint->End();
-			}		
-		}
-
-		// エネミー
-		{
-			for (int count1 = 0; count1 < ENEMY_MAX; count1++)
-			{
-				if (m_enemyShip[count1].m_isLife == true)
-				{
-					m_celShader->m_effectPoint->SetTechnique(m_celShader->m_celShaderHandle);	// テクニックを設定
-					UINT passNum = 0;	// パスの数
-
-					m_enemyShip[count1].SetWorldMatrix();
-					D3DXMATRIX enemyWVPmatrix = m_enemyShip[count1].m_worldMatrix * m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
-					m_celShader->m_effectPoint->SetMatrix(m_celShader->m_WVPMatrixHandle, &enemyWVPmatrix);	// WVPマトリックス
-
-					bool isShip = true;
-					m_celShader->m_effectPoint->SetInt(m_celShader->m_typeHandle, enemy);
-
-					m_celShader->m_effectPoint->Begin(&passNum, 0);
-					for (int count = 0; count < passNum; count++)	// 各パスによって描画する
-					{
-						m_celShader->m_effectPoint->BeginPass(count);
-
-						m_enemyShip[count1].Draw(m_celShader);
-
-						m_celShader->m_effectPoint->EndPass();
-					}
-					m_celShader->m_effectPoint->End();
-				}
+				m_celShader->m_effectPoint->End();
 			}
 		}
+	}
 
-		// 弾
+	// 弾
+	{
+		for (int count1 = 0; count1 < BULLET_MAX; count1++)
 		{
-			for (int count1 = 0; count1 < BULLET_MAX; count1++)
+			if (m_bullet[count1].m_isUse == true)
 			{
-				if (m_bullet[count1].m_isUse == true)
+				m_celShader->m_effectPoint->SetTechnique(m_celShader->m_celShaderHandle);	// テクニックを設定
+				UINT passNum = 0;	// パスの数
+
+				m_bullet[count1].SetWorldMatrix();
+				D3DXMATRIX bulletWVPmatrix = m_bullet[count1].m_worldMatrix * m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
+				m_celShader->m_effectPoint->SetMatrix(m_celShader->m_WVPMatrixHandle, &bulletWVPmatrix);	// WVPマトリックス
+
+				bool isShip = false;
+				m_celShader->m_effectPoint->SetInt(m_celShader->m_typeHandle, cannon);
+
+				m_celShader->m_effectPoint->Begin(&passNum, 0);
+				for (int count = 0; count < passNum; count++)	// 各パスによって描画する
 				{
-					m_celShader->m_effectPoint->SetTechnique(m_celShader->m_celShaderHandle);	// テクニックを設定
-					UINT passNum = 0;	// パスの数
+					m_celShader->m_effectPoint->BeginPass(count);
 
-					m_bullet[count1].SetWorldMatrix();
-					D3DXMATRIX bulletWVPmatrix = m_bullet[count1].m_worldMatrix * m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
-					m_celShader->m_effectPoint->SetMatrix(m_celShader->m_WVPMatrixHandle, &bulletWVPmatrix);	// WVPマトリックス
+					m_bullet[count1].Draw(m_celShader);
 
-					bool isShip = false;
-					m_celShader->m_effectPoint->SetInt(m_celShader->m_typeHandle, cannon);
-
-					m_celShader->m_effectPoint->Begin(&passNum, 0);
-					for (int count = 0; count < passNum; count++)	// 各パスによって描画する
-					{
-						m_celShader->m_effectPoint->BeginPass(count);
-
-						m_bullet[count1].Draw(m_celShader);
-
-						m_celShader->m_effectPoint->EndPass();
-					}
-					m_celShader->m_effectPoint->End();
+					m_celShader->m_effectPoint->EndPass();
 				}
+				m_celShader->m_effectPoint->End();
 			}
 		}
-
-		if (m_isGameStart == false)
-		{
-			
-		}
+	}
 		
-		// デッバグメッセージ
-		m_ship->PosToMessageAndMessageDraw(0);
-		m_camera->PosToMessageAndMessageDraw(3);
+	// デッバグメッセージ
+	m_ship->PosToMessageAndMessageDraw(0);
+	m_camera->PosToMessageAndMessageDraw(3);
 
-		/*GetDevice()->EndScene();*/
 
 }
 
@@ -415,135 +407,125 @@ void Scene00::Draw()
 //*****************************************************************************
 void Scene00::Control()
 {
-	if (m_isGameStart == true)
+	// プレーヤー操作 逆
+	if (GetKeyboardTrigger(DIK_S))	// 前に進む
 	{
-		// プレーヤー操作 逆
-		if (GetKeyboardTrigger(DIK_S))	// 前に進む
-		{
-			//m_camera->m_posEye += m_ship->MoveAlongVecLook(-0.5f);
-			//m_ship->MoveAlongVecLook(-0.25f);
-			m_ship->ChangeLever(LL_FRONT);
-		}
-		if (GetKeyboardTrigger(DIK_W))	// 後ろに進む
-		{
-			//m_camera->m_posEye += m_ship->MoveAlongVecLook(-0.5f);
-			//m_ship->MoveAlongVecLook(-0.25f);
-			m_ship->ChangeLever(LL_BACK);
-		}
+		//m_camera->m_posEye += m_ship->MoveAlongVecLook(-0.5f);
+		//m_ship->MoveAlongVecLook(-0.25f);
+		m_ship->ChangeLever(LL_FRONT);
+	}
+	if (GetKeyboardTrigger(DIK_W))	// 後ろに進む
+	{
+		//m_camera->m_posEye += m_ship->MoveAlongVecLook(-0.5f);
+		//m_ship->MoveAlongVecLook(-0.25f);
+		m_ship->ChangeLever(LL_BACK);
+	}
 
-		if (GetKeyboardPress(DIK_A))	// 左回転
-		{
-			// 更新キャラクターをカメラの回転角度
-			m_ship->RotationVecUp(0.5f / 180.0f * D3DX_PI);
-			//m_camera->UpdateAngle(-0.5f / 180.0f * D3DX_PI);
-		}
-		else if (GetKeyboardPress(DIK_D))	// 右回転
-		{
-			// 更新キャラクターをカメラの回転角度
-			m_ship->RotationVecUp(-0.5f / 180.0f * D3DX_PI);
-			//m_camera->UpdateAngle(0.5f / 180.0f * D3DX_PI);
-		}
+	if (GetKeyboardPress(DIK_A))	// 左回転
+	{
+		// 更新キャラクターをカメラの回転角度
+		m_ship->RotationVecUp(0.5f / 180.0f * D3DX_PI);
+		//m_camera->UpdateAngle(-0.5f / 180.0f * D3DX_PI);
+	}
+	else if (GetKeyboardPress(DIK_D))	// 右回転
+	{
+		// 更新キャラクターをカメラの回転角度
+		m_ship->RotationVecUp(-0.5f / 180.0f * D3DX_PI);
+		//m_camera->UpdateAngle(0.5f / 180.0f * D3DX_PI);
+	}
 
-		//　カメラ操作
-		if (GetKeyboardPress(DIK_J))	// 左回転
-		{
-			m_camera->RotationVecUp(1.0f / 180.0f * D3DX_PI);
-		}
-		else if (GetKeyboardPress(DIK_L))	// 右回転
-		{
-			m_camera->RotationVecUp(-1.0f / 180.0f * D3DX_PI);
-		}
+	//　カメラ操作
+	if (GetKeyboardPress(DIK_J))	// 左回転
+	{
+		m_camera->RotationVecUp(1.0f / 180.0f * D3DX_PI);
+	}
+	else if (GetKeyboardPress(DIK_L))	// 右回転
+	{
+		m_camera->RotationVecUp(-1.0f / 180.0f * D3DX_PI);
+	}
 		
-		if (GetKeyboardPress(DIK_I))	// カメラを上に移動
-		{
-			m_camera->MoveAlongVecLook(-0.5f);
-		}
-		else if (GetKeyboardPress(DIK_K))	// カメラを下に移動
-		{
-			m_camera->MoveAlongVecLook(0.5f);
-		}
+	if (GetKeyboardPress(DIK_I))	// カメラを上に移動
+	{
+		m_camera->MoveAlongVecLook(-0.5f);
+	}
+	else if (GetKeyboardPress(DIK_K))	// カメラを下に移動
+	{
+		m_camera->MoveAlongVecLook(0.5f);
+	}
 
-		if (GetKeyboardPress(DIK_O))	// カメラを上に移動
-		{
-			m_camera->ChangeRadius(true);
-		}
-		else if (GetKeyboardPress(DIK_P))	// カメラを下に移動
-		{
-			m_camera->ChangeRadius(false);
-		}
+	if (GetKeyboardPress(DIK_O))	// カメラを上に移動
+	{
+		m_camera->ChangeRadius(true);
+	}
+	else if (GetKeyboardPress(DIK_P))	// カメラを下に移動
+	{
+		m_camera->ChangeRadius(false);
+	}
 
-		if (GetKeyboardTrigger(DIK_R))
-		{
-			m_camera->m_isShooting = !m_camera->m_isShooting;
-		}
+	if (GetKeyboardTrigger(DIK_R))
+	{
+		m_camera->m_isShooting = !m_camera->m_isShooting;
+	}
 
-		// ライト操作更新
-		//if (GetKeyboardPress(DIK_Z))	// key Z
-		//{
-		//	m_light->RotationY(0.5f / 180.0f * D3DX_PI);
-		//}
-		//if (GetKeyboardPress(DIK_X))	// key X
-		//{
-		//	m_light->RotationY(-0.5f / 180.0f * D3DX_PI);
-		//}
+	// ライト操作更新
+	//if (GetKeyboardPress(DIK_Z))	// key Z
+	//{
+	//	m_light->RotationY(0.5f / 180.0f * D3DX_PI);
+	//}
+	//if (GetKeyboardPress(DIK_X))	// key X
+	//{
+	//	m_light->RotationY(-0.5f / 180.0f * D3DX_PI);
+	//}
 
-		// プレーヤー攻撃
- 		if (GetKeyboardTrigger(DIK_SPACE))	// 攻撃
+	// プレーヤー攻撃
+ 	if (GetKeyboardTrigger(DIK_SPACE))	// 攻撃
+	{
+		int i = 0;
+		for (int count = 0; count < BULLET_MAX; count++)
 		{
-			int i = 0;
-			for (int count = 0; count < BULLET_MAX; count++)
+			if (m_bullet[count].m_isUse == false)
 			{
-				if (m_bullet[count].m_isUse == false)
+				// プレーヤーによって弾を初期化,1回は3発で
+				switch (i)
 				{
-					// プレーヤーによって弾を初期化,1回は3発で
-					switch (i)
-					{
-					case 0:
-						m_bullet[count].InitBulletByCharacter(m_ship->m_pos, -1 * m_ship->m_rightVector, true);
-						i++;
-						break;
-					case 1:
-						m_bullet[count].InitBulletByCharacter(m_ship->m_pos + m_ship->m_lookVector * 10.0f, -1 * m_ship->m_rightVector, true);
-						i++;
-						break;
-					case 2:
-						m_bullet[count].InitBulletByCharacter(m_ship->m_pos - m_ship->m_lookVector * 10.0f, -1 * m_ship->m_rightVector, true);
-						i++;
-						break;
-					}
-				}
-
-				if (i == 3)
+				case 0:
+					m_bullet[count].InitBulletByCharacter(m_ship->m_pos, -1 * m_ship->m_rightVector, true);
+					i++;
 					break;
+				case 1:
+					m_bullet[count].InitBulletByCharacter(m_ship->m_pos + m_ship->m_lookVector * 10.0f, -1 * m_ship->m_rightVector, true);
+					i++;
+					break;
+				case 2:
+					m_bullet[count].InitBulletByCharacter(m_ship->m_pos - m_ship->m_lookVector * 10.0f, -1 * m_ship->m_rightVector, true);
+					i++;
+					break;
+				}
 			}
-		}
 
-		// バウンディングボックス操作更新
-		if (GetKeyboardTrigger(DIK_Q))	// バウンディングボックスをコントロール
-		{
-			// プレーヤー
-			m_ship->m_boundingBox->m_isBoundingBoxDraw = !m_ship->m_boundingBox->m_isBoundingBoxDraw;	// バウンディングボックスをコントロール
-			
-			// エネミー
-			for (int count = 0; count < ENEMY_MAX; count++)
-			{
-				m_enemyShip[count].m_boundingBox->m_isBoundingBoxDraw = !m_enemyShip[count].m_boundingBox->m_isBoundingBoxDraw;
-			}
-			
-			// 弾
-			for (int count = 0; count < BULLET_MAX; count++)
-			{
-				m_bullet[count].m_boundingBox->m_isBoundingBoxDraw = !m_bullet[count].m_boundingBox->m_isBoundingBoxDraw;
-			}
-			std::cout << "[State] BoundingBox: " << std::boolalpha << m_ship->m_boundingBox->m_isBoundingBoxDraw << std::endl;
+			if (i == 3)
+				break;
 		}
 	}
-	else
+
+	// バウンディングボックス操作更新
+	if (GetKeyboardTrigger(DIK_3))	// バウンディングボックスをコントロール
 	{
-		if (GetKeyboardTrigger(DIK_RETURN))	// key Enter
+		// プレーヤー
+		m_ship->m_boundingBox->m_isBoundingBoxDraw = !m_ship->m_boundingBox->m_isBoundingBoxDraw;	// バウンディングボックスをコントロール
+			
+		// エネミー
+		for (int count = 0; count < ENEMY_MAX; count++)
 		{
-			m_isGameStart = true;
+			m_enemyShip[count].m_boundingBox->m_isBoundingBoxDraw = !m_enemyShip[count].m_boundingBox->m_isBoundingBoxDraw;
 		}
+			
+		// 弾
+		for (int count = 0; count < BULLET_MAX; count++)
+		{
+			m_bullet[count].m_boundingBox->m_isBoundingBoxDraw = !m_bullet[count].m_boundingBox->m_isBoundingBoxDraw;
+		}
+		std::cout << "[State] BoundingBox: " << std::boolalpha << m_ship->m_boundingBox->m_isBoundingBoxDraw << std::endl;
 	}
 }
 
