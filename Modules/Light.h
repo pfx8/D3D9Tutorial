@@ -19,15 +19,11 @@
 class Light
 {
 private:
-	D3DXVECTOR3	m_rot;				// 光方向の回転角度
-	DebugMessage* mes;
+
 public:
-	D3DXVECTOR3	m_directionlight;		// 光方向ベクトル
+	D3DLIGHT9			m_light;  // ここでは平行光源
 
 	Light();	
 	~Light();
-
-	void RotationY(float angle);		// Y方向のベクトルにして回転
-	void message(int row);
 };
 #endif // !_LIGHT_H_

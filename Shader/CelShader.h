@@ -17,13 +17,14 @@ private:
 	void GetShaderParameter();		// シェーダーを使うために、各設定をする
 
 public:
-	ID3DXEffect* m_effectPoint;		// エフェクト(複数レンダリング保存される)
-	D3DXHANDLE	m_celShaderHandle;	// エフェクトのテクニック
-	D3DXHANDLE	m_outLineHandle;		// エフェクトのテクニック
-	D3DXHANDLE	m_WVPMatrixHandle;	// 変換行列
-	D3DXHANDLE	m_lightingHandle;		// 光の方向
-	D3DXHANDLE	m_typeHandle;		// オブジェクトの種類を判断
-	//D3DXHANDLE	m_textureHandle;		// テクスチャ
+	ID3DXEffect*	m_effectPoint;		// エフェクト(複数レンダリング保存される)
+	D3DXHANDLE		m_celShaderHandle;	// エフェクトのテクニック
+	D3DXHANDLE		m_outLineHandle;	// エフェクトのテクニック
+	D3DXHANDLE		m_WMatrixHandle;	// ワールド変換
+	D3DXHANDLE		m_VPMatrixHandle;	// ビューイング変換とプロジェクション変換
+	D3DXHANDLE		m_lightingHandle;	// 光の方向
+	D3DXHANDLE		m_typeHandle;		// オブジェクトの種類を判断
+	//D3DXHANDLE	m_textureHandle;	// テクスチャ
 
 	CelShader();
 	~CelShader();

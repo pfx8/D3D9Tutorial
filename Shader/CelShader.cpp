@@ -16,7 +16,8 @@ CelShader::CelShader()
 {
 	m_effectPoint = NULL;
 	m_celShaderHandle = NULL;
-	m_WVPMatrixHandle = NULL;
+	m_WMatrixHandle = NULL;
+	m_VPMatrixHandle = NULL;
 	m_lightingHandle = NULL;
 	//m_textureHandle = NULL;
 }
@@ -104,7 +105,8 @@ void CelShader::GetShaderParameter()
 	m_outLineHandle = m_effectPoint->GetTechniqueByName("Outline");
 
 	// シェーダー中のグローバル変数を取得
-	m_WVPMatrixHandle = m_effectPoint->GetParameterByName(0, "WVPMatrix");
+	m_WMatrixHandle = m_effectPoint->GetParameterByName(0, "WMatrix");
+	m_VPMatrixHandle = m_effectPoint->GetParameterByName(0, "VPMatrix");
 	m_lightingHandle = m_effectPoint->GetParameterByName(0, "LightDirection");
 	m_typeHandle = m_effectPoint->GetParameterByName(0, "type");
 	//m_textureHandle = m_effectPoint->GetParameterByName(0, "Tex");

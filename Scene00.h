@@ -40,7 +40,7 @@ private:
 	Shader*			m_shader;		// ベーシックシェーダー
 	Plane*			m_fieldStone;	// フィールド
 	Character*		m_ship;			// プレーヤー
-	Light*			m_light;		// ライト
+	Light*			m_directionLight;		// ライト
 	Enemy*			m_enemyShip;	// 敵
 	Bullet*			m_bullet;		// 弾
 	SkyBox*			m_skyBox;		// スカイボックス

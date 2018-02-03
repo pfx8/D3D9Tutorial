@@ -26,9 +26,9 @@ Scene00::Scene00()
 	m_celShader->InitShader();
 
 	// ライト
-	m_light = new Light;
-	D3DXVECTOR4 tempLight = D3DXVECTOR4(m_light->m_directionlight.x, m_light->m_directionlight.y, m_light->m_directionlight.z, 1.0f);
-	m_celShader->m_effectPoint->SetVector(m_celShader->m_lightingHandle, &tempLight);
+	m_directionLight = new Light;
+	D3DXVECTOR4 tempLight = D3DXVECTOR4(m_directionLight->m_light.Direction.x, m_directionLight->m_light.Direction.y, m_directionLight->m_light.Direction.z, 1.0f);
+	m_celShader->m_effectPoint->SetValue(m_celShader->m_lightingHandle, tempLight, sizeof(D3DXVECTOR3));
 
 	// スカイボックス
 	m_skyBox = new SkyBox;
@@ -90,7 +90,7 @@ Scene00::~Scene00()
 	RELEASE_CLASS_POINT(m_fieldStone);	// フィールド
 	RELEASE_CLASS_POINT(m_ship);		// プレーヤー
 	RELEASE_CLASS_POINT(m_camera);	// カメラ
-	RELEASE_CLASS_POINT(m_light);		// ライト
+	RELEASE_CLASS_POINT(m_directionLight);		// ライト
 	RELEASE_CLASS_POINT(m_shader);	// ベーシックシェーダー
 	RELEASE_CLASS_POINT(m_celShader);	// トゥ―ンシェーダー
 	RELEASE_CLASS_POINT(m_skyBox);	// トゥ―ンシェーダー
@@ -109,7 +109,7 @@ void Scene00::SetRenderState()
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	// レンダーステートパラメータの設定
-	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);					// 光を使う
+	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);					// 光を使う
 	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);			// 裏面をカリング
 	pDevice->SetRenderState(D3DRS_ZENABLE, TRUE);					// Zバッファを使用
 	//pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);			// αブレンドを行う
@@ -192,8 +192,6 @@ void Scene00::Update()
 			}
 		}
 	}
-
-	//m_celShader->UpdateLight(m_light->m_directionlight);	// 光ベクトル更新
 	
 	// 揺れる状況
 	m_ship->Update(m_fieldStone->m_waveAngle);
@@ -277,14 +275,15 @@ void Scene00::Draw()
 	{
 		// モデル
 		m_celShader->m_effectPoint->SetTechnique(m_celShader->m_celShaderHandle);	// テクニックを設定
-		UINT passNum = 0;	// パスの数
 
 		m_ship->SetWorldMatrix();
-		D3DXMATRIX shipWVPmatrix = m_ship->m_worldMatrix * m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
-		m_celShader->m_effectPoint->SetMatrix(m_celShader->m_WVPMatrixHandle, &shipWVPmatrix);	// WVPマトリックス
+		m_celShader->m_effectPoint->SetMatrix(m_celShader->m_WMatrixHandle, &m_ship->m_worldMatrix);	// WVPマトリックス
+		D3DXMATRIX shipVPmatrix = m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
+		m_celShader->m_effectPoint->SetMatrix(m_celShader->m_VPMatrixHandle, &shipVPmatrix);	// WVPマトリックス
 
 		m_celShader->m_effectPoint->SetInt(m_celShader->m_typeHandle, ship);
 
+		UINT passNum = 0;	// パスの数
 		m_celShader->m_effectPoint->Begin(&passNum, 0);
 		for (int count = 0; count < passNum; count++)	// 各パスによって描画する
 		{
@@ -334,15 +333,16 @@ void Scene00::Draw()
 			if (m_enemyShip[count1].m_isLife == true)
 			{
 				m_celShader->m_effectPoint->SetTechnique(m_celShader->m_celShaderHandle);	// テクニックを設定
-				UINT passNum = 0;	// パスの数
 
 				m_enemyShip[count1].SetWorldMatrix();
-				D3DXMATRIX enemyWVPmatrix = m_enemyShip[count1].m_worldMatrix * m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
-				m_celShader->m_effectPoint->SetMatrix(m_celShader->m_WVPMatrixHandle, &enemyWVPmatrix);	// WVPマトリックス
+				m_celShader->m_effectPoint->SetMatrix(m_celShader->m_WMatrixHandle, &m_enemyShip[count1].m_worldMatrix);
+				D3DXMATRIX enemyVPmatrix = m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
+				m_celShader->m_effectPoint->SetMatrix(m_celShader->m_VPMatrixHandle, &enemyVPmatrix);
 
 				bool isShip = true;
 				m_celShader->m_effectPoint->SetInt(m_celShader->m_typeHandle, enemy);
 
+				UINT passNum = 0;	// パスの数
 				m_celShader->m_effectPoint->Begin(&passNum, 0);
 				for (int count = 0; count < passNum; count++)	// 各パスによって描画する
 				{
@@ -364,15 +364,16 @@ void Scene00::Draw()
 			if (m_bullet[count1].m_isUse == true)
 			{
 				m_celShader->m_effectPoint->SetTechnique(m_celShader->m_celShaderHandle);	// テクニックを設定
-				UINT passNum = 0;	// パスの数
 
 				m_bullet[count1].SetWorldMatrix();
-				D3DXMATRIX bulletWVPmatrix = m_bullet[count1].m_worldMatrix * m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
-				m_celShader->m_effectPoint->SetMatrix(m_celShader->m_WVPMatrixHandle, &bulletWVPmatrix);	// WVPマトリックス
+				m_celShader->m_effectPoint->SetMatrix(m_celShader->m_WMatrixHandle, &m_bullet[count1].m_worldMatrix);
+				D3DXMATRIX bulletVPmatrix = m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
+				m_celShader->m_effectPoint->SetMatrix(m_celShader->m_VPMatrixHandle, &bulletVPmatrix);
 
 				bool isShip = false;
 				m_celShader->m_effectPoint->SetInt(m_celShader->m_typeHandle, cannon);
 
+				UINT passNum = 0;	// パスの数
 				m_celShader->m_effectPoint->Begin(&passNum, 0);
 				for (int count = 0; count < passNum; count++)	// 各パスによって描画する
 				{

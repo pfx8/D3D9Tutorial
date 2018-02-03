@@ -14,9 +14,20 @@
 //*****************************************************************************
 Light::Light()
 {
-	m_directionlight = D3DXVECTOR3(1.0f, 0.0f, 0.0f);
+	// 平行光源を初期化
+	::ZeroMemory(&m_light, sizeof(m_light));	// m_light変数のメモリを初期化
 
-	mes = new DebugMessage;
+	m_light.Type = D3DLIGHT_DIRECTIONAL;
+
+	m_light.Ambient = D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f); // アンビエント(環境光のカラー)
+	m_light.Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f); // 拡散反射光(モデル本来のカラー)
+	m_light.Specular = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f); // 鏡面反射光
+
+	m_light.Direction = D3DXVECTOR3(1.0f, 0.0f, 0.0f); // 光の方向
+
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();
+	pDevice->SetLight(0, &m_light);
+	pDevice->LightEnable(0, true);
 }
 
 //*****************************************************************************
@@ -27,35 +38,4 @@ Light::Light()
 Light::~Light()
 {
 
-}
-
-//*****************************************************************************
-//
-// Y方向のベクトルにして回転
-//
-//*****************************************************************************
-void Light::RotationY(float angle)
-{
-	if (m_rot.y > D3DX_PI * 2.0f || m_rot.y < -D3DX_PI * 2.0f)
-	{
-		m_rot.y = 0;
-	}
-
-	// 角度を記録する
-	m_rot.y -= angle;
-
-	D3DXMATRIX rotMatrix;
-	D3DXMatrixRotationAxis(&rotMatrix, &D3DXVECTOR3(0.0f, 1.0f, 0.0f), angle);		// 回転行列を作る
-	D3DXVec3TransformCoord(&m_directionlight, &m_directionlight, &rotMatrix);	// 回転行列で新しい座標を計算する
-
-}
-
-//*****************************************************************************
-//
-// 
-//
-//*****************************************************************************
-void Light::message(int row)
-{
-	mes->DrawPosMessage("lightVector", m_directionlight, D3DXVECTOR2(0, float((row + 0) * 18)));
 }
