@@ -269,19 +269,28 @@ void Scene00::Draw()
 	}
 
 	// オブジェクト種類番号
-	int ship = 0, enemy = 1, cannon = 2, boundingBox = 3;
+	int ship = 0, enemy = 1, cannon = 2;
 
 	// ship
 	{
-		// モデル
-		m_celShader->m_effectPoint->SetTechnique(m_celShader->m_celShaderHandle);	// テクニックを設定
+		// テクニックを設定
+		m_celShader->m_effectPoint->SetTechnique(m_celShader->m_celShaderHandle);
 
+		// 変更行列を渡す
 		m_ship->SetWorldMatrix();
-		m_celShader->m_effectPoint->SetMatrix(m_celShader->m_WMatrixHandle, &m_ship->m_worldMatrix);	// WVPマトリックス
-		D3DXMATRIX shipVPmatrix = m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
-		m_celShader->m_effectPoint->SetMatrix(m_celShader->m_VPMatrixHandle, &shipVPmatrix);	// WVPマトリックス
+		m_celShader->m_effectPoint->SetMatrix(m_celShader->m_WMatrixHandle, &m_ship->m_worldMatrix);
 
+		D3DXMATRIX shipVPmatrix = m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
+		m_celShader->m_effectPoint->SetMatrix(m_celShader->m_VPMatrixHandle, &shipVPmatrix);	
+
+		// Obj種類を渡す
 		m_celShader->m_effectPoint->SetInt(m_celShader->m_typeHandle, ship);
+		
+		// マテリアル情報を渡す ... 臨時値
+		D3DXCOLOR colorMtrlDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
+		D3DXCOLOR colorMtrlAmbient(0.35f, 0.35f, 0.35f, 0);
+		m_celShader->m_effectPoint->SetValue("materialAmbientColor", &colorMtrlAmbient, sizeof(D3DXCOLOR));
+		m_celShader->m_effectPoint->SetValue("materialDiffuseColor", &colorMtrlDiffuse, sizeof(D3DXCOLOR));
 
 		UINT passNum = 0;	// パスの数
 		m_celShader->m_effectPoint->Begin(&passNum, 0);

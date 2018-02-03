@@ -128,24 +128,31 @@ HRESULT ResourcesManager::LoadMesh(std::string name, Model* model)
 		}
 	}
 
-	model->m_material->m_materialPoint = new D3DMATERIAL9[model->m_material->m_materialNum];	// マテリアルの数によってマテリアルを格納できるメモリを確保
-	model->m_meshTexturePoint = new LPDIRECT3DTEXTURE9[model->m_material->m_materialNum];		// マテリアルの数によってテクスチャを格納できるメモリを確保
+	// マテリアルの数によってマテリアルを格納できるメモリを確保
+	model->m_material->m_materialPoint = new D3DMATERIAL9[model->m_material->m_materialNum];
+	// マテリアルの数によってテクスチャを格納できるメモリを確保
+	model->m_meshTexturePoint = new LPDIRECT3DTEXTURE9[model->m_material->m_materialNum];
+	// Xファイルに保存されているマテリアル情報構造体
+	D3DXMATERIAL* materials = (D3DXMATERIAL*)model->m_material->m_materialBuffer->GetBufferPointer();
 
-	D3DXMATERIAL* materials = (D3DXMATERIAL*)model->m_material->m_materialBuffer->GetBufferPointer();	// Xファイルに保存されているマテリアル情報構造体
 	for (DWORD count = 0; count < model->m_material->m_materialNum; count++)
 	{
-		model->m_material->m_materialPoint[count] = materials[count].MatD3D; // マテリアルのプロパティをコピー
-		model->m_material->m_materialPoint[count].Ambient = model->m_material->m_materialPoint[count].Diffuse;	// アンビエント色をディフューズ色にする
+		// マテリアルのプロパティをコピー
+		model->m_material->m_materialPoint[count] = materials[count].MatD3D;
+
+		// アンビエント色をディフューズ色にする
+		model->m_material->m_materialPoint[count].Ambient = model->m_material->m_materialPoint[count].Diffuse;
 
 		// Xファイルの情報によってすべてのテクスチャを読み込み
 		if (materials[count].pTextureFilename == NULL)
 		{
-			model->m_meshTexturePoint[count] = NULL;	// テクスチャ無し
+			// テクスチャ無し
+			model->m_meshTexturePoint[count] = NULL;	
 		}
 		else
 		{
+			// 初期化＆テクスチャを取得
 			model->m_meshTexturePoint[count] = NULL;
-
 			if (FAILED(D3DXCreateTextureFromFile(pDevice, materials[count].pTextureFilename, &model->m_meshTexturePoint[count])))
 			{
 				std::cout << "[Error] Material's texture load Fail!" << std::endl;

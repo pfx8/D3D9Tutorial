@@ -1,4 +1,13 @@
-// プログラムからもらう変数
+//*****************************************************************************
+//
+// トゥ―ンシェーダー処理 [CelShader.fx]
+//
+// コンパイルはしない
+//
+// Author : LIAO HANCHEN
+//
+//*****************************************************************************
+
 // 行列
 matrix WMatrix;         // ワールド変換行列
 matrix VPMatrix;        // ビューイング変換とプロジェクション変換行列
@@ -9,6 +18,8 @@ float4 lightDiffuse;    // アンビエント(環境光のカラー)
 float4 lightAmbient;    // 拡散反射光(モデル本来のカラー)
 
 // マテリアル
+float4 materialAmbientColor; // マテリアルのアンビエンド
+float4 materialDiffuseColor; // マテリアルのディフェーズ
 
 int ObjType;              // 1.プレーヤー 2.敵 3.大砲
 
@@ -47,10 +58,27 @@ struct CelVertexOUT
 CelVertexOUT CelVertexShader(CelVertexIN In)
 {
     CelVertexOUT Out = (CelVertexOUT) 0; // 初期化
+
+    // 座標変換
     Out.position = mul(float4(In.position, 1.0), WMatrix);
     Out.position = mul(Out.position, VPMatrix);
+    
+    // 法線変換
     Out.normal = mul(float4(In.normal, 1.0), WMatrix);
+    
+    // UV座標
     Out.uvCoords = In.uvCoords;
+
+    //************************************************************************************
+    // ライティングの計算
+    // Global Illumination = AmbientLight + DiffuseLight + SpecularLight + EmissiveLight
+    //
+    // マテリアルがある場合はマテリアルとライトの各々分量をかけて足す
+    // color = M.am * L.am + M.di * L.di + M.sp * L.sp + M.em * L.em
+    //************************************************************************************
+    Out.diffuse.rgb = materialAmbientColor * lightAmbient +
+                      materialDiffuseColor * lightDiffuse;
+    Out.diffuse.a = 1.0f;
 
     return Out;
 }
@@ -62,26 +90,23 @@ float4 CelPixelShader(CelVertexOUT In) : COLOR0
     float4 color;
     if (ObjType == 0) // ship
     {
-        color = float4(0.43, 0.2, 0.0, 1.0);
+        color = In.diffuse;
     }
     else if (ObjType == 1) // 敵
     {
-        color = float4(0.63, 0.4, 0.2, 1.0);
+        color = In.diffuse;
     }
     else if (ObjType == 2) // 大砲
     {
-        color = float4(0.4, 0.4, 0.4, 1.0);
-    }
-    else // バウンディングボックス
-    {
-        color = float4(0.8, 0.0, 0.0, 0.1);
+        color = In.diffuse;
     }
 
     if (value > 0.35)
         color = float4(1.0, 1.0, 1.0, 1.0) * color; // 普段の色
     else
         color = float4(0.6, 0.6, 0.6, 0.5) * color; // シャドーの色
-    return color; // 色だけを戻る
+
+    return color;
 
     //float4 diffuse = tex2D(Samp, In.uvCoords) *LightIntensity;
     //float4 diffuse = In.diffuse * LightIntensity;
