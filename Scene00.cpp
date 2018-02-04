@@ -37,14 +37,14 @@ Scene00::Scene00()
 
 	// フィールド
 	m_fieldStone = new Plane;
-	m_fieldStone->InitPlane(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(34.0f, 34.0f), D3DXVECTOR2(50, 50));
+	m_fieldStone->InitPlane(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(17.0f, 17.0f), D3DXVECTOR2(100, 100));
 	m_resourcesManager->LoadTexture("fieldSea", &m_fieldStone->m_texture);
 	
 	// 主人公
 	m_ship = new Character;
 	m_ship->InitCharacter(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, -1.0f));
 	m_ship->m_boundingBox->InitBox(4, 7, 8, 0.1f);	// バウンディングボックスを初期化
-	m_resourcesManager->LoadMesh("ship", m_ship->m_model); // モデルを初期化
+	m_resourcesManager->LoadMesh("player", m_ship->m_model); // モデルを初期化
 
 	// 敵
 	m_enemyShip = new Enemy[ENEMY_MAX];
@@ -109,7 +109,7 @@ void Scene00::SetRenderState()
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	// レンダーステートパラメータの設定
-	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);					// 光を使う
+	//pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);					// 光を使う
 	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);			// 裏面をカリング
 	pDevice->SetRenderState(D3DRS_ZENABLE, TRUE);					// Zバッファを使用
 	//pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);			// αブレンドを行う
@@ -287,22 +287,23 @@ void Scene00::Draw()
 		m_celShader->m_effectPoint->SetInt(m_celShader->m_typeHandle, ship);
 		
 		// マテリアル情報を渡す ... 臨時値
-		D3DXCOLOR colorMtrlDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
-		D3DXCOLOR colorMtrlAmbient(0.35f, 0.35f, 0.35f, 0);
-		m_celShader->m_effectPoint->SetValue("materialAmbientColor", &colorMtrlAmbient, sizeof(D3DXCOLOR));
-		m_celShader->m_effectPoint->SetValue("materialDiffuseColor", &colorMtrlDiffuse, sizeof(D3DXCOLOR));
+		//D3DXCOLOR colorMtrlDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
+		//D3DXCOLOR colorMtrlAmbient(0.35f, 0.35f, 0.35f, 0);
+		//m_celShader->m_effectPoint->SetValue("materialAmbientColor", &colorMtrlAmbient, sizeof(D3DXCOLOR));
+		//m_celShader->m_effectPoint->SetValue("materialDiffuseColor", &colorMtrlDiffuse, sizeof(D3DXCOLOR));
 
-		UINT passNum = 0;	// パスの数
-		m_celShader->m_effectPoint->Begin(&passNum, 0);
-		for (int count = 0; count < passNum; count++)	// 各パスによって描画する
-		{
-			m_celShader->m_effectPoint->BeginPass(count);
+		//UINT passNum = 0;	// パスの数
+		//m_celShader->m_effectPoint->Begin(&passNum, 0);
+		//for (int count = 0; count < passNum; count++)	// 各パスによって描画する
+		//{
+		//	m_celShader->m_effectPoint->BeginPass(count);
 
-			m_ship->Draw(m_celShader);
+		//	m_ship->Draw(m_celShader);
 
-			m_celShader->m_effectPoint->EndPass();
-		}
-		m_celShader->m_effectPoint->End();
+		//	m_celShader->m_effectPoint->EndPass();
+		//}
+		//m_celShader->m_effectPoint->End();
+		m_ship->Draw(m_celShader);
 
 		// バウンディングボックス
 		if (m_ship->m_boundingBox->m_isBoundingBoxDraw == true)
@@ -337,64 +338,64 @@ void Scene00::Draw()
 
 	// エネミー
 	{
-		for (int count1 = 0; count1 < ENEMY_MAX; count1++)
-		{
-			if (m_enemyShip[count1].m_isLife == true)
-			{
-				m_celShader->m_effectPoint->SetTechnique(m_celShader->m_celShaderHandle);	// テクニックを設定
+		//for (int count1 = 0; count1 < ENEMY_MAX; count1++)
+		//{
+		//	if (m_enemyShip[count1].m_isLife == true)
+		//	{
+		//		m_celShader->m_effectPoint->SetTechnique(m_celShader->m_celShaderHandle);	// テクニックを設定
 
-				m_enemyShip[count1].SetWorldMatrix();
-				m_celShader->m_effectPoint->SetMatrix(m_celShader->m_WMatrixHandle, &m_enemyShip[count1].m_worldMatrix);
-				D3DXMATRIX enemyVPmatrix = m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
-				m_celShader->m_effectPoint->SetMatrix(m_celShader->m_VPMatrixHandle, &enemyVPmatrix);
+		//		m_enemyShip[count1].SetWorldMatrix();
+		//		m_celShader->m_effectPoint->SetMatrix(m_celShader->m_WMatrixHandle, &m_enemyShip[count1].m_worldMatrix);
+		//		D3DXMATRIX enemyVPmatrix = m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
+		//		m_celShader->m_effectPoint->SetMatrix(m_celShader->m_VPMatrixHandle, &enemyVPmatrix);
 
-				bool isShip = true;
-				m_celShader->m_effectPoint->SetInt(m_celShader->m_typeHandle, enemy);
+		//		bool isShip = true;
+		//		m_celShader->m_effectPoint->SetInt(m_celShader->m_typeHandle, enemy);
 
-				UINT passNum = 0;	// パスの数
-				m_celShader->m_effectPoint->Begin(&passNum, 0);
-				for (int count = 0; count < passNum; count++)	// 各パスによって描画する
-				{
-					m_celShader->m_effectPoint->BeginPass(count);
+		//		UINT passNum = 0;	// パスの数
+		//		m_celShader->m_effectPoint->Begin(&passNum, 0);
+		//		for (int count = 0; count < passNum; count++)	// 各パスによって描画する
+		//		{
+		//			m_celShader->m_effectPoint->BeginPass(count);
 
-					m_enemyShip[count1].Draw(m_celShader);
+		//			m_enemyShip[count1].Draw(m_celShader);
 
-					m_celShader->m_effectPoint->EndPass();
-				}
-				m_celShader->m_effectPoint->End();
-			}
-		}
+		//			m_celShader->m_effectPoint->EndPass();
+		//		}
+		//		m_celShader->m_effectPoint->End();
+		//	}
+		//}
 	}
 
 	// 弾
 	{
-		for (int count1 = 0; count1 < BULLET_MAX; count1++)
-		{
-			if (m_bullet[count1].m_isUse == true)
-			{
-				m_celShader->m_effectPoint->SetTechnique(m_celShader->m_celShaderHandle);	// テクニックを設定
+	//	for (int count1 = 0; count1 < BULLET_MAX; count1++)
+	//	{
+	//		if (m_bullet[count1].m_isUse == true)
+	//		{
+	//			m_celShader->m_effectPoint->SetTechnique(m_celShader->m_celShaderHandle);	// テクニックを設定
 
-				m_bullet[count1].SetWorldMatrix();
-				m_celShader->m_effectPoint->SetMatrix(m_celShader->m_WMatrixHandle, &m_bullet[count1].m_worldMatrix);
-				D3DXMATRIX bulletVPmatrix = m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
-				m_celShader->m_effectPoint->SetMatrix(m_celShader->m_VPMatrixHandle, &bulletVPmatrix);
+	//			m_bullet[count1].SetWorldMatrix();
+	//			m_celShader->m_effectPoint->SetMatrix(m_celShader->m_WMatrixHandle, &m_bullet[count1].m_worldMatrix);
+	//			D3DXMATRIX bulletVPmatrix = m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
+	//			m_celShader->m_effectPoint->SetMatrix(m_celShader->m_VPMatrixHandle, &bulletVPmatrix);
 
-				bool isShip = false;
-				m_celShader->m_effectPoint->SetInt(m_celShader->m_typeHandle, cannon);
+	//			bool isShip = false;
+	//			m_celShader->m_effectPoint->SetInt(m_celShader->m_typeHandle, cannon);
 
-				UINT passNum = 0;	// パスの数
-				m_celShader->m_effectPoint->Begin(&passNum, 0);
-				for (int count = 0; count < passNum; count++)	// 各パスによって描画する
-				{
-					m_celShader->m_effectPoint->BeginPass(count);
+	//			UINT passNum = 0;	// パスの数
+	//			m_celShader->m_effectPoint->Begin(&passNum, 0);
+	//			for (int count = 0; count < passNum; count++)	// 各パスによって描画する
+	//			{
+	//				m_celShader->m_effectPoint->BeginPass(count);
 
-					m_bullet[count1].Draw(m_celShader);
+	//				m_bullet[count1].Draw(m_celShader);
 
-					m_celShader->m_effectPoint->EndPass();
-				}
-				m_celShader->m_effectPoint->End();
-			}
-		}
+	//				m_celShader->m_effectPoint->EndPass();
+	//			}
+	//			m_celShader->m_effectPoint->End();
+	//		}
+	//	}
 	}
 		
 	// デッバグメッセージ

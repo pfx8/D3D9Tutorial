@@ -31,14 +31,14 @@ public:
 	D3DXVECTOR3		m_lookVector;	// カメラの注視方向ベクトル
 	D3DXVECTOR3		m_rightVector;	// カメラの右方向ベクトル
 	// 位置
-	D3DXVECTOR3	m_posEye;	// カメラの位置
-	D3DXVECTOR3	m_posAt;		// カメラの注視点
+	D3DXVECTOR3		m_posEye;	// カメラの位置
+	D3DXVECTOR3		m_posAt;		// カメラの注視点
 	// マトリックス
-	D3DXMATRIX	m_viewMatrix;		// ビューイング変換行列
-	D3DXMATRIX	m_projectionMatrix;	// プロジェクション変換行列
+	D3DXMATRIX		m_viewMatrix;		// ビューイング変換行列
+	D3DXMATRIX		m_projectionMatrix;	// プロジェクション変換行列
 
-	float		m_radius;			// カメラと船の半径
-	bool		m_isShooting;
+	float			m_radius;			// カメラと船の半径
+	bool			m_isShooting;
 
 	Camera();
 	~Camera();

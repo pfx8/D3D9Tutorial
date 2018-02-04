@@ -18,7 +18,7 @@ float4 lightDiffuse;    // アンビエント(環境光のカラー)
 float4 lightAmbient;    // 拡散反射光(モデル本来のカラー)
 
 // マテリアル
-float4 materialAmbientColor; // マテリアルのアンビエンド
+float3 materialAmbientColor; // マテリアルのアンビエンド
 float4 materialDiffuseColor; // マテリアルのディフェーズ
 
 int ObjType;              // 1.プレーヤー 2.敵 3.大砲
@@ -76,8 +76,12 @@ CelVertexOUT CelVertexShader(CelVertexIN In)
     // マテリアルがある場合はマテリアルとライトの各々分量をかけて足す
     // color = M.am * L.am + M.di * L.di + M.sp * L.sp + M.em * L.em
     //************************************************************************************
-    Out.diffuse.rgb = materialAmbientColor * lightAmbient +
-                      materialDiffuseColor * lightDiffuse;
+    Out.diffuse.r = materialAmbientColor.r * lightAmbient.r +
+                      materialDiffuseColor.r * lightDiffuse.r;
+    Out.diffuse.g = materialAmbientColor.g * lightAmbient.g +
+                      materialDiffuseColor.g * lightDiffuse.g;
+    Out.diffuse.b = materialAmbientColor.b * lightAmbient.b +
+                      materialDiffuseColor.b * lightDiffuse.b;
     Out.diffuse.a = 1.0f;
 
     return Out;

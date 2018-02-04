@@ -52,11 +52,8 @@ Character::~Character()
 //*****************************************************************************
 void Character::PosToMessageAndMessageDraw(int row)
 {
-	//m_message->DrawPosMessage("Pos", m_pos, D3DXVECTOR2(0, float(row * 18)));
 	m_message->DrawPosMessage("Pos", m_pos, D3DXVECTOR2(0, float((row) * 18)));
 	m_message->DrawPosMessage("Look", m_lookVector, D3DXVECTOR2(0, float((row + 1) * 18)));
-	//D3DXVec3Normalize(&m_lookVector, &m_lookVector);
-	//m_message->DrawPosMessage("Vec", m_lookVector, D3DXVECTOR2(0, float((row + 1) * 18)));
 }
 
 //*****************************************************************************

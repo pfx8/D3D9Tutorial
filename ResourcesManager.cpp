@@ -21,19 +21,22 @@ ResourcesManager::ResourcesManager()
 	m_textureList["right"] = "data/TEXTURE/skybox/right.jpg";
 	m_textureList["top"] = "data/TEXTURE/skybox/top.jpg";
 	m_textureList["skybox"] = "data/TEXTURE/skybox.png";
+
 	m_textureList["fieldTransparent"] = "data/TEXTURE/field003.png";
 	m_textureList["fieldSea"] = "data/TEXTURE/sea3k.png";
 	m_textureList["fieldSea2"] = "data/TEXTURE/sea3k2.png";
-	m_textureList["title"] = "data/TEXTURE/TitleName.png";
+
 	m_textureList["press"] = "data/TEXTURE/Presskey.png";
 	m_textureList["tex"] = "data/TEXTURE/shipdiffuse.png";
 	m_textureList["title"] = "data/TEXTURE/title.jpg";
 	m_textureList["ending"] = "data/TEXTURE/ending.jpg";
+
 	m_textureList["NULL"] = "NULL";
 
 	// メッシュ検索マッピングを作る
 	m_meshList["ship"] = "data/MODEL/PirateShip.x";
 	m_meshList["ship2"] = "data/MODEL/ship2.x";
+	m_meshList["player"] = "data/MODEL/playership.x";
 	m_meshList["ball"] = "data/MODEL/ball.x";
 }
 
@@ -135,13 +138,14 @@ HRESULT ResourcesManager::LoadMesh(std::string name, Model* model)
 	// Xファイルに保存されているマテリアル情報構造体
 	D3DXMATERIAL* materials = (D3DXMATERIAL*)model->m_material->m_materialBuffer->GetBufferPointer();
 
+
 	for (DWORD count = 0; count < model->m_material->m_materialNum; count++)
 	{
 		// マテリアルのプロパティをコピー
 		model->m_material->m_materialPoint[count] = materials[count].MatD3D;
 
 		// アンビエント色をディフューズ色にする
-		model->m_material->m_materialPoint[count].Ambient = model->m_material->m_materialPoint[count].Diffuse;
+		//model->m_material->m_materialPoint[count].Ambient = model->m_material->m_materialPoint[count].Diffuse;
 
 		// Xファイルの情報によってすべてのテクスチャを読み込み
 		if (materials[count].pTextureFilename == NULL)
