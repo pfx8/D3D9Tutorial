@@ -19,7 +19,7 @@ Character::Character()
 	m_rightVector = D3DXVECTOR3(1.0f, 0.0f, 0.0f);
 
 	m_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_rot = D3DXVECTOR3(0.0f, -23.0f /180.0f * D3DX_PI, 0.0f);
+	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_scl = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
 
 	m_waveAngle = 0.0f;
@@ -27,7 +27,6 @@ Character::Character()
 	m_leverLevel = 0;
 
 	// クラスポインタ
-	m_model = new Model;
 	m_message = new DebugMessage;
 	m_boundingBox = new BoundingBox;
 }
@@ -39,10 +38,10 @@ Character::Character()
 //*****************************************************************************
 Character::~Character()
 {
-	// クラスポインタ
-	RELEASE_CLASS_POINT(m_model);
 	RELEASE_CLASS_POINT(m_message);
 	RELEASE_CLASS_POINT(m_boundingBox);
+
+	RELEASE_CLASS_ARRY_POINT(m_model);
 }
 
 //*****************************************************************************
@@ -61,9 +60,12 @@ void Character::PosToMessageAndMessageDraw(int row)
 // 座標を設定
 //
 //*****************************************************************************
-void Character::InitCharacter(D3DXVECTOR3 pos, D3DXVECTOR3 direction)
+void Character::InitCharacter(D3DXVECTOR3 pos, D3DXVECTOR3 direction, int modelNum)
 {
 	m_pos = pos;	// 位置
+	
+	m_modelNum = modelNum;
+	m_model = new Model[m_modelNum]; // モデルを数によって初期化
 }
 
 //*****************************************************************************

@@ -83,12 +83,12 @@ HRESULT BoundingBox::MakeVertex()
 			// 座標、diffuse
 			{ D3DXVECTOR3(-m_size.x / 2,  m_size.y / 2, -m_size.z / 2), D3DXCOLOR(1.0f, 0.0f, 0.0f, m_alpha) },
 			{ D3DXVECTOR3(-m_size.x / 2,  m_size.y / 2,  m_size.z / 2), D3DXCOLOR(1.0f, 0.0f, 0.0f, m_alpha) },
-			{ D3DXVECTOR3(m_size.x / 2,  m_size.y / 2,  m_size.z / 2), D3DXCOLOR(1.0f, 0.0f, 0.0f, m_alpha) },
-			{ D3DXVECTOR3(m_size.x / 2,  m_size.y / 2, -m_size.z / 2), D3DXCOLOR(1.0f, 0.0f, 0.0f, m_alpha) },
+			{ D3DXVECTOR3( m_size.x / 2,  m_size.y / 2,  m_size.z / 2), D3DXCOLOR(1.0f, 0.0f, 0.0f, m_alpha) },
+			{ D3DXVECTOR3( m_size.x / 2,  m_size.y / 2, -m_size.z / 2), D3DXCOLOR(1.0f, 0.0f, 0.0f, m_alpha) },
 			{ D3DXVECTOR3(-m_size.x / 2,  0,            -m_size.z / 2), D3DXCOLOR(1.0f, 0.0f, 0.0f, m_alpha) },
 			{ D3DXVECTOR3(-m_size.x / 2,  0,             m_size.z / 2), D3DXCOLOR(1.0f, 0.0f, 0.0f, m_alpha) },
-			{ D3DXVECTOR3(m_size.x / 2,  0,             m_size.z / 2), D3DXCOLOR(1.0f, 0.0f, 0.0f, m_alpha) },
-			{ D3DXVECTOR3(m_size.x / 2,  0,            -m_size.z / 2), D3DXCOLOR(1.0f, 0.0f, 0.0f, m_alpha) }
+			{ D3DXVECTOR3( m_size.x / 2,  0,             m_size.z / 2), D3DXCOLOR(1.0f, 0.0f, 0.0f, m_alpha) },
+			{ D3DXVECTOR3( m_size.x / 2,  0,            -m_size.z / 2), D3DXCOLOR(1.0f, 0.0f, 0.0f, m_alpha) }
 		};
 
 		VOID* vertexBuffer;	// 頂点バッファポインタ作成

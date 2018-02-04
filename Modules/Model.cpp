@@ -14,12 +14,24 @@
 //*****************************************************************************
 Model::Model()
 {
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();
+
 	// ポインタ
 	m_meshPoint = NULL;
 	m_meshTexturePoint = NULL;
 
 	// クラスポインタ
 	m_material = new Material();
+
+	// 頂点宣言
+	D3DVERTEXELEMENT9 planeDecl[] =		// 頂点データのレイアウトを定義
+	{
+		{ 0,  0, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0 },
+		{ 0, 12, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_NORMAL, 0 },
+		{ 0, 24, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0 },
+		D3DDECL_END()
+	};
+	pDevice->CreateVertexDeclaration(planeDecl, &m_vertexDecl);
 }
 
 //*****************************************************************************
@@ -52,14 +64,14 @@ void Model::DrawModel(CelShader* celShader)
 	IDirect3DIndexBuffer9* indexBuffer = NULL;
 	m_meshPoint->GetIndexBuffer(&indexBuffer);					// メッシュ頂点インデックスバッファを取得
 
-	m_meshPoint->GetAttributeTable(NULL, &materialNum);		// メッシュの属性テーブルに格納されているエントリの数を取得
+	m_meshPoint->GetAttributeTable(NULL, &materialNum);			// メッシュの属性テーブルに格納されているエントリの数を取得
 
 	D3DXATTRIBUTERANGE* attributes = NULL;						// メッシュの属性テーブルを作る
 	attributes = new D3DXATTRIBUTERANGE[materialNum];			// エントリ数によって、属性テーブル配列メモリを作り
 	m_meshPoint->GetAttributeTable(attributes, &materialNum);	// メッシュの属性テーブルを取得
 
-	// ストリームを設定
-	pDevice->SetStreamSource(0, vertexBuffer, 0, D3DXGetFVFVertexSize(m_meshPoint->GetFVF()));
+	pDevice->SetVertexDeclaration(m_vertexDecl);		// 頂点宣言を設定
+	pDevice->SetStreamSource(0, vertexBuffer, 0, 32);	// sizeof(POSITION, NORMAL, UV)
 	pDevice->SetIndices(indexBuffer);
 
 	// 描画
@@ -71,29 +83,14 @@ void Model::DrawModel(CelShader* celShader)
 			//celShader->m_effectPoint->SetTexture(celShader->m_texture1Handle, m_meshTexturePoint[matNum]);	// テクスチャを設定
 			//pDevice->SetTexture(0, m_meshTexturePoint[matNum]);	// テクスチャを設定
 
-			// マテリアルを渡す
-			celShader->m_effectPoint->SetValue("materialAmbientColor", &m_material->m_materialPoint[count].Ambient, sizeof(D3DXVECTOR3));
-			celShader->m_effectPoint->SetValue("materialDiffuseColor", &m_material->m_materialPoint[count].Diffuse, sizeof(D3DXCOLOR));
-			
-
-			UINT passNum = 0;	// パスの数
-			celShader->m_effectPoint->Begin(&passNum, 0);
-			for (int count = 0; count < passNum; count++)	// 各パスによって描画する
-			{
-				celShader->m_effectPoint->BeginPass(count);
-
-				pDevice->DrawIndexedPrimitive(				// メッシュを描画する
-					D3DPT_TRIANGLELIST,
-					0,
-					attributes[count].VertexStart,
-					attributes[count].VertexCount,
-					attributes[count].FaceStart * 3,
-					attributes[count].FaceCount);
-
-				celShader->m_effectPoint->EndPass();
-			}
-			celShader->m_effectPoint->End();
-			
+			// モデルを描画する
+			pDevice->DrawIndexedPrimitive(
+				D3DPT_TRIANGLELIST,
+				0,
+				attributes[count].VertexStart,
+				attributes[count].VertexCount,
+				attributes[count].FaceStart * 3,
+				attributes[count].FaceCount);
 		}
 	}
 

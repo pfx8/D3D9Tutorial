@@ -36,6 +36,7 @@ class Character
 private:
 	UINT			m_leverLevel;		// 船のレバー操作
 	double			m_speedCoefficient; // スピードに関する倍数
+	int				m_modelNum;			// モデル数
 
 public:
 	DebugMessage*	m_message;		// Debugメッセージ
@@ -57,7 +58,7 @@ public:
 	Character();
 	~Character();
 
-	void InitCharacter(D3DXVECTOR3 pos, D3DXVECTOR3 direction);		// 座標を設定
+	void InitCharacter(D3DXVECTOR3 pos, D3DXVECTOR3 direction, int modelNum);		// 座標を設定
 
 	void PosToMessageAndMessageDraw(int row);	// 座標をメッセージに渡して、画面に描画する
 	void SetWorldMatrix();						// ワールド変換を設定

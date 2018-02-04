@@ -25,10 +25,12 @@ Scene00::Scene00()
 	m_celShader = new CelShader;
 	m_celShader->InitShader();
 
-	// ライト
+	// ライト、光方向はデフォルトで(1, 0, 1)
 	m_directionLight = new Light;
-	D3DXVECTOR4 tempLight = D3DXVECTOR4(m_directionLight->m_light.Direction.x, m_directionLight->m_light.Direction.y, m_directionLight->m_light.Direction.z, 1.0f);
-	m_celShader->m_effectPoint->SetValue(m_celShader->m_lightingHandle, tempLight, sizeof(D3DXVECTOR3));
+	m_celShader->m_effectPoint->SetValue("lightDir", &m_directionLight->m_light.Direction, sizeof(D3DXVECTOR3));
+	m_celShader->m_effectPoint->SetValue("lightDiffuse", &m_directionLight->m_light.Diffuse, sizeof(D3DXCOLOR));
+	m_celShader->m_effectPoint->SetValue("lightAmbient", &m_directionLight->m_light.Ambient, sizeof(D3DXCOLOR));
+	m_celShader->m_effectPoint->SetValue("lightSpecular", &m_directionLight->m_light.Specular, sizeof(D3DXCOLOR));
 
 	// スカイボックス
 	m_skyBox = new SkyBox;
@@ -42,9 +44,14 @@ Scene00::Scene00()
 	
 	// 主人公
 	m_ship = new Character;
-	m_ship->InitCharacter(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, -1.0f));
-	m_ship->m_boundingBox->InitBox(4, 7, 8, 0.1f);	// バウンディングボックスを初期化
-	m_resourcesManager->LoadMesh("player", m_ship->m_model); // モデルを初期化
+	m_ship->InitCharacter(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, -1.0f), 2);
+	// 各モデルを初期化
+	m_resourcesManager->LoadMesh("playerShip", &m_ship->m_model[0]);
+	m_resourcesManager->LoadTexture("playerShip", &m_ship->m_model[0].m_meshTexturePoint);
+	m_resourcesManager->LoadMesh("playerOars", &m_ship->m_model[1]);
+	m_resourcesManager->LoadTexture("playerOars", &m_ship->m_model[1].m_meshTexturePoint);
+	// バウンディングボックスを初期化
+	m_ship->m_boundingBox->InitBox(4, 7, 8, 0.1f);
 
 	// 敵
 	m_enemyShip = new Enemy[ENEMY_MAX];
@@ -109,22 +116,14 @@ void Scene00::SetRenderState()
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	// レンダーステートパラメータの設定
-	//pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);					// 光を使う
+	//pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);				// 光を使う
 	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);			// 裏面をカリング
 	pDevice->SetRenderState(D3DRS_ZENABLE, TRUE);					// Zバッファを使用
-	//pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);			// αブレンドを行う
+	//pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);		// αブレンドを行う
 	pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 	pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);		// αソースカラーの指定
 	pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);	// αデスティネーションカラーの指定
-
-	//float Start = 0.5f;
-	//float End = 0.8f;
-	//pDevice->SetRenderState(D3DRS_FOGENABLE, TRUE);
-	////g_pDevice->SetRenderState(D3DRS_FOGCOLOR, *(DWORD *));
-	//pDevice->SetRenderState(D3DRS_FOGTABLEMODE, D3DFOG_EXP2);
-	//pDevice->SetRenderState(D3DRS_FOGSTART, *(DWORD *)(&Start));
-	//pDevice->SetRenderState(D3DRS_FOGEND, *(DWORD *)(&End));
 }
 
 //*****************************************************************************
@@ -242,30 +241,30 @@ void Scene00::Draw()
 	// スカイボックス
 	{
 		// テクニックを設定
-		//m_shader->m_shaderHandle = m_shader->m_effectPoint->GetTechniqueByName("RenderWithTextrue");
-		//m_shader->m_effectPoint->SetTechnique(m_shader->m_shaderHandle);
+		m_shader->m_shaderHandle = m_shader->m_effectPoint->GetTechniqueByName("RenderWithTextrue");
+		m_shader->m_effectPoint->SetTechnique(m_shader->m_shaderHandle);
 
-		//// ワールド変換、ビューイング変換、プロジェクション変換マトリックス
-		//m_skyBox->SetWorldMatrix();
-		//m_shader->m_effectPoint->SetMatrix(m_shader->m_WMatrixHandle, &m_skyBox->m_worldMatrix);
-		//D3DXMATRIX skyBoxVPmatrix = m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
-		//m_shader->m_effectPoint->SetMatrix(m_shader->m_VPMatrixHandle, &skyBoxVPmatrix);
+		// ワールド変換、ビューイング変換、プロジェクション変換マトリックス
+		m_skyBox->SetWorldMatrix();
+		m_shader->m_effectPoint->SetMatrix(m_shader->m_WMatrixHandle, &m_skyBox->m_worldMatrix);
+		D3DXMATRIX skyBoxVPmatrix = m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
+		m_shader->m_effectPoint->SetMatrix(m_shader->m_VPMatrixHandle, &skyBoxVPmatrix);
 
-		//// テクスチャの設定
-		//m_shader->m_effectPoint->SetTexture(m_shader->m_textureHandle, m_skyBox->m_texture);
+		// テクスチャの設定
+		m_shader->m_effectPoint->SetTexture(m_shader->m_textureHandle, m_skyBox->m_texture);
 
-		//// 描画
-		//UINT passNum = 0;
-		//m_shader->m_effectPoint->Begin(&passNum, 0);
-		//// 各パスを実行する
-		//for (int count = 0; count < passNum; count++)
-		//{
-		//	m_shader->m_effectPoint->BeginPass(0);
-		//	m_skyBox->Draw(m_shader);
+		// 描画
+		UINT passNum = 0;
+		m_shader->m_effectPoint->Begin(&passNum, 0);
+		// 各パスを実行する
+		for (int count = 0; count < passNum; count++)
+		{
+			m_shader->m_effectPoint->BeginPass(0);
+			m_skyBox->Draw();
 
-		//	m_shader->m_effectPoint->EndPass();
-		//}
-		//m_shader->m_effectPoint->End();
+			m_shader->m_effectPoint->EndPass();
+		}
+		m_shader->m_effectPoint->End();
 	}
 
 	// オブジェクト種類番号
@@ -279,31 +278,32 @@ void Scene00::Draw()
 		// 変更行列を渡す
 		m_ship->SetWorldMatrix();
 		m_celShader->m_effectPoint->SetMatrix(m_celShader->m_WMatrixHandle, &m_ship->m_worldMatrix);
-
 		D3DXMATRIX shipVPmatrix = m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
 		m_celShader->m_effectPoint->SetMatrix(m_celShader->m_VPMatrixHandle, &shipVPmatrix);	
 
-		// Obj種類を渡す
+		// Obj種類番号を渡す
 		m_celShader->m_effectPoint->SetInt(m_celShader->m_typeHandle, ship);
 		
 		// マテリアル情報を渡す ... 臨時値
-		//D3DXCOLOR colorMtrlDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
-		//D3DXCOLOR colorMtrlAmbient(0.35f, 0.35f, 0.35f, 0);
-		//m_celShader->m_effectPoint->SetValue("materialAmbientColor", &colorMtrlAmbient, sizeof(D3DXCOLOR));
-		//m_celShader->m_effectPoint->SetValue("materialDiffuseColor", &colorMtrlDiffuse, sizeof(D3DXCOLOR));
+		D3DXCOLOR colorMtrlDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
+		D3DXCOLOR colorMtrlAmbient(0.35f, 0.35f, 0.35f, 0.0f);
+		m_celShader->m_effectPoint->SetValue("materialAmbientColor", &colorMtrlAmbient, sizeof(D3DXCOLOR));
+		m_celShader->m_effectPoint->SetValue("materialDiffuseColor", &colorMtrlDiffuse, sizeof(D3DXCOLOR));
 
-		//UINT passNum = 0;	// パスの数
-		//m_celShader->m_effectPoint->Begin(&passNum, 0);
-		//for (int count = 0; count < passNum; count++)	// 各パスによって描画する
-		//{
-		//	m_celShader->m_effectPoint->BeginPass(count);
+		// テクスチャを渡す
+		m_celShader->m_effectPoint->SetTexture("Tex", m_ship->m_model->m_meshTexturePoint);
 
-		//	m_ship->Draw(m_celShader);
+		UINT passNum = 0;
+		m_celShader->m_effectPoint->Begin(&passNum, 0);
+		for (int count = 0; count < passNum; count++)
+		{
+			m_celShader->m_effectPoint->BeginPass(count);
 
-		//	m_celShader->m_effectPoint->EndPass();
-		//}
-		//m_celShader->m_effectPoint->End();
-		m_ship->Draw(m_celShader);
+			m_ship->Draw(m_celShader);
+
+			m_celShader->m_effectPoint->EndPass();
+		}
+		m_celShader->m_effectPoint->End();
 
 		// バウンディングボックス
 		if (m_ship->m_boundingBox->m_isBoundingBoxDraw == true)
@@ -320,10 +320,8 @@ void Scene00::Draw()
 			// アルファ値の設定(テクスチャ無し)
 			m_shader->m_effectPoint->SetFloat(m_shader->m_alphaHandle, 0.5f);
 
-			// 描画
 			UINT passNum = 0;
 			m_shader->m_effectPoint->Begin(&passNum, 0);
-			// 各パスを実行する
 			for (int count = 0; count < passNum; count++)
 			{
 				m_shader->m_effectPoint->BeginPass(0);

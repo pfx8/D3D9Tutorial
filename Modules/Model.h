@@ -24,8 +24,9 @@ private:
 
 public:
 	LPD3DXMESH			m_meshPoint;		// メッシュ情報へのポインタ
-	LPDIRECT3DTEXTURE9*	m_meshTexturePoint;	// テクスチャマネジメント
+	LPDIRECT3DTEXTURE9	m_meshTexturePoint;	// テクスチャマネジメント
 	Material*			m_material;			// マテリアル情報へのポインタ
+	IDirect3DVertexDeclaration9* m_vertexDecl; // 頂点宣言
 
 	Model();
 	~Model();
