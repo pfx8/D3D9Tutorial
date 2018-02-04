@@ -30,7 +30,6 @@ public:
 	~CelShader();
 
 	void InitShader();						// シェーダーを初期化する
-	void UpdateLight(D3DXVECTOR3 direction);	// 更新ライトベクトル
 };
 
 #endif // !_CEL_SHADER_H_

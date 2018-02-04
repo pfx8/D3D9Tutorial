@@ -1,25 +1,22 @@
 //*****************************************************************************
 //
-// トゥ―ンシェーダー処理 [CelShader.cpp]
+// シャドーシェーダー[ShadowMapShader.h]
 //
 // Author : LIAO HANCHEN
 //
 //*****************************************************************************
-#include "CelShader.h"
+#include "ShadowMapShader.h"
 
 //*****************************************************************************
 //
 // コンストラクタ
 //
 //*****************************************************************************
-CelShader::CelShader()
+ShadowMapShader::ShadowMapShader()
 {
 	m_effectPoint = NULL;
-	m_celShaderHandle = NULL;
-	m_WMatrixHandle = NULL;
-	m_VPMatrixHandle = NULL;
-	m_lightingHandle = NULL;
-	//m_textureHandle = NULL;
+	m_shadowMapTex = NULL;
+	m_shadeowMapShaderHandle = NULL;
 }
 
 //*****************************************************************************
@@ -27,7 +24,7 @@ CelShader::CelShader()
 // デストラクタ
 //
 //*****************************************************************************
-CelShader::~CelShader()
+ShadowMapShader::~ShadowMapShader()
 {
 	RELEASE_POINT(m_effectPoint);
 }
@@ -37,10 +34,22 @@ CelShader::~CelShader()
 // シェーダーを初期化
 //
 //*****************************************************************************
-void CelShader::InitShader()
+HRESULT ShadowMapShader::InitShader()
 {
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();
+
 	LoadEffectFile();
-	GetShaderParameter();
+
+	if (FAILED(pDevice->CreateTexture(512, 512,
+		1, D3DUSAGE_RENDERTARGET,
+		D3DFMT_R32F,
+		D3DPOOL_DEFAULT,
+		&m_shadowMapTex,
+		NULL)))
+	{
+		std::cout << "[Error]Not Support PixelShader Failed!" << std::endl;
+		return E_FAIL;
+	}
 }
 
 //*****************************************************************************
@@ -48,7 +57,7 @@ void CelShader::InitShader()
 // 頂点シェーダーファイルを読み込む
 //
 //*****************************************************************************
-HRESULT CelShader::LoadEffectFile()
+HRESULT ShadowMapShader::LoadEffectFile()
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
@@ -61,7 +70,7 @@ HRESULT CelShader::LoadEffectFile()
 
 	ID3DXBuffer* errorBuffer = NULL;		// エラーバッファ
 	D3DXCreateEffectFromFile(pDevice,
-						"Shader/CelShader.fx",	// エフェクトファイルの名前
+						"Shader/ShadowMapShader.fx",	// エフェクトファイルの名前
 						0,
 						0,
 						D3DXSHADER_DEBUG,
@@ -72,32 +81,14 @@ HRESULT CelShader::LoadEffectFile()
 
 	if (errorBuffer)	// エラーをチェック
 	{
-		std::cout << "[Error] Shader/CelShader.fx が読み込めない" << std::endl;	// エラーメッセージ
+		std::cout << "[Error] Shader/ShadowMapShader.fx が読み込めない" << std::endl;	// エラーメッセージ
 		std::cout << "[Information] " << (char*)errorBuffer->GetBufferPointer() << std::endl;	// エラーメッセージ
 		RELEASE_POINT(errorBuffer);
 		return E_FAIL;
 	}
 
-	std::cout << "[Information] Loading Shader<CelShader> Success!" << std::endl;
+	std::cout << "[Information] Loading Shader<ShadowMapShader> Success!" << std::endl;
+
+
 	return S_OK;
-}
-
-//*****************************************************************************
-//
-// シェーダーを使うために、各設定をする
-//
-//*****************************************************************************
-void CelShader::GetShaderParameter()
-{
-	// レンダリングのテクニックを取得
-	m_celShaderHandle = m_effectPoint->GetTechniqueByName("CelShader");
-	m_outLineHandle = m_effectPoint->GetTechniqueByName("Outline");
-
-	// シェーダー中のグローバル変数を取得
-	m_WMatrixHandle = m_effectPoint->GetParameterByName(0, "WMatrix");
-	m_VPMatrixHandle = m_effectPoint->GetParameterByName(0, "VPMatrix");
-	m_lightingHandle = m_effectPoint->GetParameterByName(0, "LightDirection");
-	m_typeHandle = m_effectPoint->GetParameterByName(0, "type");
-	//m_textureHandle = m_effectPoint->GetParameterByName(0, "Tex");
-
 }

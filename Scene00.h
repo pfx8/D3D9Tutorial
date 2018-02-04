@@ -23,6 +23,7 @@
 #include "Modules\Shader.h"
 #include "Modules\SkyBox.h"
 #include "Shader\CelShader.h"
+#include "Shader\ShadowMapShader.h"
 
 #define ENEMY_MAX 5
 #define BULLET_MAX 21
@@ -44,6 +45,7 @@ private:
 	Enemy*			m_enemyShip;	// 敵
 	Bullet*			m_bullet;		// 弾
 	SkyBox*			m_skyBox;		// スカイボックス
+	ShadowMapShader*m_shadowMap;
 
 public:
 	Scene00();

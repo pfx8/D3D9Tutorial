@@ -8,6 +8,23 @@
 //
 //*****************************************************************************
 
+// 頂点IN構造体
+struct CelVertexIN
+{
+    float3 position : POSITION;
+    float3 normal : NORMAL0;
+    float2 uvCoords : TEXCOORD0; // テクスチャ座標
+};
+
+// 頂点OUT構造体
+struct CelVertexOUT
+{
+    float4 position : POSITION0;
+    float3 normal : NORMAL0;
+    float4 diffuse : COLOR0;
+    float2 uvCoords : TEXCOORD0; // テクスチャ座標
+};
+
 // 行列
 matrix WMatrix;         // ワールド変換行列
 matrix VPMatrix;        // ビューイング変換とプロジェクション変換行列
@@ -22,39 +39,24 @@ float4 lightSpecular;   // 鏡面反射光(スペキュラー)
 float4 materialAmbientColor; // マテリアルのアンビエンド
 float4 materialDiffuseColor; // マテリアルのディフェーズ
 
-int ObjType;              // 1.プレーヤー 2.敵 3.大砲
+int ObjType;                 // 1.プレーヤー 2.敵 3.大砲
 
-
-//------------------------------------------------------
-// トゥ―ンシェーダー
-//------------------------------------------------------
-struct CelVertexIN
-{
-    float3 position : POSITION;
-    float3 normal   : NORMAL0;
-    float2 uvCoords : TEXCOORD0; // テクスチャ座標
-};
-
-struct CelVertexOUT
-{
-    float4 position : POSITION0;
-    float3 normal   : NORMAL0;
-    float4 diffuse  : COLOR0;
-    float2 uvCoords : TEXCOORD0; // テクスチャ座標
-};
-
-texture Tex; // 使用するテクスチャ
-sampler Samp = // サンプラー
+// サンプラー
+texture tex; // 使用するテクスチャ
+sampler texSamp = // サンプラー
 sampler_state
 {
-    Texture = <Tex>;
+    Texture = <tex>;
     MipFilter = LINEAR;
     MinFilter = LINEAR;
     MagFilter = LINEAR;
 };
 
-// モデル
-// 頂点シェーダー
+//------------------------------------------------------
+//
+// 頂点シェーダー(トゥ―ンシェーダー)
+//
+//------------------------------------------------------
 CelVertexOUT CelVertexShader(CelVertexIN In)
 {
     CelVertexOUT Out = (CelVertexOUT) 0; // 初期化
@@ -69,22 +71,22 @@ CelVertexOUT CelVertexShader(CelVertexIN In)
     // UV座標
     Out.uvCoords = In.uvCoords;
 
-    //************************************************************************************
+    //--------------------------------------------------------------------------------
+    //
     // ライティングの計算
     // Global Illumination = AmbientLight + DiffuseLight + SpecularLight + EmissiveLight
     //
-    // マテリアルがある場合はマテリアルとライトの各々分量をかけて足す
-    // color = M.am * L.am + M.di * L.di + M.sp * L.sp + M.em * L.em
-    //************************************************************************************
+    //--------------------------------------------------------------------------------
     float4 globalIlumination = lightAmbient + lightDiffuse + lightSpecular;
-
-    Out.diffuse.rgb = materialAmbientColor * lightAmbient +
-                      materialDiffuseColor * lightDiffuse;
-    Out.diffuse.a = 1.0f;
 
     return Out;
 }
-// ピクセルシェーダー
+
+//------------------------------------------------------
+//
+// ピクセルシェーダー(トゥ―ンシェーダー)
+//
+//------------------------------------------------------
 float4 CelPixelShader(CelVertexOUT In) : COLOR0
 {
     float value = dot(-lightDir, In.normal); // 法線と光の内積を計算して、色を決める;
@@ -92,8 +94,8 @@ float4 CelPixelShader(CelVertexOUT In) : COLOR0
     float4 color;
     if (ObjType == 0) // ship
     {
-       // color = tex2D(Samp, In.uvCoords) * In.diffuse;
-       color = tex2D(Samp, In.uvCoords);
+       //color = tex2D(texSamp, In.uvCoords) * In.diffuse;
+       color = tex2D(texSamp, In.uvCoords);
     }
     else if (ObjType == 1) // 敵
     {
@@ -110,18 +112,13 @@ float4 CelPixelShader(CelVertexOUT In) : COLOR0
         color = float4(0.6, 0.6, 0.6, 0.5) * color; // シャドーの色
 
     return color;
-
-    //float4 diffuse = tex2D(Samp, In.uvCoords) *LightIntensity;
-    //float4 diffuse = In.diffuse * LightIntensity;
-    //if (value > 0.35)
-    //    diffuse = float4(1.0, 1.0, 1.0, 1.0) * diffuse; // 普段の色
-    //else
-    //    diffuse = float4(0.6, 0.6, 0.6, 0.5) * diffuse; // シャドーの色
-    //return diffuse;
 }
 
-// アウトライン
-// 頂点シェーダー
+//------------------------------------------------------
+//
+// 頂点シェーダー(アウトライン)
+//
+//------------------------------------------------------
 CelVertexOUT OutlineVertexShader(CelVertexIN In)
 {
     CelVertexOUT Out = (CelVertexOUT) 0; // 初期化
@@ -131,16 +128,26 @@ CelVertexOUT OutlineVertexShader(CelVertexIN In)
 
     float4 normal = normalize(mul(float4(In.normal, 1.0f), WMatrix));
 
-    Out.position = position + (mul(0.2, -normal)); // 法線の方向へ拡大
+    Out.position = position + (mul(0.25, -normal)); // 法線の方向へ拡大
 
     return Out;
 }
-// ピクセルシェーダー
+
+//------------------------------------------------------
+//
+// ピクセルシェーダー(アウトライン)
+//
+//------------------------------------------------------
 float4 OutlinePixelShader(CelVertexOUT In) : COLOR0
 {
     return float4(0, 0, 0, 1); // 法線と光の内積を計算して、色を決める;
 }
 
+//------------------------------------------------------
+//
+// 各テクニック
+//
+//------------------------------------------------------
 technique CelShader // トゥ―ンシェーダー
 {
     pass P0 // OutLine

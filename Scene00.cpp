@@ -7,10 +7,6 @@
 //*****************************************************************************
 #include "Scene00.h"
 
-#include "fstream"
-
-using namespace std;
-
 //*****************************************************************************
 //
 // コンストラクタ
@@ -52,6 +48,10 @@ Scene00::Scene00()
 	m_resourcesManager->LoadTexture("playerOars", &m_ship->m_model[1].m_meshTexturePoint);
 	// バウンディングボックスを初期化
 	m_ship->m_boundingBox->InitBox(4, 7, 8, 0.1f);
+
+	// シャドー
+	m_shadowMap = new ShadowMapShader;
+	m_shadowMap->InitShader();
 
 	// 敵
 	m_enemyShip = new Enemy[ENEMY_MAX];
@@ -287,11 +287,12 @@ void Scene00::Draw()
 		// マテリアル情報を渡す ... 臨時値
 		D3DXCOLOR colorMtrlDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
 		D3DXCOLOR colorMtrlAmbient(0.35f, 0.35f, 0.35f, 0.0f);
+		// material power
 		m_celShader->m_effectPoint->SetValue("materialAmbientColor", &colorMtrlAmbient, sizeof(D3DXCOLOR));
 		m_celShader->m_effectPoint->SetValue("materialDiffuseColor", &colorMtrlDiffuse, sizeof(D3DXCOLOR));
 
 		// テクスチャを渡す
-		m_celShader->m_effectPoint->SetTexture("Tex", m_ship->m_model->m_meshTexturePoint);
+		m_celShader->m_effectPoint->SetTexture("tex", m_ship->m_model->m_meshTexturePoint);
 
 		UINT passNum = 0;
 		m_celShader->m_effectPoint->Begin(&passNum, 0);
@@ -304,6 +305,9 @@ void Scene00::Draw()
 			m_celShader->m_effectPoint->EndPass();
 		}
 		m_celShader->m_effectPoint->End();
+
+		// シャドー
+		//m_shadowMap->m_effectPoint->SetTechnique("");
 
 		// バウンディングボックス
 		if (m_ship->m_boundingBox->m_isBoundingBoxDraw == true)

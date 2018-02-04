@@ -46,6 +46,7 @@
     <ClCompile Include="SceneTitle.cpp" />
     <ClCompile Include="Shader\CelShader.cpp" />
     <ClCompile Include="Shader\RHWShader.cpp" />
+    <ClCompile Include="Shader\ShadowMapShader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bullet.h" />
@@ -75,6 +76,7 @@
     <ClInclude Include="SceneTitle.h" />
     <ClInclude Include="Shader\CelShader.h" />
     <ClInclude Include="Shader\RHWShader.h" />
+    <ClInclude Include="Shader\ShadowMapShader.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\BasicShader.fx">
@@ -90,6 +92,11 @@
       </ExcludedFromBuild>
       <FileType>Document</FileType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Shader\ShadowMapShader.fx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </FxCompile>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{AE2F5D68-7730-43CB-B207-504B5C12B285}</ProjectGuid>

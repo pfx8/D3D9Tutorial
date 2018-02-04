@@ -96,6 +96,9 @@
     <ClCompile Include="Shader\RHWShader.cpp">
       <Filter>Shader</Filter>
     </ClCompile>
+    <ClCompile Include="Shader\ShadowMapShader.cpp">
+      <Filter>Shader</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="modules\BoundingBox.h">
@@ -170,6 +173,9 @@
     <ClInclude Include="Shader\RHWShader.h">
       <Filter>Shader</Filter>
     </ClInclude>
+    <ClInclude Include="Shader\ShadowMapShader.h">
+      <Filter>Shader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\BasicShader.fx">
@@ -181,5 +187,10 @@
     <None Include="Shader\RHWShader.fx">
       <Filter>Shader\Fx file</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Shader\ShadowMapShader.fx">
+      <Filter>Shader\Fx file</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
