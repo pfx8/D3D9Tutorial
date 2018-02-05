@@ -187,10 +187,8 @@
     <None Include="Shader\RHWShader.fx">
       <Filter>Shader\Fx file</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="Shader\ShadowMapShader.fx">
+    <None Include="Shader\ShadowMapShader.fx">
       <Filter>Shader\Fx file</Filter>
-    </FxCompile>
+    </None>
   </ItemGroup>
 </Project>

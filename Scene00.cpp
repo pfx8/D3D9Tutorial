@@ -14,14 +14,19 @@
 //*****************************************************************************
 Scene00::Scene00()
 {
-	// シェーダー
+	// BasicShader
 	m_shader = new Shader;
 	m_shader->InitShader();
 
+	// CelShader
 	m_celShader = new CelShader;
 	m_celShader->InitShader();
 
-	// ライト、光方向はデフォルトで(1, 0, 1)
+	// ShadowMapShader
+	m_shadowMap = new ShadowMapShader;
+	m_shadowMap->InitShader();
+
+	// ライト、光方向はデフォルトで(-1, 0, -1)
 	m_directionLight = new Light;
 	m_celShader->m_effectPoint->SetValue("lightDir", &m_directionLight->m_light.Direction, sizeof(D3DXVECTOR3));
 	m_celShader->m_effectPoint->SetValue("lightDiffuse", &m_directionLight->m_light.Diffuse, sizeof(D3DXCOLOR));
@@ -401,8 +406,8 @@ void Scene00::Draw()
 	}
 		
 	// デッバグメッセージ
-	m_ship->PosToMessageAndMessageDraw(0);
-	m_camera->PosToMessageAndMessageDraw(3);
+	//m_ship->PosToMessageAndMessageDraw(0);
+	//m_camera->PosToMessageAndMessageDraw(0);
 
 
 }
@@ -452,20 +457,22 @@ void Scene00::Control()
 		m_camera->RotationVecUp(-1.0f / 180.0f * D3DX_PI);
 	}
 		
-	if (GetKeyboardPress(DIK_I))	// カメラを上に移動
+	if (GetKeyboardPress(DIK_I))		// カメラを上に移動
 	{
-		m_camera->MoveAlongVecLook(-0.5f);
+		//m_camera->MoveAlongVecLook(-0.5f);
+		m_camera->m_posEye.y += 1.0f;
 	}
 	else if (GetKeyboardPress(DIK_K))	// カメラを下に移動
 	{
-		m_camera->MoveAlongVecLook(0.5f);
+		//m_camera->MoveAlongVecLook(0.5f);
+		m_camera->m_posEye.y -= 1.0f;
 	}
 
-	if (GetKeyboardPress(DIK_O))	// カメラを上に移動
+	if (GetKeyboardPress(DIK_O))	// カメラを近くに
 	{
 		m_camera->ChangeRadius(true);
 	}
-	else if (GetKeyboardPress(DIK_P))	// カメラを下に移動
+	else if (GetKeyboardPress(DIK_P))	// カメラを遠いに
 	{
 		m_camera->ChangeRadius(false);
 	}
@@ -474,16 +481,6 @@ void Scene00::Control()
 	{
 		m_camera->m_isShooting = !m_camera->m_isShooting;
 	}
-
-	// ライト操作更新
-	//if (GetKeyboardPress(DIK_Z))	// key Z
-	//{
-	//	m_light->RotationY(0.5f / 180.0f * D3DX_PI);
-	//}
-	//if (GetKeyboardPress(DIK_X))	// key X
-	//{
-	//	m_light->RotationY(-0.5f / 180.0f * D3DX_PI);
-	//}
 
 	// プレーヤー攻撃
  	if (GetKeyboardTrigger(DIK_SPACE))	// 攻撃

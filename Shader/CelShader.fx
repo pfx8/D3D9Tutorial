@@ -67,7 +67,7 @@ CelVertexOUT CelVertexShader(CelVertexIN In)
     
     // 法線変換
     Out.normal = mul(float4(In.normal, 1.0), WMatrix);
-    
+
     // UV座標
     Out.uvCoords = In.uvCoords;
 
@@ -89,7 +89,14 @@ CelVertexOUT CelVertexShader(CelVertexIN In)
 //------------------------------------------------------
 float4 CelPixelShader(CelVertexOUT In) : COLOR0
 {
-    float value = dot(-lightDir, In.normal); // 法線と光の内積を計算して、色を決める;
+    matrix lightWMatrix; // ライト用ワールド変換行列
+    lightWMatrix = WMatrix;
+    lightWMatrix._42 = 0;
+
+    float3 lightVector = normalize(mul(float4(lightDir, 1.0), WMatrix));
+    float value = dot(-lightVector, In.normal); // 法線と光の内積を計算して、色を決める;
+
+    //float value = dot(-lightDir, In.normal); // 法線と光の内積を計算して、色を決める;
     
     float4 color;
     if (ObjType == 0) // ship
@@ -106,8 +113,9 @@ float4 CelPixelShader(CelVertexOUT In) : COLOR0
         color = In.diffuse;
     }
 
-    if (value > 0.75)
-        color = float4(1.0, 1.0, 1.0, 1.0) * color; // 普段の色
+    // 法線とライトの内積によってカラーを決める
+    if (value > 0.85)
+        color = float4(1.0, 1.0, 1.0, 1.0) * color; // 正常の色
     else
         color = float4(0.6, 0.6, 0.6, 0.5) * color; // シャドーの色
 

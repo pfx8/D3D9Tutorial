@@ -94,9 +94,11 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Shader\ShadowMapShader.fx">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </FxCompile>
+    <None Include="Shader\ShadowMapShader.fx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </ExcludedFromBuild>
+      <FileType>Document</FileType>
+    </None>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{AE2F5D68-7730-43CB-B207-504B5C12B285}</ProjectGuid>

@@ -46,12 +46,7 @@ Camera::~Camera()
 //
 //*****************************************************************************
 void Camera::InitCameraByPlayer(Character* player)
-{
-	// woman
-	//m_posEye = player->m_lookVector + D3DXVECTOR3(0.0f, 6.0f, 11.0f);
-	//m_posAt = player->m_pos + D3DXVECTOR3(0.0f, 6.0f, 0.0f);
-	
-	// ship
+{	
 	m_posEye = player->m_lookVector + D3DXVECTOR3(0.0f, 10.0f, 35.0f);
 	m_posAt = player->m_pos + D3DXVECTOR3(0.0f, 10.0f, 0.0f);
 	m_rot = player->m_rot;
@@ -60,7 +55,7 @@ void Camera::InitCameraByPlayer(Character* player)
 
 	SetViewMatrix();	// ビューイング変換
 	SetProjMatrix();	// プロジェクション変換
-	SetViewport();	// ビューポートを設定
+	SetViewport();		// ビューポートを設定
 }
 
 //*****************************************************************************
@@ -123,9 +118,9 @@ void Camera::UpdateByPlayer(Character* player)
 	//m_rot = player->m_rot;
 	if (m_isShooting == false)
 	{
-		m_posEye.x = player->m_pos.x + cosf(m_rot.y + D3DX_PI / 2) * m_radius;
+		//m_posEye.x = player->m_pos.x + cosf(m_rot.y + D3DX_PI / 2) * m_radius;
 		//m_posEye.y = player->m_pos.y + 10.0f;
-		m_posEye.z = player->m_pos.z + sinf(m_rot.y + D3DX_PI / 2) * m_radius;
+		//m_posEye.z = player->m_pos.z + sinf(m_rot.y + D3DX_PI / 2) * m_radius;
 
 		m_posAt = player->m_pos + D3DXVECTOR3(0.0f, 10.0f, 0.0f);
 	}
@@ -248,7 +243,7 @@ void Camera::PosToMessageAndMessageDraw(int row)
 	//m_message->DrawPosMessage("C-look", m_lookVector, D3DXVECTOR2(0, float(row * 18)));
 	//m_posEye.y = m_rot.y;
 	m_message->DrawPosMessage("Pos", m_posEye, D3DXVECTOR2(0, float((row + 0) * 18)));
-	m_message->DrawPosMessage("Look", m_lookVector, D3DXVECTOR2(0, float((row + 1) * 18)));
+	//m_message->DrawPosMessage("Look", m_lookVector, D3DXVECTOR2(0, float((row + 1) * 18)));
 }
 
 //*****************************************************************************

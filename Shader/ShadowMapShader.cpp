@@ -89,6 +89,5 @@ HRESULT ShadowMapShader::LoadEffectFile()
 
 	std::cout << "[Information] Loading Shader<ShadowMapShader> Success!" << std::endl;
 
-
 	return S_OK;
 }
