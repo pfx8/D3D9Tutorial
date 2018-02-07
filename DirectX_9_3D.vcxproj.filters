@@ -99,6 +99,9 @@
     <ClCompile Include="Shader\ShadowMapShader.cpp">
       <Filter>Shader</Filter>
     </ClCompile>
+    <ClCompile Include="Modules\ScreenPolygon.cpp">
+      <Filter>Modules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="modules\BoundingBox.h">
@@ -175,6 +178,9 @@
     </ClInclude>
     <ClInclude Include="Shader\ShadowMapShader.h">
       <Filter>Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Modules\ScreenPolygon.h">
+      <Filter>Modules</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

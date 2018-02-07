@@ -26,6 +26,9 @@ Scene00::Scene00()
 	m_shadowMap = new ShadowMapShader;
 	m_shadowMap->InitShader();
 
+	// RHWポリゴン
+	m_screenPolygon = new ScreenPolygon;
+
 	// ライト、光方向はデフォルトで(-1, 0, -1)
 	m_directionLight = new Light;
 	m_celShader->m_effectPoint->SetValue("lightDir", &m_directionLight->m_light.Direction, sizeof(D3DXVECTOR3));
@@ -121,10 +124,8 @@ void Scene00::SetRenderState()
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	// レンダーステートパラメータの設定
-	//pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);				// 光を使う
 	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);			// 裏面をカリング
 	pDevice->SetRenderState(D3DRS_ZENABLE, TRUE);					// Zバッファを使用
-	//pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);		// αブレンドを行う
 	pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 	pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);		// αソースカラーの指定
@@ -404,6 +405,9 @@ void Scene00::Draw()
 	//		}
 	//	}
 	}
+
+	// ゲームUI
+	m_screenPolygon->Draw();
 		
 	// デッバグメッセージ
 	//m_ship->PosToMessageAndMessageDraw(0);

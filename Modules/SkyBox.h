@@ -5,6 +5,8 @@
 // Author : LIAO HANCHEN
 //
 //*****************************************************************************
+#ifndef _SKY_BOX_H_
+#define _SKY_BOX_H_
 
 #include "Shader.h"
 #include "..\Engine.h"
@@ -41,3 +43,5 @@ public:
 	void SetWorldMatrix();	// 臨時ーーワールド変換
 	void Draw();					// スカイボックスを描画
 };
+
+#endif // !_SKY_BOX_H_

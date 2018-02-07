@@ -90,13 +90,13 @@ CelVertexOUT CelVertexShader(CelVertexIN In)
 float4 CelPixelShader(CelVertexOUT In) : COLOR0
 {
     matrix lightWMatrix; // ライト用ワールド変換行列
-    lightWMatrix = WMatrix;
-    lightWMatrix._42 = 0;
+    //lightWMatrix = WMatrix;
+    //lightWMatrix._42 = 0;
 
-    float3 lightVector = normalize(mul(float4(lightDir, 1.0), WMatrix));
-    float value = dot(-lightVector, In.normal); // 法線と光の内積を計算して、色を決める;
+    //float3 lightVector = normalize(mul(float4(lightDir, 1.0), WMatrix));
+    //float value = dot(-lightVector, In.normal); // 法線と光の内積を計算して、色を決める;
 
-    //float value = dot(-lightDir, In.normal); // 法線と光の内積を計算して、色を決める;
+    float value = dot(-lightDir, In.normal); // 法線と光の内積を計算して、色を決める;
     
     float4 color;
     if (ObjType == 0) // ship

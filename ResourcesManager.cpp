@@ -34,6 +34,10 @@ ResourcesManager::ResourcesManager()
 	m_textureList["playerOars"] = "data/TEXTURE/VikingShip/Oars.png";
 	m_textureList["playerShip"] = "data/TEXTURE/VikingShip/Ship.png";
 
+	m_textureList["UIminimap"] = "data/TEXTURE/UI/minimap.png";
+	m_textureList["UIHP"] = "data/TEXTURE/UI/hp.png";
+	m_textureList["UIkey"] = "data/TEXTURE/UI/key.png";
+
 	m_textureList["NULL"] = "NULL";
 
 	// メッシュ検索マッピングを作る

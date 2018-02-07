@@ -14,6 +14,7 @@
 #include "Engine.h"
 #include "Enemy.h"
 #include "Bullet.h"
+
 #include "Modules\Scene.h"
 #include "Modules\Character.h"
 #include "Modules\BoundingBox.h"
@@ -22,6 +23,9 @@
 #include "Modules\Light.h"
 #include "Modules\Shader.h"
 #include "Modules\SkyBox.h"
+#include "Modules\ScreenPolygon.h"
+
+#include "Shader\RHWShader.h"
 #include "Shader\CelShader.h"
 #include "Shader\ShadowMapShader.h"
 
@@ -38,6 +42,7 @@ class Scene00 : public Scene
 private:
 	Camera*			m_camera;		// カメラ
 	CelShader*		m_celShader;	// トゥ―ンシェーダー
+
 	Shader*			m_shader;		// ベーシックシェーダー
 	Plane*			m_fieldStone;	// フィールド
 	Character*		m_ship;			// プレーヤー
@@ -45,14 +50,17 @@ private:
 	Enemy*			m_enemyShip;	// 敵
 	Bullet*			m_bullet;		// 弾
 	SkyBox*			m_skyBox;		// スカイボックス
-	ShadowMapShader*m_shadowMap;
+
+	ShadowMapShader*m_shadowMap;	// シャドーマップ
+
+	ScreenPolygon*	m_screenPolygon;// RHWポリゴン
 
 public:
 	Scene00();
 	~Scene00();
 
 	void Update();			// 更新
-	void Draw();				// 描画
+	void Draw();			// 描画
 	void Control();			// 操作関数
 	void SetRenderState();	// レンダリングを設定
 

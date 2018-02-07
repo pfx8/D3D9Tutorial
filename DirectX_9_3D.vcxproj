@@ -34,6 +34,7 @@
     <ClCompile Include="modules\Model.cpp" />
     <ClCompile Include="modules\Plane.cpp" />
     <ClCompile Include="modules\Scene.cpp" />
+    <ClCompile Include="Modules\ScreenPolygon.cpp" />
     <ClCompile Include="Modules\Shader.cpp" />
     <ClCompile Include="Modules\SkyBox.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -64,6 +65,7 @@
     <ClInclude Include="modules\Model.h" />
     <ClInclude Include="modules\Plane.h" />
     <ClInclude Include="modules\Scene.h" />
+    <ClInclude Include="Modules\ScreenPolygon.h" />
     <ClInclude Include="Modules\Shader.h" />
     <ClInclude Include="Modules\SkyBox.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
