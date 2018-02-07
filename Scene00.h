@@ -44,7 +44,7 @@ private:
 	CelShader*		m_celShader;	// トゥ―ンシェーダー
 
 	Shader*			m_shader;		// ベーシックシェーダー
-	Plane*			m_fieldStone;	// フィールド
+	Plane*			m_sea;			// フィールド海
 	Character*		m_ship;			// プレーヤー
 	Light*			m_directionLight;		// ライト
 	Enemy*			m_enemyShip;	// 敵

@@ -24,6 +24,9 @@ class Camera
 {
 private:
 	DebugMessage*	m_message;
+
+	float field, ratio, rangeStart, rangeEnd; // ビューイングの視野角、アスペクト比、NearZ値、FarZ値
+
 public:
 	D3DXVECTOR3		m_rot;			// カメラの回転角度
 	// ベクトル
@@ -44,9 +47,8 @@ public:
 	~Camera();
 
 	void InitCameraByPlayer(Character* player);	// カメラを初期化関数
-	void SetViewMatrix();	// ビューイング変換
-	void SetProjMatrix();	// プロジェクション変換(投影変換)
 	void SetViewport();	// ビューポートを設定
+	void Update(Character* player);		// カメラ更新
 	void PosToMessageAndMessageDraw(int row);	// 座標をメッセージに渡して、画面に描画する
 
 	void RotationVecUp(float angle);		// 上方向のベクトルにして回転
@@ -55,7 +57,6 @@ public:
 	void MoveAlongVecLook(float unit);	// 注視方向に沿って移動
 
 	void isAtToEyeVectorMoreLong(bool isMoreLong);	// プレーヤーとカメラの半径を変わる
-	void UpdateByPlayer(Character* player);	// キャラクターによってカメラを更新
 
 	void UpdateAngle(float angle);
 	void ChangeRadius(bool isPlus);

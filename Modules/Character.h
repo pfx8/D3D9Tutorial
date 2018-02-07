@@ -35,10 +35,10 @@ class Character
 {
 private:
 	UINT			m_leverLevel;		// 船のレバー操作
-	double			m_speedCoefficient; // スピードに関する倍数
 	int				m_modelNum;			// モデル数
 
 public:
+	double			m_speedCoefficient; // スピードに関する倍数
 	DebugMessage*	m_message;		// Debugメッセージ
 	float			m_waveAngle;	// 揺れ係数
 	D3DXMATRIX		m_worldMatrix;	// ワールド変換マトリックス

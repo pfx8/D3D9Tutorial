@@ -14,9 +14,15 @@
 //*****************************************************************************
 Camera::Camera()
 {
+	this->field = D3DXToRadian(45);
+	this->ratio = (float)SCREEN_WIDTH / SCREEN_HEIGHT;;
+	this->rangeStart = 0.1;
+	this->rangeEnd = 1000;
+
 	m_posEye		= D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_posAt			= D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_rot			= D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+
 	m_upVector		= D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 	m_lookVector	= D3DXVECTOR3(0.0f, 0.0f, 1.0f);
 	m_rightVector	= D3DXVECTOR3(1.0f, 0.0f, 0.0f);
@@ -53,37 +59,32 @@ void Camera::InitCameraByPlayer(Character* player)
 	m_lookVector = player->m_lookVector;
 	m_rightVector = player->m_rightVector;
 
-	SetViewMatrix();	// ビューイング変換
-	SetProjMatrix();	// プロジェクション変換
 	SetViewport();		// ビューポートを設定
 }
 
-//*****************************************************************************
-//
-// ビューイング変換
-//
-//*****************************************************************************
-void Camera::SetViewMatrix()
-{	
-	D3DXMatrixLookAtLH(&m_viewMatrix, &m_posEye, &m_posAt, &m_upVector);	// ビューマトリックスの作成
-	GetDevice()->SetTransform(D3DTS_VIEW, &m_viewMatrix);				// ビューマトリックスの設定
-}
 
 //*****************************************************************************
 //
-// プロジェクション変換(投影変換)
+// カメラ更新
 //
 //*****************************************************************************
-void Camera::SetProjMatrix()
+void Camera::Update(Character* player)
 {
-	D3DXMatrixPerspectiveFovLH(&m_projectionMatrix, // プロジェクションマトリックスの作成
-		D3DXToRadian(45.0f),						// ビュー平面の視野角
-		(float)SCREEN_WIDTH / (float)SCREEN_HEIGHT,	// ビュー平面のアスペクト比
-		10.0f,										// ヒュー平面のNearZ値
-		1000.0f);									// ビュー平面のFarZ値
+	// プレーヤーによってカメラを更新
+	m_posEye += player->m_lookVector * player->m_speedCoefficient;
+	m_posAt += player->m_lookVector * player->m_speedCoefficient;
 
-	GetDevice()->SetTransform(D3DTS_PROJECTION, &m_projectionMatrix);	// プロジェクションマトリックスの設定
+	// ビューマトリックスの作成
+	D3DXMatrixLookAtLH(&m_viewMatrix, &m_posEye, &m_posAt, &m_upVector);
+
+	// プロジェクションマトリックスの作成
+	D3DXMatrixPerspectiveFovLH(&m_projectionMatrix, 
+		this->field,   		// ビュー平面の視野角
+		this->ratio,		// ビュー平面のアスペクト比
+		this->rangeStart,	// ヒュー平面のNearZ値
+		this->rangeEnd);	// ビュー平面のFarZ値
 }
+
 
 //*****************************************************************************
 //
@@ -101,47 +102,6 @@ void Camera::SetViewport()
 	vp.MaxZ = 1.0f;
 
 	GetDevice()->SetViewport(&vp);	// ヒューポットを設定
-}
-
-//*****************************************************************************
-//
-// キャラクターによってカメラを更新
-//
-//*****************************************************************************
-void Camera::UpdateByPlayer(Character* player)
-{
-	// ship
-	/*m_rot = player->m_rot;
-	m_posEye.x = player->m_pos.x + cosf(m_rot.y + D3DX_PI / 2) * 25.0f;
-	m_posEye.y = player->m_pos.y + 10.0f;
-	m_posEye.z = player->m_pos.z + sinf(m_rot.y + D3DX_PI / 2) * 25.0f;*/
-	//m_rot = player->m_rot;
-	if (m_isShooting == false)
-	{
-		//m_posEye.x = player->m_pos.x + cosf(m_rot.y + D3DX_PI / 2) * m_radius;
-		//m_posEye.y = player->m_pos.y + 10.0f;
-		//m_posEye.z = player->m_pos.z + sinf(m_rot.y + D3DX_PI / 2) * m_radius;
-
-		m_posAt = player->m_pos + D3DXVECTOR3(0.0f, 10.0f, 0.0f);
-	}
-	else if (m_isShooting == true)
-	{
-		m_posAt = player->m_pos + player->m_rightVector * m_radius;
-
-		//m_posAt.x = (m_posEye.x - player->m_pos.x) / 2 + cosf(-D3DX_PI / 2) * m_radius;
-		m_posAt.y = 0.0f;
-		//m_posAt.z = (m_posEye.x - player->m_pos.z) / 2 + sinf(-D3DX_PI / 2) * m_radius;
-
-		m_posEye.x = player->m_pos.x;
-		m_posEye.y = player->m_pos.y + 8.0f;
-		m_posEye.z = player->m_pos.z;
-	}
-	/*m_lookVector = player->m_lookVector;
-	m_rightVector = player->m_rightVector;*/
-	//player->m_lookVector = m_lookVector;
-	//player->m_rightVector = m_rightVector;
-
-	SetViewMatrix();	// ビューイング変換
 }
 
 //*****************************************************************************
@@ -170,8 +130,6 @@ void Camera::RotationVecUp(float angle)
 	D3DXMATRIX rotMatrix;
 	D3DXMatrixRotationAxis(&rotMatrix, &m_upVector, angle);		// 回転行列を作る
 	D3DXVec3TransformCoord(&m_posEye, &m_posEye, &rotMatrix);	// 回転行列で新しい座標を計算する
-
-	SetViewMatrix();	// ビューイング変換
 }
 
 //*****************************************************************************
@@ -229,8 +187,6 @@ void Camera::MoveAlongVecLook(float unit)
 {
 	// 判断
 	m_posEye += m_lookVector * unit;
-
-	SetViewMatrix();	// ビューイング変換
 }
 
 //*****************************************************************************

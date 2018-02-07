@@ -42,9 +42,9 @@ Scene00::Scene00()
 	m_resourcesManager->LoadTexture("skybox", &m_skyBox->m_texture);
 
 	// フィールド
-	m_fieldStone = new Plane;
-	m_fieldStone->InitPlane(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(17.0f, 17.0f), D3DXVECTOR2(100, 100));
-	m_resourcesManager->LoadTexture("fieldSea", &m_fieldStone->m_texture);
+	m_sea = new Plane;
+	m_sea->InitPlane(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(17.0f, 17.0f), D3DXVECTOR2(100, 100));
+	m_resourcesManager->LoadTexture("fieldSea", &m_sea->m_texture);
 	
 	// 主人公
 	m_ship = new Character;
@@ -102,7 +102,7 @@ Scene00::Scene00()
 Scene00::~Scene00()
 {
 	// クラスポインタ
-	RELEASE_CLASS_POINT(m_fieldStone);	// フィールド
+	RELEASE_CLASS_POINT(m_sea);	// フィールド
 	RELEASE_CLASS_POINT(m_ship);		// プレーヤー
 	RELEASE_CLASS_POINT(m_camera);	// カメラ
 	RELEASE_CLASS_POINT(m_directionLight);		// ライト
@@ -139,9 +139,14 @@ void Scene00::SetRenderState()
 //*****************************************************************************
 void Scene00::Update()
 {
-	Control();	// 各操作の更新
-	m_camera->UpdateByPlayer(m_ship);
-	m_fieldStone->Update();	// 波の更新
+	// 入力操作
+	Control();
+
+	// カメラ更新
+	m_camera->Update(m_ship);
+
+	// 波の更新
+	m_sea->Update();	
 
 	// 弾移動更新
 	for (int count = 0; count < BULLET_MAX; count++)
@@ -199,10 +204,10 @@ void Scene00::Update()
 	}
 	
 	// 揺れる状況
-	m_ship->Update(m_fieldStone->m_waveAngle);
+	m_ship->Update(m_sea->m_waveAngle);
 	for (int count = 0; count < ENEMY_MAX; count++)
 	{
-		m_enemyShip[count].Update(m_fieldStone->m_waveAngle);
+		m_enemyShip[count].Update(m_sea->m_waveAngle);
 	}
 }
 
@@ -222,12 +227,12 @@ void Scene00::Draw()
 		m_shader->m_effectPoint->SetTechnique(m_shader->m_shaderHandle);
 			
 		// ワールド変換、ビューイング変換、プロジェクション変換マトリックス
-		m_shader->m_effectPoint->SetMatrix(m_shader->m_WMatrixHandle, &m_fieldStone->m_worldMatrix);	
+		m_shader->m_effectPoint->SetMatrix(m_shader->m_WMatrixHandle, &m_sea->m_worldMatrix);	
 		D3DXMATRIX fieldVPmatrix = m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
 		m_shader->m_effectPoint->SetMatrix(m_shader->m_VPMatrixHandle, &fieldVPmatrix);
 			
 		// テクスチャ、アルファ値の設定
-		m_shader->m_effectPoint->SetTexture(m_shader->m_textureHandle, m_fieldStone->m_texture);
+		m_shader->m_effectPoint->SetTexture(m_shader->m_textureHandle, m_sea->m_texture);
 		m_shader->m_effectPoint->SetFloat(m_shader->m_alphaHandle, 1.0f);
 			
 		// 描画
@@ -237,7 +242,7 @@ void Scene00::Draw()
 		for (int count = 0; count < passNum; count++)
 		{
 			m_shader->m_effectPoint->BeginPass(0);
-			m_fieldStone->Draw();
+			m_sea->Draw();
 
 			m_shader->m_effectPoint->EndPass();
 		}
@@ -427,14 +432,10 @@ void Scene00::Control()
 	// プレーヤー操作 逆
 	if (GetKeyboardTrigger(DIK_S))	// 前に進む
 	{
-		//m_camera->m_posEye += m_ship->MoveAlongVecLook(-0.5f);
-		//m_ship->MoveAlongVecLook(-0.25f);
 		m_ship->ChangeLever(LL_FRONT);
 	}
 	if (GetKeyboardTrigger(DIK_W))	// 後ろに進む
-	{
-		//m_camera->m_posEye += m_ship->MoveAlongVecLook(-0.5f);
-		//m_ship->MoveAlongVecLook(-0.25f);
+	{;
 		m_ship->ChangeLever(LL_BACK);
 	}
 
@@ -442,13 +443,11 @@ void Scene00::Control()
 	{
 		// 更新キャラクターをカメラの回転角度
 		m_ship->RotationVecUp(0.5f / 180.0f * D3DX_PI);
-		//m_camera->UpdateAngle(-0.5f / 180.0f * D3DX_PI);
 	}
 	else if (GetKeyboardPress(DIK_D))	// 右回転
 	{
 		// 更新キャラクターをカメラの回転角度
 		m_ship->RotationVecUp(-0.5f / 180.0f * D3DX_PI);
-		//m_camera->UpdateAngle(0.5f / 180.0f * D3DX_PI);
 	}
 
 	//　カメラ操作
