@@ -36,6 +36,7 @@ private:
 	float rangeStart;								// NearZ値
 	float rangeEnd;									// FarZ値
 
+	void  CameraContrlUpdate(Character* player);	// カメラ操作更新
 
 public:
 	float rotateSpeedHorizonal;						// カメラの水平移動偏り量
@@ -54,19 +55,14 @@ public:
 
 	//bool			m_isShooting;
 
-	void Update(Character* player);														// カメラ更新
-	void Rotation(Character* player, float radiansHorizonal, float radiansVertical);	// 回転操作
-	void Zoom(float distance);															// ズーム操作
-
 	Camera();
 	~Camera();
 
-	void InitCameraByPlayer(Character* player);	// カメラを初期化関数
-	void SetViewport();	// ビューポートを設定
-
-	void PosToMessageAndMessageDraw(int row);	// 座標をメッセージに渡して、画面に描画する
-
-	//void RotationVecUp(float angle);		// 上方向のベクトルにして回転
-	//void RotationVecRight(float angle);	// 注視方向のベクトルにして回転
+	void InitCameraByPlayer(Character* player);											// カメラを初期化関	
+	void Update(Character* player);														// カメラ更新
+	void Rotation(Character* player, float radiansHorizonal, float radiansVertical);	// 回転操作
+	void Zoom(float distance);															// ズーム操作
+	void SetViewport();																	// ビューポートを設定
+	void PosToMessageAndMessageDraw(int row);											// 座標をメッセージに渡して、画面に描画する
 };
 #endif // !_CAMERA_H_

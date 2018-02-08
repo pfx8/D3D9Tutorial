@@ -28,8 +28,8 @@ Camera::Camera()
 
 	this->offsetFromTargetMin = 15.0f;
 	this->offsetFromTargetMax = 75.0f;
-	this->verticalRadiansMin = -0.2f;
-	this->verticalRadiansMax = 0.8f;
+	this->verticalRadiansMin = cosf(D3DXToRadian(15.0f));
+	this->verticalRadiansMax = cosf(D3DXToRadian(75.0f));
 
 	this->rotateSpeedHorizonal = 2.0f;
 	this->rotateSpeedVertical = 1.0f;
@@ -58,11 +58,8 @@ Camera::~Camera()
 //*****************************************************************************
 void Camera::InitCameraByPlayer(Character* player)
 {	
-	this->posEye = player->m_lookVector + D3DXVECTOR3(0.0f, 10.0f, 35.0f);
-	this->posAt = player->m_pos + D3DXVECTOR3(0.0f, 5.0f, 0.0f);
-
-	//this->lookVector = player->m_lookVector;
-	//this->rightVector = player->m_rightVector;
+	this->posEye = D3DXVECTOR3(0.0f, 10.0f, -35.0f);
+	this->posAt = D3DXVECTOR3(0.0f, 5.0f, 0.0f);
 
 	this->offSetFromPlayer = player->m_pos - this->posEye;
 
@@ -77,9 +74,8 @@ void Camera::InitCameraByPlayer(Character* player)
 //*****************************************************************************
 void Camera::Update(Character* player)
 {
-	// プレーヤーによってカメラを更新
-	//this->posEye += player->m_lookVector * player->m_speedCoefficient;
-	//this->posAt += player->m_lookVector * player->m_speedCoefficient;
+	// カメラ操作更新
+	CameraContrlUpdate(player);
 
 	// カメラ位置を更新
 	this->posEye = player->m_pos - this->offSetFromPlayer;
@@ -98,7 +94,7 @@ void Camera::Update(Character* player)
 
 	// プロジェクションマトリックスの作成
 	D3DXMatrixPerspectiveFovLH(&this->projectionMatrix,
-								this->field,   	// ビュー平面の視野角
+								this->field,   		// ビュー平面の視野角
 								this->ratio,		// ビュー平面のアスペクト比
 								this->rangeStart,	// ヒュー平面のNearZ値
 								this->rangeEnd);	// ビュー平面のFarZ値
@@ -106,20 +102,37 @@ void Camera::Update(Character* player)
 
 //*****************************************************************************
 //
-// ビューポートを設定
+// カメラ操作更新
 //
 //*****************************************************************************
-void Camera::SetViewport()
+void Camera::CameraContrlUpdate(Character* player)
 {
-	D3DVIEWPORT9 vp;
-	vp.X = 0;
-	vp.Y = 0;
-	vp.Width = SCREEN_WIDTH;
-	vp.Height = SCREEN_HEIGHT;
-	vp.MinZ = 0.0f;
-	vp.MaxZ = 1.0f;
+	if (GetKeyboardPress(DIK_I))	// カメラを上に移動
+	{
+		Rotation(player, 0, D3DXToRadian(1.0f));
+	}
+	else if (GetKeyboardPress(DIK_K))	// カメラを下に移動
+	{
+		Rotation(player, 0, D3DXToRadian(-1.0f));
+	}
 
-	GetDevice()->SetViewport(&vp);	// ヒューポットを設定
+	if (GetKeyboardPress(DIK_J))	// 左回転
+	{
+		Rotation(player, D3DXToRadian(1.0f), 0);
+	}
+	else if (GetKeyboardPress(DIK_L))	// 右回転
+	{
+		Rotation(player, D3DXToRadian(-1.0f), 0);
+	}
+
+	if (GetKeyboardPress(DIK_Q))		// ゾーンを拡大
+	{
+		Zoom(zoomSpeed);
+	}
+	else if (GetKeyboardPress(DIK_E))	// ゾーンを縮小
+	{
+		Zoom(-zoomSpeed);
+	}
 }
 
 //*****************************************************************************
@@ -130,8 +143,21 @@ void Camera::SetViewport()
 void Camera::Rotation(Character* player, float radiansHorizonal, float radiansVertical)
 {
 	// 水平
+	D3DXMATRIX HorizonalMatrix;
+	D3DXMatrixRotationAxis(&HorizonalMatrix, &player->m_upVector, radiansHorizonal);			// 回転行列を作る
+	D3DXVec3TransformCoord(&this->offSetFromPlayer, &this->offSetFromPlayer, &HorizonalMatrix);	// カメラの新しい座標を計算する
 
 	// 垂直
+	D3DXMATRIX VerticalMatrix;
+	D3DXMatrixRotationAxis(&VerticalMatrix, &player->m_rightVector, radiansVertical);			// 回転行列を作る
+	D3DXVECTOR3 tempOffset = D3DXVECTOR3(1.0f, 1.0f, 1.0f);				
+	D3DXVec3TransformCoord(&tempOffset, &tempOffset, &VerticalMatrix);	// 移動後の座標を計算
+	D3DXVec3Normalize(&tempOffset, &tempOffset);						// 法線を正規化
+	float radianToPlayerUp = D3DXVec3Dot(&tempOffset, &player->m_upVector);	// カメラの移動範囲を制限するため、プレーヤーの垂直ベクトルと内積を計算する
+	if (radianToPlayerUp < this->verticalRadiansMax && radianToPlayerUp > this->verticalRadiansMin)
+	{
+		this->offSetFromPlayer = tempOffset;
+	}
 }
 
 //*****************************************************************************
@@ -152,69 +178,23 @@ void Camera::Zoom(float distance)
 	}
 }
 
-////*****************************************************************************
-////
-//// 上方向のベクトルにして回転
-////
-////*****************************************************************************
-//void Camera::RotationVecUp(float angle)
-//{
-//	if (rot.y > D3DX_PI * 2.0f || rot.y < -D3DX_PI * 2.0f)
-//	{
-//		rot.y = 0;
-//	}
+//*****************************************************************************
 //
-//	// 角度を記録する
-//	rot.y -= angle;
+// ビューポートを設定
 //
-//	// 新しい右方向ベクトルを計算する
-//	rightVector.x = cosf(rot.y);
-//	rightVector.z = sinf(rot.y);
-//
-//	// 新しい注視方向ベクトルを計算する
-//	lookVector.x = cosf(rot.y + D3DX_PI / 2);
-//	lookVector.z = sinf(rot.y + D3DX_PI / 2);
-//
-//	D3DXMATRIX rotMatrix;
-//	D3DXMatrixRotationAxis(&rotMatrix, &upVector, angle);		// 回転行列を作る
-//	D3DXVec3TransformCoord(&posEye, &posEye, &rotMatrix);	// 回転行列で新しい座標を計算する
-//}
-//
-////*****************************************************************************
-////
-//// 右方向のベクトルにして回転
-////
-////*****************************************************************************
-//void Camera::RotationVecRight(float angle)
-//{
-//	// 角度の移動範囲は -55 + 45(初期) ~ 45(初期) + 20
-//	if (rot.x >= 20.0f / 180.0f * D3DX_PI && angle < 0)
-//	{
-//		rot.x = 20.0f / 180.0f * D3DX_PI;
-//	}
-//	else if(rot.x <= -55.0f / 180.0f * D3DX_PI && angle > 0)
-//	{ 
-//		rot.x = -55.0f / 180.0f * D3DX_PI;
-//	}
-//	else
-//	{
-//		// 角度を記録する
-//		rot.x -= angle;
-//
-//		// 注視ベクトルを更新する
-//		lookVector.z = cosf(rot.x);
-//		lookVector.y = sinf(rot.x);
-//
-//		// 上方向ベクトルを更新する
-//		upVector.z = cosf(rot.x + D3DX_PI / 2);
-//		upVector.y = sinf(rot.x + D3DX_PI / 2);
-//
-//		// カメラ位置を更新する
-//		posEye.z = posEye.z * cosf(angle) - posEye.y * sinf(angle);
-//		posEye.y = posEye.z * sinf(angle) + posEye.y * cosf(angle);
-//	}
-//}
+//*****************************************************************************
+void Camera::SetViewport()
+{
+	D3DVIEWPORT9 vp;
+	vp.X = 0;
+	vp.Y = 0;
+	vp.Width = SCREEN_WIDTH;
+	vp.Height = SCREEN_HEIGHT;
+	vp.MinZ = 0.0f;
+	vp.MaxZ = 1.0f;
 
+	GetDevice()->SetViewport(&vp);	// ヒューポットを設定
+}
 
 //*****************************************************************************
 //

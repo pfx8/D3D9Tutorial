@@ -15,8 +15,8 @@
 Character::Character()
 {
 	m_upVector = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-	m_lookVector = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
-	m_rightVector = D3DXVECTOR3(1.0f, 0.0f, 0.0f);
+	m_lookVector = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
+	m_rightVector = D3DXVECTOR3(-1.0f, 0.0f, 0.0f);
 
 	m_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);

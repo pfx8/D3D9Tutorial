@@ -450,49 +450,10 @@ void Scene00::Control()
 		m_ship->RotationVecUp(-0.5f / 180.0f * D3DX_PI);
 	}
 
-	////　カメラ操作
-	//if (GetKeyboardPress(DIK_J))	// 左回転
-	//{
-	//	m_camera->RotationVecUp(1.0f / 180.0f * D3DX_PI);
-	//}
-	//else if (GetKeyboardPress(DIK_L))	// 右回転
-	//{
-	//	m_camera->RotationVecUp(-1.0f / 180.0f * D3DX_PI);
-	//}
-	//	
-	//if (GetKeyboardPress(DIK_I))		// カメラを上に移動
-	//{
-	//	//m_camera->MoveAlongVecLook(-0.5f);
-	//	m_camera->m_posEye.y += 1.0f;
-	//}
-	//else if (GetKeyboardPress(DIK_K))	// カメラを下に移動
-	//{
-	//	//m_camera->MoveAlongVecLook(0.5f);
-	//	m_camera->m_posEye.y -= 1.0f;
-	//}
-
-	//if (GetKeyboardPress(DIK_O))	// カメラを近くに
-	//{
-	//	m_camera->ChangeRadius(true);
-	//}
-	//else if (GetKeyboardPress(DIK_P))	// カメラを遠いに
-	//{
-	//	m_camera->ChangeRadius(false);
-	//}
-
 	//if (GetKeyboardTrigger(DIK_R))
 	//{
 	//	m_camera->m_isShooting = !m_camera->m_isShooting;
 	//}
-
-	if (GetKeyboardPress(DIK_Q))		// カメラを上に移動
-	{
-		m_camera->Zoom(m_camera->zoomSpeed);
-	}
-	else if (GetKeyboardPress(DIK_E))	// カメラを下に移動
-	{
-		m_camera->Zoom(-m_camera->zoomSpeed);
-	}
 
 	// プレーヤー攻撃
  	if (GetKeyboardTrigger(DIK_SPACE))	// 攻撃
