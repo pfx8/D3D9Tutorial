@@ -228,7 +228,7 @@ void Scene00::Draw()
 			
 		// ワールド変換、ビューイング変換、プロジェクション変換マトリックス
 		m_shader->m_effectPoint->SetMatrix(m_shader->m_WMatrixHandle, &m_sea->m_worldMatrix);	
-		D3DXMATRIX fieldVPmatrix = m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
+		D3DXMATRIX fieldVPmatrix = m_camera->viewMatrix * m_camera->projectionMatrix;
 		m_shader->m_effectPoint->SetMatrix(m_shader->m_VPMatrixHandle, &fieldVPmatrix);
 			
 		// テクスチャ、アルファ値の設定
@@ -258,7 +258,7 @@ void Scene00::Draw()
 		// ワールド変換、ビューイング変換、プロジェクション変換マトリックス
 		m_skyBox->SetWorldMatrix();
 		m_shader->m_effectPoint->SetMatrix(m_shader->m_WMatrixHandle, &m_skyBox->m_worldMatrix);
-		D3DXMATRIX skyBoxVPmatrix = m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
+		D3DXMATRIX skyBoxVPmatrix = m_camera->viewMatrix * m_camera->projectionMatrix;
 		m_shader->m_effectPoint->SetMatrix(m_shader->m_VPMatrixHandle, &skyBoxVPmatrix);
 
 		// テクスチャの設定
@@ -289,7 +289,7 @@ void Scene00::Draw()
 		// 変更行列を渡す
 		m_ship->SetWorldMatrix();
 		m_celShader->m_effectPoint->SetMatrix(m_celShader->m_WMatrixHandle, &m_ship->m_worldMatrix);
-		D3DXMATRIX shipVPmatrix = m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
+		D3DXMATRIX shipVPmatrix = m_camera->viewMatrix * m_camera->projectionMatrix;
 		m_celShader->m_effectPoint->SetMatrix(m_celShader->m_VPMatrixHandle, &shipVPmatrix);	
 
 		// Obj種類番号を渡す
@@ -329,7 +329,7 @@ void Scene00::Draw()
 
 			// ワールド変換、ビューイング変換、プロジェクション変換マトリックス
 			m_shader->m_effectPoint->SetMatrix(m_shader->m_WMatrixHandle, &m_ship->m_worldMatrix);
-			D3DXMATRIX VPmatrix = m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
+			D3DXMATRIX VPmatrix = m_camera->viewMatrix * m_camera->projectionMatrix;
 			m_shader->m_effectPoint->SetMatrix(m_shader->m_VPMatrixHandle, &VPmatrix);
 
 			// アルファ値の設定(テクスチャ無し)
@@ -416,7 +416,7 @@ void Scene00::Draw()
 		
 	// デッバグメッセージ
 	//m_ship->PosToMessageAndMessageDraw(0);
-	//m_camera->PosToMessageAndMessageDraw(0);
+	m_camera->PosToMessageAndMessageDraw(0);
 
 
 }
@@ -450,39 +450,48 @@ void Scene00::Control()
 		m_ship->RotationVecUp(-0.5f / 180.0f * D3DX_PI);
 	}
 
-	//　カメラ操作
-	if (GetKeyboardPress(DIK_J))	// 左回転
-	{
-		m_camera->RotationVecUp(1.0f / 180.0f * D3DX_PI);
-	}
-	else if (GetKeyboardPress(DIK_L))	// 右回転
-	{
-		m_camera->RotationVecUp(-1.0f / 180.0f * D3DX_PI);
-	}
-		
-	if (GetKeyboardPress(DIK_I))		// カメラを上に移動
-	{
-		//m_camera->MoveAlongVecLook(-0.5f);
-		m_camera->m_posEye.y += 1.0f;
-	}
-	else if (GetKeyboardPress(DIK_K))	// カメラを下に移動
-	{
-		//m_camera->MoveAlongVecLook(0.5f);
-		m_camera->m_posEye.y -= 1.0f;
-	}
+	////　カメラ操作
+	//if (GetKeyboardPress(DIK_J))	// 左回転
+	//{
+	//	m_camera->RotationVecUp(1.0f / 180.0f * D3DX_PI);
+	//}
+	//else if (GetKeyboardPress(DIK_L))	// 右回転
+	//{
+	//	m_camera->RotationVecUp(-1.0f / 180.0f * D3DX_PI);
+	//}
+	//	
+	//if (GetKeyboardPress(DIK_I))		// カメラを上に移動
+	//{
+	//	//m_camera->MoveAlongVecLook(-0.5f);
+	//	m_camera->m_posEye.y += 1.0f;
+	//}
+	//else if (GetKeyboardPress(DIK_K))	// カメラを下に移動
+	//{
+	//	//m_camera->MoveAlongVecLook(0.5f);
+	//	m_camera->m_posEye.y -= 1.0f;
+	//}
 
-	if (GetKeyboardPress(DIK_O))	// カメラを近くに
-	{
-		m_camera->ChangeRadius(true);
-	}
-	else if (GetKeyboardPress(DIK_P))	// カメラを遠いに
-	{
-		m_camera->ChangeRadius(false);
-	}
+	//if (GetKeyboardPress(DIK_O))	// カメラを近くに
+	//{
+	//	m_camera->ChangeRadius(true);
+	//}
+	//else if (GetKeyboardPress(DIK_P))	// カメラを遠いに
+	//{
+	//	m_camera->ChangeRadius(false);
+	//}
 
-	if (GetKeyboardTrigger(DIK_R))
+	//if (GetKeyboardTrigger(DIK_R))
+	//{
+	//	m_camera->m_isShooting = !m_camera->m_isShooting;
+	//}
+
+	if (GetKeyboardPress(DIK_Q))		// カメラを上に移動
 	{
-		m_camera->m_isShooting = !m_camera->m_isShooting;
+		m_camera->Zoom(m_camera->zoomSpeed);
+	}
+	else if (GetKeyboardPress(DIK_E))	// カメラを下に移動
+	{
+		m_camera->Zoom(-m_camera->zoomSpeed);
 	}
 
 	// プレーヤー攻撃

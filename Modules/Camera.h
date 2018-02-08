@@ -23,42 +23,50 @@
 class Camera
 {
 private:
-	DebugMessage*	m_message;
+	DebugMessage*	message;
+	D3DXVECTOR3		offSetFromPlayer;				// プレーヤーとカメラの偏り(半径)
 
-	float field, ratio, rangeStart, rangeEnd; // ビューイングの視野角、アスペクト比、NearZ値、FarZ値
+	float offsetFromTargetMin;						// プレーヤーとカメラの偏りの最小値
+	float offsetFromTargetMax;						// プレーヤーとカメラの偏りの最大値
+	float verticalRadiansMin;						// カメラの垂直角度の最小値
+	float verticalRadiansMax;						// カメラの垂直角度の最大値
+
+	float field;									// ビューイングの視野角
+	float ratio;									// アスペクト比
+	float rangeStart;								// NearZ値
+	float rangeEnd;									// FarZ値
+
 
 public:
-	D3DXVECTOR3		m_rot;			// カメラの回転角度
-	// ベクトル
-	D3DXVECTOR3		m_upVector;		// カメラの上方向ベクトル
-	D3DXVECTOR3		m_lookVector;	// カメラの注視方向ベクトル
-	D3DXVECTOR3		m_rightVector;	// カメラの右方向ベクトル
-	// 位置
-	D3DXVECTOR3		m_posEye;	// カメラの位置
-	D3DXVECTOR3		m_posAt;		// カメラの注視点
-	// マトリックス
-	D3DXMATRIX		m_viewMatrix;		// ビューイング変換行列
-	D3DXMATRIX		m_projectionMatrix;	// プロジェクション変換行列
+	float rotateSpeedHorizonal;						// カメラの水平移動偏り量
+	float rotateSpeedVertical;						// カメラの垂直移動偏り量
+	float zoomSpeed;								// ゾーンの移動偏り量
 
-	float			m_radius;			// カメラと船の半径
-	bool			m_isShooting;
+	D3DXVECTOR3		upVector;		// カメラの上方向ベクトル
+	D3DXVECTOR3		lookVector;	// カメラの注視方向ベクトル
+	D3DXVECTOR3		rightVector;	// カメラの右方向ベクトル
+
+	D3DXVECTOR3		posEye;	// カメラの位置
+	D3DXVECTOR3		posAt;	// カメラの注視点
+
+	D3DXMATRIX		viewMatrix;		// ビューイング変換行列
+	D3DXMATRIX		projectionMatrix;	// プロジェクション変換行列
+
+	//bool			m_isShooting;
+
+	void Update(Character* player);														// カメラ更新
+	void Rotation(Character* player, float radiansHorizonal, float radiansVertical);	// 回転操作
+	void Zoom(float distance);															// ズーム操作
 
 	Camera();
 	~Camera();
 
 	void InitCameraByPlayer(Character* player);	// カメラを初期化関数
 	void SetViewport();	// ビューポートを設定
-	void Update(Character* player);		// カメラ更新
+
 	void PosToMessageAndMessageDraw(int row);	// 座標をメッセージに渡して、画面に描画する
 
-	void RotationVecUp(float angle);		// 上方向のベクトルにして回転
-	void RotationVecRight(float angle);	// 注視方向のベクトルにして回転
-	void MoveAlongVecRight(float unit);	// 右方向に沿って移動
-	void MoveAlongVecLook(float unit);	// 注視方向に沿って移動
-
-	void isAtToEyeVectorMoreLong(bool isMoreLong);	// プレーヤーとカメラの半径を変わる
-
-	void UpdateAngle(float angle);
-	void ChangeRadius(bool isPlus);
+	//void RotationVecUp(float angle);		// 上方向のベクトルにして回転
+	//void RotationVecRight(float angle);	// 注視方向のベクトルにして回転
 };
 #endif // !_CAMERA_H_

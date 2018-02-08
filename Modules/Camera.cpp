@@ -19,21 +19,26 @@ Camera::Camera()
 	this->rangeStart = 0.1;
 	this->rangeEnd = 1000;
 
-	m_posEye		= D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_posAt			= D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_rot			= D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	this->posEye	= D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	this->posAt		= D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
-	m_upVector		= D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-	m_lookVector	= D3DXVECTOR3(0.0f, 0.0f, 1.0f);
-	m_rightVector	= D3DXVECTOR3(1.0f, 0.0f, 0.0f);
+	this->upVector		= D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+	this->lookVector	= D3DXVECTOR3(0.0f, 0.0f, -1.0f);
+	this->rightVector	= D3DXVECTOR3(-1.0f, 0.0f, 0.0f);
 
-	m_isShooting	= false;
-	m_radius		= 43.0f;
+	this->offsetFromTargetMin = 15.0f;
+	this->offsetFromTargetMax = 75.0f;
+	this->verticalRadiansMin = -0.2f;
+	this->verticalRadiansMax = 0.8f;
 
-	D3DXMatrixIdentity(&m_viewMatrix);
-	D3DXMatrixIdentity(&m_projectionMatrix);
+	this->rotateSpeedHorizonal = 2.0f;
+	this->rotateSpeedVertical = 1.0f;
+	this->zoomSpeed = 4.0f;
 
-	m_message = new DebugMessage();
+	D3DXMatrixIdentity(&viewMatrix);
+	D3DXMatrixIdentity(&projectionMatrix);
+
+	this->message = new DebugMessage();
 }
 
 //*****************************************************************************
@@ -43,7 +48,7 @@ Camera::Camera()
 //*****************************************************************************
 Camera::~Camera()
 {
-	RELEASE_CLASS_POINT(m_message);
+	RELEASE_CLASS_POINT(this->message);
 }
 
 //*****************************************************************************
@@ -53,11 +58,13 @@ Camera::~Camera()
 //*****************************************************************************
 void Camera::InitCameraByPlayer(Character* player)
 {	
-	m_posEye = player->m_lookVector + D3DXVECTOR3(0.0f, 10.0f, 35.0f);
-	m_posAt = player->m_pos + D3DXVECTOR3(0.0f, 10.0f, 0.0f);
-	m_rot = player->m_rot;
-	m_lookVector = player->m_lookVector;
-	m_rightVector = player->m_rightVector;
+	this->posEye = player->m_lookVector + D3DXVECTOR3(0.0f, 10.0f, 35.0f);
+	this->posAt = player->m_pos + D3DXVECTOR3(0.0f, 5.0f, 0.0f);
+
+	//this->lookVector = player->m_lookVector;
+	//this->rightVector = player->m_rightVector;
+
+	this->offSetFromPlayer = player->m_pos - this->posEye;
 
 	SetViewport();		// ビューポートを設定
 }
@@ -71,20 +78,31 @@ void Camera::InitCameraByPlayer(Character* player)
 void Camera::Update(Character* player)
 {
 	// プレーヤーによってカメラを更新
-	m_posEye += player->m_lookVector * player->m_speedCoefficient;
-	m_posAt += player->m_lookVector * player->m_speedCoefficient;
+	//this->posEye += player->m_lookVector * player->m_speedCoefficient;
+	//this->posAt += player->m_lookVector * player->m_speedCoefficient;
+
+	// カメラ位置を更新
+	this->posEye = player->m_pos - this->offSetFromPlayer;
+	this->posAt += player->m_lookVector * player->m_speedCoefficient;
+
+	// カメラベクトルを更新
+	D3DXVECTOR3 temp = player->m_pos - this->posEye;
+	D3DXVec3Normalize(&this->lookVector, &temp);
+	D3DXVec3Cross(&this->rightVector, &this->lookVector, &player->m_upVector);
+	D3DXVec3Normalize(&this->rightVector, &this->rightVector);
+	D3DXVec3Cross(&this->upVector, &this->rightVector, &this->lookVector);
+	D3DXVec3Normalize(&this->upVector, &this->upVector);
 
 	// ビューマトリックスの作成
-	D3DXMatrixLookAtLH(&m_viewMatrix, &m_posEye, &m_posAt, &m_upVector);
+	D3DXMatrixLookAtLH(&this->viewMatrix, &this->posEye, &this->posAt, &this->upVector);
 
 	// プロジェクションマトリックスの作成
-	D3DXMatrixPerspectiveFovLH(&m_projectionMatrix, 
-		this->field,   		// ビュー平面の視野角
-		this->ratio,		// ビュー平面のアスペクト比
-		this->rangeStart,	// ヒュー平面のNearZ値
-		this->rangeEnd);	// ビュー平面のFarZ値
+	D3DXMatrixPerspectiveFovLH(&this->projectionMatrix,
+								this->field,   	// ビュー平面の視野角
+								this->ratio,		// ビュー平面のアスペクト比
+								this->rangeStart,	// ヒュー平面のNearZ値
+								this->rangeEnd);	// ビュー平面のFarZ値
 }
-
 
 //*****************************************************************************
 //
@@ -106,88 +124,97 @@ void Camera::SetViewport()
 
 //*****************************************************************************
 //
-// 上方向のベクトルにして回転
+// 回転操作
 //
 //*****************************************************************************
-void Camera::RotationVecUp(float angle)
+void Camera::Rotation(Character* player, float radiansHorizonal, float radiansVertical)
 {
-	if (m_rot.y > D3DX_PI * 2.0f || m_rot.y < -D3DX_PI * 2.0f)
+	// 水平
+
+	// 垂直
+}
+
+//*****************************************************************************
+//
+// ズーム操作
+//
+//*****************************************************************************
+void Camera::Zoom(float distance)
+{
+	D3DXVECTOR3 zoomDistance = this->lookVector * distance;			// 変更量を計算
+	D3DXVECTOR3	tempOffset = this->offSetFromPlayer + zoomDistance;	// 新しい偏り量を計算
+
+	float radians = D3DXVec3Length(&tempOffset);	// 半径を計算
+	if (radians < this->offsetFromTargetMax && radians > this->offsetFromTargetMin)
 	{
-		m_rot.y = 0;
-	}
-
-	// 角度を記録する
-	m_rot.y -= angle;
-
-	// 新しい右方向ベクトルを計算する
-	m_rightVector.x = cosf(m_rot.y);
-	m_rightVector.z = sinf(m_rot.y);
-
-	// 新しい注視方向ベクトルを計算する
-	m_lookVector.x = cosf(m_rot.y + D3DX_PI / 2);
-	m_lookVector.z = sinf(m_rot.y + D3DX_PI / 2);
-
-	D3DXMATRIX rotMatrix;
-	D3DXMatrixRotationAxis(&rotMatrix, &m_upVector, angle);		// 回転行列を作る
-	D3DXVec3TransformCoord(&m_posEye, &m_posEye, &rotMatrix);	// 回転行列で新しい座標を計算する
-}
-
-//*****************************************************************************
-//
-// 右方向のベクトルにして回転
-//
-//*****************************************************************************
-void Camera::RotationVecRight(float angle)
-{
-	// 角度の移動範囲は -55 + 45(初期) ~ 45(初期) + 20
-	if (m_rot.x >= 20.0f / 180.0f * D3DX_PI && angle < 0)
-	{
-		m_rot.x = 20.0f / 180.0f * D3DX_PI;
-	}
-	else if(m_rot.x <= -55.0f / 180.0f * D3DX_PI && angle > 0)
-	{ 
-		m_rot.x = -55.0f / 180.0f * D3DX_PI;
-	}
-	else
-	{
-		// 角度を記録する
-		m_rot.x -= angle;
-
-		// 注視ベクトルを更新する
-		m_lookVector.z = cosf(m_rot.x);
-		m_lookVector.y = sinf(m_rot.x);
-
-		// 上方向ベクトルを更新する
-		m_upVector.z = cosf(m_rot.x + D3DX_PI / 2);
-		m_upVector.y = sinf(m_rot.x + D3DX_PI / 2);
-
-		// カメラ位置を更新する
-		m_posEye.z = m_posEye.z * cosf(angle) - m_posEye.y * sinf(angle);
-		m_posEye.y = m_posEye.z * sinf(angle) + m_posEye.y * cosf(angle);
+		// 半径は範囲内ならば、偏り量を更新
+		this->offSetFromPlayer = tempOffset;
 	}
 }
 
-//*****************************************************************************
+////*****************************************************************************
+////
+//// 上方向のベクトルにして回転
+////
+////*****************************************************************************
+//void Camera::RotationVecUp(float angle)
+//{
+//	if (rot.y > D3DX_PI * 2.0f || rot.y < -D3DX_PI * 2.0f)
+//	{
+//		rot.y = 0;
+//	}
 //
-// 右方向に沿って移動
+//	// 角度を記録する
+//	rot.y -= angle;
 //
-//*****************************************************************************
-void Camera::MoveAlongVecRight(float unit)
-{
-	m_posEye += m_rightVector * unit;
-	m_posAt += m_rightVector * unit;
-}
+//	// 新しい右方向ベクトルを計算する
+//	rightVector.x = cosf(rot.y);
+//	rightVector.z = sinf(rot.y);
+//
+//	// 新しい注視方向ベクトルを計算する
+//	lookVector.x = cosf(rot.y + D3DX_PI / 2);
+//	lookVector.z = sinf(rot.y + D3DX_PI / 2);
+//
+//	D3DXMATRIX rotMatrix;
+//	D3DXMatrixRotationAxis(&rotMatrix, &upVector, angle);		// 回転行列を作る
+//	D3DXVec3TransformCoord(&posEye, &posEye, &rotMatrix);	// 回転行列で新しい座標を計算する
+//}
+//
+////*****************************************************************************
+////
+//// 右方向のベクトルにして回転
+////
+////*****************************************************************************
+//void Camera::RotationVecRight(float angle)
+//{
+//	// 角度の移動範囲は -55 + 45(初期) ~ 45(初期) + 20
+//	if (rot.x >= 20.0f / 180.0f * D3DX_PI && angle < 0)
+//	{
+//		rot.x = 20.0f / 180.0f * D3DX_PI;
+//	}
+//	else if(rot.x <= -55.0f / 180.0f * D3DX_PI && angle > 0)
+//	{ 
+//		rot.x = -55.0f / 180.0f * D3DX_PI;
+//	}
+//	else
+//	{
+//		// 角度を記録する
+//		rot.x -= angle;
+//
+//		// 注視ベクトルを更新する
+//		lookVector.z = cosf(rot.x);
+//		lookVector.y = sinf(rot.x);
+//
+//		// 上方向ベクトルを更新する
+//		upVector.z = cosf(rot.x + D3DX_PI / 2);
+//		upVector.y = sinf(rot.x + D3DX_PI / 2);
+//
+//		// カメラ位置を更新する
+//		posEye.z = posEye.z * cosf(angle) - posEye.y * sinf(angle);
+//		posEye.y = posEye.z * sinf(angle) + posEye.y * cosf(angle);
+//	}
+//}
 
-//*****************************************************************************
-//
-// 注視方向に沿って移動
-//
-//*****************************************************************************
-void Camera::MoveAlongVecLook(float unit)
-{
-	// 判断
-	m_posEye += m_lookVector * unit;
-}
 
 //*****************************************************************************
 //
@@ -196,58 +223,8 @@ void Camera::MoveAlongVecLook(float unit)
 //*****************************************************************************
 void Camera::PosToMessageAndMessageDraw(int row)
 {
-	//m_message->DrawPosMessage("C-look", m_lookVector, D3DXVECTOR2(0, float(row * 18)));
-	//m_posEye.y = m_rot.y;
-	m_message->DrawPosMessage("Pos", m_posEye, D3DXVECTOR2(0, float((row + 0) * 18)));
-	//m_message->DrawPosMessage("Look", m_lookVector, D3DXVECTOR2(0, float((row + 1) * 18)));
-}
-
-//*****************************************************************************
-//
-// プレーヤーとカメラの半径を変わる
-//
-//*****************************************************************************
-void Camera::isAtToEyeVectorMoreLong(bool isMoreLong)
-{
-	
-}
-
-//*****************************************************************************
-//
-// 
-//
-//*****************************************************************************
-void Camera::UpdateAngle(float angle)
-{
-	if (m_rot.y > D3DX_PI * 2.0f || m_rot.y < -D3DX_PI * 2.0f)
-	{
-		m_rot.y = 0;
-	}
-
-	m_rot.y -= angle;
-
-	// 新しい右方向ベクトルを計算する
-	m_rightVector.x = cosf(m_rot.y);
-	m_rightVector.z = sinf(m_rot.y);
-
-	// 新しい注視方向ベクトルを計算する
-	m_lookVector.x = cosf(m_rot.y + D3DX_PI / 2);
-	m_lookVector.z = sinf(m_rot.y + D3DX_PI / 2);
-}
-
-//*****************************************************************************
-//
-// 
-//
-//*****************************************************************************
-void Camera::ChangeRadius(bool isPlus)
-{
-	if (isPlus == true)
-	{
-		m_radius += 0.05f;
-	}
-	else
-	{
-		m_radius -= 0.05f;
-	}
+	message->DrawPosMessage("look  ", this->lookVector, D3DXVECTOR2(0, float((row + 0) * 18)));
+	message->DrawPosMessage("right ", this->rightVector, D3DXVECTOR2(0, float((row + 1) * 18)));
+	message->DrawPosMessage("up    ", this->upVector, D3DXVECTOR2(0, float((row + 2) * 18)));
+	message->DrawPosMessage("offset", this->offSetFromPlayer, D3DXVECTOR2(0, float((row + 3) * 18)));
 }
