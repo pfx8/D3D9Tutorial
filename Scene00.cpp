@@ -33,7 +33,6 @@ Scene00::Scene00()
 	m_directionLight = new Light;
 	m_celShader->m_effectPoint->SetValue("lightDir", &m_directionLight->m_light.Direction, sizeof(D3DXVECTOR3));
 	m_celShader->m_effectPoint->SetValue("lightDiffuse", &m_directionLight->m_light.Diffuse, sizeof(D3DXCOLOR));
-	m_celShader->m_effectPoint->SetValue("lightAmbient", &m_directionLight->m_light.Ambient, sizeof(D3DXCOLOR));
 	m_celShader->m_effectPoint->SetValue("lightSpecular", &m_directionLight->m_light.Specular, sizeof(D3DXCOLOR));
 
 	// スカイボックス
@@ -290,7 +289,7 @@ void Scene00::Draw()
 		m_celShader->m_effectPoint->SetMatrix(m_celShader->m_WMatrixHandle, &m_ship->m_worldMatrix);
 		D3DXMATRIX shipVPmatrix = m_camera->viewMatrix * m_camera->projectionMatrix;
 		m_celShader->m_effectPoint->SetMatrix(m_celShader->m_VPMatrixHandle, &shipVPmatrix);
-		D3DXMATRIX tempRot = m_ship->m_rotMatrix;
+		D3DXMATRIX tempRot = m_ship->lightMatrix;
 		m_celShader->m_effectPoint->SetValue("rotMatix", &tempRot, sizeof(D3DXMATRIX));
 
 		// Obj種類番号を渡す
@@ -298,9 +297,7 @@ void Scene00::Draw()
 		
 		//// マテリアル情報を渡す ... 臨時値
 		//D3DXCOLOR colorMtrlDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
-		//D3DXCOLOR colorMtrlAmbient(0.35f, 0.35f, 0.35f, 0.0f);
 		//// material power
-		//m_celShader->m_effectPoint->SetValue("materialAmbientColor", &colorMtrlAmbient, sizeof(D3DXCOLOR));
 		//m_celShader->m_effectPoint->SetValue("materialDiffuseColor", &colorMtrlDiffuse, sizeof(D3DXCOLOR));
 
 		// テクスチャを渡す

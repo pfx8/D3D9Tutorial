@@ -33,11 +33,9 @@ matrix rotMatix;        // 回転マトリックス
 // ライト
 float3 lightDir;        // ライト方向ベクトル
 float4 lightDiffuse;    // アンビエント(環境光のカラー)
-float4 lightAmbient;    // 拡散反射光(モデル本来のカラー)
 float4 lightSpecular;   // 鏡面反射光(スペキュラー)
 
 // マテリアル
-//float4 materialAmbientColor; // マテリアルのアンビエンド
 //float4 materialDiffuseColor; // マテリアルのディフェーズ
 
 int ObjType;                 // 1.プレーヤー 2.敵 3.大砲
@@ -82,7 +80,7 @@ CelVertexOUT CelVertexShader(CelVertexIN In)
 //------------------------------------------------------
 float4 CelPixelShader(CelVertexOUT In) : COLOR0
 {
-    float4 globalIlumination = lightAmbient + lightDiffuse + lightSpecular;
+    float4 globalIlumination = lightDiffuse + lightSpecular;
 
     float value = dot(lightDir, In.normal); // 法線と光の内積を計算して、色を決める;
     
@@ -104,7 +102,7 @@ float4 CelPixelShader(CelVertexOUT In) : COLOR0
     if (value > 0.5)
         diffuse = float4(1.0, 1.0, 1.0, 1.0) * diffuse; // 正常の色
     else
-        diffuse = float4(0.6, 0.6, 0.6, 1.0) * diffuse; // シャドーの色
+        diffuse = float4(0.35, 0.35, 0.35, 0.3) * diffuse; // シャドーの色
 
     return diffuse;
 }
@@ -157,6 +155,6 @@ technique CelShader // トゥ―ンシェーダー
         VertexShader = compile vs_3_0 CelVertexShader();
         PixelShader = compile ps_3_0 CelPixelShader();
 
-        CullMode = NONE; // 両面
+        //CullMode = NONE; // 両面
     }
 }

@@ -246,7 +246,7 @@ void Plane::Update()
 			float time = timeGetTime();
 			time = time / 10000000000.0f;
 
-			VertexBuffer[numY * (int(m_planeNum.x) + 1) + numX].position.y = 2.2f * (sinf(numY + numX + m_waveAngle) + sinf(numY + m_waveAngle) + sinf(numX + m_waveAngle)) / 3.0f;
+			VertexBuffer[numY * (int(m_planeNum.x) + 1) + numX].position.y = 1.8f * (sinf(numY + numX + m_waveAngle) + sinf(numY + m_waveAngle) + sinf(numX + m_waveAngle)) / 3.0f;
 
 			int signX;	// XïÑçÜà 
 			int signZ;	// ZïÑçÜà 

@@ -42,7 +42,7 @@ public:
 	DebugMessage*	m_message;		// Debugメッセージ
 	float			m_waveAngle;	// 揺れ係数
 	D3DXMATRIX		m_worldMatrix;	// ワールド変換マトリックス
-	D3DXMATRIX		m_rotMatrix;	// 回転マトリックス
+	D3DXMATRIX		lightMatrix;	// ライトマトリックス
 
 	// ベクトル
 	D3DXVECTOR3		m_upVector;		// カメラの上方向ベクトル
@@ -72,7 +72,6 @@ public:
 	D3DXVECTOR3  MoveAlongVecLook(float unit);	// 注視方向に沿って移動
 
 	void ChangeLever(LEVER_LEVEL scalars);		// レバーの操作によってスピードを変わる
-	D3DXMATRIX GetRotMatrix();					// 回転マトリックスを取得
 };
 #endif // !_CHARACTER_H_
 
