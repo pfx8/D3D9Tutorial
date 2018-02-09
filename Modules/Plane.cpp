@@ -83,7 +83,7 @@ HRESULT Plane::MakeVertexDecl(D3DXVECTOR2 planeSize, D3DXVECTOR2 planeNum)
 
 	// 頂点バッファ作成
 	{
-		if (FAILED(pDevice->CreateVertexBuffer(m_vertexNum * sizeof(VERTEX_3D), D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_vertexBuffer, NULL)))
+		if (FAILED(pDevice->CreateVertexBuffer(m_vertexNum * sizeof(VERTEX_3D), D3DUSAGE_WRITEONLY, 0, D3DPOOL_MANAGED, &m_vertexBuffer, NULL)))
 		{
 			std::cout << "[Error] 頂点バッファが生成できない!" << std::endl;	// エラーメッセージ
 			return E_FAIL;
@@ -121,10 +121,6 @@ HRESULT Plane::MakeVertexDecl(D3DXVECTOR2 planeSize, D3DXVECTOR2 planeNum)
 		// 頂点データをアンロックする
 		m_vertexBuffer->Unlock();
 	}
-
-	/*D3DVERTEXBUFFER_DESC pDesc;
-	m_vertexBuffer->GetDesc(&pDesc);
-	std::cout << "licl" << pDesc.Size << std::endl;*/
 
 	// 頂点インデックスバッファ作成
 	{
@@ -181,20 +177,9 @@ void Plane::SetWorldMatrix()
 	// ワールドマトリックスを初期化する
 	D3DXMatrixIdentity(&m_worldMatrix);
 
-	// スケールを反映
-	//D3DXMatrixScaling(&mtxScl, m_scl.x, m_scl.y, m_scl.z);
-	//D3DXMatrixMultiply(&m_worldMatrix, &m_worldMatrix, &mtxScl);
-
-	// 回転を反映
-	//D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rot.y, m_rot.x, m_rot.z);
-	//D3DXMatrixMultiply(&m_worldMatrix, &m_worldMatrix, &mtxRot);
-
 	// 平行移動を反映
 	D3DXMatrixTranslation(&mtxTranslate, m_pos.x, m_pos.y, m_pos.z);
 	D3DXMatrixMultiply(&m_worldMatrix, &m_worldMatrix, &mtxTranslate);
-
-	// ワールドマトリクスの初期化
-	//pDevice->SetTransform(D3DTS_WORLD, &m_worldMatrix);
 }
 
 //*****************************************************************************

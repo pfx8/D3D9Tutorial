@@ -1,4 +1,5 @@
-﻿//*****************************************************************************
+﻿
+//*****************************************************************************
 //
 // バウンディングボックス処理[BoundingBox.cpp]
 //
@@ -71,7 +72,7 @@ HRESULT BoundingBox::MakeVertex()
 		pDevice->CreateVertexDeclaration(boundingBoxDecl, &m_vertexDecl);
 
 		// オブジェクトの頂点バッファを生成
-		if (FAILED(pDevice->CreateVertexBuffer(8 * sizeof(BOUNDINGBOXVERTEX), 0, FVF_BOUNDINGBOX, D3DPOOL_DEFAULT, &m_vertexBuffer, NULL)))
+		if (FAILED(pDevice->CreateVertexBuffer(8 * sizeof(BOUNDINGBOXVERTEX), 0, 0, D3DPOOL_DEFAULT, &m_vertexBuffer, NULL)))
 		{
 			std::cout << "[Error] 頂点バッファが生成できない!" << std::endl;	// エラーメッセージ
 			return E_FAIL;

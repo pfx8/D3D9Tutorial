@@ -17,8 +17,6 @@ typedef struct BOUNDINGBOXVERTEX
 	D3DCOLOR	diffuse;	// îΩéÀåı
 }BOUNDINGBOXVERTEX;
 
-#define	FVF_BOUNDINGBOX (D3DFVF_XYZ | D3DFVF_DIFFUSE)
-
 //*****************************************************************************
 //
 // ÉNÉâÉXêÈåæ

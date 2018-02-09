@@ -54,7 +54,6 @@
 #define SCREEN_HEIGHT	(800)				// ウインドウの高さ
 
 // 頂点フォーマット( 頂点座標[3D] / 法線 / 反射光 / テクスチャ座標 )
-#define	FVF_VERTEX_3D		(D3DFVF_XYZ | D3DFVF_TEX1)
 typedef struct VERTEX_3D
 {
 	D3DXVECTOR4 position;			// 頂点座標
