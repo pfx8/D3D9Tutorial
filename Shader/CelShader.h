@@ -19,12 +19,10 @@ private:
 public:
 	ID3DXEffect*	m_effectPoint;		// エフェクト(複数レンダリング保存される)
 	D3DXHANDLE		m_celShaderHandle;	// エフェクトのテクニック
-	D3DXHANDLE		m_outLineHandle;	// エフェクトのテクニック
 	D3DXHANDLE		m_WMatrixHandle;	// ワールド変換
 	D3DXHANDLE		m_VPMatrixHandle;	// ビューイング変換とプロジェクション変換
 	D3DXHANDLE		m_lightingHandle;	// 光の方向
 	D3DXHANDLE		m_typeHandle;		// オブジェクトの種類を判断
-	//D3DXHANDLE	m_textureHandle;	// テクスチャ
 
 	CelShader();
 	~CelShader();

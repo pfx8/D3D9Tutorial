@@ -91,13 +91,10 @@ void CelShader::GetShaderParameter()
 {
 	// レンダリングのテクニックを取得
 	m_celShaderHandle = m_effectPoint->GetTechniqueByName("CelShader");
-	//m_outLineHandle = m_effectPoint->GetTechniqueByName("Outline");
 
 	// シェーダー中のグローバル変数を取得
 	m_WMatrixHandle = m_effectPoint->GetParameterByName(0, "WMatrix");
 	m_VPMatrixHandle = m_effectPoint->GetParameterByName(0, "VPMatrix");
 	m_lightingHandle = m_effectPoint->GetParameterByName(0, "LightDirection");
 	m_typeHandle = m_effectPoint->GetParameterByName(0, "type");
-	//m_textureHandle = m_effectPoint->GetParameterByName(0, "Tex");
-
 }
