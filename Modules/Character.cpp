@@ -51,8 +51,7 @@ Character::~Character()
 //*****************************************************************************
 void Character::PosToMessageAndMessageDraw(int row)
 {
-	m_message->DrawPosMessage("Pos", m_pos, D3DXVECTOR2(0, float((row) * 18)));
-	m_message->DrawPosMessage("Look", m_lookVector, D3DXVECTOR2(0, float((row + 1) * 18)));
+	m_message->DrawPosMessage("Pos", m_pos, D3DXVECTOR2(0, float((row + 0) * 18)));
 }
 
 //*****************************************************************************
@@ -233,11 +232,11 @@ void Character::ChangeLever(LEVER_LEVEL scalars)
 	switch (m_leverLevel)
 	{
 	case LL_BACK:
-		std::cout << "Œã" << std::endl; break;
+		std::cout << "‘O" << std::endl; break;
 	case LL_STOP:
 		std::cout << "’â" << std::endl; break;
 	case LL_FRONT:
-		std::cout << "‘O" << std::endl; break;
+		std::cout << "Œã" << std::endl; break;
 	default:
 		break;
 	}

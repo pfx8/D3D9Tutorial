@@ -124,12 +124,11 @@ void Scene00::SetRenderState()
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	// レンダーステートパラメータの設定
-	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);			// 裏面をカリング
-	pDevice->SetRenderState(D3DRS_ZENABLE, TRUE);					// Zバッファを使用
-	pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-	pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);		// αソースカラーの指定
-	pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);	// αデスティネーションカラーの指定
+	//pDevice->SetRenderState(D3DRS_ZENABLE, TRUE);					// Zバッファを使用
+	//pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+	//pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+	//pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);		// αソースカラーの指定
+	//pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);	// αデスティネーションカラーの指定
 }
 
 //*****************************************************************************
@@ -359,7 +358,7 @@ void Scene00::Draw()
 
 		//		m_enemyShip[count1].SetWorldMatrix();
 		//		m_celShader->m_effectPoint->SetMatrix(m_celShader->m_WMatrixHandle, &m_enemyShip[count1].m_worldMatrix);
-		//		D3DXMATRIX enemyVPmatrix = m_camera->m_viewMatrix * m_camera->m_projectionMatrix;
+		//		D3DXMATRIX enemyVPmatrix = m_camera->viewMatrix * m_camera->projectionMatrix;
 		//		m_celShader->m_effectPoint->SetMatrix(m_celShader->m_VPMatrixHandle, &enemyVPmatrix);
 
 		//		bool isShip = true;
@@ -415,8 +414,8 @@ void Scene00::Draw()
 	m_screenPolygon->Draw();
 		
 	// デッバグメッセージ
-	//m_ship->PosToMessageAndMessageDraw(0);
-	m_camera->PosToMessageAndMessageDraw(0);
+	m_ship->PosToMessageAndMessageDraw(0);
+	//m_camera->PosToMessageAndMessageDraw(0);
 
 
 }

@@ -15,6 +15,12 @@
 #include "../Engine.h"
 #include "../DebugMessage.h"
 
+enum cameraState	// カメラ逆かどうかの状態
+{
+	inReversal = -1,
+	offReversal = 1,
+};
+
 //*****************************************************************************
 //
 // クラス宣言
@@ -44,7 +50,7 @@ public:
 	float zoomSpeed;								// ゾーンの移動偏り量
 
 	D3DXVECTOR3		upVector;		// カメラの上方向ベクトル
-	D3DXVECTOR3		lookVector;	// カメラの注視方向ベクトル
+	D3DXVECTOR3		lookVector;		// カメラの注視方向ベクトル
 	D3DXVECTOR3		rightVector;	// カメラの右方向ベクトル
 
 	D3DXVECTOR3		posEye;	// カメラの位置

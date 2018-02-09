@@ -45,9 +45,6 @@ SceneManager::~SceneManager()
 //*****************************************************************************
 void SceneManager::ChooseScene(SCENESTATE state)
 {
-	// まずは前のシーンを削除する
-	//RELEASE_CLASS_POINT(m_sceneList[m_sceneState]);
-
 	switch (state)
 	{
 	case SS_Title:
