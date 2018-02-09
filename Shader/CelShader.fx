@@ -99,10 +99,8 @@ float4 CelPixelShader(CelVertexOUT In) : COLOR0
     }
 
     //法線とライトの内積によってカラーを決める
-    if (value > 0.5)
-        diffuse = float4(1.0, 1.0, 1.0, 1.0) * diffuse; // 正常の色
-    else
-        diffuse = float4(0.35, 0.35, 0.35, 0.3) * diffuse; // シャドーの色
+    if (value > 0.85)
+        diffuse = float4(0.55, 0.55, 0.55, 0.55) * diffuse;
 
     return diffuse;
 }
