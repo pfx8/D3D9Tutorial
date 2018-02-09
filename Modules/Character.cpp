@@ -264,7 +264,7 @@ void Character::SetWorldMatrix()
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
-	D3DXMATRIX mtxScl, mtxRot, mtxTranslate;
+	D3DXMATRIX mtxScl, mtxTranslate;
 
 	// ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&m_worldMatrix);
@@ -274,8 +274,8 @@ void Character::SetWorldMatrix()
 	D3DXMatrixMultiply(&m_worldMatrix, &m_worldMatrix, &mtxScl);
 
 	// 回転を反映
-	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rot.y, m_rot.x, m_rot.z);
-	D3DXMatrixMultiply(&m_worldMatrix, &m_worldMatrix, &mtxRot);
+	D3DXMatrixRotationYawPitchRoll(&this->m_rotMatrix, m_rot.y, m_rot.x, m_rot.z);
+	D3DXMatrixMultiply(&m_worldMatrix, &m_worldMatrix, &this->m_rotMatrix);
 
 	// 移動を反映
 	D3DXMatrixTranslation(&mtxTranslate, m_pos.x, m_pos.y, m_pos.z);
@@ -283,4 +283,14 @@ void Character::SetWorldMatrix()
 
 	// ワールドマトリックスの設定
 	//pDevice->SetTransform(D3DTS_WORLD, &m_worldMatrix);
+}
+
+//*****************************************************************************
+//
+// 回転マトリックスを取得
+//
+//*****************************************************************************
+D3DXMATRIX Character::GetRotMatrix()
+{
+	return this->m_rotMatrix;
 }

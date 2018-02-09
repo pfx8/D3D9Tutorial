@@ -289,17 +289,19 @@ void Scene00::Draw()
 		m_ship->SetWorldMatrix();
 		m_celShader->m_effectPoint->SetMatrix(m_celShader->m_WMatrixHandle, &m_ship->m_worldMatrix);
 		D3DXMATRIX shipVPmatrix = m_camera->viewMatrix * m_camera->projectionMatrix;
-		m_celShader->m_effectPoint->SetMatrix(m_celShader->m_VPMatrixHandle, &shipVPmatrix);	
+		m_celShader->m_effectPoint->SetMatrix(m_celShader->m_VPMatrixHandle, &shipVPmatrix);
+		D3DXMATRIX tempRot = m_ship->m_rotMatrix;
+		m_celShader->m_effectPoint->SetValue("rotMatix", &tempRot, sizeof(D3DXMATRIX));
 
 		// Obj種類番号を渡す
 		m_celShader->m_effectPoint->SetInt(m_celShader->m_typeHandle, ship);
 		
-		// マテリアル情報を渡す ... 臨時値
-		D3DXCOLOR colorMtrlDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
-		D3DXCOLOR colorMtrlAmbient(0.35f, 0.35f, 0.35f, 0.0f);
-		// material power
-		m_celShader->m_effectPoint->SetValue("materialAmbientColor", &colorMtrlAmbient, sizeof(D3DXCOLOR));
-		m_celShader->m_effectPoint->SetValue("materialDiffuseColor", &colorMtrlDiffuse, sizeof(D3DXCOLOR));
+		//// マテリアル情報を渡す ... 臨時値
+		//D3DXCOLOR colorMtrlDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
+		//D3DXCOLOR colorMtrlAmbient(0.35f, 0.35f, 0.35f, 0.0f);
+		//// material power
+		//m_celShader->m_effectPoint->SetValue("materialAmbientColor", &colorMtrlAmbient, sizeof(D3DXCOLOR));
+		//m_celShader->m_effectPoint->SetValue("materialDiffuseColor", &colorMtrlDiffuse, sizeof(D3DXCOLOR));
 
 		// テクスチャを渡す
 		m_celShader->m_effectPoint->SetTexture("tex", m_ship->m_model->m_meshTexturePoint);

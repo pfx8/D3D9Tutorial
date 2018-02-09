@@ -28,6 +28,7 @@ struct CelVertexOUT
 // 行列
 matrix WMatrix;         // ワールド変換行列
 matrix VPMatrix;        // ビューイング変換とプロジェクション変換行列
+matrix rotMatix;        // 回転マトリックス
 
 // ライト
 float3 lightDir;        // ライト方向ベクトル
@@ -36,8 +37,8 @@ float4 lightAmbient;    // 拡散反射光(モデル本来のカラー)
 float4 lightSpecular;   // 鏡面反射光(スペキュラー)
 
 // マテリアル
-float4 materialAmbientColor; // マテリアルのアンビエンド
-float4 materialDiffuseColor; // マテリアルのディフェーズ
+//float4 materialAmbientColor; // マテリアルのアンビエンド
+//float4 materialDiffuseColor; // マテリアルのディフェーズ
 
 int ObjType;                 // 1.プレーヤー 2.敵 3.大砲
 
@@ -66,7 +67,7 @@ CelVertexOUT CelVertexShader(CelVertexIN In)
     Out.position = mul(Out.position, VPMatrix);
     
     // 法線変換
-    Out.normal = normalize(mul(float4(In.normal, 1.0), WMatrix));
+    Out.normal = normalize(mul(float4(In.normal, 1.0), rotMatix));
 
     // UV座標
     Out.uvCoords = In.uvCoords;
