@@ -21,7 +21,7 @@ class Light
 private:
 
 public:
-	D3DLIGHT9			m_light;  // ‚±‚±‚Å‚Í•½sŒõŒ¹
+	D3DLIGHT9			light;  // ‚±‚±‚Å‚Í•½sŒõŒ¹
 
 	Light();	
 	~Light();

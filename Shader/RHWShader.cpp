@@ -16,9 +16,9 @@
 //*****************************************************************************
 RHWShader::RHWShader()
 {
-	m_effectPoint = NULL;
-	m_RHWShaderHandle = NULL;
-	m_textureHandle = NULL;
+	this->effectPoint = NULL;
+	this->RHWShaderHandle = NULL;
+	this->textureHandle = NULL;
 }
 
 //*****************************************************************************
@@ -28,7 +28,7 @@ RHWShader::RHWShader()
 //*****************************************************************************
 RHWShader::~RHWShader()
 {
-	RELEASE_POINT(m_effectPoint);
+	RELEASE_POINT(this->effectPoint);
 }
 
 //*****************************************************************************
@@ -65,7 +65,7 @@ HRESULT RHWShader::LoadEffectFile()
 						0,
 						D3DXSHADER_DEBUG,
 						0,
-						&m_effectPoint,		// エフェクトポインタ
+						&this->effectPoint,		// エフェクトポインタ
 						&errorBuffer);		// エラー情報
 
 
@@ -89,8 +89,8 @@ HRESULT RHWShader::LoadEffectFile()
 void RHWShader::GetShaderParameter()
 {
 	// レンダリングのテクニックを取得
-	m_RHWShaderHandle = m_effectPoint->GetTechniqueByName("RHWRender");
+	this->RHWShaderHandle = this->effectPoint->GetTechniqueByName("RHWRender");
 
 	// シェーダー中のグローバル変数を取得
-	m_textureHandle = m_effectPoint->GetParameterByName(0, "tex");
+	this->textureHandle = this->effectPoint->GetParameterByName(0, "tex");
 }

@@ -25,11 +25,11 @@
 class Bullet : public Character
 {
 private:
-	float m_upSpeed;	// 最初のスピード
+	float	upSpeed;	// 最初のスピード
 
 public:
-	bool m_isUse;	// 使われてるかどうかを判断する
-	bool m_isEnemyBullet;
+	bool	isUse;	// 使われてるかどうかを判断する
+	bool	isEnemyBullet;
 
 	Bullet();
 	~Bullet();

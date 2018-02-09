@@ -14,20 +14,20 @@
 //*****************************************************************************
 SceneTitle::SceneTitle()
 {	
-	m_vertexDecl = NULL;
-	m_vertexBuffer = NULL;
-	m_indexBuffer = NULL;
-	m_texture = NULL;
+	this->vertexDecl = NULL;
+	this->vertexBuffer = NULL;
+	this->indexBuffer = NULL;
+	this->texture = NULL;
 
 	// シェーダーを初期化
-	m_RHWshader = new RHWShader;
-	m_RHWshader->InitShader();
+	this->RHWshader = new RHWShader;
+	this->RHWshader->InitShader();
 
 	// リソース管理を初期化
-	m_resourcesManager = new ResourcesManager;
+	this->resourcesManager = new ResourcesManager;
 
 	// タイトルテクスチャを取得
-	m_resourcesManager->LoadTexture("title", &m_texture);
+	this->resourcesManager->LoadTexture("title", &this->texture);
 
 	// 頂点作成
 	MakeVertexDecl();
@@ -40,12 +40,12 @@ SceneTitle::SceneTitle()
 //*****************************************************************************
 SceneTitle::~SceneTitle()
 {
-	RELEASE_POINT(m_vertexBuffer);
-	RELEASE_POINT(m_vertexDecl);
-	RELEASE_POINT(m_indexBuffer);
-	RELEASE_POINT(m_texture);
+	RELEASE_POINT(this->vertexBuffer);
+	RELEASE_POINT(this->vertexDecl);
+	RELEASE_POINT(this->indexBuffer);
+	RELEASE_POINT(this->texture);
 
-	RELEASE_CLASS_POINT(m_resourcesManager);
+	RELEASE_CLASS_POINT(this->resourcesManager);
 }
 
 //*****************************************************************************
@@ -65,12 +65,12 @@ HRESULT SceneTitle::MakeVertexDecl()
 			{ 0, 8, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD , 0 },
 			D3DDECL_END()
 		};
-		pDevice->CreateVertexDeclaration(planeDecl, &m_vertexDecl);
+		pDevice->CreateVertexDeclaration(planeDecl, &this->vertexDecl);
 	}
 
 	// 頂点バッファ作成
 	{
-		if (FAILED(pDevice->CreateVertexBuffer(4 * sizeof(VERTEX_2D), D3DUSAGE_WRITEONLY, 0, D3DPOOL_MANAGED, &m_vertexBuffer, NULL)))
+		if (FAILED(pDevice->CreateVertexBuffer(4 * sizeof(VERTEX_2D), D3DUSAGE_WRITEONLY, 0, D3DPOOL_MANAGED, &this->vertexBuffer, NULL)))
 		{
 			std::cout << "[Error] 頂点バッファが生成できない!" << std::endl;	// エラーメッセージ
 			return E_FAIL;
@@ -79,7 +79,7 @@ HRESULT SceneTitle::MakeVertexDecl()
 		VERTEX_2D* VertexBuffer;
 
 		// 頂点データの範囲をロックし、頂点バッファ メモリへのポインタを取得する
-		m_vertexBuffer->Lock(0, 0, (void**)&VertexBuffer, 0);
+		this->vertexBuffer->Lock(0, 0, (void**)&VertexBuffer, 0);
 
 		// 頂点座標の設定
 		VertexBuffer[0].position = D3DXVECTOR2(0.0f, 0.0f);
@@ -94,12 +94,12 @@ HRESULT SceneTitle::MakeVertexDecl()
 		VertexBuffer[3].texturePosition = D3DXVECTOR2(1.0f, 1.0f);
 
 		// 頂点データをアンロックする
-		m_vertexBuffer->Unlock();
+		this->vertexBuffer->Unlock();
 	}
 
 	// 頂点インデックスバッファ作成
 	{
-		if (FAILED(pDevice->CreateIndexBuffer(6 * sizeof(WORD), 0, D3DFMT_INDEX16, D3DPOOL_DEFAULT, &m_indexBuffer, NULL)))
+		if (FAILED(pDevice->CreateIndexBuffer(6 * sizeof(WORD), 0, D3DFMT_INDEX16, D3DPOOL_DEFAULT, &this->indexBuffer, NULL)))
 		{
 			std::cout << "[Error] 頂点インデクスが生成できない!" << std::endl;	// エラーメッセージ
 			return E_FAIL;
@@ -107,12 +107,12 @@ HRESULT SceneTitle::MakeVertexDecl()
 
 		WORD* vertexIndex = NULL;		// イデックスの中身を埋める
 
-		m_indexBuffer->Lock(0, 0, (void**)&vertexIndex, 0);	// インデックス データのある一定範囲をロックし、そのインデックス バッファー メモリーへのポインターを取得する
+		this->indexBuffer->Lock(0, 0, (void**)&vertexIndex, 0);	// インデックス データのある一定範囲をロックし、そのインデックス バッファー メモリーへのポインターを取得する
 
 		vertexIndex[0] = 0, vertexIndex[1] = 1, vertexIndex[2] = 2;
 		vertexIndex[3] = 2, vertexIndex[4] = 1, vertexIndex[5] = 3;
 
-		m_indexBuffer->Unlock();	// インデックス データのロックを解除する
+		this->indexBuffer->Unlock();	// インデックス データのロックを解除する
 	}
 
 	return S_OK;
@@ -128,26 +128,26 @@ void SceneTitle::Draw()
 	PDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	// テクニックを設定
-	m_RHWshader->m_effectPoint->SetTechnique(m_RHWshader->m_RHWShaderHandle);
+	this->RHWshader->effectPoint->SetTechnique(this->RHWshader->RHWShaderHandle);
 
 	// テクスチャの設定
-	m_RHWshader->m_effectPoint->SetTexture(m_RHWshader->m_textureHandle, m_texture);
+	this->RHWshader->effectPoint->SetTexture(this->RHWshader->textureHandle, this->texture);
 
 	// 描画
 	UINT passNum = 0;
-	m_RHWshader->m_effectPoint->Begin(&passNum, 0);
+	this->RHWshader->effectPoint->Begin(&passNum, 0);
 	// 各パスを実行する
 	for (int count = 0; count < passNum; count++)
 	{
-		m_RHWshader->m_effectPoint->BeginPass(0);
+		this->RHWshader->effectPoint->BeginPass(0);
 
-		pDevice->SetVertexDeclaration(m_vertexDecl);							// 頂点宣言を設定
-		pDevice->SetStreamSource(0, m_vertexBuffer, 0, sizeof(VERTEX_2D));		// 頂点バッファをデバイスのデータストリームにバイナリ
-		pDevice->SetIndices(m_indexBuffer);										// 頂点インデックスバッファを設定
+		pDevice->SetVertexDeclaration(this->vertexDecl);							// 頂点宣言を設定
+		pDevice->SetStreamSource(0, this->vertexBuffer, 0, sizeof(VERTEX_2D));		// 頂点バッファをデバイスのデータストリームにバイナリ
+		pDevice->SetIndices(this->indexBuffer);										// 頂点インデックスバッファを設定
 		pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 4, 0, 2);		// ポリゴンの描画
 
-		m_RHWshader->m_effectPoint->EndPass();
+		this->RHWshader->effectPoint->EndPass();
 	}
-	m_RHWshader->m_effectPoint->End();
+	this->RHWshader->effectPoint->End();
 	
 }

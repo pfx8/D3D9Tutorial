@@ -34,27 +34,27 @@ typedef enum
 class Character
 {
 private:
-	UINT			m_leverLevel;		// 船のレバー操作
-	int				m_modelNum;			// モデル数
+	UINT			leverLevel;		// 船のレバー操作
+	int				modelNum;			// モデル数
 
 public:
-	double			m_speedCoefficient; // スピードに関する倍数
-	DebugMessage*	m_message;		// Debugメッセージ
-	float			m_waveAngle;	// 揺れ係数
-	D3DXMATRIX		m_worldMatrix;	// ワールド変換マトリックス
+	double			speedCoefficient; // スピードに関する倍数
+	DebugMessage*	message;		// Debugメッセージ
+	float			waveAngle;	// 揺れ係数
+	D3DXMATRIX		worldMatrix;	// ワールド変換マトリックス
 	D3DXMATRIX		lightMatrix;	// ライトマトリックス
 
 	// ベクトル
-	D3DXVECTOR3		m_upVector;		// カメラの上方向ベクトル
-	D3DXVECTOR3		m_lookVector;	// カメラの注視方向ベクトル
-	D3DXVECTOR3		m_rightVector;	// カメラの右方向ベクトル
+	D3DXVECTOR3		upVector;		// カメラの上方向ベクトル
+	D3DXVECTOR3		lookVector;	// カメラの注視方向ベクトル
+	D3DXVECTOR3		rightVector;	// カメラの右方向ベクトル
 
 	// 固定属性
-	D3DXVECTOR3		m_pos;			// 位置
-	D3DXVECTOR3		m_rot;			// 回転
-	D3DXVECTOR3		m_scl;			// 拡大縮小
-	Model*			m_model;		// メッシュ
-	BoundingBox*	m_boundingBox;	// バウンディングボックス
+	D3DXVECTOR3		pos;			// 位置
+	D3DXVECTOR3		rot;			// 回転
+	D3DXVECTOR3		scl;			// 拡大縮小
+	Model*			model;		// メッシュ
+	BoundingBox*	boundingBox;	// バウンディングボックス
 
 	Character();
 	~Character();

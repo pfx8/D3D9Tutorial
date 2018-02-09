@@ -17,11 +17,11 @@ Model::Model()
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	// ポインタ
-	m_meshPoint = NULL;
-	m_meshTexturePoint = NULL;
+	this->meshPoint = NULL;
+	this->meshTexturePoint = NULL;
 
 	// クラスポインタ
-	m_material = new Material();
+	this->material = new Material();
 
 	// 頂点宣言
 	D3DVERTEXELEMENT9 planeDecl[] =		// 頂点データのレイアウトを定義
@@ -31,7 +31,7 @@ Model::Model()
 		{ 0, 24, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0 },
 		D3DDECL_END()
 	};
-	pDevice->CreateVertexDeclaration(planeDecl, &m_vertexDecl);
+	pDevice->CreateVertexDeclaration(planeDecl, &this->vertexDecl);
 }
 
 //*****************************************************************************
@@ -42,11 +42,11 @@ Model::Model()
 Model::~Model()
 {
 	// ポインタ
-	RELEASE_POINT(m_meshPoint);
-	RELEASE_CLASS_POINT(m_meshTexturePoint);
+	RELEASE_POINT(this->meshPoint);
+	RELEASE_CLASS_POINT(this->meshTexturePoint);
 
 	// クラスポインタ
-	RELEASE_CLASS_POINT(m_material);
+	RELEASE_CLASS_POINT(this->material);
 }
 
 //*****************************************************************************
@@ -57,21 +57,21 @@ Model::~Model()
 void Model::DrawModel(CelShader* celShader)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
-	DWORD materialNum = m_material->m_materialNum;				// マテリアル数を取得
+	DWORD materialNum = this->material->materialNum;				// マテリアル数を取得
 
 	IDirect3DVertexBuffer9* vertexBuffer = NULL;
-	m_meshPoint->GetVertexBuffer(&vertexBuffer);				// メッシュ頂点を取得
+	this->meshPoint->GetVertexBuffer(&vertexBuffer);				// メッシュ頂点を取得
 	IDirect3DIndexBuffer9* indexBuffer = NULL;
-	m_meshPoint->GetIndexBuffer(&indexBuffer);					// メッシュ頂点インデックスバッファを取得
+	this->meshPoint->GetIndexBuffer(&indexBuffer);					// メッシュ頂点インデックスバッファを取得
 
-	m_meshPoint->GetAttributeTable(NULL, &materialNum);			// メッシュの属性テーブルに格納されているエントリの数を取得
+	this->meshPoint->GetAttributeTable(NULL, &materialNum);			// メッシュの属性テーブルに格納されているエントリの数を取得
 
-	D3DXATTRIBUTERANGE* attributes = NULL;						// メッシュの属性テーブルを作る
-	attributes = new D3DXATTRIBUTERANGE[materialNum];			// エントリ数によって、属性テーブル配列メモリを作り
-	m_meshPoint->GetAttributeTable(attributes, &materialNum);	// メッシュの属性テーブルを取得
+	D3DXATTRIBUTERANGE* attributes = NULL;							// メッシュの属性テーブルを作る
+	attributes = new D3DXATTRIBUTERANGE[materialNum];				// エントリ数によって、属性テーブル配列メモリを作り
+	this->meshPoint->GetAttributeTable(attributes, &materialNum);	// メッシュの属性テーブルを取得
 
-	pDevice->SetVertexDeclaration(m_vertexDecl);		// 頂点宣言を設定
-	pDevice->SetStreamSource(0, vertexBuffer, 0, 32);	// sizeof(POSITION, NORMAL, UV)
+	pDevice->SetVertexDeclaration(this->vertexDecl);				// 頂点宣言を設定
+	pDevice->SetStreamSource(0, vertexBuffer, 0, 32);				// sizeof(POSITION, NORMAL, UV)
 	pDevice->SetIndices(indexBuffer);
 
 	// 描画
@@ -80,8 +80,8 @@ void Model::DrawModel(CelShader* celShader)
 		if (attributes[count].FaceCount)
 		{
 			//DWORD matNum = attributes[count].AttribId;			// マテリアル数を取得
-			//celShader->m_effectPoint->SetTexture(celShader->m_texture1Handle, m_meshTexturePoint[matNum]);	// テクスチャを設定
-			//pDevice->SetTexture(0, m_meshTexturePoint[matNum]);	// テクスチャを設定
+			//celShader->this->effectPoint->SetTexture(celShader->this->texture1Handle, this->meshTexturePoint[matNum]);	// テクスチャを設定
+			//pDevice->SetTexture(0, this->meshTexturePoint[matNum]);	// テクスチャを設定
 
 			// モデルを描画する
 			pDevice->DrawIndexedPrimitive(

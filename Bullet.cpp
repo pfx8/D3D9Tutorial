@@ -14,20 +14,20 @@
 //*****************************************************************************
 Bullet::Bullet()
 {
-	m_upVector = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-	m_lookVector = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
-	m_rightVector = D3DXVECTOR3(1.0f, 0.0f, 0.0f);
+	this->upVector = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+	this->lookVector = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
+	this->rightVector = D3DXVECTOR3(1.0f, 0.0f, 0.0f);
 
-	m_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	this->pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	this->rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
-	m_isUse = false;
-	m_upSpeed = FIRST_UP_SPEED;
+	this->isUse = false;
+	this->upSpeed = FIRST_UP_SPEED;
 
 	// クラスポインタ
-	m_model = new Model;
-	m_message = new DebugMessage;
-	m_boundingBox = new BoundingBox;
+	this->model = new Model;
+	this->message = new DebugMessage;
+	this->boundingBox = new BoundingBox;
 
 }
 
@@ -39,9 +39,9 @@ Bullet::Bullet()
 Bullet::~Bullet()
 {
 	// クラスポインタ
-	RELEASE_CLASS_POINT(m_model);
-	RELEASE_CLASS_POINT(m_message);
-	RELEASE_CLASS_POINT(m_boundingBox);
+	RELEASE_CLASS_POINT(this->model);
+	RELEASE_CLASS_POINT(this->message);
+	RELEASE_CLASS_POINT(this->boundingBox);
 }
 
 //*****************************************************************************
@@ -51,19 +51,19 @@ Bullet::~Bullet()
 //*****************************************************************************
 void Bullet::InitBulletByCharacter(D3DXVECTOR3 pos, D3DXVECTOR3 moveVector, bool isShip)
 {
-	m_isUse = true;	// 使えるようになる
+	this->isUse = true;	// 使えるようになる
 
 	if(isShip == true)
-		m_isEnemyBullet = false;
+		this->isEnemyBullet = false;
 	else
-		m_isEnemyBullet = true;
+		this->isEnemyBullet = true;
 
 	// 位置を設定
-	m_pos = pos;
-	m_pos.y = 1.5f + rand()%3;
-	m_lookVector = moveVector * ((rand()%60 + 40) / 100.0f * 2.2f);	// 行き方向を設定
+	this->pos = pos;
+	this->pos.y = 1.5f + rand()%3;
+	this->lookVector = moveVector * ((rand()%60 + 40) / 100.0f * 2.2f);	// 行き方向を設定
 
-	m_boundingBox->InitBox(2, 3, 2, 0.1f);	// バウンディングボックスを初期化
+	this->boundingBox->InitBox(2, 3, 2, 0.1f);	// バウンディングボックスを初期化
 }
 
 //*****************************************************************************
@@ -73,20 +73,20 @@ void Bullet::InitBulletByCharacter(D3DXVECTOR3 pos, D3DXVECTOR3 moveVector, bool
 //*****************************************************************************
 void Bullet::BulletMove(D3DXVECTOR2 planeSize)
 {
-	m_pos -= m_lookVector * MOVE_SPEED;	// 行き方向へ移動
+	this->pos -= this->lookVector * MOVE_SPEED;	// 行き方向へ移動
 	
 	// 垂直位置の計算 
-	m_upSpeed += ACCELERARION;
-	m_pos.y += 0.5f * (m_upSpeed)* ONE_FRAME_TIME;
+	this->upSpeed += ACCELERARION;
+	this->pos.y += 0.5f * (this->upSpeed)* ONE_FRAME_TIME;
 
 	// 地図の範囲を超えたら、弾を消す
-	if (/*m_pos.x >= planeSize.x || m_pos.x <= -planeSize.x || m_pos.z >= planeSize.y || m_pos.z <= -planeSize.y ||*/ m_pos.y <= 0.0f)
+	if (/*this->pos.x >= planeSize.x || this->pos.x <= -planeSize.x || this->pos.z >= planeSize.y || this->pos.z <= -planeSize.y ||*/ this->pos.y <= 0.0f)
 	{
 		// 消したら数値を全部初期化
-		m_isUse = false;
-		m_upSpeed = FIRST_UP_SPEED;
-		m_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		m_lookVector = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
+		this->isUse = false;
+		this->upSpeed = FIRST_UP_SPEED;
+		this->pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		this->lookVector = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
 	}
 }
 

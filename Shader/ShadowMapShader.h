@@ -16,9 +16,9 @@ private:
 	HRESULT LoadEffectFile();		// 頂点シェーダーファイルを読み込む
 
 public:
-	ID3DXEffect*		m_effectPoint;				// エフェクト(複数レンダリング保存される)
-	LPDIRECT3DTEXTURE9	m_shadowMapTex;		// シャドーマップ
-	D3DXHANDLE			m_shadeowMapShaderHandle;	// エフェクトのテクニック
+	ID3DXEffect*		effectPoint;				// エフェクト(複数レンダリング保存される)
+	LPDIRECT3DTEXTURE9	shadowMapTex;		// シャドーマップ
+	D3DXHANDLE			shadeowMapShaderHandle;	// エフェクトのテクニック
 
 	ShadowMapShader();
 	~ShadowMapShader();

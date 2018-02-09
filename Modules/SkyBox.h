@@ -25,16 +25,16 @@ typedef struct SKYBOXVERTEX
 class SkyBox
 {
 private:
-	D3DXVECTOR3						m_pos;			// 座標
-	IDirect3DVertexDeclaration9*	m_vertexDecl;	// 頂点シェーダー宣言
-	LPDIRECT3DVERTEXBUFFER9			m_vertexBuffer;	// 頂点バッファ
-	LPDIRECT3DINDEXBUFFER9			m_indexBuffer;	// インデックスバッファ
-	D3DXMATRIX						m_mtxWorld;		// ワールド変換行列
-	float							m_length;		// ボックスの長さ
+	D3DXVECTOR3						pos;			// 座標
+	IDirect3DVertexDeclaration9*	vertexDecl;	// 頂点シェーダー宣言
+	LPDIRECT3DVERTEXBUFFER9			vertexBuffer;	// 頂点バッファ
+	LPDIRECT3DINDEXBUFFER9			indexBuffer;	// インデックスバッファ
+	D3DXMATRIX						mtxWorld;		// ワールド変換行列
+	float							length;		// ボックスの長さ
 
 public:
-	D3DXMATRIX						m_worldMatrix;	// ワールド変換マトリックス
-	LPDIRECT3DTEXTURE9				m_texture;		// テクスチャ配列
+	D3DXMATRIX						worldMatrix;	// ワールド変換マトリックス
+	LPDIRECT3DTEXTURE9				texture;		// テクスチャ配列
 	
 	SkyBox();
 	~SkyBox();

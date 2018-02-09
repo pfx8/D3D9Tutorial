@@ -9,8 +9,6 @@
 #ifndef _CAMERA_CLASS_H_
 #define _CAMERA_CLASS_H_
 
-#include "Matrix.h"
-
 #include "Character.h"
 #include "../Engine.h"
 #include "../DebugMessage.h"

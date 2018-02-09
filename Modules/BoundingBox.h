@@ -25,18 +25,18 @@ typedef struct BOUNDINGBOXVERTEX
 class BoundingBox
 {
 private:
-	D3DXVECTOR3						m_pos;	 // 座標
-	D3DXVECTOR3						m_rot;	 // 回転
-	D3DXVECTOR3						m_scl;	 // 拡大縮小
-	float							m_alpha; // 透明度
-	D3DXMATRIX						m_mtxWorld;		// ワールド変換行列
-	LPDIRECT3DVERTEXBUFFER9			m_vertexBuffer;	// 頂点バッファ
-	LPDIRECT3DINDEXBUFFER9			m_indexBuffer;	// インデックスバッファ
-	IDirect3DVertexDeclaration9*	m_vertexDecl;	// 頂点シェーダー宣言
+	D3DXVECTOR3						pos;			// 座標
+	D3DXVECTOR3						rot;			// 回転
+	D3DXVECTOR3						scl;			// 拡大縮小
+	float							alpha;			// 透明度
+	D3DXMATRIX						mtxWorld;		// ワールド変換行列
+	LPDIRECT3DVERTEXBUFFER9			vertexBuffer;	// 頂点バッファ
+	LPDIRECT3DINDEXBUFFER9			indexBuffer;	// インデックスバッファ
+	IDirect3DVertexDeclaration9*	vertexDecl;	// 頂点シェーダー宣言
 
 public:
-	D3DXVECTOR3	m_size;					// バウンディングボックスサイズ
-	bool		m_isBoundingBoxDraw;	// バウンディングボックスの描画チェック
+	D3DXVECTOR3	size;				// バウンディングボックスサイズ
+	bool		isBoundingBoxDraw;	// バウンディングボックスの描画チェック
 
 	BoundingBox();
 	~BoundingBox();

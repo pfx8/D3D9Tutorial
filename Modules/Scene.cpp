@@ -18,11 +18,11 @@ using namespace std;
 //*****************************************************************************
 Scene::Scene()
 {	
-	m_resourcesManager = new ResourcesManager;	// リソース
-	m_message = new DebugMessage;
+	this->resourcesManager = new ResourcesManager;	// リソース
+	this->message = new DebugMessage;
 
 	// テクスチャを読み込み
-	// m_resourcesManager->InitTexture();
+	// this->resourcesManager->InitTexture();
 }
 
 //*****************************************************************************
@@ -34,8 +34,8 @@ Scene::~Scene()
 {
 	// クラスポインタ
 	// リソース
-	RELEASE_CLASS_POINT(m_resourcesManager);
-	RELEASE_CLASS_POINT(m_message);
+	RELEASE_CLASS_POINT(this->resourcesManager);
+	RELEASE_CLASS_POINT(this->message);
 }
 
 //*****************************************************************************

@@ -14,12 +14,12 @@
 //*****************************************************************************
 CelShader::CelShader()
 {
-	m_effectPoint = NULL;
-	m_celShaderHandle = NULL;
-	m_WMatrixHandle = NULL;
-	m_VPMatrixHandle = NULL;
-	m_lightingHandle = NULL;
-	//m_textureHandle = NULL;
+	this->effectPoint = NULL;
+	this->celShaderHandle = NULL;
+	this->WMatrixHandle = NULL;
+	this->VPMatrixHandle = NULL;
+	this->lightingHandle = NULL;
+	//this->textureHandle = NULL;
 }
 
 //*****************************************************************************
@@ -29,7 +29,7 @@ CelShader::CelShader()
 //*****************************************************************************
 CelShader::~CelShader()
 {
-	RELEASE_POINT(m_effectPoint);
+	RELEASE_POINT(this->effectPoint);
 }
 
 //*****************************************************************************
@@ -66,7 +66,7 @@ HRESULT CelShader::LoadEffectFile()
 						0,
 						D3DXSHADER_DEBUG,
 						0,
-						&m_effectPoint,		// エフェクトポインタ
+						&this->effectPoint,		// エフェクトポインタ
 						&errorBuffer);		// エラー情報
 
 
@@ -90,11 +90,11 @@ HRESULT CelShader::LoadEffectFile()
 void CelShader::GetShaderParameter()
 {
 	// レンダリングのテクニックを取得
-	m_celShaderHandle = m_effectPoint->GetTechniqueByName("CelShader");
+	this->celShaderHandle = this->effectPoint->GetTechniqueByName("CelShader");
 
 	// シェーダー中のグローバル変数を取得
-	m_WMatrixHandle = m_effectPoint->GetParameterByName(0, "WMatrix");
-	m_VPMatrixHandle = m_effectPoint->GetParameterByName(0, "VPMatrix");
-	m_lightingHandle = m_effectPoint->GetParameterByName(0, "LightDirection");
-	m_typeHandle = m_effectPoint->GetParameterByName(0, "type");
+	this->WMatrixHandle = this->effectPoint->GetParameterByName(0, "WMatrix");
+	this->VPMatrixHandle = this->effectPoint->GetParameterByName(0, "VPMatrix");
+	this->lightingHandle = this->effectPoint->GetParameterByName(0, "LightDirection");
+	this->typeHandle = this->effectPoint->GetParameterByName(0, "type");
 }

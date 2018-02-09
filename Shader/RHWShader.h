@@ -19,9 +19,9 @@ private:
 	void GetShaderParameter();		// シェーダーを使うために、各設定をする
 
 public:
-	ID3DXEffect*	m_effectPoint;		// エフェクト(複数レンダリング保存される)
-	D3DXHANDLE		m_RHWShaderHandle;	// エフェクトのテクニック
-	D3DXHANDLE		m_textureHandle;	// テクスチャ
+	ID3DXEffect*	effectPoint;		// エフェクト(複数レンダリング保存される)
+	D3DXHANDLE		RHWShaderHandle;	// エフェクトのテクニック
+	D3DXHANDLE		textureHandle;	// テクスチャ
 
 	RHWShader();
 	~RHWShader();

@@ -31,12 +31,12 @@ enum SCENESTATE
 class SceneManager
 {
 private:
-	SceneTitle*		m_sceneTitle;
-	Scene00*		m_scene00;
-	SceneEnding*	m_sceneEnding;
-	SCENESTATE		m_sceneState;
+	SceneTitle*		sceneTitle;
+	Scene00*		scene00;
+	SceneEnding*	sceneEnding;
+	SCENESTATE		sceneState;
 
-	std::map <SCENESTATE, Scene*> m_sceneList;
+	std::map <SCENESTATE, Scene*> sceneList;
 
 	void ChangeRenderState();	// レンダリング状態更新
 	void ChooseScene(SCENESTATE state);		// シーンを選択する

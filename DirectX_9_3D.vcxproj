@@ -30,7 +30,6 @@
     <ClCompile Include="modules\input.cpp" />
     <ClCompile Include="modules\Light.cpp" />
     <ClCompile Include="modules\Material.cpp" />
-    <ClCompile Include="modules\Matrix.cpp" />
     <ClCompile Include="modules\Model.cpp" />
     <ClCompile Include="modules\Plane.cpp" />
     <ClCompile Include="modules\Scene.cpp" />
@@ -60,8 +59,7 @@
     <ClInclude Include="modules\Character.h" />
     <ClInclude Include="modules\input.h" />
     <ClInclude Include="modules\Light.h" />
-    <ClInclude Include="modules\Material.h" />
-    <ClInclude Include="modules\Matrix.h" />
+    <ClInclude Include="Modules\Material.h" />
     <ClInclude Include="modules\Model.h" />
     <ClInclude Include="modules\Plane.h" />
     <ClInclude Include="modules\Scene.h" />

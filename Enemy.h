@@ -28,10 +28,10 @@ class Enemy : public Character
 private:
 
 public:
-	bool	m_isLife;	// 生存フラグ
-	float	m_time;		// タイムチェック
-	bool	m_isAttack;	// 攻撃フラグ
-	float	m_attackTime;	// 連続攻撃タイム
+	bool	isLife;	// 生存フラグ
+	float	time;		// タイムチェック
+	bool	isAttack;	// 攻撃フラグ
+	float	attackTime;	// 連続攻撃タイム
 
 	Enemy();
 	~Enemy();

@@ -14,25 +14,25 @@
 //*****************************************************************************
 Enemy::Enemy()
 {
-	m_upVector = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-	m_lookVector = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
-	m_rightVector = D3DXVECTOR3(1.0f, 0.0f, 0.0f);
+	this->upVector = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+	this->lookVector = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
+	this->rightVector = D3DXVECTOR3(1.0f, 0.0f, 0.0f);
 
-	m_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_scl = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
-	//m_directionVector = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	this->pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	this->rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	this->scl = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
+	//this->directionVector = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
-	m_waveAngle = 0.0f;
-	m_isLife = true;
-	m_time = 0.016 * 120;
-	m_isAttack = false;
-	m_attackTime = 0.016 * 180;
+	this->waveAngle = 0.0f;
+	this->isLife = true;
+	this->time = 0.016 * 120;
+	this->isAttack = false;
+	this->attackTime = 0.016 * 180;
 
 	// クラスポインタ
-	m_model = new Model;
-	m_message = new DebugMessage;
-	m_boundingBox = new BoundingBox;
+	this->model = new Model;
+	this->message = new DebugMessage;
+	this->boundingBox = new BoundingBox;
 }
 
 //*****************************************************************************
@@ -43,9 +43,9 @@ Enemy::Enemy()
 Enemy::~Enemy()
 {
 	// クラスポインタ
-	RELEASE_CLASS_POINT(m_model);
-	RELEASE_CLASS_POINT(m_message);
-	RELEASE_CLASS_POINT(m_boundingBox);
+	RELEASE_CLASS_POINT(this->model);
+	RELEASE_CLASS_POINT(this->message);
+	RELEASE_CLASS_POINT(this->boundingBox);
 }
 
 //*****************************************************************************
@@ -55,8 +55,8 @@ Enemy::~Enemy()
 //*****************************************************************************
 void Enemy::InitEnemy(D3DXVECTOR3 pos)
 {
-	m_pos = pos;	// 位置
-	m_boundingBox->InitBox(5, 11, 10, 0.1f);	// バウンディングボックスを初期化
+	this->pos = pos;	// 位置
+	this->boundingBox->InitBox(5, 11, 10, 0.1f);	// バウンディングボックスを初期化
 }
 
 //*****************************************************************************
@@ -67,32 +67,32 @@ void Enemy::InitEnemy(D3DXVECTOR3 pos)
 void Enemy::EnemyMove(D3DXVECTOR2 planeSize)
 {
 	// 地図の範囲を超えたら、逆方向に行く
-	if (m_pos.x >= planeSize.x * 0.8f || m_pos.x <= -planeSize.x * 0.8f || m_pos.z >= planeSize.y * 0.8f || m_pos.z <= -planeSize.y * 0.8f)
+	if (this->pos.x >= planeSize.x * 0.8f || this->pos.x <= -planeSize.x * 0.8f || this->pos.z >= planeSize.y * 0.8f || this->pos.z <= -planeSize.y * 0.8f)
 	{
-		if (m_time == 0.016f * 120)
+		if (this->time == 0.016f * 120)
 		{
 			//RotationVecUp(D3DX_PI);
 			Trans(D3DX_PI);
 		}
 	}
 
-	m_time -= 0.016f;
-	if (m_time <= 0.0f)
+	this->time -= 0.016f;
+	if (this->time <= 0.0f)
 	{
-		m_time = 0.016f * 120;
+		this->time = 0.016f * 120;
 	}
 
-	if (m_isAttack == true)
+	if (this->isAttack == true)
 	{
-		m_attackTime -= 0.016f;
-		if (m_attackTime <= 0.0f)
+		this->attackTime -= 0.016f;
+		if (this->attackTime <= 0.0f)
 		{
-			m_isAttack = false;
-			m_attackTime = 0.016f * 120;
+			this->isAttack = false;
+			this->attackTime = 0.016f * 120;
 		}
 	}
 
-	m_pos -= m_lookVector * 0.1f;	// 行き方向へ移動
+	this->pos -= this->lookVector * 0.1f;	// 行き方向へ移動
 }
 
 //*****************************************************************************
@@ -118,14 +118,14 @@ bool Enemy::EnemyAttack(Character* player)
 bool Enemy::CheckBB(Character* player)
 {
 	// 弾
-	D3DXVECTOR3 playerPos = player->m_pos;
-	D3DXVECTOR3 playerBoxSize = player->m_boundingBox->m_size;
+	D3DXVECTOR3 playerPos = player->pos;
+	D3DXVECTOR3 playerBoxSize = player->boundingBox->size;
 	// エネミー
-	D3DXVECTOR3 enemyPos = m_pos;
+	D3DXVECTOR3 enemyPos = this->pos;
 	D3DXVECTOR3 enemyBoxSize;
-	enemyBoxSize.x = m_lookVector.x * 100;
+	enemyBoxSize.x = this->lookVector.x * 100;
 	enemyBoxSize.y = 10;
-	enemyBoxSize.z = m_lookVector.z * 100;
+	enemyBoxSize.z = this->lookVector.z * 100;
 
 	if (
 		/*playerPos.x + playerBoxSize.x / 2 > enemyPos.x - enemyBoxSize.x / 2 &&
@@ -157,22 +157,22 @@ bool Enemy::CheckBB(Character* player)
 //*****************************************************************************
 void Enemy::Trans(float angle)
 {
-	if (m_rot.y > D3DX_PI * 2.0f || m_rot.y < -D3DX_PI * 2.0f)
+	if (this->rot.y > D3DX_PI * 2.0f || this->rot.y < -D3DX_PI * 2.0f)
 	{
-		m_rot.y = 0;
+		this->rot.y = 0;
 	}
 
 	// 角度を記録する
-	m_rot.y -= angle;
+	this->rot.y -= angle;
 
 	// 新しい右方向ベクトルを計算する
-	//m_rightVector.x = cosf(m_rot.y);
-	//m_rightVector.z = sinf(m_rot.y);
+	//this->rightVector.x = cosf(this->rot.y);
+	//this->rightVector.z = sinf(this->rot.y);
 
 	// 新しい注視方向ベクトルを計算する
-	//m_lookVector.x = cosf(m_rot.y + D3DX_PI / 2);
-	//m_lookVector.z = sinf(m_rot.y + D3DX_PI / 2);
+	//this->lookVector.x = cosf(this->rot.y + D3DX_PI / 2);
+	//this->lookVector.z = sinf(this->rot.y + D3DX_PI / 2);
 	
-	m_lookVector.x = cosf(-m_rot.y + D3DX_PI / 2);
-	m_lookVector.z = sinf(-m_rot.y + D3DX_PI / 2);
+	this->lookVector.x = cosf(-this->rot.y + D3DX_PI / 2);
+	this->lookVector.z = sinf(-this->rot.y + D3DX_PI / 2);
 }

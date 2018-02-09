@@ -20,22 +20,22 @@
 class Plane
 {
 private:
-	int				m_scala;
+	int				scala;
 
 public:
-	float			m_waveAngle;
-	D3DXMATRIX		m_worldMatrix;	// ワールド変換マトリックス
-	D3DXVECTOR3		m_pos;			// 位置
-	D3DXVECTOR2		m_planeSize;
-	D3DXVECTOR2		m_planeNum;
-	int				m_vertexNum;	// 頂点数
-	int				m_polygonNum;	// ポリゴン数
-	int				m_indexNum;		// インデックス数
+	float			waveAngle;
+	D3DXMATRIX		worldMatrix;	// ワールド変換マトリックス
+	D3DXVECTOR3		pos;			// 位置
+	D3DXVECTOR2		planeSize;
+	D3DXVECTOR2		planeNum;
+	int				vertexNum;		// 頂点数
+	int				polygonNum;		// ポリゴン数
+	int				indexNum;		// インデックス数
 
-	IDirect3DVertexDeclaration9*m_vertexDecl;	// 頂点シェーダー宣言
-	LPDIRECT3DVERTEXBUFFER9		m_vertexBuffer;	// 頂点バッファへのポインタ
-	LPDIRECT3DINDEXBUFFER9		m_indexBuffer;	// 頂点インデックスバッファ
-	LPDIRECT3DTEXTURE9			m_texture;	// フィールドテクスチャ
+	IDirect3DVertexDeclaration9*	vertexDecl;		// 頂点シェーダー宣言
+	LPDIRECT3DVERTEXBUFFER9			vertexBuffer;	// 頂点バッファへのポインタ
+	LPDIRECT3DINDEXBUFFER9			indexBuffer;	// 頂点インデックスバッファ
+	LPDIRECT3DTEXTURE9				texture;		// フィールドテクスチャ
 
 	Plane();
 	~Plane();

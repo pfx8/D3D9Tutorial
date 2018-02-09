@@ -61,7 +61,7 @@ void Camera::InitCameraByPlayer(Character* player)
 	this->posEye = D3DXVECTOR3(0.0f, 10.0f, -35.0f);
 	this->posAt = D3DXVECTOR3(0.0f, 5.0f, 0.0f);
 
-	this->offSetFromPlayer = player->m_pos - this->posEye;
+	this->offSetFromPlayer = player->pos - this->posEye;
 
 	SetViewport();		// ビューポートを設定
 }
@@ -78,13 +78,13 @@ void Camera::Update(Character* player)
 	CameraContrlUpdate(player);
 
 	// カメラ位置を更新
-	this->posEye = player->m_pos - this->offSetFromPlayer;
-	this->posAt += player->m_lookVector * player->m_speedCoefficient;
+	this->posEye = player->pos - this->offSetFromPlayer;
+	this->posAt += player->lookVector * player->speedCoefficient;
 
 	// カメラベクトルを更新
-	D3DXVECTOR3 temp = player->m_pos - this->posEye;
+	D3DXVECTOR3 temp = player->pos - this->posEye;
 	D3DXVec3Normalize(&this->lookVector, &temp);
-	D3DXVec3Cross(&this->rightVector, &this->lookVector, &player->m_upVector);
+	D3DXVec3Cross(&this->rightVector, &this->lookVector, &player->upVector);
 	D3DXVec3Normalize(&this->rightVector, &this->rightVector);
 	D3DXVec3Cross(&this->upVector, &this->rightVector, &this->lookVector);
 	D3DXVec3Normalize(&this->upVector, &this->upVector);
@@ -144,7 +144,7 @@ void Camera::Rotation(Character* player, float radiansHorizonal, float radiansVe
 {
 	// 水平
 	D3DXMATRIX HorizonalMatrix;
-	D3DXMatrixRotationAxis(&HorizonalMatrix, &player->m_upVector, radiansHorizonal);			// 回転行列を作る
+	D3DXMatrixRotationAxis(&HorizonalMatrix, &player->upVector, radiansHorizonal);			// 回転行列を作る
 	D3DXVec3TransformCoord(&this->offSetFromPlayer, &this->offSetFromPlayer, &HorizonalMatrix);	// カメラの新しい座標を計算する
 
 	//// 垂直

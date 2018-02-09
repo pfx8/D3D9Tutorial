@@ -30,8 +30,8 @@ class Scene
 private:
 
 public:
-	ResourcesManager*	m_resourcesManager;	// リソースマネジメント
-	DebugMessage*		m_message;		// メッセージ
+	ResourcesManager*	resourcesManager;	// リソースマネジメント
+	DebugMessage*		message;		// メッセージ
 	
 	Scene();
 	~Scene();

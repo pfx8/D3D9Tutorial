@@ -15,37 +15,37 @@
 ResourcesManager::ResourcesManager()
 {
 	// テクスチャ検索マッピングを作る
-	m_textureList["back"] = "data/TEXTURE/skybox/back.jpg";
-	m_textureList["front"] = "data/TEXTURE/skybox/front.jpg";
-	m_textureList["left"] = "data/TEXTURE/skybox/left.jpg";
-	m_textureList["right"] = "data/TEXTURE/skybox/right.jpg";
-	m_textureList["top"] = "data/TEXTURE/skybox/top.jpg";
-	m_textureList["skybox"] = "data/TEXTURE/skybox.png";
+	this->textureList["back"] = "data/TEXTURE/skybox/back.jpg";
+	this->textureList["front"] = "data/TEXTURE/skybox/front.jpg";
+	this->textureList["left"] = "data/TEXTURE/skybox/left.jpg";
+	this->textureList["right"] = "data/TEXTURE/skybox/right.jpg";
+	this->textureList["top"] = "data/TEXTURE/skybox/top.jpg";
+	this->textureList["skybox"] = "data/TEXTURE/skybox.png";
 
-	m_textureList["fieldTransparent"] = "data/TEXTURE/field003.png";
-	m_textureList["fieldSea"] = "data/TEXTURE/sea3k.png";
-	m_textureList["fieldSea2"] = "data/TEXTURE/sea3k2.png";
+	this->textureList["fieldTransparent"] = "data/TEXTURE/field003.png";
+	this->textureList["fieldSea"] = "data/TEXTURE/sea3k.png";
+	this->textureList["fieldSea2"] = "data/TEXTURE/sea3k2.png";
 
-	m_textureList["press"] = "data/TEXTURE/Presskey.png";
-	m_textureList["tex"] = "data/TEXTURE/shipdiffuse.png";
-	m_textureList["title"] = "data/TEXTURE/title.jpg";
-	m_textureList["ending"] = "data/TEXTURE/ending.jpg";
+	this->textureList["press"] = "data/TEXTURE/Presskey.png";
+	this->textureList["tex"] = "data/TEXTURE/shipdiffuse.png";
+	this->textureList["title"] = "data/TEXTURE/title.jpg";
+	this->textureList["ending"] = "data/TEXTURE/ending.jpg";
 
-	m_textureList["playerOars"] = "data/TEXTURE/VikingShip/Oars.png";
-	m_textureList["playerShip"] = "data/TEXTURE/VikingShip/Ship.png";
+	this->textureList["playerOars"] = "data/TEXTURE/VikingShip/Oars.png";
+	this->textureList["playerShip"] = "data/TEXTURE/VikingShip/Ship.png";
 
-	m_textureList["UIminimap"] = "data/TEXTURE/UI/minimap.png";
-	m_textureList["UIHP"] = "data/TEXTURE/UI/hp.png";
-	m_textureList["UIkey"] = "data/TEXTURE/UI/key.png";
+	this->textureList["UIminimap"] = "data/TEXTURE/UI/minimap.png";
+	this->textureList["UIHP"] = "data/TEXTURE/UI/hp.png";
+	this->textureList["UIkey"] = "data/TEXTURE/UI/key.png";
 
-	m_textureList["NULL"] = "NULL";
+	this->textureList["NULL"] = "NULL";
 
 	// メッシュ検索マッピングを作る
-	m_meshList["ship"] = "data/MODEL/PirateShip.x";
-	m_meshList["ship2"] = "data/MODEL/ship2.x";
-	m_meshList["playerOars"] = "data/MODEL/Player_Oars.x";
-	m_meshList["playerShip"] = "data/MODEL/Player_Ship.x";
-	m_meshList["ball"] = "data/MODEL/ball.x";
+	this->meshList["ship"] = "data/MODEL/PirateShip.x";
+	this->meshList["ship2"] = "data/MODEL/ship2.x";
+	this->meshList["playerOars"] = "data/MODEL/Player_Oars.x";
+	this->meshList["playerShip"] = "data/MODEL/Player_Ship.x";
+	this->meshList["ball"] = "data/MODEL/ball.x";
 }
 
 //*****************************************************************************
@@ -102,9 +102,9 @@ HRESULT ResourcesManager::LoadTexture(std::string name, LPDIRECT3DTEXTURE9* text
 //*****************************************************************************
 std::string ResourcesManager::GetTextureStruct(std::string name)
 {
-	if(m_textureList.find(name) != m_textureList.end())
+	if(this->textureList.find(name) != this->textureList.end())
 	{
-		return m_textureList[name];
+		return this->textureList[name];
 	}
 }
 
@@ -124,10 +124,10 @@ HRESULT ResourcesManager::LoadMesh(std::string name, Model* model)
 			D3DXMESH_SYSTEMMEM,					// メッシュのメモリ確保オプション
 			pDevice,							// デバイスへのポインタ
 			NULL,								// 隣接性データを含むバッファへのポインタ
-			&model->m_material->m_materialBuffer,// マテリアルデータを含むバッファへのポインタ
+			&model->material->materialBuffer,// マテリアルデータを含むバッファへのポインタ
 			NULL,								// エフェクトインスタンスを含むバッファへのポインタ
-			&model->m_material->m_materialNum,	// マテリアル構造体の数
-			&model->m_meshPoint)))				// メッシュへのポインタ
+			&model->material->materialNum,	// マテリアル構造体の数
+			&model->meshPoint)))				// メッシュへのポインタ
 		{
 			std::cout << "[Error] Loading Model<" << name << "> Failed!" << std::endl;
 			return E_FAIL;
@@ -139,22 +139,22 @@ HRESULT ResourcesManager::LoadMesh(std::string name, Model* model)
 	}
 
 	// マテリアルの数によってマテリアルを格納できるメモリを確保
-	model->m_material->m_materialPoint = new D3DMATERIAL9[model->m_material->m_materialNum];
+	model->material->materialPoint = new D3DMATERIAL9[model->material->materialNum];
 
 	// テクスチャは一枚なので、ここではよみこまない。モデル初期化する時一回で読み込み
 	// マテリアルの数によってテクスチャを格納できるメモリを確保
-	//model->m_meshTexturePoint = new LPDIRECT3DTEXTURE9[model->m_material->m_materialNum];
+	//model->this->meshTexturePoint = new LPDIRECT3DTEXTURE9[model->this->material->this->materialNum];
 
 	// Xファイルに保存されているマテリアル情報構造体
-	D3DXMATERIAL* materials = (D3DXMATERIAL*)model->m_material->m_materialBuffer->GetBufferPointer();
+	D3DXMATERIAL* materials = (D3DXMATERIAL*)model->material->materialBuffer->GetBufferPointer();
 
-	for (DWORD count = 0; count < model->m_material->m_materialNum; count++)
+	for (DWORD count = 0; count < model->material->materialNum; count++)
 	{
 		// マテリアルのプロパティをコピー
-		model->m_material->m_materialPoint[count] = materials[count].MatD3D;
+		model->material->materialPoint[count] = materials[count].MatD3D;
 
 		// アンビエント色をディフューズ色にする
-		//model->m_material->m_materialPoint[count].Ambient = model->m_material->m_materialPoint[count].Diffuse;
+		//model->this->material->this->materialPoint[count].Ambient = model->this->material->this->materialPoint[count].Diffuse;
 
 		// Xファイルの情報によってすべてのテクスチャを読み込み
 		if (materials[count].pTextureFilename != NULL)
@@ -167,8 +167,8 @@ HRESULT ResourcesManager::LoadMesh(std::string name, Model* model)
 			//texPath += texName;
 
 			// 初期化＆テクスチャを取得 & one textrue
-			//model->m_meshTexturePoint[0] = NULL;
-			//if (FAILED(D3DXCreateTextureFromFile(pDevice, texPath.c_str(), &model->m_meshTexturePoint[count])))
+			//model->this->meshTexturePoint[0] = NULL;
+			//if (FAILED(D3DXCreateTextureFromFile(pDevice, texPath.c_str(), &model->this->meshTexturePoint[count])))
 			//{
 			//	std::cout << "[Error] Material's texture load Fail!" << std::endl;
 			//	return E_FAIL;
@@ -179,7 +179,7 @@ HRESULT ResourcesManager::LoadMesh(std::string name, Model* model)
 	}
 
 	// ッシュの面および頂点の順番変更を制御し、パフォーマンスを最適化する
-	model->m_meshPoint->OptimizeInplace(D3DXMESHOPT_ATTRSORT, NULL, NULL, NULL, NULL);
+	model->meshPoint->OptimizeInplace(D3DXMESHOPT_ATTRSORT, NULL, NULL, NULL, NULL);
 
 	return S_OK;
 }
@@ -191,9 +191,9 @@ HRESULT ResourcesManager::LoadMesh(std::string name, Model* model)
 //*****************************************************************************
 std::string ResourcesManager::GetMeshPath(std::string name)
 {
-	if (m_meshList.find(name) != m_meshList.end())
+	if (this->meshList.find(name) != this->meshList.end())
 	{
-		return m_meshList[name];
+		return this->meshList[name];
 	}
 
 	return NULL;

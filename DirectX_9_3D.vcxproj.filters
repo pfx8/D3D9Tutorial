@@ -42,9 +42,6 @@
     <ClCompile Include="modules\Material.cpp">
       <Filter>Modules</Filter>
     </ClCompile>
-    <ClCompile Include="modules\Matrix.cpp">
-      <Filter>Modules</Filter>
-    </ClCompile>
     <ClCompile Include="modules\Model.cpp">
       <Filter>Modules</Filter>
     </ClCompile>
@@ -119,12 +116,6 @@
     <ClInclude Include="modules\Light.h">
       <Filter>Modules</Filter>
     </ClInclude>
-    <ClInclude Include="modules\Material.h">
-      <Filter>Modules</Filter>
-    </ClInclude>
-    <ClInclude Include="modules\Matrix.h">
-      <Filter>Modules</Filter>
-    </ClInclude>
     <ClInclude Include="modules\Model.h">
       <Filter>Modules</Filter>
     </ClInclude>
@@ -180,6 +171,9 @@
       <Filter>Shader</Filter>
     </ClInclude>
     <ClInclude Include="Modules\ScreenPolygon.h">
+      <Filter>Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Modules\Material.h">
       <Filter>Modules</Filter>
     </ClInclude>
   </ItemGroup>

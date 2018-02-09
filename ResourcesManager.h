@@ -22,11 +22,11 @@ class ResourcesManager
 {
 private:
 	// テクスチャ
-	std::map < std::string, std::string> m_textureList;	// テクスチャリスト
+	std::map < std::string, std::string> textureList;	// テクスチャリスト
 	std::string GetTextureStruct(std::string name);		// テクスチャパスを取得
 
 	// メッシュ
-	std::map < std::string, std::string> m_meshList;	// メッシュリスト
+	std::map < std::string, std::string> meshList;	// メッシュリスト
 	std::string GetMeshPath(std::string name);		// メッシュパスを取得
 public:
 	ResourcesManager();
@@ -34,7 +34,6 @@ public:
 
 	HRESULT LoadTexture(std::string name, LPDIRECT3DTEXTURE9* texturePoint);	// テクスチャを読み込み
 	HRESULT LoadMesh(std::string name, Model* mesh);	// メッシュを読み込み
-
 };
 
 #endif // !_RESOURCES_MANAGER_H_

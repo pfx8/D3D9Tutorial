@@ -14,12 +14,12 @@
 //*****************************************************************************
 Shader::Shader()
 {
-	m_effectPoint = NULL;
+	this->effectPoint = NULL;
 	
-	m_WMatrixHandle = NULL;
-	m_VPMatrixHandle = NULL;
-	m_shaderHandle = NULL;
-	m_textureHandle = NULL;
+	this->WMatrixHandle = NULL;
+	this->VPMatrixHandle = NULL;
+	this->shaderHandle = NULL;
+	this->textureHandle = NULL;
 }
 
 //*****************************************************************************
@@ -29,7 +29,7 @@ Shader::Shader()
 //*****************************************************************************
 Shader::~Shader()
 {
-	RELEASE_POINT(m_effectPoint);
+	RELEASE_POINT(this->effectPoint);
 }
 
 //*****************************************************************************
@@ -66,7 +66,7 @@ HRESULT Shader::LoadEffectFile()
 						0,
 						D3DXSHADER_DEBUG,
 						0,
-						&m_effectPoint,		// エフェクトポインタ
+						&this->effectPoint,		// エフェクトポインタ
 						&errorBuffer);		// エラー情報
 
 
@@ -90,8 +90,8 @@ HRESULT Shader::LoadEffectFile()
 //*****************************************************************************
 void Shader::GetShaderParameter()
 {
-	m_WMatrixHandle  = m_effectPoint->GetParameterByName(0, "WMatrix");
-	m_VPMatrixHandle = m_effectPoint->GetParameterByName(0, "VPMatrix");
-	m_textureHandle  = m_effectPoint->GetParameterByName(0, "tex");
-	m_alphaHandle    = m_effectPoint->GetParameterByName(0, "alpha");
+	this->WMatrixHandle  = this->effectPoint->GetParameterByName(0, "WMatrix");
+	this->VPMatrixHandle = this->effectPoint->GetParameterByName(0, "VPMatrix");
+	this->textureHandle  = this->effectPoint->GetParameterByName(0, "tex");
+	this->alphaHandle    = this->effectPoint->GetParameterByName(0, "alpha");
 }

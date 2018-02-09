@@ -14,9 +14,9 @@
 //*****************************************************************************
 ShadowMapShader::ShadowMapShader()
 {
-	m_effectPoint = NULL;
-	m_shadowMapTex = NULL;
-	m_shadeowMapShaderHandle = NULL;
+	this->effectPoint = NULL;
+	this->shadowMapTex = NULL;
+	this->shadeowMapShaderHandle = NULL;
 }
 
 //*****************************************************************************
@@ -26,7 +26,7 @@ ShadowMapShader::ShadowMapShader()
 //*****************************************************************************
 ShadowMapShader::~ShadowMapShader()
 {
-	RELEASE_POINT(m_effectPoint);
+	RELEASE_POINT(this->effectPoint);
 }
 
 //*****************************************************************************
@@ -44,7 +44,7 @@ HRESULT ShadowMapShader::InitShader()
 		1, D3DUSAGE_RENDERTARGET,
 		D3DFMT_R32F,
 		D3DPOOL_DEFAULT,
-		&m_shadowMapTex,
+		&this->shadowMapTex,
 		NULL)))
 	{
 		std::cout << "[Error]Not Support PixelShader Failed!" << std::endl;
@@ -75,7 +75,7 @@ HRESULT ShadowMapShader::LoadEffectFile()
 						0,
 						D3DXSHADER_DEBUG,
 						0,
-						&m_effectPoint,		// エフェクトポインタ
+						&this->effectPoint,		// エフェクトポインタ
 						&errorBuffer);		// エラー情報
 
 

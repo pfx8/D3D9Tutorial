@@ -14,35 +14,35 @@
 //*****************************************************************************
 ScreenPolygon::ScreenPolygon()
 {
-	m_vertexDecl = NULL;
-	m_indexBuffer = NULL;
+	this->vertexDecl = NULL;
+	this->indexBuffer = NULL;
 
-	m_UIminiMapVertexBuffer = NULL;
-	m_UIminiMapTexture = NULL;
+	this->UIminiMapVertexBuffer = NULL;
+	this->UIminiMapTexture = NULL;
 
-	m_UIHPVertexBuffer = NULL;
-	m_UIHPTexture = NULL;
+	this->UIHPVertexBuffer = NULL;
+	this->UIHPTexture = NULL;
 
-	m_UIKeyVertexBuffer = NULL;
-	m_UIKeyTexture = NULL;
+	this->UIKeyVertexBuffer = NULL;
+	this->UIKeyTexture = NULL;
 
 	// シェーダーを初期化
-	m_RHWshader = new RHWShader;
-	m_RHWshader->InitShader();
+	this->RHWshader = new RHWShader;
+	this->RHWshader->InitShader();
 
 	// リソース管理を初期化
-	m_resourcesManager = new ResourcesManager;
-	m_resourcesManager->LoadTexture("UIminimap", &m_UIminiMapTexture);
-	m_resourcesManager->LoadTexture("UIHP", &m_UIHPTexture);
-	m_resourcesManager->LoadTexture("UIkey", &m_UIKeyTexture);
+	this->resourcesManager = new ResourcesManager;
+	this->resourcesManager->LoadTexture("UIminimap", &this->UIminiMapTexture);
+	this->resourcesManager->LoadTexture("UIHP", &this->UIHPTexture);
+	this->resourcesManager->LoadTexture("UIkey", &this->UIKeyTexture);
 
 	MakeVertexDecl();
 	MakeIndex();
 
 	// 各頂点を作成
-	MakeVertex(D3DXVECTOR2(SCREEN_WIDTH - 200, SCREEN_HEIGHT - 200), D3DXVECTOR2(200, 200), &m_UIminiMapVertexBuffer);
-	MakeVertex(D3DXVECTOR2(0, 30), D3DXVECTOR2(400, 50), &m_UIHPVertexBuffer);
-	MakeVertex(D3DXVECTOR2(0, SCREEN_HEIGHT - 200), D3DXVECTOR2(200, 200), &m_UIKeyVertexBuffer);
+	MakeVertex(D3DXVECTOR2(SCREEN_WIDTH - 200, SCREEN_HEIGHT - 200), D3DXVECTOR2(200, 200), &this->UIminiMapVertexBuffer);
+	MakeVertex(D3DXVECTOR2(0, 30), D3DXVECTOR2(400, 50), &this->UIHPVertexBuffer);
+	MakeVertex(D3DXVECTOR2(0, SCREEN_HEIGHT - 200), D3DXVECTOR2(200, 200), &this->UIKeyVertexBuffer);
 }
 
 //*****************************************************************************
@@ -52,17 +52,17 @@ ScreenPolygon::ScreenPolygon()
 //*****************************************************************************
 ScreenPolygon::~ScreenPolygon()
 {
-	RELEASE_POINT(m_vertexDecl);
-	RELEASE_POINT(m_indexBuffer);
+	RELEASE_POINT(this->vertexDecl);
+	RELEASE_POINT(this->indexBuffer);
 	
-	RELEASE_POINT(m_UIminiMapVertexBuffer);
-	RELEASE_POINT(m_UIminiMapTexture);
-	RELEASE_POINT(m_UIHPVertexBuffer);
-	RELEASE_POINT(m_UIHPTexture);
-	RELEASE_POINT(m_UIKeyVertexBuffer);
-	RELEASE_POINT(m_UIKeyTexture);
+	RELEASE_POINT(this->UIminiMapVertexBuffer);
+	RELEASE_POINT(this->UIminiMapTexture);
+	RELEASE_POINT(this->UIHPVertexBuffer);
+	RELEASE_POINT(this->UIHPTexture);
+	RELEASE_POINT(this->UIKeyVertexBuffer);
+	RELEASE_POINT(this->UIKeyTexture);
 
-	RELEASE_CLASS_POINT(m_resourcesManager);
+	RELEASE_CLASS_POINT(this->resourcesManager);
 }
 
 //*****************************************************************************
@@ -82,7 +82,7 @@ void ScreenPolygon::MakeVertexDecl()
 			{ 0, 8, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD , 0 },
 			D3DDECL_END()
 		};
-		pDevice->CreateVertexDeclaration(planeDecl, &m_vertexDecl);
+		pDevice->CreateVertexDeclaration(planeDecl, &this->vertexDecl);
 	}
 }
 
@@ -134,7 +134,7 @@ HRESULT ScreenPolygon::MakeIndex()
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
-	if (FAILED(pDevice->CreateIndexBuffer(6 * sizeof(WORD), 0, D3DFMT_INDEX16, D3DPOOL_DEFAULT, &m_indexBuffer, NULL)))
+	if (FAILED(pDevice->CreateIndexBuffer(6 * sizeof(WORD), 0, D3DFMT_INDEX16, D3DPOOL_DEFAULT, &this->indexBuffer, NULL)))
 	{
 		std::cout << "[Error] 頂点インデクスが生成できない!" << std::endl;	// エラーメッセージ
 		return E_FAIL;
@@ -142,12 +142,12 @@ HRESULT ScreenPolygon::MakeIndex()
 
 	WORD* vertexIndex = NULL;		// イデックスの中身を埋める
 
-	m_indexBuffer->Lock(0, 0, (void**)&vertexIndex, 0);	// インデックス データのある一定範囲をロックし、そのインデックス バッファー メモリーへのポインターを取得する
+	this->indexBuffer->Lock(0, 0, (void**)&vertexIndex, 0);	// インデックス データのある一定範囲をロックし、そのインデックス バッファー メモリーへのポインターを取得する
 
 	vertexIndex[0] = 0, vertexIndex[1] = 1, vertexIndex[2] = 2;
 	vertexIndex[3] = 2, vertexIndex[4] = 1, vertexIndex[5] = 3;
 
-	m_indexBuffer->Unlock();	// インデックス データのロックを解除する
+	this->indexBuffer->Unlock();	// インデックス データのロックを解除する
 
 	return S_OK;
 }
@@ -160,13 +160,13 @@ HRESULT ScreenPolygon::MakeIndex()
 void ScreenPolygon::Draw()
 {
 	// minimap
-	DrawObject(m_UIminiMapVertexBuffer, m_UIminiMapTexture);
+	DrawObject(this->UIminiMapVertexBuffer, this->UIminiMapTexture);
 
 	// HP
-	DrawObject(m_UIHPVertexBuffer, m_UIHPTexture);
+	DrawObject(this->UIHPVertexBuffer, this->UIHPTexture);
 
 	// 操作ボタン
-	DrawObject(m_UIKeyVertexBuffer, m_UIKeyTexture);
+	DrawObject(this->UIKeyVertexBuffer, this->UIKeyTexture);
 }
 
 //*****************************************************************************
@@ -179,25 +179,25 @@ void ScreenPolygon::DrawObject(LPDIRECT3DVERTEXBUFFER9 vertexBuffer, LPDIRECT3DT
 	PDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	// テクニックを設定
-	m_RHWshader->m_effectPoint->SetTechnique(m_RHWshader->m_RHWShaderHandle);
+	this->RHWshader->effectPoint->SetTechnique(this->RHWshader->RHWShaderHandle);
 
 	// テクスチャの設定
-	m_RHWshader->m_effectPoint->SetTexture(m_RHWshader->m_textureHandle, texture);
+	this->RHWshader->effectPoint->SetTexture(this->RHWshader->textureHandle, texture);
 
 	// 描画
 	UINT passNum = 0;
-	m_RHWshader->m_effectPoint->Begin(&passNum, 0);
+	this->RHWshader->effectPoint->Begin(&passNum, 0);
 	// 各パスを実行する
 	for (int count = 0; count < passNum; count++)
 	{
-		m_RHWshader->m_effectPoint->BeginPass(0);
+		this->RHWshader->effectPoint->BeginPass(0);
 
-		pDevice->SetVertexDeclaration(m_vertexDecl);							// 頂点宣言を設定
+		pDevice->SetVertexDeclaration(this->vertexDecl);							// 頂点宣言を設定
 		pDevice->SetStreamSource(0, vertexBuffer, 0, sizeof(VERTEX_2D));		// 頂点バッファをデバイスのデータストリームにバイナリ
-		pDevice->SetIndices(m_indexBuffer);										// 頂点インデックスバッファを設定
+		pDevice->SetIndices(this->indexBuffer);										// 頂点インデックスバッファを設定
 		pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 4, 0, 2);		// ポリゴンの描画
 
-		m_RHWshader->m_effectPoint->EndPass();
+		this->RHWshader->effectPoint->EndPass();
 	}
-	m_RHWshader->m_effectPoint->End();
+	this->RHWshader->effectPoint->End();
 }

@@ -40,20 +40,20 @@
 class Scene00 : public Scene
 {
 private:
-	Camera*			m_camera;		// カメラ
-	CelShader*		m_celShader;	// トゥ―ンシェーダー
+	Camera*				camera;		// カメラ
+	CelShader*			celShader;	// トゥ―ンシェーダー
 
-	Shader*			m_shader;		// ベーシックシェーダー
-	Plane*			m_sea;			// フィールド海
-	Character*		m_ship;			// プレーヤー
-	Light*			m_directionLight;		// ライト
-	Enemy*			m_enemyShip;	// 敵
-	Bullet*			m_bullet;		// 弾
-	SkyBox*			m_skyBox;		// スカイボックス
+	Shader*				shader;		// ベーシックシェーダー
+	Plane*				sea;			// フィールド海
+	Character*			ship;			// プレーヤー
+	Light*				directionLight;		// ライト
+	Enemy*				enemyShip;	// 敵
+	Bullet*				bullet;		// 弾
+	SkyBox*				skyBox;		// スカイボックス
 
-	ShadowMapShader*m_shadowMap;	// シャドーマップ
+	ShadowMapShader*	shadowMap;	// シャドーマップ
 
-	ScreenPolygon*	m_screenPolygon;// RHWポリゴン
+	ScreenPolygon*		screenPolygon;// RHWポリゴン
 
 public:
 	Scene00();

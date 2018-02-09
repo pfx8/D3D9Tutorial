@@ -15,17 +15,17 @@
 //*****************************************************************************
 Plane::Plane()
 {
-	m_scala = 2;
-	m_waveAngle = 0.0f;
+	this->scala = 2;
+	this->waveAngle = 0.0f;
 
-	m_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	//m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	//m_scl = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
+	this->pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	//this->rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	//this->scl = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
 
 	// ポインタ
-	m_vertexBuffer = NULL;
-	m_indexBuffer = NULL;
-	m_texture = NULL;
+	this->vertexBuffer = NULL;
+	this->indexBuffer = NULL;
+	this->texture = NULL;
 }
 
 //*****************************************************************************
@@ -36,9 +36,9 @@ Plane::Plane()
 Plane::~Plane()
 {
 	// ポインタ
-	RELEASE_POINT(m_vertexBuffer);
-	RELEASE_POINT(m_texture);
-	RELEASE_POINT(m_indexBuffer);
+	RELEASE_POINT(this->vertexBuffer);
+	RELEASE_POINT(this->texture);
+	RELEASE_POINT(this->indexBuffer);
 }
 
 //*****************************************************************************
@@ -48,11 +48,11 @@ Plane::~Plane()
 //*****************************************************************************
 HRESULT Plane::InitPlane(D3DXVECTOR3 pos, D3DXVECTOR2 planeSize, D3DXVECTOR2 planeNum)
 {
-	m_pos = pos;	// 位置
-	m_planeNum = planeNum;
-	m_planeSize = planeSize;
+	this->pos = pos;	// 位置
+	this->planeNum = planeNum;
+	this->planeSize = planeSize;
 
-	MakeVertexDecl(m_planeSize, m_planeNum);	// 頂点宣言(shader)
+	MakeVertexDecl(this->planeSize, this->planeNum);	// 頂点宣言(shader)
 
 	return S_OK;
 }
@@ -66,9 +66,9 @@ HRESULT Plane::MakeVertexDecl(D3DXVECTOR2 planeSize, D3DXVECTOR2 planeNum)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
-	m_vertexNum = (planeNum.x + 1) * (planeNum.y + 1);	// 総頂点数
-	m_polygonNum = planeNum.x * planeNum.y * 2 + (planeNum.y - 1) * 4;		// ポリゴン数
-	m_indexNum = (planeNum.x + 1) * 2 * planeNum.y + (planeNum.y - 1) * 2;	// インデックス数
+	this->vertexNum = (planeNum.x + 1) * (planeNum.y + 1);	// 総頂点数
+	this->polygonNum = planeNum.x * planeNum.y * 2 + (planeNum.y - 1) * 4;		// ポリゴン数
+	this->indexNum = (planeNum.x + 1) * 2 * planeNum.y + (planeNum.y - 1) * 2;	// インデックス数
 
 	// 頂点シェーダー宣言
 	{
@@ -78,12 +78,12 @@ HRESULT Plane::MakeVertexDecl(D3DXVECTOR2 planeSize, D3DXVECTOR2 planeNum)
 			{ 0, 16, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0 },
 			D3DDECL_END()
 		};
-		pDevice->CreateVertexDeclaration(planeDecl, &m_vertexDecl);
+		pDevice->CreateVertexDeclaration(planeDecl, &this->vertexDecl);
 	}
 
 	// 頂点バッファ作成
 	{
-		if (FAILED(pDevice->CreateVertexBuffer(m_vertexNum * sizeof(VERTEX_3D), D3DUSAGE_WRITEONLY, 0, D3DPOOL_MANAGED, &m_vertexBuffer, NULL)))
+		if (FAILED(pDevice->CreateVertexBuffer(this->vertexNum * sizeof(VERTEX_3D), D3DUSAGE_WRITEONLY, 0, D3DPOOL_MANAGED, &this->vertexBuffer, NULL)))
 		{
 			std::cout << "[Error] 頂点バッファが生成できない!" << std::endl;	// エラーメッセージ
 			return E_FAIL;
@@ -92,12 +92,12 @@ HRESULT Plane::MakeVertexDecl(D3DXVECTOR2 planeSize, D3DXVECTOR2 planeNum)
 		VERTEX_3D* VertexBuffer;
 
 		// 頂点データの範囲をロックし、頂点バッファ メモリへのポインタを取得する
-		m_vertexBuffer->Lock(0, 0, (void**)&VertexBuffer, 0);
+		this->vertexBuffer->Lock(0, 0, (void**)&VertexBuffer, 0);
 
 		// 頂点バッファの中身を埋める
 		// 頂点座標(ローカル座標 = 形を形成してる)
 		// もの自身の座標、世界での座標には関係ない
-		// m_posFiledは世界での位置で
+		// this->posFiledは世界での位置で
 
 		for (int numY = 0; numY < (planeNum.y + 1); numY++)
 		{
@@ -119,12 +119,12 @@ HRESULT Plane::MakeVertexDecl(D3DXVECTOR2 planeSize, D3DXVECTOR2 planeNum)
 		}
 
 		// 頂点データをアンロックする
-		m_vertexBuffer->Unlock();
+		this->vertexBuffer->Unlock();
 	}
 
 	// 頂点インデックスバッファ作成
 	{
-		if (FAILED(pDevice->CreateIndexBuffer(m_indexNum * sizeof(WORD), 0, D3DFMT_INDEX16, D3DPOOL_DEFAULT, &m_indexBuffer, NULL)))
+		if (FAILED(pDevice->CreateIndexBuffer(this->indexNum * sizeof(WORD), 0, D3DFMT_INDEX16, D3DPOOL_DEFAULT, &this->indexBuffer, NULL)))
 		{
 			std::cout << "[Error] 頂点インデクスが生成できない!" << std::endl;	// エラーメッセージ
 			return E_FAIL;
@@ -132,7 +132,7 @@ HRESULT Plane::MakeVertexDecl(D3DXVECTOR2 planeSize, D3DXVECTOR2 planeNum)
 
 		WORD* vertexIndex = NULL;		// イデックスの中身を埋める
 
-		m_indexBuffer->Lock(0, 0, (void**)&vertexIndex, 0);	// インデックス データのある一定範囲をロックし、そのインデックス バッファー メモリーへのポインターを取得する
+		this->indexBuffer->Lock(0, 0, (void**)&vertexIndex, 0);	// インデックス データのある一定範囲をロックし、そのインデックス バッファー メモリーへのポインターを取得する
 
 		int index = 0;
 		for (int numY = 0; numY < planeNum.y; numY++)
@@ -158,7 +158,7 @@ HRESULT Plane::MakeVertexDecl(D3DXVECTOR2 planeSize, D3DXVECTOR2 planeNum)
 			}
 		}
 
-		m_indexBuffer->Unlock();	// インデックス データのロックを解除する
+		this->indexBuffer->Unlock();	// インデックス データのロックを解除する
 	}
 
 	return S_OK;
@@ -175,11 +175,11 @@ void Plane::SetWorldMatrix()
 	D3DXMATRIX mtxScl, mtxRot, mtxTranslate;
 
 	// ワールドマトリックスを初期化する
-	D3DXMatrixIdentity(&m_worldMatrix);
+	D3DXMatrixIdentity(&this->worldMatrix);
 
 	// 平行移動を反映
-	D3DXMatrixTranslation(&mtxTranslate, m_pos.x, m_pos.y, m_pos.z);
-	D3DXMatrixMultiply(&m_worldMatrix, &m_worldMatrix, &mtxTranslate);
+	D3DXMatrixTranslation(&mtxTranslate, this->pos.x, this->pos.y, this->pos.z);
+	D3DXMatrixMultiply(&this->worldMatrix, &this->worldMatrix, &mtxTranslate);
 }
 
 //*****************************************************************************
@@ -193,10 +193,10 @@ void Plane::Draw()
 
 	SetWorldMatrix();
 
-	pDevice->SetVertexDeclaration(m_vertexDecl);							// 頂点宣言を設定
-	pDevice->SetStreamSource(0, m_vertexBuffer, 0, sizeof(VERTEX_3D));		// 頂点バッファをデバイスのデータストリームにバイナリ
-	pDevice->SetIndices(m_indexBuffer);										// 頂点インデックスバッファを設定
-	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, 0, 0, m_vertexNum, 0, m_polygonNum);	// ポリゴンの描画
+	pDevice->SetVertexDeclaration(this->vertexDecl);							// 頂点宣言を設定
+	pDevice->SetStreamSource(0, this->vertexBuffer, 0, sizeof(VERTEX_3D));		// 頂点バッファをデバイスのデータストリームにバイナリ
+	pDevice->SetIndices(this->indexBuffer);										// 頂点インデックスバッファを設定
+	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, 0, 0, this->vertexNum, 0, this->polygonNum);	// ポリゴンの描画
 }
 
 //*****************************************************************************
@@ -208,30 +208,30 @@ void Plane::Update()
 {
 	PDIRECT3DDEVICE9 pDevice = GetDevice();
 
-	m_waveAngle += (rand()%5 + 10) / 5.0f / 180.0f * D3DX_PI;
+	this->waveAngle += (rand()%5 + 10) / 5.0f / 180.0f * D3DX_PI;
 
-	if (m_waveAngle > D3DX_PI * 2.0f)
-		m_waveAngle = 0.0f;
+	if (this->waveAngle > D3DX_PI * 2.0f)
+		this->waveAngle = 0.0f;
 
 	VERTEX_3D* VertexBuffer;
 
 	// 頂点データの範囲をロックし、頂点バッファ メモリへのポインタを取得する
-	m_vertexBuffer->Lock(0, 0, (void**)&VertexBuffer, 0);
+	this->vertexBuffer->Lock(0, 0, (void**)&VertexBuffer, 0);
 
 	// 頂点バッファの中身を埋める
 	// 頂点座標(ローカル座標 = 形を形成してる)
 	// もの自身の座標、世界での座標には関係ない
-	// m_posFiledは世界での位置で
+	// this->posFiledは世界での位置で
 
-	for (int numY = 0; numY < (m_planeNum.y + 1); numY++)
+	for (int numY = 0; numY < (this->planeNum.y + 1); numY++)
 	{
-		for (int numX = 0; numX < (m_planeNum.x + 1); numX++)
+		for (int numX = 0; numX < (this->planeNum.x + 1); numX++)
 		{
 			// システム時間を取得
 			float time = timeGetTime();
 			time = time / 10000000000.0f;
 
-			VertexBuffer[numY * (int(m_planeNum.x) + 1) + numX].position.y = 1.8f * (sinf(numY + numX + m_waveAngle) + sinf(numY + m_waveAngle) + sinf(numX + m_waveAngle)) / 3.0f;
+			VertexBuffer[numY * (int(this->planeNum.x) + 1) + numX].position.y = 1.8f * (sinf(numY + numX + this->waveAngle) + sinf(numY + this->waveAngle) + sinf(numX + this->waveAngle)) / 3.0f;
 
 			int signX;	// X符号位
 			int signZ;	// Z符号位
@@ -244,30 +244,30 @@ void Plane::Update()
 			case 0:
 				signX = -1;
 				signZ = -1;
-				sinX = m_waveAngle - time;
-				sinZ = m_waveAngle - time;
+				sinX = this->waveAngle - time;
+				sinZ = this->waveAngle - time;
 				break;
 			case 1:
 				signX = 1;
 				signZ = -1;
-				sinX = m_waveAngle + time;
-				sinZ = m_waveAngle - time;
+				sinX = this->waveAngle + time;
+				sinZ = this->waveAngle - time;
 				break;
 			case 2:
 				signX = -1;
 				signZ = 1;
-				sinX = m_waveAngle - time;
-				sinZ = m_waveAngle + time;
+				sinX = this->waveAngle - time;
+				sinZ = this->waveAngle + time;
 				break;
 			case 3:
 				signX = 1;
 				signZ = 1;
-				sinX = m_waveAngle + time;
-				sinZ = m_waveAngle + time;
+				sinX = this->waveAngle + time;
+				sinZ = this->waveAngle + time;
 				break;
 			}
-			//VertexBuffer[numY * (int(m_planeNum.x) + 1) + numX].position.x += signX * 0.8f * sinf(sinX);
-			//VertexBuffer[numY * (int(m_planeNum.x) + 1) + numX].position.z += signZ * 0.8f * sinf(sinZ);
+			//VertexBuffer[numY * (int(this->planeNum.x) + 1) + numX].position.x += signX * 0.8f * sinf(sinX);
+			//VertexBuffer[numY * (int(this->planeNum.x) + 1) + numX].position.z += signZ * 0.8f * sinf(sinZ);
 		}
 	}
 }

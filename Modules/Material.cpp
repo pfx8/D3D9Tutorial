@@ -14,9 +14,9 @@
 //*****************************************************************************
 Material::Material()
 {
-	m_materialPoint = NULL;
-	m_materialNum = 0;
-	m_materialBuffer = NULL;
+	this->materialPoint = NULL;
+	this->materialNum = 0;
+	this->materialBuffer = NULL;
 }
 
 //*****************************************************************************
@@ -26,5 +26,5 @@ Material::Material()
 //*****************************************************************************
 Material::~Material()
 {
-	RELEASE_CLASS_POINT(m_materialPoint); 
+	RELEASE_CLASS_POINT(this->materialPoint); 
 }

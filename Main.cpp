@@ -128,7 +128,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 	// メッセージを出る為のコンソールを初期化
 	g_Console = new Console();
-	if (g_Console->m_isConsoleRun == false)
+	if (g_Console->isConsoleRun == false)
 	{
 		std::cout << "[Error] コンソールが初期化失敗!" << std::endl;	// エラーメッセージ
 		return E_FAIL;
@@ -351,16 +351,16 @@ HRESULT InitDiretX(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 void Updata(HWND hWnd, int cmd)
 {
 	// ウィンドウからコンソールに変更
-	if (GetKeyboardRelease(DIK_CIRCUMFLEX) && g_Console->m_isConsoleFront == false)
+	if (GetKeyboardRelease(DIK_8) && g_Console->isConsoleFront == false)
 	{
 		//g_Console->SetConsoleFront(hWnd);
 	}
-	if (GetKeyboardRelease(DIK_CIRCUMFLEX) && g_Console->m_isConsoleFront == true)
+	if (GetKeyboardRelease(DIK_8) && g_Console->isConsoleFront == true)
 	{
 		//g_Console->SetConsoleBack(hWnd, cmd);
 	}
 
-	if (g_Console->m_isConsoleFront == false)
+	if (g_Console->isConsoleFront == false)
 	{
 		UpdateInput();			// 入力更新
 		g_SceneManager->Update();	// シンーを更新する
@@ -374,7 +374,7 @@ void Updata(HWND hWnd, int cmd)
 //*****************************************************************************
 void Draw(HWND hWnd)
 {
-	if (g_Console->m_isConsoleFront == false)
+	if (g_Console->isConsoleFront == false)
 	{
 		g_SceneManager->Draw();	// シンーをドロー
 	}

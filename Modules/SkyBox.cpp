@@ -15,13 +15,13 @@
 SkyBox::SkyBox()
 {
 	// 初期化
-	m_vertexBuffer = NULL;
-	m_indexBuffer = NULL;
-	m_vertexDecl = NULL;
+	this->vertexBuffer = NULL;
+	this->indexBuffer = NULL;
+	this->vertexDecl = NULL;
 
-	m_texture = NULL;
-	m_length = 0.0f;
-	m_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	this->texture = NULL;
+	this->length = 0.0f;
+	this->pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 }
 
 //*****************************************************************************
@@ -31,10 +31,10 @@ SkyBox::SkyBox()
 //*****************************************************************************
 SkyBox::~SkyBox()
 {
-	RELEASE_POINT(m_vertexBuffer);
-	RELEASE_POINT(m_indexBuffer);
-	RELEASE_POINT(m_vertexDecl);
-	RELEASE_POINT(m_texture);
+	RELEASE_POINT(this->vertexBuffer);
+	RELEASE_POINT(this->indexBuffer);
+	RELEASE_POINT(this->vertexDecl);
+	RELEASE_POINT(this->texture);
 }
 
 //*****************************************************************************
@@ -53,10 +53,10 @@ HRESULT SkyBox::InitSkyBox(float length)
 			{ 0, 12, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD },
 			D3DDECL_END()
 		};
-		pDevice->CreateVertexDeclaration(boundingBoxDecl, &m_vertexDecl);
+		pDevice->CreateVertexDeclaration(boundingBoxDecl, &this->vertexDecl);
 
 		// オブジェクトの頂点バッファを生成
-		if (FAILED(pDevice->CreateVertexBuffer(4 * sizeof(SKYBOXVERTEX), D3DUSAGE_WRITEONLY, 0, D3DPOOL_DEFAULT, &m_vertexBuffer, NULL)))
+		if (FAILED(pDevice->CreateVertexBuffer(4 * sizeof(SKYBOXVERTEX), D3DUSAGE_WRITEONLY, 0, D3DPOOL_DEFAULT, &this->vertexBuffer, NULL)))
 		{
 			std::cout << "[Error] 頂点バッファが生成できない!" << std::endl;	// エラーメッセージ
 			return E_FAIL;
@@ -99,25 +99,25 @@ HRESULT SkyBox::InitSkyBox(float length)
 		VOID* vertexBuffer;	// 頂点バッファポインタ作成
 
 		// 頂点データの範囲をロックして頂点バッファメモリへのポインタを取得する
-		if (FAILED(m_vertexBuffer->Lock(0, sizeof(vertex), (void**)&vertexBuffer, 0)))
+		if (FAILED(this->vertexBuffer->Lock(0, sizeof(vertex), (void**)&vertexBuffer, 0)))
 		{
 			std::cout << "[Error] 頂点バッファがロックできない!" << std::endl;	// エラーメッセージ
 			return E_FAIL;
 		}
 		memcpy(vertexBuffer, vertex, sizeof(vertex));	// 作成された頂点を臨時ポインタの中に入れる
-		m_vertexBuffer->Unlock();					// 頂点データをアンロックする
+		this->vertexBuffer->Unlock();					// 頂点データをアンロックする
 	}
 
 	{// インデックス設計
 		//オブジェクトの頂点インデックスバッファを生成
-		if (FAILED(pDevice->CreateIndexBuffer(6 * sizeof(WORD), 0, D3DFMT_INDEX16, D3DPOOL_DEFAULT, &m_indexBuffer, NULL)))
+		if (FAILED(pDevice->CreateIndexBuffer(6 * sizeof(WORD), 0, D3DFMT_INDEX16, D3DPOOL_DEFAULT, &this->indexBuffer, NULL)))
 		{
 			std::cout << "[Error] 頂点インデクスが生成できない!" << std::endl;	// エラーメッセージ
 			return E_FAIL;
 		}
 
 		WORD* vertexIndex = NULL;	// イデックスの中身を埋める
-		m_indexBuffer->Lock(0, 0, (void**)&vertexIndex, 0);	// インデックス データのある一定範囲をロックし、そのインデックス バッファー メモリーへのポインターを取得する
+		this->indexBuffer->Lock(0, 0, (void**)&vertexIndex, 0);	// インデックス データのある一定範囲をロックし、そのインデックス バッファー メモリーへのポインターを取得する
 
 		// 前
 		vertexIndex[0] = 0, vertexIndex[1] = 1, vertexIndex[2] = 2;
@@ -140,7 +140,7 @@ HRESULT SkyBox::InitSkyBox(float length)
 		//vertexIndex[27] = 17, vertexIndex[28] = 18, vertexIndex[29] = 19;
 
 		// インデックス データのロックを解除する
-		m_indexBuffer->Unlock();
+		this->indexBuffer->Unlock();
 	}
 
 	return S_OK;
@@ -159,11 +159,11 @@ void SkyBox::SetWorldMatrix()
 	D3DXMATRIX mtxTranslate;
 
 	// ワールドマトリックスを初期化する
-	D3DXMatrixIdentity(&m_mtxWorld);
+	D3DXMatrixIdentity(&this->mtxWorld);
 
 	// 平行移動を反映
-	D3DXMatrixTranslation(&mtxTranslate, m_pos.x, m_pos.y, m_pos.z);
-	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTranslate);
+	D3DXMatrixTranslation(&mtxTranslate, this->pos.x, this->pos.y, this->pos.z);
+	D3DXMatrixMultiply(&this->mtxWorld, &this->mtxWorld, &mtxTranslate);
 }
 
 //*****************************************************************************
@@ -175,8 +175,8 @@ void SkyBox::Draw()
 {
 	PDIRECT3DDEVICE9 pDevice = GetDevice();
 
-	pDevice->SetVertexDeclaration(m_vertexDecl);							// 頂点宣言を設定
-	pDevice->SetStreamSource(0, m_vertexBuffer, 0, sizeof(SKYBOXVERTEX));	// 頂点バッファをデバイスのデータストリームにバイナリ
-	pDevice->SetIndices(m_indexBuffer);										// 頂点イデックスの設定
+	pDevice->SetVertexDeclaration(this->vertexDecl);							// 頂点宣言を設定
+	pDevice->SetStreamSource(0, this->vertexBuffer, 0, sizeof(SKYBOXVERTEX));	// 頂点バッファをデバイスのデータストリームにバイナリ
+	pDevice->SetIndices(this->indexBuffer);										// 頂点イデックスの設定
 	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 4, 0, 2);		// バウンディングボックスの描画
 }

@@ -21,14 +21,14 @@
 class SceneEnding : public Scene
 {
 private:
-	RHWShader*					m_RHWshader;
+	RHWShader*						RHWshader;
 
 public:
-	ResourcesManager*			m_resourcesManager;	// リソースマネジメント
-	IDirect3DVertexDeclaration9*m_vertexDecl;	// 頂点シェーダー宣言
-	LPDIRECT3DVERTEXBUFFER9		m_vertexBuffer;	// 頂点バッファへのポインタ
-	LPDIRECT3DINDEXBUFFER9		m_indexBuffer;	// 頂点インデックスバッファ
-	LPDIRECT3DTEXTURE9			m_texture;	// フィールドテクスチャ
+	ResourcesManager*				resourcesManager;	// リソースマネジメント
+	IDirect3DVertexDeclaration9*	vertexDecl;	// 頂点シェーダー宣言
+	LPDIRECT3DVERTEXBUFFER9			vertexBuffer;	// 頂点バッファへのポインタ
+	LPDIRECT3DINDEXBUFFER9			indexBuffer;	// 頂点インデックスバッファ
+	LPDIRECT3DTEXTURE9				texture;	// フィールドテクスチャ
 	
 	SceneEnding();
 	~SceneEnding();
