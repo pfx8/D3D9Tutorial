@@ -428,11 +428,11 @@ void Scene00::Draw()
 void Scene00::Control()
 {
 	// プレーヤー操作 逆
-	if (GetKeyboardTrigger(DIK_S))	// 前に進む
+	if (GetKeyboardTrigger(DIK_S))	// 後ろに進む
 	{
 		this->ship->ChangeLever(LL_FRONT);
 	}
-	if (GetKeyboardTrigger(DIK_W))	// 後ろに進む
+	if (GetKeyboardTrigger(DIK_W))	// 前に進む
 	{;
 		this->ship->ChangeLever(LL_BACK);
 	}
