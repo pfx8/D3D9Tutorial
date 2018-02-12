@@ -33,7 +33,9 @@ Camera::Camera()
 
 	this->rotateSpeedHorizonal = 2.0f;
 	this->rotateSpeedVertical = 1.0f;
-	this->zoomSpeed = 4.0f;
+	this->zoomSpeed = 2.0f;
+
+	this->isShooting = IS_no;
 
 	D3DXMatrixIdentity(&viewMatrix);
 	D3DXMatrixIdentity(&projectionMatrix);
@@ -77,12 +79,38 @@ void Camera::Update(Character* player)
 	// カメラ操作更新
 	CameraContrlUpdate(player);
 
+	D3DXVECTOR3 temp = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+
 	// カメラ位置を更新
-	this->posEye = player->pos - this->offSetFromPlayer;
-	this->posAt += player->lookVector * player->speed;
+	switch (isShooting)
+	{
+	case IS_no:
+		this->posEye = player->pos - this->offSetFromPlayer;
+		this->posAt = player->pos;
+		
+		// 注視方向ベクトル
+		temp = player->pos - this->posEye;
+
+		break;
+	case IS_left:
+		this->posAt = player->pos - player->rightVector * 20.0f;
+		this->posEye = player->pos + D3DXVECTOR3(0.0f, 5.0f, 0.0f);
+
+		// 注視方向ベクトル
+		temp = -player->rightVector;
+
+		break;
+	case IS_right:
+		this->posAt = player->pos + player->rightVector * 20.0f;
+		this->posEye = player->pos + D3DXVECTOR3(0.0f, 5.0f, 0.0f);
+
+		// 注視方向ベクトル
+		temp = player->rightVector;
+
+		break;
+	}
 
 	// カメラベクトルを更新
-	D3DXVECTOR3 temp = player->pos - this->posEye;
 	D3DXVec3Normalize(&this->lookVector, &temp);
 	D3DXVec3Cross(&this->rightVector, &this->lookVector, &player->upVector);
 	D3DXVec3Normalize(&this->rightVector, &this->rightVector);
@@ -107,29 +135,55 @@ void Camera::Update(Character* player)
 //*****************************************************************************
 void Camera::CameraContrlUpdate(Character* player)
 {
-	if (GetKeyboardPress(DIK_I))	// カメラを上に移動
+	// 射撃モードに変更
+	if (GetKeyboardTrigger(DIK_R))
 	{
-		Rotation(player, 0, D3DXToRadian(1.0f));
+		if (this->isShooting == IS_left)
+		{
+			this->isShooting = IS_no;
+		}
+		else
+		{
+			this->isShooting = IS_left;
+		}
+
 	}
-	else if (GetKeyboardPress(DIK_K))	// カメラを下に移動
+	if (GetKeyboardTrigger(DIK_T))
 	{
-		Rotation(player, 0, D3DXToRadian(-1.0f));
+		if (this->isShooting == IS_right)
+		{
+			this->isShooting = IS_no;
+		}
+		else
+		{
+			this->isShooting = IS_right;
+		}
+
 	}
 
-	if (GetKeyboardPress(DIK_J))	// 左回転
+	//if (GetKeyboardPress(DIK_I))	// カメラを上に移動
+	//{
+	//	Rotation(player, 0, D3DXToRadian(1.0f));
+	//}
+	//else if (GetKeyboardPress(DIK_K))	// カメラを下に移動
+	//{
+	//	Rotation(player, 0, D3DXToRadian(-1.0f));
+	//}
+
+	if (GetKeyboardPress(DIK_J) && this->isShooting == IS_no)	// 左回転
 	{
 		Rotation(player, D3DXToRadian(1.0f), 0);
 	}
-	else if (GetKeyboardPress(DIK_L))	// 右回転
+	else if (GetKeyboardPress(DIK_L) && this->isShooting == IS_no)	// 右回転
 	{
 		Rotation(player, D3DXToRadian(-1.0f), 0);
 	}
 
-	if (GetKeyboardPress(DIK_Q))		// ゾーンを拡大
+	if (GetKeyboardPress(DIK_Q) && this->isShooting == IS_no)		// ゾーンを拡大
 	{
 		Zoom(zoomSpeed);
 	}
-	else if (GetKeyboardPress(DIK_E))	// ゾーンを縮小
+	else if (GetKeyboardPress(DIK_E) && this->isShooting == IS_no)	// ゾーンを縮小
 	{
 		Zoom(-zoomSpeed);
 	}
@@ -203,8 +257,8 @@ void Camera::SetViewport()
 //*****************************************************************************
 void Camera::PosToMessageAndMessageDraw(int row)
 {
-	message->DrawPosMessage("look  ", this->lookVector, D3DXVECTOR2(0, float((row + 0) * 18)));
-	message->DrawPosMessage("right ", this->rightVector, D3DXVECTOR2(0, float((row + 1) * 18)));
-	message->DrawPosMessage("up    ", this->upVector, D3DXVECTOR2(0, float((row + 2) * 18)));
+	message->DrawPosMessage("at  ", this->posAt, D3DXVECTOR2(0, float((row + 0) * 18)));
+	message->DrawPosMessage("pos  ", this->posEye, D3DXVECTOR2(0, float((row + 1) * 18)));
+	message->DrawPosMessage("look  ", this->lookVector, D3DXVECTOR2(0, float((row + 2) * 18)));
 	message->DrawPosMessage("offset", this->offSetFromPlayer, D3DXVECTOR2(0, float((row + 3) * 18)));
 }

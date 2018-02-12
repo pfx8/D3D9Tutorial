@@ -25,7 +25,7 @@ Bullet::Bullet()
 	this->upSpeed = FIRST_UP_SPEED;
 
 	// クラスポインタ
-	this->model = new Model;
+	//this->model = new Model;
 	this->message = new DebugMessage;
 	this->boundingBox = new BoundingBox;
 
@@ -39,7 +39,7 @@ Bullet::Bullet()
 Bullet::~Bullet()
 {
 	// クラスポインタ
-	RELEASE_CLASS_POINT(this->model);
+	//RELEASE_CLASS_POINT(this->model);
 	RELEASE_CLASS_POINT(this->message);
 	RELEASE_CLASS_POINT(this->boundingBox);
 }

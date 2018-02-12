@@ -18,7 +18,7 @@
 
 // 移動　= lookVector * SPEED_COEFFICIENT
 #define MAX_BACK_SPEED_COEFFICIENT	(-0.38f)
-#define MAX_FRONT_SPEED_COEFFICIENT	(0.8f)
+#define MAX_FRONT_SPEED_COEFFICIENT	(0.55f)
 
 struct PlayerModel
 {
@@ -62,7 +62,6 @@ public:
 
 	PlayerModel		player;			// プレーヤーモデル集合
 
-	Model*			model;			// メッシュ
 	BoundingBox*	boundingBox;	// バウンディングボックス
 
 	Character();

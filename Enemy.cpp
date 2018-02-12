@@ -30,7 +30,6 @@ Enemy::Enemy()
 	this->attackTime = 0.016 * 180;
 
 	// クラスポインタ
-	this->model = new Model;
 	this->message = new DebugMessage;
 	this->boundingBox = new BoundingBox;
 }
@@ -43,7 +42,6 @@ Enemy::Enemy()
 Enemy::~Enemy()
 {
 	// クラスポインタ
-	RELEASE_CLASS_POINT(this->model);
 	RELEASE_CLASS_POINT(this->message);
 	RELEASE_CLASS_POINT(this->boundingBox);
 }

@@ -19,6 +19,13 @@ enum cameraState	// カメラ逆かどうかの状態
 	offReversal = 1,
 };
 
+enum Is_Shooting
+{
+	IS_no,
+	IS_left,
+	IS_right
+};
+
 //*****************************************************************************
 //
 // クラス宣言
@@ -54,10 +61,10 @@ public:
 	D3DXVECTOR3		posEye;	// カメラの位置
 	D3DXVECTOR3		posAt;	// カメラの注視点
 
-	D3DXMATRIX		viewMatrix;		// ビューイング変換行列
+	D3DXMATRIX		viewMatrix;			// ビューイング変換行列
 	D3DXMATRIX		projectionMatrix;	// プロジェクション変換行列
 
-	//bool			m_isShooting;
+	Is_Shooting		isShooting;
 
 	Camera();
 	~Camera();

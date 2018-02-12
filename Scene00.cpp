@@ -73,7 +73,8 @@ Scene00::Scene00()
 			temp.z *= -1;
 		}
 		this->enemyShip[count].InitEnemy(temp);
-		this->resourcesManager->LoadMesh("ship2", this->enemyShip[count].model);
+		this->resourcesManager->LoadMesh("shipBody", this->ship->player.shipBody);
+		this->resourcesManager->LoadTexture("shipBody", &this->ship->player.shipBody->meshTexturePoint);
 		this->enemyShip[count].boundingBox->InitBox(4, 7, 8, 0.1f);	// バウンディングボックスを初期化
 		this->enemyShip[count].Trans((rand() % 80) / 180.0f * D3DX_PI);		// 向きを決める
 	}
@@ -82,7 +83,7 @@ Scene00::Scene00()
 	this->bullet = new Bullet[BULLET_MAX];
 	for (int count = 0; count < BULLET_MAX; count++)
 	{
-		this->resourcesManager->LoadMesh("ball", this->bullet[count].model);
+		//this->resourcesManager->LoadMesh("ball", this->bullet[count].model);
 	}
 
 	// カメラ
@@ -382,8 +383,8 @@ void Scene00::Draw()
 	this->screenPolygon->Draw();
 		
 	// デッバグメッセージ
-	this->ship->PosToMessageAndMessageDraw(0);
-	//this->camera->PosToMessageAndMessageDraw(0);
+	//this->ship->PosToMessageAndMessageDraw(0);
+	this->camera->PosToMessageAndMessageDraw(0);
 
 
 }
