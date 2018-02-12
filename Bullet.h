@@ -15,7 +15,7 @@
 #include "Modules\Camera.h"
 
 #define FIRST_UP_SPEED	10.0f
-#define MOVE_SPEED		0.49f
+#define MOVE_SPEED		0.67f
 #define ACCELERARION	-0.2f
 #define ONE_FRAME_TIME	(1.0f / 60.0f)
 //*****************************************************************************

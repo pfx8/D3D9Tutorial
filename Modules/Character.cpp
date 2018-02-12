@@ -128,7 +128,7 @@ void Character::Update(float rot)
 	this->waveAngle = rot;
 	if (this->waveAngle > D3DX_PI * 2.0f)
 		this->waveAngle = 0.0f;
-	//this->pos.y = 0.8 * sinf(this->waveAngle);
+	this->pos.y = 0.5 + 0.8 * sinf(this->waveAngle);
 
 	// ˆÚ“®
 	switch (leverLevel)

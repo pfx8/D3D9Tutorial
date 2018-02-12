@@ -159,8 +159,6 @@ void Scene00::SetRenderState()
 
 	// レンダーステートパラメータの設定
 	pDevice->SetRenderState(D3DRS_ZENABLE, TRUE);					// Zバッファを使用
-	//pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-	//pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 	pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);		// αソースカラーの指定
 	pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);	// αデスティネーションカラーの指定
 }
@@ -255,6 +253,8 @@ void Scene00::Update()
 void Scene00::Draw()
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
+
+	// フォグ
 
 	// フィールド
 	{

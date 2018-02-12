@@ -71,29 +71,29 @@ HRESULT SkyBox::InitSkyBox(float length)
 			{ D3DXVECTOR3(-length / 2, 0.0f,       length / 2), D3DXVECTOR2(0.0f, 1.0f) },
 			{ D3DXVECTOR3( length / 2, 0.0f,       length / 2), D3DXVECTOR2(1.0f, 1.0f) },
 
-			//// 後ろ
-			//{ D3DXVECTOR3( length / 2, length / 2, -length / 2), D3DXVECTOR2(0.0f, 0.0f) },
-			//{ D3DXVECTOR3( length / 2, 0.0f,       -length / 2), D3DXVECTOR2(0.0f, 1.0f) },
-			//{ D3DXVECTOR3(-length / 2, length / 2, -length / 2), D3DXVECTOR2(1.0f, 0.0f) },
-			//{ D3DXVECTOR3(-length / 2, 0.0f,       -length / 2), D3DXVECTOR2(1.0f, 1.0f) },
+			// 後ろ
+			{ D3DXVECTOR3( length / 2, length / 2, -length / 2), D3DXVECTOR2(0.0f, 0.0f) },
+			{ D3DXVECTOR3( length / 2, 0.0f,       -length / 2), D3DXVECTOR2(0.0f, 1.0f) },
+			{ D3DXVECTOR3(-length / 2, length / 2, -length / 2), D3DXVECTOR2(1.0f, 0.0f) },
+			{ D3DXVECTOR3(-length / 2, 0.0f,       -length / 2), D3DXVECTOR2(1.0f, 1.0f) },
 
-			//// 左
-			//{ D3DXVECTOR3(-length / 2, length / 2, -length / 2), D3DXVECTOR2(0.0f, 0.0f) },
-			//{ D3DXVECTOR3(-length / 2, 0.0f,       -length / 2), D3DXVECTOR2(0.0f, 1.0f) },
-			//{ D3DXVECTOR3(-length / 2, length / 2,  length / 2), D3DXVECTOR2(1.0f, 0.0f) },
-			//{ D3DXVECTOR3(-length / 2, 0.0f,        length / 2), D3DXVECTOR2(1.0f, 1.0f) },
+			// 左
+			{ D3DXVECTOR3(-length / 2, length / 2, -length / 2), D3DXVECTOR2(0.0f, 0.0f) },
+			{ D3DXVECTOR3(-length / 2, 0.0f,       -length / 2), D3DXVECTOR2(0.0f, 1.0f) },
+			{ D3DXVECTOR3(-length / 2, length / 2,  length / 2), D3DXVECTOR2(1.0f, 0.0f) },
+			{ D3DXVECTOR3(-length / 2, 0.0f,        length / 2), D3DXVECTOR2(1.0f, 1.0f) },
 
-			//// 右
-			//{ D3DXVECTOR3(length / 2, length / 2,  length / 2), D3DXVECTOR2(0.0f, 0.0f) },
-			//{ D3DXVECTOR3(length / 2, 0.0f,        length / 2), D3DXVECTOR2(0.0f, 1.0f) },
-			//{ D3DXVECTOR3(length / 2, length / 2, -length / 2), D3DXVECTOR2(1.0f, 0.0f) },
-			//{ D3DXVECTOR3(length / 2, 0.0f,       -length / 2), D3DXVECTOR2(1.0f, 1.0f) },
+			// 右
+			{ D3DXVECTOR3(length / 2, length / 2,  length / 2), D3DXVECTOR2(0.0f, 0.0f) },
+			{ D3DXVECTOR3(length / 2, 0.0f,        length / 2), D3DXVECTOR2(0.0f, 1.0f) },
+			{ D3DXVECTOR3(length / 2, length / 2, -length / 2), D3DXVECTOR2(1.0f, 0.0f) },
+			{ D3DXVECTOR3(length / 2, 0.0f,       -length / 2), D3DXVECTOR2(1.0f, 1.0f) },
 
-			//// 上
-			//{ D3DXVECTOR3( length / 2, length / 2,  length / 2), D3DXVECTOR2(0.0f, 0.0f) },
-			//{ D3DXVECTOR3(-length / 2, length / 2,  length / 2), D3DXVECTOR2(1.0f, 0.0f) },
-			//{ D3DXVECTOR3( length / 2, length / 2, -length / 2), D3DXVECTOR2(0.0f, 1.0f) },
-			//{ D3DXVECTOR3(-length / 2, length / 2, -length / 2), D3DXVECTOR2(1.0f, 1.0f) },
+			// 上
+			{ D3DXVECTOR3( length / 2, length / 2,  length / 2), D3DXVECTOR2(0.0f, 0.0f) },
+			{ D3DXVECTOR3(-length / 2, length / 2,  length / 2), D3DXVECTOR2(1.0f, 0.0f) },
+			{ D3DXVECTOR3( length / 2, length / 2, -length / 2), D3DXVECTOR2(0.0f, 1.0f) },
+			{ D3DXVECTOR3(-length / 2, length / 2, -length / 2), D3DXVECTOR2(1.0f, 1.0f) },
 		};
 
 		VOID* vertexBuffer;	// 頂点バッファポインタ作成
@@ -123,21 +123,21 @@ HRESULT SkyBox::InitSkyBox(float length)
 		vertexIndex[0] = 0, vertexIndex[1] = 1, vertexIndex[2] = 2;
 		vertexIndex[3] = 1, vertexIndex[4] = 2, vertexIndex[5] = 3;
 
-		//// 後ろ
-		//vertexIndex[6] = 4, vertexIndex[7] = 5, vertexIndex[8] = 6;
-		//vertexIndex[9] = 5, vertexIndex[10] = 6, vertexIndex[11] = 7;
+		// 後ろ
+		vertexIndex[6] = 4, vertexIndex[7] = 5, vertexIndex[8] = 6;
+		vertexIndex[9] = 5, vertexIndex[10] = 6, vertexIndex[11] = 7;
 
-		//// 左
-		//vertexIndex[12] = 8, vertexIndex[13] = 9, vertexIndex[14] = 10;
-		//vertexIndex[15] = 9, vertexIndex[16] = 10, vertexIndex[17] = 11;
+		// 左
+		vertexIndex[12] = 8, vertexIndex[13] = 9, vertexIndex[14] = 10;
+		vertexIndex[15] = 9, vertexIndex[16] = 10, vertexIndex[17] = 11;
 
-		//// 右
-		//vertexIndex[18] = 12, vertexIndex[19] = 13, vertexIndex[20] = 14;
-		//vertexIndex[21] = 13, vertexIndex[22] = 14, vertexIndex[23] = 15;
+		// 右
+		vertexIndex[18] = 12, vertexIndex[19] = 13, vertexIndex[20] = 14;
+		vertexIndex[21] = 13, vertexIndex[22] = 14, vertexIndex[23] = 15;
 
-		//// 上
-		//vertexIndex[24] = 16, vertexIndex[25] = 17, vertexIndex[26] = 18;
-		//vertexIndex[27] = 17, vertexIndex[28] = 18, vertexIndex[29] = 19;
+		// 上
+		vertexIndex[24] = 16, vertexIndex[25] = 17, vertexIndex[26] = 18;
+		vertexIndex[27] = 17, vertexIndex[28] = 18, vertexIndex[29] = 19;
 
 		// インデックス データのロックを解除する
 		this->indexBuffer->Unlock();
@@ -178,5 +178,5 @@ void SkyBox::Draw()
 	pDevice->SetVertexDeclaration(this->vertexDecl);							// 頂点宣言を設定
 	pDevice->SetStreamSource(0, this->vertexBuffer, 0, sizeof(SKYBOXVERTEX));	// 頂点バッファをデバイスのデータストリームにバイナリ
 	pDevice->SetIndices(this->indexBuffer);										// 頂点イデックスの設定
-	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 4, 0, 2);		// バウンディングボックスの描画
+	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 4, 0, 2);			// バウンディングボックスの描画
 }
