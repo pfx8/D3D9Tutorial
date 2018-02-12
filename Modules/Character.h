@@ -20,6 +20,12 @@
 #define MAX_BACK_SPEED_COEFFICIENT	(-0.38f)
 #define MAX_FRONT_SPEED_COEFFICIENT	(0.8f)
 
+struct PlayerModel
+{
+	Model*			shipBody;
+	Model*			shipCannon;
+};
+
 typedef enum
 {
 	LL_BACK = -1,	// [-1]後退
@@ -36,7 +42,6 @@ class Character
 {
 private:
 	UINT			leverLevel;		// 船のレバー操作
-	int				modelNum;			// モデル数
 
 public:
 	double			speed; // スピードに関する倍数
@@ -54,13 +59,15 @@ public:
 	D3DXVECTOR3		pos;			// 位置
 	D3DXVECTOR3		rot;			// 回転
 	D3DXVECTOR3		scl;			// 拡大縮小
-	Model*			model;		// メッシュ
+
+	PlayerModel		player;			// プレーヤーモデル集合
+
+	Model*			model;			// メッシュ
 	BoundingBox*	boundingBox;	// バウンディングボックス
 
 	Character();
 	~Character();
 
-	void InitCharacter(D3DXVECTOR3 pos, D3DXVECTOR3 direction, int modelNum);		// 座標を設定
 	D3DXVECTOR3  MoveAlongVecLook(float speedCoefficient);	// 注視方向に沿って移動
 	void PosToMessageAndMessageDraw(int row);	// 座標をメッセージに渡して、画面に描画する
 	void SetWorldMatrix();						// ワールド変換を設定
