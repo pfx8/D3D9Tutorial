@@ -44,8 +44,6 @@ Character::~Character()
 	RELEASE_CLASS_POINT(this->message);
 	RELEASE_CLASS_POINT(this->boundingBox);
 
-	RELEASE_CLASS_ARRY_POINT(this->model);
-
 	RELEASE_CLASS_ARRY_POINT(this->player.shipBody);
 	RELEASE_CLASS_ARRY_POINT(this->player.shipCannon);
 }
@@ -57,7 +55,12 @@ Character::~Character()
 //*****************************************************************************
 void Character::PosToMessageAndMessageDraw(int row)
 {
-	this->message->DrawPosMessage("Pos", this->pos, D3DXVECTOR2(0, float((row + 0) * 18)));
+	D3DXVECTOR3 temp;
+	temp.x = lightMatrix._41;
+	temp.y = lightMatrix._42;
+	temp.z = lightMatrix._43;
+	
+	this->message->DrawPosMessage("Light", temp, D3DXVECTOR2(0, float((row + 0) * 18)));
 }
 
 //*****************************************************************************
@@ -65,12 +68,14 @@ void Character::PosToMessageAndMessageDraw(int row)
 // キャラクターの描画
 //
 //*****************************************************************************
-void Character::Draw(CelShader* celShader)
+void Character::Draw(CelShader* celShader, D3DXMATRIX* VPMatrix)
 {
-	this->model->DrawModel(celShader);	// メッシュを描画する
+	// ワールド変換
+	SetWorldMatrix();
 
-	this->player.shipBody->DrawModel(celShader);
-	this->player.shipCannon->DrawModel(celShader);
+	// メッシュを描画する
+	this->player.shipBody->DrawModel(celShader, &this->worldMatrix, VPMatrix, &lightMatrix, MT_ship);
+	this->player.shipCannon->DrawModel(celShader, &this->worldMatrix, VPMatrix, &lightMatrix, MT_ship);
 }
 
 //*****************************************************************************
@@ -80,6 +85,27 @@ void Character::Draw(CelShader* celShader)
 //*****************************************************************************
 void Character::Update(float rot)
 {
+	// プレーヤー操作 
+	if (GetKeyboardTrigger(DIK_W))	// 前に進む
+	{
+		this->ChangeLever(LL_FRONT);
+	}
+	if (GetKeyboardTrigger(DIK_S))	// 後ろに進む
+	{
+		this->ChangeLever(LL_BACK);
+	}
+
+	if (GetKeyboardPress(DIK_A))	// 左回転
+	{
+		// 更新キャラクターをカメラの回転角度
+		this->RotationVecUp(-0.05f / 180.0f * D3DX_PI);
+	}
+	else if (GetKeyboardPress(DIK_D))	// 右回転
+	{
+		// 更新キャラクターをカメラの回転角度
+		this->RotationVecUp(0.05f / 180.0f * D3DX_PI);
+	}
+
 	// 波に合わせて揺れる
 	this->waveAngle = rot;
 	if (this->waveAngle > D3DX_PI * 2.0f)

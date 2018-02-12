@@ -23,8 +23,8 @@ Scene00::Scene00()
 	this->celShader->InitShader();
 
 	// ShadowMapShader
-	this->shadowMap = new ShadowMapShader;
-	this->shadowMap->InitShader();
+	//this->shadowMap = new ShadowMapShader;
+	//this->shadowMap->InitShader();
 
 	// RHWポリゴン
 	this->screenPolygon = new ScreenPolygon;
@@ -280,34 +280,9 @@ void Scene00::Draw()
 
 	// ship
 	{
-		// テクニックを設定
-		this->celShader->effectPoint->SetTechnique(this->celShader->celShaderHandle);
-
-		// 変更行列を渡す
-		this->ship->SetWorldMatrix();
-		this->celShader->effectPoint->SetMatrix(this->celShader->WMatrixHandle, &this->ship->worldMatrix);
-		D3DXMATRIX shipVPmatrix = this->camera->viewMatrix * this->camera->projectionMatrix;
-		this->celShader->effectPoint->SetMatrix(this->celShader->VPMatrixHandle, &shipVPmatrix);
-		D3DXMATRIX tempRot = this->ship->lightMatrix;
-		this->celShader->effectPoint->SetValue("rotMatix", &tempRot, sizeof(D3DXMATRIX));
-
-		// Obj種類番号を渡す
-		this->celShader->effectPoint->SetInt(this->celShader->typeHandle, ship);
-
-		// テクスチャを渡す
-		this->celShader->effectPoint->SetTexture("tex", this->ship->model->meshTexturePoint);
-
-		UINT passNum = 0;
-		this->celShader->effectPoint->Begin(&passNum, 0);
-		for (int count = 0; count < passNum; count++)
-		{
-			this->celShader->effectPoint->BeginPass(count);
-
-			this->ship->Draw(this->celShader);
-
-			this->celShader->effectPoint->EndPass();
-		}
-		this->celShader->effectPoint->End();
+		// VP行列を求める
+		D3DXMATRIX VPmatrix = this->camera->viewMatrix * this->camera->projectionMatrix;
+		this->ship->Draw(this->celShader, &VPmatrix);
 
 		// シャドー
 		//this->shadowMap->effectPoint->SetTechnique("");
@@ -421,32 +396,6 @@ void Scene00::Draw()
 //*****************************************************************************
 void Scene00::Control()
 {
-	// プレーヤー操作 
-	if (GetKeyboardTrigger(DIK_W))	// 前に進む
-	{
-		this->ship->ChangeLever(LL_FRONT);
-	}
-	if (GetKeyboardTrigger(DIK_S))	// 後ろに進む
-	{
-		this->ship->ChangeLever(LL_BACK);
-	}
-
-	if (GetKeyboardPress(DIK_A))	// 左回転
-	{
-		// 更新キャラクターをカメラの回転角度
-		this->ship->RotationVecUp(-0.05f / 180.0f * D3DX_PI);
-	}
-	else if (GetKeyboardPress(DIK_D))	// 右回転
-	{
-		// 更新キャラクターをカメラの回転角度
-		this->ship->RotationVecUp(0.05f / 180.0f * D3DX_PI);
-	}
-
-	//if (GetKeyboardTrigger(DIK_R))
-	//{
-	//	this->camera->this->isShooting = !this->camera->this->isShooting;
-	//}
-
 	// プレーヤー攻撃
  	if (GetKeyboardTrigger(DIK_SPACE))	// 攻撃
 	{

@@ -54,48 +54,72 @@ Model::~Model()
 // モデルを描画する(CelShader)
 //
 //*****************************************************************************
-void Model::DrawModel(CelShader* celShader)
+void Model::DrawModel(CelShader* celShader, D3DXMATRIX* worldMatrix, D3DXMATRIX* VPMatrix, D3DXMATRIX* lightMatrix, Model_Type modelType)
 {
-	LPDIRECT3DDEVICE9 pDevice = GetDevice();
-	DWORD materialNum = this->material->materialNum;				// マテリアル数を取得
+	// テクニックを設定
+	celShader->effectPoint->SetTechnique(celShader->celShaderHandle);
 
-	IDirect3DVertexBuffer9* vertexBuffer = NULL;
-	this->meshPoint->GetVertexBuffer(&vertexBuffer);				// メッシュ頂点を取得
-	IDirect3DIndexBuffer9* indexBuffer = NULL;
-	this->meshPoint->GetIndexBuffer(&indexBuffer);					// メッシュ頂点インデックスバッファを取得
+	// 変更行列を渡す
+	celShader->effectPoint->SetMatrix(celShader->WMatrixHandle, worldMatrix);
+	celShader->effectPoint->SetMatrix(celShader->VPMatrixHandle, VPMatrix);
+	celShader->effectPoint->SetValue("rotMatix", &lightMatrix, sizeof(D3DXMATRIX));
 
-	this->meshPoint->GetAttributeTable(NULL, &materialNum);			// メッシュの属性テーブルに格納されているエントリの数を取得
+	// Obj種類番号を渡す
+	celShader->effectPoint->SetInt(celShader->typeHandle, modelType);
 
-	D3DXATTRIBUTERANGE* attributes = NULL;							// メッシュの属性テーブルを作る
-	attributes = new D3DXATTRIBUTERANGE[materialNum];				// エントリ数によって、属性テーブル配列メモリを作り
-	this->meshPoint->GetAttributeTable(attributes, &materialNum);	// メッシュの属性テーブルを取得
+	// テクスチャを渡す
+	celShader->effectPoint->SetTexture("tex", this->meshTexturePoint);
 
-	pDevice->SetVertexDeclaration(this->vertexDecl);				// 頂点宣言を設定
-	pDevice->SetStreamSource(0, vertexBuffer, 0, 32);				// sizeof(POSITION, NORMAL, UV)
-	pDevice->SetIndices(indexBuffer);
-
-	// 描画
-	for (DWORD count = 0; count < materialNum; count++)
+	UINT passNum = 0;
+	celShader->effectPoint->Begin(&passNum, 0);
+	for (int count = 0; count < passNum; count++)
 	{
-		if (attributes[count].FaceCount)
+		celShader->effectPoint->BeginPass(count);
+
+		LPDIRECT3DDEVICE9 pDevice = GetDevice();
+		DWORD materialNum = this->material->materialNum;				// マテリアル数を取得
+
+		IDirect3DVertexBuffer9* vertexBuffer = NULL;
+		this->meshPoint->GetVertexBuffer(&vertexBuffer);				// メッシュ頂点を取得
+		IDirect3DIndexBuffer9* indexBuffer = NULL;
+		this->meshPoint->GetIndexBuffer(&indexBuffer);					// メッシュ頂点インデックスバッファを取得
+
+		this->meshPoint->GetAttributeTable(NULL, &materialNum);			// メッシュの属性テーブルに格納されているエントリの数を取得
+
+		D3DXATTRIBUTERANGE* attributes = NULL;							// メッシュの属性テーブルを作る
+		attributes = new D3DXATTRIBUTERANGE[materialNum];				// エントリ数によって、属性テーブル配列メモリを作り
+		this->meshPoint->GetAttributeTable(attributes, &materialNum);	// メッシュの属性テーブルを取得
+
+		pDevice->SetVertexDeclaration(this->vertexDecl);				// 頂点宣言を設定
+		pDevice->SetStreamSource(0, vertexBuffer, 0, 32);				// sizeof(POSITION, NORMAL, UV)
+		pDevice->SetIndices(indexBuffer);
+
+		// 描画
+		for (DWORD count = 0; count < materialNum; count++)
 		{
-			//DWORD matNum = attributes[count].AttribId;			// マテリアル数を取得
-			//celShader->this->effectPoint->SetTexture(celShader->this->texture1Handle, this->meshTexturePoint[matNum]);	// テクスチャを設定
-			//pDevice->SetTexture(0, this->meshTexturePoint[matNum]);	// テクスチャを設定
+			if (attributes[count].FaceCount)
+			{
+				//DWORD matNum = attributes[count].AttribId;			// マテリアル数を取得
+				//celShader->this->effectPoint->SetTexture(celShader->this->texture1Handle, this->meshTexturePoint[matNum]);	// テクスチャを設定
+				//pDevice->SetTexture(0, this->meshTexturePoint[matNum]);	// テクスチャを設定
 
-			// モデルを描画する
-			pDevice->DrawIndexedPrimitive(
-				D3DPT_TRIANGLELIST,
-				0,
-				attributes[count].VertexStart,
-				attributes[count].VertexCount,
-				attributes[count].FaceStart * 3,
-				attributes[count].FaceCount);
+				// モデルを描画する
+				pDevice->DrawIndexedPrimitive(
+					D3DPT_TRIANGLELIST,
+					0,
+					attributes[count].VertexStart,
+					attributes[count].VertexCount,
+					attributes[count].FaceStart * 3,
+					attributes[count].FaceCount);
+			}
 		}
+
+		RELEASE_POINT(vertexBuffer);
+		RELEASE_POINT(indexBuffer);
+
+		delete[] attributes;
+
+		celShader->effectPoint->EndPass();
 	}
-
-	RELEASE_POINT(vertexBuffer);
-	RELEASE_POINT(indexBuffer);
-
-	delete[] attributes;
+	celShader->effectPoint->End();
 }

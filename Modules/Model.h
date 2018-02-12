@@ -12,6 +12,12 @@
 #include "..\Engine.h"
 #include "..\Shader\CelShader.h"
 
+enum Model_Type
+{
+	MT_ship = 0,
+	MT_enemy,
+	MT_bullet,
+};
 
 //*****************************************************************************
 //
@@ -31,7 +37,7 @@ public:
 	Model();
 	~Model();
 
-	void DrawModel(CelShader* celShader);	// ƒ‚ƒfƒ‹‚ð•`‰æ‚·‚é
+	void DrawModel(CelShader* celShader, D3DXMATRIX* worldMatrix, D3DXMATRIX* VPMatrix, D3DXMATRIX* lightMatrix, Model_Type modelType);	// ƒ‚ƒfƒ‹‚ð•`‰æ‚·‚é
 };
 
 #endif // !_MODEL_H_
