@@ -80,7 +80,7 @@ public:
 
 	virtual void Draw(CelShader* celShader, D3DXMATRIX* VPMatrix);	// キャラクターの描画
 
-
+	void InitCharacter();
 };
 #endif // !_CHARACTER_H_
 

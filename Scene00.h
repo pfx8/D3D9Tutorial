@@ -49,17 +49,17 @@ private:
 	Enemy*				enemyShip;	// 敵
 	Bullet*				bullet;		// 弾
 	SkyBox*				skyBox;		// スカイボックス
-
 	ShadowMapShader*	shadowMap;	// シャドーマップ
-
 	ScreenPolygon*		screenPolygon;// RHWポリゴン
 
+	
 public:
 	Character*			ship;			// プレーヤー
 
 	Scene00();
 	~Scene00();
 
+	void InitScene00();				// 初期化
 	void Update();			// 更新
 	void Draw();			// 描画
 	void Control();			// 操作関数

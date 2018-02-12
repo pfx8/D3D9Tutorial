@@ -14,6 +14,22 @@
 //*****************************************************************************
 Character::Character()
 {
+	// クラスポインタ
+	this->message = new DebugMessage;
+	this->boundingBox = new BoundingBox;
+	this->player.shipBody = new Model;
+	this->player.shipCannon = new Model;
+
+	InitCharacter();
+}
+
+//*****************************************************************************
+//
+// 初期化
+//
+//*****************************************************************************
+void Character::InitCharacter()
+{
 	this->upVector = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 	this->lookVector = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
 	this->rightVector = D3DXVECTOR3(1.0f, 0.0f, 0.0f);
@@ -28,12 +44,6 @@ Character::Character()
 	this->HP = MAX_HP;
 
 	this->leverLevel = LL_STOP;
-
-	// クラスポインタ
-	this->message = new DebugMessage;
-	this->boundingBox = new BoundingBox;
-	this->player.shipBody = new Model;
-	this->player.shipCannon = new Model;
 }
 
 //*****************************************************************************

@@ -55,6 +55,7 @@ void SceneManager::ChooseScene(SCENESTATE state)
 	case SS_Run:
 		this->sceneState = SS_Run;
 		this->scene00->SetRenderState();
+		this->scene00->InitScene00();
 
 		break;
 	case SS_Ending:
@@ -106,11 +107,7 @@ void SceneManager::ChangeRenderState()
 		// 次のシーンに進み
 		if (this->sceneState == SS_Title)
 		{
-			// 初期化
-			this->scene00;
-
 			ChooseScene(SS_Run);
-
 		}
 		if (this->sceneState == SS_Ending)
 			ChooseScene(SS_Title);

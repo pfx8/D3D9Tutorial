@@ -16,38 +16,75 @@ Scene00::Scene00()
 {
 	// BasicShader
 	this->shader = new Shader;
-	this->shader->InitShader();
 
 	// CelShader
 	this->celShader = new CelShader;
-	this->celShader->InitShader();
 
 	// ShadowMapShader
 	//this->shadowMap = new ShadowMapShader;
-	//this->shadowMap->InitShader();
 
 	// RHWポリゴン
 	this->screenPolygon = new ScreenPolygon;
 
-	// ライト、光方向はデフォルトで(-1, 0, -1)
+	// ライト、光方向はデフォルトで
 	this->directionLight = new Light;
+
+	// スカイボックス
+	this->skyBox = new SkyBox;
+
+	// フィールド
+	this->sea = new Plane;
+	
+	// 主人公
+	this->ship = new Character;
+
+	// シャドー
+	this->shadowMap = new ShadowMapShader;
+
+	// 敵
+	this->enemyShip = new Enemy[ENEMY_MAX];
+
+	// 弾
+	this->bullet = new Bullet[BULLET_MAX];
+
+	// カメラ
+	this->camera = new Camera;
+
+	// 初期化
+	InitScene00();
+}
+
+//*****************************************************************************
+//
+// 初期化
+//
+//*****************************************************************************
+void Scene00::InitScene00()
+{
+	// BasicShader
+	this->shader->InitShader();
+
+	// CelShader
+	this->celShader->InitShader();
+
+	// ShadowMapShader
+	//this->shadowMap->InitShader();
+
+	// ライト、光方向はデフォルトで
 	this->celShader->effectPoint->SetValue("lightDir", &this->directionLight->light.Direction, sizeof(D3DXVECTOR3));
 	this->celShader->effectPoint->SetValue("lightDiffuse", &this->directionLight->light.Diffuse, sizeof(D3DXCOLOR));
 	this->celShader->effectPoint->SetValue("lightSpecular", &this->directionLight->light.Specular, sizeof(D3DXCOLOR));
 
 	// スカイボックス
-	this->skyBox = new SkyBox;
-	this->skyBox->InitSkyBox(500.0f);
+	this->skyBox->InitSkyBox(50.0f);
 	this->resourcesManager->LoadTexture("skybox", &this->skyBox->texture);
 
 	// フィールド
-	this->sea = new Plane;
 	this->sea->InitPlane(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(17.0f, 17.0f), D3DXVECTOR2(150, 150));
 	this->resourcesManager->LoadTexture("fieldSea", &this->sea->texture);
-	
+
 	// 主人公
-	this->ship = new Character;
-	// 各モデルを初期化
+	this->ship->InitCharacter();
 	this->resourcesManager->LoadMesh("shipBody", this->ship->player.shipBody);
 	this->resourcesManager->LoadTexture("shipBody", &this->ship->player.shipBody->meshTexturePoint);
 	this->resourcesManager->LoadMesh("shipCannon", this->ship->player.shipCannon);
@@ -56,11 +93,9 @@ Scene00::Scene00()
 	this->ship->boundingBox->InitBox(4, 7, 8, 0.1f);
 
 	// シャドー
-	this->shadowMap = new ShadowMapShader;
 	this->shadowMap->InitShader();
 
 	// 敵
-	this->enemyShip = new Enemy[ENEMY_MAX];
 	for (int count = 0; count < ENEMY_MAX; count++)
 	{
 		D3DXVECTOR3 temp = D3DXVECTOR3(float(rand() % 150), 0.0f, float(rand() % 120));
@@ -82,14 +117,12 @@ Scene00::Scene00()
 	}
 
 	// 弾
-	this->bullet = new Bullet[BULLET_MAX];
 	for (int count = 0; count < BULLET_MAX; count++)
 	{
 		this->resourcesManager->LoadMesh("ball", this->bullet[count].model);
 	}
 
 	// カメラ
-	this->camera = new Camera;
 	this->camera->InitCameraByPlayer(this->ship);
 
 	std::cout << "[State] BoundingBox: " << std::boolalpha << this->ship->boundingBox->isBoundingBoxDraw << std::endl;
