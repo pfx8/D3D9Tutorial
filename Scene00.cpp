@@ -427,25 +427,25 @@ void Scene00::Draw()
 //*****************************************************************************
 void Scene00::Control()
 {
-	// プレーヤー操作 逆
-	if (GetKeyboardTrigger(DIK_S))	// 後ろに進む
+	// プレーヤー操作 
+	if (GetKeyboardTrigger(DIK_W))	// 前に進む
 	{
 		this->ship->ChangeLever(LL_FRONT);
 	}
-	if (GetKeyboardTrigger(DIK_W))	// 前に進む
-	{;
+	if (GetKeyboardTrigger(DIK_S))	// 後ろに進む
+	{
 		this->ship->ChangeLever(LL_BACK);
 	}
 
 	if (GetKeyboardPress(DIK_A))	// 左回転
 	{
 		// 更新キャラクターをカメラの回転角度
-		this->ship->RotationVecUp(0.5f / 180.0f * D3DX_PI);
+		this->ship->RotationVecUp(-0.05f / 180.0f * D3DX_PI);
 	}
 	else if (GetKeyboardPress(DIK_D))	// 右回転
 	{
 		// 更新キャラクターをカメラの回転角度
-		this->ship->RotationVecUp(-0.5f / 180.0f * D3DX_PI);
+		this->ship->RotationVecUp(0.05f / 180.0f * D3DX_PI);
 	}
 
 	//if (GetKeyboardTrigger(DIK_R))

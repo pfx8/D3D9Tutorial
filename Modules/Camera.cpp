@@ -79,7 +79,7 @@ void Camera::Update(Character* player)
 
 	// カメラ位置を更新
 	this->posEye = player->pos - this->offSetFromPlayer;
-	this->posAt += player->lookVector * player->speedCoefficient;
+	this->posAt += player->lookVector * player->speed;
 
 	// カメラベクトルを更新
 	D3DXVECTOR3 temp = player->pos - this->posEye;

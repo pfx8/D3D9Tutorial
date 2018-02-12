@@ -16,8 +16,9 @@
 #include "..\DebugMessage.h"
 #include "..\Shader\CelShader.h"
 
-#define MAX_BACK_COEFFICIENT	(-0.38f)
-#define MAX_FRONT_COEFFICIENT	(1.0f)
+// 移動　= lookVector * SPEED_COEFFICIENT
+#define MAX_BACK_SPEED_COEFFICIENT	(-0.38f)
+#define MAX_FRONT_SPEED_COEFFICIENT	(0.8f)
 
 typedef enum
 {
@@ -38,7 +39,7 @@ private:
 	int				modelNum;			// モデル数
 
 public:
-	double			speedCoefficient; // スピードに関する倍数
+	double			speed; // スピードに関する倍数
 	DebugMessage*	message;		// Debugメッセージ
 	float			waveAngle;	// 揺れ係数
 	D3DXMATRIX		worldMatrix;	// ワールド変換マトリックス
@@ -60,18 +61,19 @@ public:
 	~Character();
 
 	void InitCharacter(D3DXVECTOR3 pos, D3DXVECTOR3 direction, int modelNum);		// 座標を設定
-
+	D3DXVECTOR3  MoveAlongVecLook(float speedCoefficient);	// 注視方向に沿って移動
 	void PosToMessageAndMessageDraw(int row);	// 座標をメッセージに渡して、画面に描画する
 	void SetWorldMatrix();						// ワールド変換を設定
 	void Draw(CelShader* celShader);			// キャラクターの描画(Shader)
-	
-	void Update(float rot);				// キャラクター更新
+	void Update(float rot);						// キャラクター更新
+	void ChangeLever(LEVER_LEVEL level);		// レバーの操作によってスピードを変わる
+
+
 	bool CheckHitBB(Character* Object);	// 当たり判定
-
 	void RotationVecUp(float angle);			// 上方向のベクトルにして回転
-	D3DXVECTOR3  MoveAlongVecLook(float unit);	// 注視方向に沿って移動
+	
 
-	void ChangeLever(LEVER_LEVEL scalars);		// レバーの操作によってスピードを変わる
+
 };
 #endif // !_CHARACTER_H_
 
