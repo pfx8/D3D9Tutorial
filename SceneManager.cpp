@@ -105,7 +105,13 @@ void SceneManager::ChangeRenderState()
 	{
 		// 次のシーンに進み
 		if (this->sceneState == SS_Title)
+		{
+			// 初期化
+			this->scene00;
+
 			ChooseScene(SS_Run);
+
+		}
 		if (this->sceneState == SS_Ending)
 			ChooseScene(SS_Title);
 	}
@@ -117,7 +123,7 @@ void SceneManager::ChangeRenderState()
 	}
 
 	// テスト用キー、ゲームが終了
-	if (GetKeyboardTrigger(DIK_RSHIFT) && this->sceneState == SS_Run)
+	if (this->scene00->ship->HP == 0 && this->sceneState == SS_Run)
 	{
 		// ゲームをクリアすると、Endingへ行く
 		ChooseScene(SS_Ending);

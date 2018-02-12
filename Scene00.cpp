@@ -75,6 +75,8 @@ Scene00::Scene00()
 		this->enemyShip[count].InitEnemy(temp);
 		this->resourcesManager->LoadMesh("shipBody", this->ship->player.shipBody);
 		this->resourcesManager->LoadTexture("shipBody", &this->ship->player.shipBody->meshTexturePoint);
+		this->resourcesManager->LoadMesh("shipCannon", this->ship->player.shipCannon);
+		this->resourcesManager->LoadTexture("shipCannon", &this->ship->player.shipCannon->meshTexturePoint);
 		this->enemyShip[count].boundingBox->InitBox(4, 7, 8, 0.1f);	// バウンディングボックスを初期化
 		this->enemyShip[count].Trans((rand() % 80) / 180.0f * D3DX_PI);		// 向きを決める
 	}
@@ -207,6 +209,9 @@ void Scene00::Update()
 	{
 		this->enemyShip[count].Update(this->sea->waveAngle);
 	}
+
+	// UI更新
+	this->screenPolygon->Update(this->ship);
 }
 
 //*****************************************************************************
@@ -365,7 +370,7 @@ void Scene00::Draw()
 		
 	// デッバグメッセージ
 	//this->ship->PosToMessageAndMessageDraw(0);
-	this->camera->PosToMessageAndMessageDraw(0);
+	//this->camera->PosToMessageAndMessageDraw(0);
 
 
 }

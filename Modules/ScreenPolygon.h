@@ -8,6 +8,7 @@
 #ifndef _SCREEN_POLYGON_H_
 #define _SCREEN_POLYGON_H_
 
+#include "Character.h"
 #include "..\Engine.h"
 #include "..\ResourcesManager.h"
 #include "..\Shader\RHWShader.h"
@@ -36,8 +37,9 @@ public:
 	LPDIRECT3DVERTEXBUFFER9			UIminiMapVertexBuffer;	// 頂点バッファへのポインタ
 	LPDIRECT3DTEXTURE9				UIminiMapTexture;		// フィールドテクスチャ
 
-	LPDIRECT3DVERTEXBUFFER9			UIHPVertexBuffer;		// 頂点バッファへのポインタ
+	LPDIRECT3DVERTEXBUFFER9			UIHPVertexBuffer[3];	// 頂点バッファへのポインタ
 	LPDIRECT3DTEXTURE9				UIHPTexture;			// フィールドテクスチャ
+	int								HP;
 
 	LPDIRECT3DVERTEXBUFFER9			UIKeyVertexBuffer;		// 頂点バッファへのポインタ
 	LPDIRECT3DTEXTURE9				UIKeyTexture;			// フィールドテクスチャ
@@ -46,6 +48,7 @@ public:
 	~ScreenPolygon();
 
 	void Draw();
+	void Update(Character* player);
 };
 
 

@@ -45,7 +45,6 @@ private:
 
 	Shader*				shader;		// ベーシックシェーダー
 	Plane*				sea;			// フィールド海
-	Character*			ship;			// プレーヤー
 	Light*				directionLight;		// ライト
 	Enemy*				enemyShip;	// 敵
 	Bullet*				bullet;		// 弾
@@ -56,6 +55,8 @@ private:
 	ScreenPolygon*		screenPolygon;// RHWポリゴン
 
 public:
+	Character*			ship;			// プレーヤー
+
 	Scene00();
 	~Scene00();
 

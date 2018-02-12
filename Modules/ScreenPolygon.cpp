@@ -20,11 +20,14 @@ ScreenPolygon::ScreenPolygon()
 	this->UIminiMapVertexBuffer = NULL;
 	this->UIminiMapTexture = NULL;
 
-	this->UIHPVertexBuffer = NULL;
-	this->UIHPTexture = NULL;
-
 	this->UIKeyVertexBuffer = NULL;
 	this->UIKeyTexture = NULL;
+
+	this->HP = 3;
+	this->UIHPVertexBuffer[0] = NULL;
+	this->UIHPVertexBuffer[1] = NULL;
+	this->UIHPVertexBuffer[2] = NULL;
+	this->UIHPTexture = NULL;
 
 	// シェーダーを初期化
 	this->RHWshader = new RHWShader;
@@ -33,15 +36,17 @@ ScreenPolygon::ScreenPolygon()
 	// リソース管理を初期化
 	this->resourcesManager = new ResourcesManager;
 	this->resourcesManager->LoadTexture("UIminimap", &this->UIminiMapTexture);
-	this->resourcesManager->LoadTexture("UIHP", &this->UIHPTexture);
+	this->resourcesManager->LoadTexture("UIhp", &this->UIHPTexture);
 	this->resourcesManager->LoadTexture("UIkey", &this->UIKeyTexture);
 
 	MakeVertexDecl();
 	MakeIndex();
 
 	// 各頂点を作成
-	MakeVertex(D3DXVECTOR2(SCREEN_WIDTH - 200, SCREEN_HEIGHT - 200), D3DXVECTOR2(200, 200), &this->UIminiMapVertexBuffer);
-	MakeVertex(D3DXVECTOR2(0, 30), D3DXVECTOR2(400, 50), &this->UIHPVertexBuffer);
+	MakeVertex(D3DXVECTOR2(SCREEN_WIDTH - 400, SCREEN_HEIGHT - 400), D3DXVECTOR2(400, 400), &this->UIminiMapVertexBuffer);
+	MakeVertex(D3DXVECTOR2(30, 30), D3DXVECTOR2(64, 80), &this->UIHPVertexBuffer[0]);
+	MakeVertex(D3DXVECTOR2(114, 30), D3DXVECTOR2(64, 80), &this->UIHPVertexBuffer[1]);
+	MakeVertex(D3DXVECTOR2(198, 30), D3DXVECTOR2(64, 80), &this->UIHPVertexBuffer[2]);
 	MakeVertex(D3DXVECTOR2(0, SCREEN_HEIGHT - 200), D3DXVECTOR2(200, 200), &this->UIKeyVertexBuffer);
 }
 
@@ -57,7 +62,9 @@ ScreenPolygon::~ScreenPolygon()
 	
 	RELEASE_POINT(this->UIminiMapVertexBuffer);
 	RELEASE_POINT(this->UIminiMapTexture);
-	RELEASE_POINT(this->UIHPVertexBuffer);
+	RELEASE_POINT(this->UIHPVertexBuffer[0]);
+	RELEASE_POINT(this->UIHPVertexBuffer[1]); 
+	RELEASE_POINT(this->UIHPVertexBuffer[2]);
 	RELEASE_POINT(this->UIHPTexture);
 	RELEASE_POINT(this->UIKeyVertexBuffer);
 	RELEASE_POINT(this->UIKeyTexture);
@@ -163,7 +170,18 @@ void ScreenPolygon::Draw()
 	DrawObject(this->UIminiMapVertexBuffer, this->UIminiMapTexture);
 
 	// HP
-	DrawObject(this->UIHPVertexBuffer, this->UIHPTexture);
+	int i = 0;
+	while (i < 3)
+	{
+		DrawObject(this->UIHPVertexBuffer[i], this->UIHPTexture);
+		if ((i + 1) == this->HP)
+			break;
+		else
+			i++;
+	}
+	//DrawObject(this->UIHPVertexBuffer[0], this->UIHPTexture);
+	//DrawObject(this->UIHPVertexBuffer[1], this->UIHPTexture);
+	//DrawObject(this->UIHPVertexBuffer[2], this->UIHPTexture);
 
 	// 操作ボタン
 	DrawObject(this->UIKeyVertexBuffer, this->UIKeyTexture);
@@ -192,12 +210,22 @@ void ScreenPolygon::DrawObject(LPDIRECT3DVERTEXBUFFER9 vertexBuffer, LPDIRECT3DT
 	{
 		this->RHWshader->effectPoint->BeginPass(0);
 
-		pDevice->SetVertexDeclaration(this->vertexDecl);							// 頂点宣言を設定
+		pDevice->SetVertexDeclaration(this->vertexDecl);						// 頂点宣言を設定
 		pDevice->SetStreamSource(0, vertexBuffer, 0, sizeof(VERTEX_2D));		// 頂点バッファをデバイスのデータストリームにバイナリ
-		pDevice->SetIndices(this->indexBuffer);										// 頂点インデックスバッファを設定
+		pDevice->SetIndices(this->indexBuffer);									// 頂点インデックスバッファを設定
 		pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 4, 0, 2);		// ポリゴンの描画
 
 		this->RHWshader->effectPoint->EndPass();
 	}
 	this->RHWshader->effectPoint->End();
+}
+
+//*****************************************************************************
+//
+// 更新する
+//
+//*****************************************************************************
+void ScreenPolygon::Update(Character* player)
+{
+	this->HP = player->HP;
 }

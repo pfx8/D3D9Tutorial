@@ -25,7 +25,9 @@ Character::Character()
 	this->waveAngle = 0.0f;
 	this->speed = 0.0f;
 
-	leverLevel = LL_STOP;
+	this->HP = MAX_HP;
+
+	this->leverLevel = LL_STOP;
 
 	// クラスポインタ
 	this->message = new DebugMessage;
@@ -104,6 +106,11 @@ void Character::Update(float rot)
 	{
 		// 更新キャラクターをカメラの回転角度
 		this->RotationVecUp(0.05f / 180.0f * D3DX_PI);
+	}
+
+	if (GetKeyboardTrigger(DIK_P))	// 前に進む
+	{
+		this->HP -= 1;
 	}
 
 

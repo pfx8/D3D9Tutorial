@@ -20,6 +20,8 @@
 #define MAX_BACK_SPEED_COEFFICIENT	(-0.38f)
 #define MAX_FRONT_SPEED_COEFFICIENT	(0.55f)
 
+#define MAX_HP						(3)
+
 struct PlayerModel
 {
 	Model*			shipBody;
@@ -61,8 +63,9 @@ public:
 	D3DXVECTOR3		scl;			// 拡大縮小
 
 	PlayerModel		player;			// プレーヤーモデル集合
-
 	BoundingBox*	boundingBox;	// バウンディングボックス
+	
+	int				HP;
 
 	Character();
 	~Character();
