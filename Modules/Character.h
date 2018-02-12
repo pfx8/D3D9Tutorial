@@ -79,6 +79,8 @@ public:
 	void RotationVecUp(float angle);			// 上方向のベクトルにして回転
 
 	virtual void Draw(CelShader* celShader, D3DXMATRIX* VPMatrix);	// キャラクターの描画
+
+
 };
 #endif // !_CHARACTER_H_
 

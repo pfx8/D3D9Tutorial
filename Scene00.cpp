@@ -42,7 +42,7 @@ Scene00::Scene00()
 
 	// フィールド
 	this->sea = new Plane;
-	this->sea->InitPlane(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(17.0f, 17.0f), D3DXVECTOR2(100, 100));
+	this->sea->InitPlane(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(17.0f, 17.0f), D3DXVECTOR2(150, 150));
 	this->resourcesManager->LoadTexture("fieldSea", &this->sea->texture);
 	
 	// 主人公
@@ -211,7 +211,7 @@ void Scene00::Update()
 	}
 
 	// UI更新
-	this->screenPolygon->Update(this->ship);
+	this->screenPolygon->Update(this->ship, this->enemyShip);
 }
 
 //*****************************************************************************

@@ -37,6 +37,12 @@ public:
 	LPDIRECT3DVERTEXBUFFER9			UIminiMapVertexBuffer;	// 頂点バッファへのポインタ
 	LPDIRECT3DTEXTURE9				UIminiMapTexture;		// フィールドテクスチャ
 
+	LPDIRECT3DVERTEXBUFFER9			UIminiMapPlayerVertexBuffer;	// 頂点バッファへのポインタ
+	LPDIRECT3DTEXTURE9				UIminiMapPlayerTexture;			// フィールドテクスチャ
+
+	LPDIRECT3DVERTEXBUFFER9			UIminiMapEnemyVertexBuffer;		// 頂点バッファへのポインタ
+	LPDIRECT3DTEXTURE9				UIminiMapEnemyTexture;			// フィールドテクスチャ
+
 	LPDIRECT3DVERTEXBUFFER9			UIHPVertexBuffer[3];	// 頂点バッファへのポインタ
 	LPDIRECT3DTEXTURE9				UIHPTexture;			// フィールドテクスチャ
 	int								HP;
@@ -48,7 +54,7 @@ public:
 	~ScreenPolygon();
 
 	void Draw();
-	void Update(Character* player);
+	void Update(Character* player, Character* enemy);
 };
 
 

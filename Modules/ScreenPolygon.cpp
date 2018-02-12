@@ -19,7 +19,10 @@ ScreenPolygon::ScreenPolygon()
 
 	this->UIminiMapVertexBuffer = NULL;
 	this->UIminiMapTexture = NULL;
-
+	this->UIminiMapPlayerVertexBuffer = NULL;
+	this->UIminiMapPlayerTexture = NULL;
+	this->UIminiMapEnemyVertexBuffer = NULL;
+	this->UIminiMapEnemyTexture = NULL;
 	this->UIKeyVertexBuffer = NULL;
 	this->UIKeyTexture = NULL;
 
@@ -36,6 +39,9 @@ ScreenPolygon::ScreenPolygon()
 	// リソース管理を初期化
 	this->resourcesManager = new ResourcesManager;
 	this->resourcesManager->LoadTexture("UIminimap", &this->UIminiMapTexture);
+	this->resourcesManager->LoadTexture("UIplayer", &this->UIminiMapPlayerTexture);
+	this->resourcesManager->LoadTexture("UIenemy", &this->UIminiMapEnemyTexture);
+
 	this->resourcesManager->LoadTexture("UIhp", &this->UIHPTexture);
 	this->resourcesManager->LoadTexture("UIkey", &this->UIKeyTexture);
 
@@ -43,12 +49,35 @@ ScreenPolygon::ScreenPolygon()
 	MakeIndex();
 
 	// 各頂点を作成
+	
 	MakeVertex(D3DXVECTOR2(SCREEN_WIDTH - 400, SCREEN_HEIGHT - 400), D3DXVECTOR2(400, 400), &this->UIminiMapVertexBuffer);
+
 	MakeVertex(D3DXVECTOR2(30, 30), D3DXVECTOR2(64, 80), &this->UIHPVertexBuffer[0]);
 	MakeVertex(D3DXVECTOR2(114, 30), D3DXVECTOR2(64, 80), &this->UIHPVertexBuffer[1]);
 	MakeVertex(D3DXVECTOR2(198, 30), D3DXVECTOR2(64, 80), &this->UIHPVertexBuffer[2]);
+
 	MakeVertex(D3DXVECTOR2(0, SCREEN_HEIGHT - 200), D3DXVECTOR2(200, 200), &this->UIKeyVertexBuffer);
 }
+
+//*****************************************************************************
+//
+// 更新する
+//
+//*****************************************************************************
+void ScreenPolygon::Update(Character* player, Character* enemy)
+{
+	this->HP = player->HP;
+
+	D3DXVECTOR2 miniMapCenter = D3DXVECTOR2(SCREEN_WIDTH - 200, SCREEN_HEIGHT - 200);
+	float mapSize = 17.0f * 150;
+
+	D3DXVECTOR2 miniMapPlayer = miniMapCenter + D3DXVECTOR2(400 * player->pos.x / mapSize, -1 * 400 * player->pos.z / mapSize);
+	MakeVertex(miniMapPlayer, D3DXVECTOR2(20, 20), &this->UIminiMapPlayerVertexBuffer);
+
+	D3DXVECTOR2 miniMapEnemy = miniMapCenter + D3DXVECTOR2(400 * enemy->pos.x / mapSize, -1 * 400 * enemy->pos.z / mapSize);
+	MakeVertex(miniMapEnemy, D3DXVECTOR2(20, 20), &this->UIminiMapEnemyVertexBuffer);
+}
+
 
 //*****************************************************************************
 //
@@ -168,6 +197,8 @@ void ScreenPolygon::Draw()
 {
 	// minimap
 	DrawObject(this->UIminiMapVertexBuffer, this->UIminiMapTexture);
+	DrawObject(this->UIminiMapPlayerVertexBuffer, this->UIminiMapPlayerTexture);
+	DrawObject(this->UIminiMapEnemyVertexBuffer, this->UIminiMapEnemyTexture);
 
 	// HP
 	int i = 0;
@@ -179,9 +210,6 @@ void ScreenPolygon::Draw()
 		else
 			i++;
 	}
-	//DrawObject(this->UIHPVertexBuffer[0], this->UIHPTexture);
-	//DrawObject(this->UIHPVertexBuffer[1], this->UIHPTexture);
-	//DrawObject(this->UIHPVertexBuffer[2], this->UIHPTexture);
 
 	// 操作ボタン
 	DrawObject(this->UIKeyVertexBuffer, this->UIKeyTexture);
@@ -218,14 +246,4 @@ void ScreenPolygon::DrawObject(LPDIRECT3DVERTEXBUFFER9 vertexBuffer, LPDIRECT3DT
 		this->RHWshader->effectPoint->EndPass();
 	}
 	this->RHWshader->effectPoint->End();
-}
-
-//*****************************************************************************
-//
-// 更新する
-//
-//*****************************************************************************
-void ScreenPolygon::Update(Character* player)
-{
-	this->HP = player->HP;
 }

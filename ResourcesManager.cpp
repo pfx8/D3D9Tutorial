@@ -33,6 +33,8 @@ ResourcesManager::ResourcesManager()
 	this->textureList["shipCannon"] = "data/TEXTURE/VikingShip/cannon_diffuse.png";
 
 	this->textureList["UIminimap"] = "data/TEXTURE/UI/minimap.png";
+	this->textureList["UIplayer"] = "data/TEXTURE/UI/player.png";
+	this->textureList["UIenemy"] = "data/TEXTURE/UI/enemy.png";
 	this->textureList["UIhp"] = "data/TEXTURE/UI/hp.png";
 	this->textureList["UIkey"] = "data/TEXTURE/UI/key.png";
 
