@@ -47,12 +47,11 @@ Scene00::Scene00()
 	
 	// 主人公
 	this->ship = new Character;
-	this->ship->InitCharacter(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, -1.0f), 2);
 	// 各モデルを初期化
-	this->resourcesManager->LoadMesh("playerShip", &this->ship->model[0]);
-	this->resourcesManager->LoadTexture("playerShip", &this->ship->model[0].meshTexturePoint);
-	this->resourcesManager->LoadMesh("playerOars", &this->ship->model[1]);
-	this->resourcesManager->LoadTexture("playerOars", &this->ship->model[1].meshTexturePoint);
+	this->resourcesManager->LoadMesh("shipBody", this->ship->player.shipBody);
+	this->resourcesManager->LoadTexture("shipBody", &this->ship->player.shipBody->meshTexturePoint);
+	this->resourcesManager->LoadMesh("shipCannon", this->ship->player.shipCannon);
+	this->resourcesManager->LoadTexture("shipCannon", &this->ship->player.shipCannon->meshTexturePoint);
 	// バウンディングボックスを初期化
 	this->ship->boundingBox->InitBox(4, 7, 8, 0.1f);
 
@@ -294,11 +293,6 @@ void Scene00::Draw()
 
 		// Obj種類番号を渡す
 		this->celShader->effectPoint->SetInt(this->celShader->typeHandle, ship);
-		
-		//// マテリアル情報を渡す ... 臨時値
-		//D3DXCOLOR colorMtrlDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
-		//// material power
-		//this->celShader->effectPoint->SetValue("materialDiffuseColor", &colorMtrlDiffuse, sizeof(D3DXCOLOR));
 
 		// テクスチャを渡す
 		this->celShader->effectPoint->SetTexture("tex", this->ship->model->meshTexturePoint);

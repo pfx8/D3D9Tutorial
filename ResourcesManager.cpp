@@ -31,8 +31,8 @@ ResourcesManager::ResourcesManager()
 	this->textureList["title"] = "data/TEXTURE/title.jpg";
 	this->textureList["ending"] = "data/TEXTURE/ending.jpg";
 
-	this->textureList["playerOars"] = "data/TEXTURE/VikingShip/Oars.png";
-	this->textureList["playerShip"] = "data/TEXTURE/VikingShip/Ship.png";
+	this->textureList["shipBody"] = "data/TEXTURE/VikingShip/Ship.png";
+	this->textureList["shipCannon"] = "data/TEXTURE/VikingShip/cannon_diffuse.png";
 
 	this->textureList["UIminimap"] = "data/TEXTURE/UI/minimap.png";
 	this->textureList["UIHP"] = "data/TEXTURE/UI/hp.png";
@@ -43,8 +43,8 @@ ResourcesManager::ResourcesManager()
 	// メッシュ検索マッピングを作る
 	this->meshList["ship"] = "data/MODEL/PirateShip.x";
 	this->meshList["ship2"] = "data/MODEL/ship2.x";
-	this->meshList["playerOars"] = "data/MODEL/Player_Oars.x";
-	this->meshList["playerShip"] = "data/MODEL/Player_Ship.x";
+	this->meshList["shipCannon"] = "data/MODEL/Player_Cannon.x";
+	this->meshList["shipBody"] = "data/MODEL/Player_Ship.x";
 	this->meshList["ball"] = "data/MODEL/ball.x";
 }
 

@@ -30,6 +30,8 @@ Character::Character()
 	// クラスポインタ
 	this->message = new DebugMessage;
 	this->boundingBox = new BoundingBox;
+	this->player.shipBody = new Model;
+	this->player.shipCannon = new Model;
 }
 
 //*****************************************************************************
@@ -43,6 +45,9 @@ Character::~Character()
 	RELEASE_CLASS_POINT(this->boundingBox);
 
 	RELEASE_CLASS_ARRY_POINT(this->model);
+
+	RELEASE_CLASS_ARRY_POINT(this->player.shipBody);
+	RELEASE_CLASS_ARRY_POINT(this->player.shipCannon);
 }
 
 //*****************************************************************************
@@ -63,6 +68,9 @@ void Character::PosToMessageAndMessageDraw(int row)
 void Character::Draw(CelShader* celShader)
 {
 	this->model->DrawModel(celShader);	// メッシュを描画する
+
+	this->player.shipBody->DrawModel(celShader);
+	this->player.shipCannon->DrawModel(celShader);
 }
 
 //*****************************************************************************

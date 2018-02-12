@@ -33,7 +33,7 @@ public:
 	~ResourcesManager();
 
 	HRESULT LoadTexture(std::string name, LPDIRECT3DTEXTURE9* texturePoint);	// テクスチャを読み込み
-	HRESULT LoadMesh(std::string name, Model* mesh);	// メッシュを読み込み
+	HRESULT LoadMesh(std::string name, Model* model);	// メッシュを読み込み
 };
 
 #endif // !_RESOURCES_MANAGER_H_
