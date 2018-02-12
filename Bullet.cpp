@@ -22,10 +22,10 @@ Bullet::Bullet()
 	this->rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
 	this->isUse = false;
-	this->upSpeed = FIRST_UP_SPEED;
+	this->upSpeed = 0.0f;
 
 	// クラスポインタ
-	//this->model = new Model;
+	this->model = new Model;
 	this->message = new DebugMessage;
 	this->boundingBox = new BoundingBox;
 
@@ -39,7 +39,7 @@ Bullet::Bullet()
 Bullet::~Bullet()
 {
 	// クラスポインタ
-	//RELEASE_CLASS_POINT(this->model);
+	RELEASE_CLASS_POINT(this->model);
 	RELEASE_CLASS_POINT(this->message);
 	RELEASE_CLASS_POINT(this->boundingBox);
 }
@@ -59,9 +59,10 @@ void Bullet::InitBulletByCharacter(D3DXVECTOR3 pos, D3DXVECTOR3 moveVector, bool
 		this->isEnemyBullet = true;
 
 	// 位置を設定
-	this->pos = pos;
-	this->pos.y = 1.5f + rand()%3;
+	this->pos = pos + moveVector * 6.0f;
+	this->pos.y = 4.0f;
 	this->lookVector = moveVector * ((rand()%60 + 40) / 100.0f * 2.2f);	// 行き方向を設定
+	this->upSpeed = FIRST_UP_SPEED + rand()%11;
 
 	this->boundingBox->InitBox(2, 3, 2, 0.1f);	// バウンディングボックスを初期化
 }
@@ -73,14 +74,14 @@ void Bullet::InitBulletByCharacter(D3DXVECTOR3 pos, D3DXVECTOR3 moveVector, bool
 //*****************************************************************************
 void Bullet::BulletMove(D3DXVECTOR2 planeSize)
 {
-	this->pos -= this->lookVector * MOVE_SPEED;	// 行き方向へ移動
+	this->pos += this->lookVector * MOVE_SPEED;	// 行き方向へ移動
 	
 	// 垂直位置の計算 
 	this->upSpeed += ACCELERARION;
 	this->pos.y += 0.5f * (this->upSpeed)* ONE_FRAME_TIME;
 
 	// 地図の範囲を超えたら、弾を消す
-	if (/*this->pos.x >= planeSize.x || this->pos.x <= -planeSize.x || this->pos.z >= planeSize.y || this->pos.z <= -planeSize.y ||*/ this->pos.y <= 0.0f)
+	if ( this->pos.y <= 0.0f)
 	{
 		// 消したら数値を全部初期化
 		this->isUse = false;
@@ -98,4 +99,18 @@ void Bullet::BulletMove(D3DXVECTOR2 planeSize)
 void Bullet::CheckBulletAndShip()
 {
 
+}
+
+//*****************************************************************************
+//
+// キャラクターの描画
+//
+//*****************************************************************************
+void Bullet::Draw(CelShader* celShader, D3DXMATRIX* VPMatrix)
+{
+	// ワールド変換
+	SetWorldMatrix();
+
+	// メッシュを描画する
+	this->model->DrawModel(celShader, &this->worldMatrix, VPMatrix, &lightMatrix, MT_bullet);
 }

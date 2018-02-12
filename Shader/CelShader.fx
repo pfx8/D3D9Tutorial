@@ -95,7 +95,8 @@ float4 CelPixelShader(CelVertexOUT In) : COLOR0
     }
     else if (ObjType == 2) // 大砲
     {
-        diffuse = In.diffuse * globalIlumination;
+        //diffuse = In.diffuse * globalIlumination;
+        diffuse = float4(0, 0, 0, 1) * globalIlumination;
     }
 
     //法線とライトの内積によってカラーを決める

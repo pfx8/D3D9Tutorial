@@ -61,7 +61,7 @@ Camera::~Camera()
 void Camera::InitCameraByPlayer(Character* player)
 {	
 	this->posEye = D3DXVECTOR3(0.0f, 10.0f, -35.0f);
-	this->posAt = D3DXVECTOR3(0.0f, 5.0f, 0.0f);
+	this->posAt = D3DXVECTOR3(0.0f, 7.5f, 0.0f);
 
 	this->offSetFromPlayer = player->pos - this->posEye;
 

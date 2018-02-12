@@ -83,7 +83,7 @@ Scene00::Scene00()
 	this->bullet = new Bullet[BULLET_MAX];
 	for (int count = 0; count < BULLET_MAX; count++)
 	{
-		//this->resourcesManager->LoadMesh("ball", this->bullet[count].model);
+		this->resourcesManager->LoadMesh("ball", this->bullet[count].model);
 	}
 
 	// カメラ
@@ -350,33 +350,14 @@ void Scene00::Draw()
 
 	// 弾
 	{
-	//	for (int count1 = 0; count1 < BULLET_MAX; count1++)
-	//	{
-	//		if (this->bullet[count1].this->isUse == true)
-	//		{
-	//			this->celShader->effectPoint->SetTechnique(this->celShader->this->celShaderHandle);	// テクニックを設定
-
-	//			this->bullet[count1].SetWorldMatrix();
-	//			this->celShader->effectPoint->SetMatrix(this->celShader->WMatrixHandle, &this->bullet[count1].worldMatrix);
-	//			D3DXMATRIX bulletVPmatrix = this->camera->this->viewMatrix * this->camera->this->projectionMatrix;
-	//			this->celShader->effectPoint->SetMatrix(this->celShader->this->VPMatrixHandle, &bulletVPmatrix);
-
-	//			bool isShip = false;
-	//			this->celShader->effectPoint->SetInt(this->celShader->this->typeHandle, cannon);
-
-	//			UINT passNum = 0;	// パスの数
-	//			this->celShader->effectPoint->Begin(&passNum, 0);
-	//			for (int count = 0; count < passNum; count++)	// 各パスによって描画する
-	//			{
-	//				this->celShader->effectPoint->BeginPass(count);
-
-	//				this->bullet[count1].Draw(this->celShader);
-
-	//				this->celShader->effectPoint->EndPass();
-	//			}
-	//			this->celShader->effectPoint->End();
-	//		}
-	//	}
+		for (int count1 = 0; count1 < BULLET_MAX; count1++)
+		{
+			if (this->bullet[count1].isUse == true)
+			{
+				D3DXMATRIX VPmatrix = this->camera->viewMatrix * this->camera->projectionMatrix;
+				this->bullet[count1].Draw(this->celShader, &VPmatrix);
+			}
+		}
 	}
 
 	// ゲームUI
@@ -398,32 +379,48 @@ void Scene00::Draw()
 void Scene00::Control()
 {
 	// プレーヤー攻撃
- 	if (GetKeyboardTrigger(DIK_SPACE))	// 攻撃
+	if (GetKeyboardTrigger(DIK_SPACE) && this->camera->isShooting != IS_no)	// 攻撃
 	{
+		// 臨時値
 		int i = 0;
+		D3DXVECTOR3 temp = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+
+		if (this->camera->isShooting == IS_left)
+		{
+			temp = -this->ship->rightVector;
+		}
+		else if (this->camera->isShooting == IS_right)
+		{
+			temp = this->ship->rightVector;
+		}
+
 		for (int count = 0; count < BULLET_MAX; count++)
 		{
 			if (this->bullet[count].isUse == false)
 			{
-				// プレーヤーによって弾を初期化,1回は3発で
+				// プレーヤーによって弾を初期化,1回は4発で
 				switch (i)
 				{
 				case 0:
-					this->bullet[count].InitBulletByCharacter(this->ship->pos, -1 * this->ship->rightVector, true);
+					this->bullet[count].InitBulletByCharacter(this->ship->pos + this->ship->lookVector * 6.0f, temp, true);
 					i++;
 					break;
 				case 1:
-					this->bullet[count].InitBulletByCharacter(this->ship->pos + this->ship->lookVector * 10.0f, -1 * this->ship->rightVector, true);
+					this->bullet[count].InitBulletByCharacter(this->ship->pos + this->ship->lookVector * 2.0f, temp, true);
 					i++;
 					break;
 				case 2:
-					this->bullet[count].InitBulletByCharacter(this->ship->pos - this->ship->lookVector * 10.0f, -1 * this->ship->rightVector, true);
+					this->bullet[count].InitBulletByCharacter(this->ship->pos - this->ship->lookVector * 2.0f, temp, true);
+					i++;
+					break;
+				case 3:
+					this->bullet[count].InitBulletByCharacter(this->ship->pos - this->ship->lookVector * 6.0f, temp, true);
 					i++;
 					break;
 				}
 			}
 
-			if (i == 3)
+			if (i == 4)
 				break;
 		}
 	}

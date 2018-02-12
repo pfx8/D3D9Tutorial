@@ -72,14 +72,10 @@ public:
 	void SetWorldMatrix();						// ワールド変換を設定
 	void Update(float rot);						// キャラクター更新
 	void ChangeLever(LEVER_LEVEL level);		// レバーの操作によってスピードを変わる
-
-	void Draw(CelShader* celShader, D3DXMATRIX* VPMatrix);	// キャラクターの描画
-
 	bool CheckHitBB(Character* Object);			// 当たり判定
 	void RotationVecUp(float angle);			// 上方向のベクトルにして回転
-	
 
-
+	virtual void Draw(CelShader* celShader, D3DXMATRIX* VPMatrix);	// キャラクターの描画
 };
 #endif // !_CHARACTER_H_
 
