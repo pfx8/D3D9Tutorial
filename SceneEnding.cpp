@@ -135,7 +135,11 @@ void SceneEnding::Draw()
 
 	// 静的な
 	int temp = 0;
-	this->RHWshader->effectPoint->SetValue("isLL", &temp, sizeof(int));
+	this->RHWshader->effectPoint->SetValue("type", &temp, sizeof(int));
+
+	// アルファ値を設定
+	float alpha = 1.0f;
+	this->RHWshader->effectPoint->SetValue("alpha", &alpha, sizeof(float));
 
 	// 描画
 	UINT passNum = 0;

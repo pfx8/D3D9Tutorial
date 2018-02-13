@@ -43,6 +43,11 @@ void Character::InitCharacter()
 
 	this->HP = MAX_HP;
 
+	this->leftTime = 3.0f;
+	this->leftShooting = false;
+	this->rightTime = 3.0f;
+	this->rightShooting = false;
+
 	this->leverLevel = LL_STOP;
 }
 
@@ -72,7 +77,13 @@ void Character::PosToMessageAndMessageDraw(int row)
 	temp.y = lightMatrix._42;
 	temp.z = lightMatrix._43;
 	
-	this->message->DrawPosMessage("Light", temp, D3DXVECTOR2(0, float((row + 0) * 18)));
+	D3DXVECTOR3 temp2;
+	temp2.x = leftTime;
+	temp2.y = rightTime;
+	temp2.z = 0;
+
+	//this->message->DrawPosMessage("Light", temp, D3DXVECTOR2(0, float((row + 0) * 18)));
+	this->message->DrawPosMessage("time", temp2, D3DXVECTOR2(0, float((row + 0) * 18)));
 }
 
 //*****************************************************************************
@@ -182,6 +193,27 @@ void Character::Update(float rot)
 
 	// ワールド変換
 	SetWorldMatrix();
+
+	// 発射更新
+	if (this->leftShooting == true)
+	{
+		leftTime -= 3.0f / 180.0f;
+		if (leftTime <= 0)
+		{
+			leftTime = 3;
+			leftShooting = false;
+		}
+	}
+
+	if (this->rightShooting == true)
+	{
+		rightTime -= 3.0f / 180.0f;
+		if (rightTime <= 0)
+		{
+			rightTime = 3;
+			rightShooting = false;
+		}
+	}
 }
 
 //*****************************************************************************

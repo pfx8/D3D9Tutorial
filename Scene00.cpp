@@ -409,7 +409,7 @@ void Scene00::Draw()
 	this->screenPolygon->Draw();
 		
 	// デッバグメッセージ
-	//this->ship->PosToMessageAndMessageDraw(0);
+	this->ship->PosToMessageAndMessageDraw(0);
 	//this->camera->PosToMessageAndMessageDraw(0);
 
 
@@ -423,11 +423,89 @@ void Scene00::Draw()
 //*****************************************************************************
 void Scene00::Control()
 {
-	// プレーヤー攻撃
-	if (GetKeyboardTrigger(DIK_SPACE) && this->camera->isShooting != IS_no 
-		&& (this->ship->leftTime == 0 || this->ship->rightTime))		// 攻撃
+	// プレーヤー攻撃(左)
+	if (GetKeyboardTrigger(DIK_N) && (this->ship->leftShooting == false))
 	{
-		// 臨時値
+		int i = 0;
+		D3DXVECTOR3 temp = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+
+		temp = -this->ship->rightVector;
+
+		for (int count = 0; count < BULLET_MAX; count++)
+		{
+			if (this->bullet[count].isUse == false)
+			{
+				// プレーヤーによって弾を初期化,1回は4発で
+				switch (i)
+				{
+				case 0:
+					this->bullet[count].InitBulletByCharacter(this->ship->pos + this->ship->lookVector * 6.0f, temp, true);
+					i++;
+					break;
+				case 1:
+					this->bullet[count].InitBulletByCharacter(this->ship->pos + this->ship->lookVector * 2.0f, temp, true);
+					i++;
+					break;
+				case 2:
+					this->bullet[count].InitBulletByCharacter(this->ship->pos - this->ship->lookVector * 2.0f, temp, true);
+					i++;
+					break;
+				case 3:
+					this->bullet[count].InitBulletByCharacter(this->ship->pos - this->ship->lookVector * 6.0f, temp, true);
+					i++;
+					break;
+				}
+			}
+
+			if (i == 4)
+				break;
+		}
+
+		this->ship->leftShooting = true;
+	}
+
+	if (GetKeyboardTrigger(DIK_M) && (this->ship->rightShooting == false))
+	{
+		int i = 0;
+		D3DXVECTOR3 temp = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+
+		temp = this->ship->rightVector;
+
+		for (int count = 0; count < BULLET_MAX; count++)
+		{
+			if (this->bullet[count].isUse == false)
+			{
+				// プレーヤーによって弾を初期化,1回は4発で
+				switch (i)
+				{
+				case 0:
+					this->bullet[count].InitBulletByCharacter(this->ship->pos + this->ship->lookVector * 6.0f, temp, true);
+					i++;
+					break;
+				case 1:
+					this->bullet[count].InitBulletByCharacter(this->ship->pos + this->ship->lookVector * 2.0f, temp, true);
+					i++;
+					break;
+				case 2:
+					this->bullet[count].InitBulletByCharacter(this->ship->pos - this->ship->lookVector * 2.0f, temp, true);
+					i++;
+					break;
+				case 3:
+					this->bullet[count].InitBulletByCharacter(this->ship->pos - this->ship->lookVector * 6.0f, temp, true);
+					i++;
+					break;
+				}
+			}
+
+			if (i == 4)
+				break;
+		}
+
+		this->ship->rightShooting = true;
+	}
+
+	if (GetKeyboardTrigger(DIK_SPACE) && this->camera->isShooting != IS_no )		// 攻撃
+	{
 		int i = 0;
 		D3DXVECTOR3 temp = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 

@@ -43,6 +43,8 @@ ScreenPolygon::ScreenPolygon()
 	this->UIleftTexture = NULL;
 	this->UIrightVertexBuffer = NULL;
 	this->UIrightTexture = NULL;
+	this->leftShooting = 0.0f;
+	this->rightShooting = 0.0f;
 
 	// シェーダーを初期化
 	this->RHWshader = new RHWShader;
@@ -90,6 +92,8 @@ void ScreenPolygon::Update(Character* player, Character* enemy)
 {
 	this->HP = player->HP;
 	this->level = player->leverLevel;
+	this->leftShooting = player->leftTime;
+	this->rightShooting = player->rightTime;
 
 	D3DXVECTOR2 miniMapCenter = D3DXVECTOR2(SCREEN_WIDTH - 100, SCREEN_HEIGHT - 100);
 	float mapSize = 17.0f * 150;
@@ -240,16 +244,18 @@ void ScreenPolygon::Draw()
 	DrawObject(this->UIgouVertexBuffer, this->UIgouTexture, LL_BACK);
 
 	// 操作ボタン
-	DrawObject(this->UIleftVertexBuffer, this->UIleftTexture);
-	DrawObject(this->UIrightVertexBuffer, this->UIrightTexture);
+	DrawObject(this->UIleftVertexBuffer, this->UIleftTexture, 9, (leftShooting / 3.0f), true);
+	DrawObject(this->UIrightVertexBuffer, this->UIrightTexture, 9, (rightShooting / 3.0f), true);
 }
 
 //*****************************************************************************
 //
 // 動的なものを描画する
 //
+// level ... -1後退 0停止 1前進 2普通(デフォルト)
+//
 //*****************************************************************************
-void ScreenPolygon::DrawObject(LPDIRECT3DVERTEXBUFFER9 vertexBuffer, LPDIRECT3DTEXTURE9 texture, int level)
+void ScreenPolygon::DrawObject(LPDIRECT3DVERTEXBUFFER9 vertexBuffer, LPDIRECT3DTEXTURE9 texture, int level, float alpha, bool needa)
 {
 	PDIRECT3DDEVICE9 pDevice = GetDevice();
 
@@ -263,13 +269,21 @@ void ScreenPolygon::DrawObject(LPDIRECT3DVERTEXBUFFER9 vertexBuffer, LPDIRECT3DT
 	{
 		// 船の状態を設定(動的な)
 		int temp = 1;
-		this->RHWshader->effectPoint->SetValue("isLL", &temp, sizeof(int));
+		this->RHWshader->effectPoint->SetValue("type", &temp, sizeof(int));
+	}
+	else if (needa == true)
+	{
+		// 変化なしのもの(静的な)
+		int temp = 2;
+		this->RHWshader->effectPoint->SetValue("type", &temp, sizeof(int));
+		// アルファ値を設定
+		this->RHWshader->effectPoint->SetValue("alpha", &alpha, sizeof(float));
 	}
 	else
 	{
 		// 変化なしのもの(静的な)
 		int temp = 0;
-		this->RHWshader->effectPoint->SetValue("isLL", &temp, sizeof(int));
+		this->RHWshader->effectPoint->SetValue("type", &temp, sizeof(int));
 	}
 
 	// 描画

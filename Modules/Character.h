@@ -70,7 +70,9 @@ public:
 	int				HP;
 
 	float			leftTime;
+	bool			leftShooting;
 	float			rightTime;
+	bool			rightShooting;
 
 	Character();
 	~Character();
