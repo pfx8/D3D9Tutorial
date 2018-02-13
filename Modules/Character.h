@@ -65,7 +65,8 @@ public:
 	D3DXVECTOR3		scl;			// 拡大縮小
 
 	PlayerModel		player;			// プレーヤーモデル集合
-	BoundingBox*	boundingBox;	// バウンディングボックス
+	BoundingBox*	check;			// ダメージ用
+	BoundingBox*	space;			// 空間用
 	
 	int				HP;
 

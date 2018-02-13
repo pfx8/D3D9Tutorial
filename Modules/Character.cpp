@@ -16,7 +16,8 @@ Character::Character()
 {
 	// クラスポインタ
 	this->message = new DebugMessage;
-	this->boundingBox = new BoundingBox;
+	this->check = new BoundingBox;
+	this->space = new BoundingBox;
 	this->player.shipBody = new Model;
 	this->player.shipCannon = new Model;
 
@@ -59,7 +60,8 @@ void Character::InitCharacter()
 Character::~Character()
 {
 	RELEASE_CLASS_POINT(this->message);
-	RELEASE_CLASS_POINT(this->boundingBox);
+	RELEASE_CLASS_POINT(this->check);
+	RELEASE_CLASS_POINT(this->space);
 
 	RELEASE_CLASS_ARRY_POINT(this->player.shipBody);
 	RELEASE_CLASS_ARRY_POINT(this->player.shipCannon);
@@ -321,15 +323,15 @@ void Character::SetWorldMatrix()
 bool Character::CheckHitBB(Character* Object)
 {
 	D3DXVECTOR3 ObjectPos = Object->pos;
-	D3DXVECTOR3 ObjectSize = Object->boundingBox->size;
+	D3DXVECTOR3 ObjectSize = Object->check->size;
 
 	if (
-		this->pos.x + this->boundingBox->size.x / 2 > ObjectPos.x - ObjectSize.x / 2 &&
-		this->pos.x - this->boundingBox->size.x / 2 < ObjectPos.x + ObjectSize.x / 2 &&
-		this->pos.y - this->boundingBox->size.y / 2 < ObjectPos.y + ObjectSize.y / 2 &&
-		this->pos.y + this->boundingBox->size.y / 2 > ObjectPos.y - ObjectSize.y / 2 &&
-		this->pos.z + this->boundingBox->size.z / 2 > ObjectPos.z - ObjectSize.z / 2 &&
-		this->pos.z - this->boundingBox->size.z / 2 < ObjectPos.z + ObjectSize.z / 2
+		this->pos.x + this->check->size.x / 2 > ObjectPos.x - ObjectSize.x / 2 &&
+		this->pos.x - this->check->size.x / 2 < ObjectPos.x + ObjectSize.x / 2 &&
+		this->pos.y - this->check->size.y / 2 < ObjectPos.y + ObjectSize.y / 2 &&
+		this->pos.y + this->check->size.y / 2 > ObjectPos.y - ObjectSize.y / 2 &&
+		this->pos.z + this->check->size.z / 2 > ObjectPos.z - ObjectSize.z / 2 &&
+		this->pos.z - this->check->size.z / 2 < ObjectPos.z + ObjectSize.z / 2
 		)
 	{
 		return true;

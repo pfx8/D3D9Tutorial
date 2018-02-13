@@ -29,14 +29,19 @@ private:
 	D3DXVECTOR3						rot;			// 回転
 	D3DXVECTOR3						scl;			// 拡大縮小
 	float							alpha;			// 透明度
-	D3DXMATRIX						mtxWorld;		// ワールド変換行列
+	D3DXMATRIX						worldMatrix;	// ワールド変換行列
+
 	LPDIRECT3DVERTEXBUFFER9			vertexBuffer;	// 頂点バッファ
+
+
 	LPDIRECT3DINDEXBUFFER9			indexBuffer;	// インデックスバッファ
-	IDirect3DVertexDeclaration9*	vertexDecl;	// 頂点シェーダー宣言
+	IDirect3DVertexDeclaration9*	vertexDecl;		// 頂点シェーダー宣言
 
 public:
-	D3DXVECTOR3	size;				// バウンディングボックスサイズ
+	D3DXVECTOR3	size;				// バウンディングボックスサイズ	
 	bool		isBoundingBoxDraw;	// バウンディングボックスの描画チェック
+
+	float		radius;				// 半径
 
 	BoundingBox();
 	~BoundingBox();
@@ -44,6 +49,7 @@ public:
 	HRESULT MakeVertex();											// 長方体頂点を設定
 	void InitBox(int width, int height, int depth, float alpha);	// 幅、高さ、奥行き、透明度を初期化
 	void SetWorldMatrix();		// ワールド変換
-	void Draw();	// バウンディングボックスを描画する
+	void Draw(Shader* shader, D3DXMATRIX* VPMatrix);				// バウンディングボックスを描画する
+
 };
 #endif // !_BOUNDING_BOX_H_

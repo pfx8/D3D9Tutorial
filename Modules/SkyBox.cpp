@@ -170,11 +170,11 @@ void SkyBox::SetWorldMatrix()
 	D3DXMATRIX mtxTranslate;
 
 	// ワールドマトリックスを初期化する
-	D3DXMatrixIdentity(&this->mtxWorld);
+	D3DXMatrixIdentity(&this->worldMatrix);
 
 	// 平行移動を反映
 	D3DXMatrixTranslation(&mtxTranslate, this->pos.x, this->pos.y, this->pos.z);
-	D3DXMatrixMultiply(&this->mtxWorld, &this->mtxWorld, &mtxTranslate);
+	D3DXMatrixMultiply(&this->worldMatrix, &this->worldMatrix, &mtxTranslate);
 }
 
 //*****************************************************************************

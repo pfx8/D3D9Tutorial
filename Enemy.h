@@ -28,7 +28,7 @@ class Enemy : public Character
 private:
 
 public:
-	bool	isLife;	// 生存フラグ
+	bool	isLife;		// 生存フラグ
 	float	time;		// タイムチェック
 	bool	isAttack;	// 攻撃フラグ
 	float	attackTime;	// 連続攻撃タイム

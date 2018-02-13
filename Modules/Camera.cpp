@@ -17,7 +17,7 @@ Camera::Camera()
 	this->field = D3DXToRadian(45);
 	this->ratio = (float)SCREEN_WIDTH / SCREEN_HEIGHT;;
 	this->rangeStart = 0.1;
-	this->rangeEnd = 1000;
+	this->rangeEnd = 3000;
 
 	this->posEye	= D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	this->posAt		= D3DXVECTOR3(0.0f, 0.0f, 0.0f);

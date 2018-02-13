@@ -29,7 +29,6 @@ private:
 	IDirect3DVertexDeclaration9*	vertexDecl;	// 頂点シェーダー宣言
 	LPDIRECT3DVERTEXBUFFER9			vertexBuffer;	// 頂点バッファ
 	LPDIRECT3DINDEXBUFFER9			indexBuffer;	// インデックスバッファ
-	D3DXMATRIX						mtxWorld;		// ワールド変換行列
 	float							length;		// ボックスの長さ
 
 public:

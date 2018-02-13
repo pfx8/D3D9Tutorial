@@ -86,10 +86,10 @@ HRESULT BoundingBox::MakeVertex()
 			{ D3DXVECTOR3(-this->size.x / 2,  this->size.y / 2,  this->size.z / 2), D3DXCOLOR(1.0f, 0.0f, 0.0f, this->alpha) },
 			{ D3DXVECTOR3( this->size.x / 2,  this->size.y / 2,  this->size.z / 2), D3DXCOLOR(1.0f, 0.0f, 0.0f, this->alpha) },
 			{ D3DXVECTOR3( this->size.x / 2,  this->size.y / 2, -this->size.z / 2), D3DXCOLOR(1.0f, 0.0f, 0.0f, this->alpha) },
-			{ D3DXVECTOR3(-this->size.x / 2,  0,            -this->size.z / 2), D3DXCOLOR(1.0f, 0.0f, 0.0f, this->alpha) },
-			{ D3DXVECTOR3(-this->size.x / 2,  0,             this->size.z / 2), D3DXCOLOR(1.0f, 0.0f, 0.0f, this->alpha) },
-			{ D3DXVECTOR3( this->size.x / 2,  0,             this->size.z / 2), D3DXCOLOR(1.0f, 0.0f, 0.0f, this->alpha) },
-			{ D3DXVECTOR3( this->size.x / 2,  0,            -this->size.z / 2), D3DXCOLOR(1.0f, 0.0f, 0.0f, this->alpha) }
+			{ D3DXVECTOR3(-this->size.x / 2,                 0, -this->size.z / 2), D3DXCOLOR(1.0f, 0.0f, 0.0f, this->alpha) },
+			{ D3DXVECTOR3(-this->size.x / 2,                 0,  this->size.z / 2), D3DXCOLOR(1.0f, 0.0f, 0.0f, this->alpha) },
+			{ D3DXVECTOR3( this->size.x / 2,                 0,  this->size.z / 2), D3DXCOLOR(1.0f, 0.0f, 0.0f, this->alpha) },
+			{ D3DXVECTOR3( this->size.x / 2,                 0, -this->size.z / 2), D3DXCOLOR(1.0f, 0.0f, 0.0f, this->alpha) }
 		};
 
 		VOID* vertexBuffer;	// 頂点バッファポインタ作成
@@ -105,14 +105,14 @@ HRESULT BoundingBox::MakeVertex()
 	}
 
 
-	{// インデックス設計
-		//オブジェクトの頂点インデックスバッファを生成
+	{
+		// インデックス設計
+		// オブジェクトの頂点インデックスバッファを生成
 		if (FAILED(pDevice->CreateIndexBuffer(36 * sizeof(WORD), 0, D3DFMT_INDEX16, D3DPOOL_DEFAULT, &this->indexBuffer, NULL)))
 		{
 			std::cout << "[Error] 頂点インデクスが生成できない!" << std::endl;	// エラーメッセージ
 			return E_FAIL;
 		}
-
 
 		WORD* vertexIndex = NULL;	// イデックスの中身を埋める
 		this->indexBuffer->Lock(0, 0, (void**)&vertexIndex, 0);	// インデックス データのある一定範囲をロックし、そのインデックス バッファー メモリーへのポインターを取得する
@@ -159,19 +159,19 @@ void BoundingBox::SetWorldMatrix()
 	D3DXMATRIX mtxScl, mtxRot, mtxTranslate;
 
 	// ワールドマトリックスを初期化する
-	D3DXMatrixIdentity(&this->mtxWorld);
+	D3DXMatrixIdentity(&this->worldMatrix);
 
 	// スケールを反映
 	D3DXMatrixScaling(&mtxScl, this->scl.x, this->scl.y, this->scl.z);
-	D3DXMatrixMultiply(&this->mtxWorld, &this->mtxWorld, &mtxScl);
+	D3DXMatrixMultiply(&this->worldMatrix, &this->worldMatrix, &mtxScl);
 
 	// 回転を反映
 	D3DXMatrixRotationYawPitchRoll(&mtxRot, this->rot.y, this->rot.x, this->rot.z);
-	D3DXMatrixMultiply(&this->mtxWorld, &this->mtxWorld, &mtxRot);
+	D3DXMatrixMultiply(&this->worldMatrix, &this->worldMatrix, &mtxRot);
 
 	// 平行移動を反映
 	D3DXMatrixTranslation(&mtxTranslate, this->pos.x, this->pos.y, this->pos.z);
-	D3DXMatrixMultiply(&this->mtxWorld, &this->mtxWorld, &mtxTranslate);
+	D3DXMatrixMultiply(&this->worldMatrix, &this->worldMatrix, &mtxTranslate);
 }
 
 //*****************************************************************************
@@ -179,12 +179,36 @@ void BoundingBox::SetWorldMatrix()
 // テクスチャを描画する
 //
 //*****************************************************************************
-void BoundingBox::Draw()
+void BoundingBox::Draw(Shader* shader, D3DXMATRIX* VPMatrix)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
-	pDevice->SetVertexDeclaration(this->vertexDecl);							// 頂点シェーダー設定
-	pDevice->SetStreamSource(0, this->vertexBuffer, 0, sizeof(BOUNDINGBOXVERTEX));	// 頂点バッファをデバイスのデータストリームにバイナリ
-	pDevice->SetIndices(this->indexBuffer);										// 頂点イデックスの設定
-	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 17, 0, 16);		// バウンディングボックスの描画
+	if (this->isBoundingBoxDraw == true)
+	{
+		// テクニックを設定
+		shader->shaderHandle = shader->effectPoint->GetTechniqueByName("RenderWithoutTextrue");
+		shader->effectPoint->SetTechnique(shader->shaderHandle);
+
+		// ワールド変換、ビューイング変換、プロジェクション変換マトリックス
+		shader->effectPoint->SetMatrix(shader->WMatrixHandle, &this->worldMatrix);
+		shader->effectPoint->SetMatrix(shader->VPMatrixHandle, VPMatrix);
+
+		// アルファ値の設定(テクスチャ無し)
+		shader->effectPoint->SetFloat(shader->alphaHandle, 0.5f);
+
+		UINT passNum = 0;
+		shader->effectPoint->Begin(&passNum, 0);
+		for (int count = 0; count < passNum; count++)
+		{
+			shader->effectPoint->BeginPass(0);
+
+			pDevice->SetVertexDeclaration(this->vertexDecl);								// 頂点シェーダー設定
+			pDevice->SetStreamSource(0, this->vertexBuffer, 0, sizeof(BOUNDINGBOXVERTEX));	// 頂点バッファをデバイスのデータストリームにバイナリ
+			pDevice->SetIndices(this->indexBuffer);											// 頂点イデックスの設定
+			pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 17, 0, 16);				// バウンディングボックスの描画
+
+			shader->effectPoint->EndPass();
+		}
+		shader->effectPoint->End();
+	}
 }

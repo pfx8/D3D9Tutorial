@@ -65,7 +65,8 @@ public:
 	void Control();			// ‘€ìŠÖ”
 	void SetRenderState();	// ƒŒƒ“ƒ_ƒŠƒ“ƒO‚ğİ’è
 
-	bool CheckBB(Bullet* bullet, Enemy* enemy);		// “–‚½‚è”»’è
+	bool CheckBB(Bullet* bullet, Enemy* enemy);		// “–‚½‚è”»’è(’·•ûŒ`)
+	bool CheckBC(Bullet* bullet, Enemy* enemy);		// “–‚½‚è”»’è(‰~)
 };
 
 #endif // !_SCENE00_H_

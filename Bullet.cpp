@@ -27,7 +27,7 @@ Bullet::Bullet()
 	// クラスポインタ
 	this->model = new Model;
 	this->message = new DebugMessage;
-	this->boundingBox = new BoundingBox;
+	this->check = new BoundingBox;
 
 }
 
@@ -41,7 +41,7 @@ Bullet::~Bullet()
 	// クラスポインタ
 	RELEASE_CLASS_POINT(this->model);
 	RELEASE_CLASS_POINT(this->message);
-	RELEASE_CLASS_POINT(this->boundingBox);
+	RELEASE_CLASS_POINT(this->check);
 }
 
 //*****************************************************************************
@@ -64,7 +64,7 @@ void Bullet::InitBulletByCharacter(D3DXVECTOR3 pos, D3DXVECTOR3 moveVector, bool
 	this->lookVector = moveVector * ((rand()%60 + 40) / 100.0f * 2.2f);	// 行き方向を設定
 	this->upSpeed = FIRST_UP_SPEED + rand()%11;
 
-	this->boundingBox->InitBox(2, 3, 2, 0.1f);	// バウンディングボックスを初期化
+	this->check->InitBox(2, 3, 2, 0.1f);	// バウンディングボックスを初期化
 }
 
 //*****************************************************************************

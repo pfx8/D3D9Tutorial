@@ -31,7 +31,7 @@ Enemy::Enemy()
 
 	// クラスポインタ
 	this->message = new DebugMessage;
-	this->boundingBox = new BoundingBox;
+	this->check = new BoundingBox;
 }
 
 //*****************************************************************************
@@ -43,7 +43,7 @@ Enemy::~Enemy()
 {
 	// クラスポインタ
 	RELEASE_CLASS_POINT(this->message);
-	RELEASE_CLASS_POINT(this->boundingBox);
+	RELEASE_CLASS_POINT(this->check);
 }
 
 //*****************************************************************************
@@ -54,7 +54,7 @@ Enemy::~Enemy()
 void Enemy::InitEnemy(D3DXVECTOR3 pos)
 {
 	this->pos = pos;	// 位置
-	this->boundingBox->InitBox(5, 11, 10, 0.1f);	// バウンディングボックスを初期化
+	this->check->InitBox(5, 11, 10, 0.1f);	// バウンディングボックスを初期化
 }
 
 //*****************************************************************************
@@ -117,7 +117,7 @@ bool Enemy::CheckBB(Character* player)
 {
 	// 弾
 	D3DXVECTOR3 playerPos = player->pos;
-	D3DXVECTOR3 playerBoxSize = player->boundingBox->size;
+	D3DXVECTOR3 playerBoxSize = player->check->size;
 	// エネミー
 	D3DXVECTOR3 enemyPos = this->pos;
 	D3DXVECTOR3 enemyBoxSize;

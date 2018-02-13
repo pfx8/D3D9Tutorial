@@ -76,7 +76,7 @@ void Scene00::InitScene00()
 	this->celShader->effectPoint->SetValue("lightSpecular", &this->directionLight->light.Specular, sizeof(D3DXCOLOR));
 
 	// スカイボックス
-	this->skyBox->InitSkyBox(500.0f);
+	this->skyBox->InitSkyBox(2500.0f);
 	/*this->resourcesManager->LoadTexture("skybox", &this->skyBox->texture);*/
 	this->resourcesManager->LoadTexture("front", &this->skyBox->texture[0]);
 	this->resourcesManager->LoadTexture("back", &this->skyBox->texture[1]);
@@ -86,7 +86,7 @@ void Scene00::InitScene00()
 
 	// フィールド
 	this->sea->InitPlane(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(17.0f, 17.0f), D3DXVECTOR2(150, 150));
-	this->resourcesManager->LoadTexture("fieldSea", &this->sea->texture);
+	this->resourcesManager->LoadTexture("fieldSea2", &this->sea->texture);
 
 	// 主人公
 	this->ship->InitCharacter();
@@ -95,7 +95,9 @@ void Scene00::InitScene00()
 	this->resourcesManager->LoadMesh("shipCannon", this->ship->player.shipCannon);
 	this->resourcesManager->LoadTexture("shipCannon", &this->ship->player.shipCannon->meshTexturePoint);
 	// バウンディングボックスを初期化
-	this->ship->boundingBox->InitBox(4, 7, 8, 0.1f);
+	/*this->ship->boundingBox->InitBox(4, 7, 8, 0.1f);*/
+	this->ship->check->InitBox(20, 20, 20, 0.1f);
+	this->ship->space->InitBox(30, 30, 30, 0.1f);
 
 	// シャドー
 	this->shadowMap->InitShader();
@@ -113,11 +115,11 @@ void Scene00::InitScene00()
 			temp.z *= -1;
 		}
 		this->enemyShip[count].InitEnemy(temp);
-		this->resourcesManager->LoadMesh("shipBody", this->ship->player.shipBody);
-		this->resourcesManager->LoadTexture("shipBody", &this->ship->player.shipBody->meshTexturePoint);
-		this->resourcesManager->LoadMesh("shipCannon", this->ship->player.shipCannon);
-		this->resourcesManager->LoadTexture("shipCannon", &this->ship->player.shipCannon->meshTexturePoint);
-		this->enemyShip[count].boundingBox->InitBox(4, 7, 8, 0.1f);	// バウンディングボックスを初期化
+		this->resourcesManager->LoadMesh("shipBody", this->enemyShip[count].player.shipBody);
+		this->resourcesManager->LoadTexture("shipBody", &this->enemyShip[count].player.shipBody->meshTexturePoint);
+		this->resourcesManager->LoadMesh("shipCannon", this->enemyShip[count].player.shipCannon);
+		this->resourcesManager->LoadTexture("shipCannon", &this->enemyShip[count].player.shipCannon->meshTexturePoint);
+		this->enemyShip[count].check->InitBox(4, 7, 8, 0.1f);	// バウンディングボックスを初期化
 		this->enemyShip[count].Trans((rand() % 80) / 180.0f * D3DX_PI);		// 向きを決める
 	}
 
@@ -130,7 +132,7 @@ void Scene00::InitScene00()
 	// カメラ
 	this->camera->InitCameraByPlayer(this->ship);
 
-	std::cout << "[State] BoundingBox: " << std::boolalpha << this->ship->boundingBox->isBoundingBoxDraw << std::endl;
+	std::cout << "[State] BoundingBox: " << std::boolalpha << this->ship->check->isBoundingBoxDraw << std::endl;
 }
 
 //*****************************************************************************
@@ -261,6 +263,9 @@ void Scene00::Draw()
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
+	// VP行列を求める
+	D3DXMATRIX VPmatrix = this->camera->viewMatrix * this->camera->projectionMatrix;
+
 	// フォグ
 
 	// フィールド
@@ -326,71 +331,53 @@ void Scene00::Draw()
 
 	// ship
 	{
-		// VP行列を求める
-		D3DXMATRIX VPmatrix = this->camera->viewMatrix * this->camera->projectionMatrix;
+		// モデルを描画する
 		this->ship->Draw(this->celShader, &VPmatrix);
 
+		// バウンディングボックス
+		this->ship->check->Draw(this->shader, &VPmatrix);
+		this->ship->space->Draw(this->shader, &VPmatrix);
+
+		//if (this->ship->check->isBoundingBoxDraw == true)
+		//{
+		//	// テクニックを設定
+		//	this->shader->shaderHandle = this->shader->effectPoint->GetTechniqueByName("RenderWithoutTextrue");
+		//	this->shader->effectPoint->SetTechnique(this->shader->shaderHandle);
+
+		//	// ワールド変換、ビューイング変換、プロジェクション変換マトリックス
+		//	this->shader->effectPoint->SetMatrix(this->shader->WMatrixHandle, &this->ship->worldMatrix);
+		//	D3DXMATRIX VPmatrix = this->camera->viewMatrix * this->camera->projectionMatrix;
+		//	this->shader->effectPoint->SetMatrix(this->shader->VPMatrixHandle, &VPmatrix);
+
+		//	// アルファ値の設定(テクスチャ無し)
+		//	this->shader->effectPoint->SetFloat(this->shader->alphaHandle, 0.5f);
+
+		//	UINT passNum = 0;
+		//	this->shader->effectPoint->Begin(&passNum, 0);
+		//	for (int count = 0; count < passNum; count++)
+		//	{
+		//		this->shader->effectPoint->BeginPass(0);
+
+		//		this->ship->check->Draw();
+
+		//		this->shader->effectPoint->EndPass();
+		//	}
+		//	this->shader->effectPoint->End();
+		//}		
+	
 		// シャドー
 		//this->shadowMap->effectPoint->SetTechnique("");
-
-		// バウンディングボックス
-		if (this->ship->boundingBox->isBoundingBoxDraw == true)
-		{
-			// テクニックを設定
-			this->shader->shaderHandle = this->shader->effectPoint->GetTechniqueByName("RenderWithoutTextrue");
-			this->shader->effectPoint->SetTechnique(this->shader->shaderHandle);
-
-			// ワールド変換、ビューイング変換、プロジェクション変換マトリックス
-			this->shader->effectPoint->SetMatrix(this->shader->WMatrixHandle, &this->ship->worldMatrix);
-			D3DXMATRIX VPmatrix = this->camera->viewMatrix * this->camera->projectionMatrix;
-			this->shader->effectPoint->SetMatrix(this->shader->VPMatrixHandle, &VPmatrix);
-
-			// アルファ値の設定(テクスチャ無し)
-			this->shader->effectPoint->SetFloat(this->shader->alphaHandle, 0.5f);
-
-			UINT passNum = 0;
-			this->shader->effectPoint->Begin(&passNum, 0);
-			for (int count = 0; count < passNum; count++)
-			{
-				this->shader->effectPoint->BeginPass(0);
-
-				this->ship->boundingBox->Draw();
-
-				this->shader->effectPoint->EndPass();
-			}
-			this->shader->effectPoint->End();
-		}		
 	}
 
 	// エネミー
 	{
-		//for (int count1 = 0; count1 < ENEMY_MAX; count1++)
-		//{
-		//	if (this->enemyShip[count1].this->isLife == true)
-		//	{
-		//		this->celShader->effectPoint->SetTechnique(this->celShader->this->celShaderHandle);	// テクニックを設定
-
-		//		this->enemyShip[count1].SetWorldMatrix();
-		//		this->celShader->effectPoint->SetMatrix(this->celShader->WMatrixHandle, &this->enemyShip[count1].worldMatrix);
-		//		D3DXMATRIX enemyVPmatrix = this->camera->viewMatrix * this->camera->projectionMatrix;
-		//		this->celShader->effectPoint->SetMatrix(this->celShader->this->VPMatrixHandle, &enemyVPmatrix);
-
-		//		bool isShip = true;
-		//		this->celShader->effectPoint->SetInt(this->celShader->this->typeHandle, enemy);
-
-		//		UINT passNum = 0;	// パスの数
-		//		this->celShader->effectPoint->Begin(&passNum, 0);
-		//		for (int count = 0; count < passNum; count++)	// 各パスによって描画する
-		//		{
-		//			this->celShader->effectPoint->BeginPass(count);
-
-		//			this->enemyShip[count1].Draw(this->celShader);
-
-		//			this->celShader->effectPoint->EndPass();
-		//		}
-		//		this->celShader->effectPoint->End();
-		//	}
-		//}
+		/*for (int count1 = 0; count1 < ENEMY_MAX; count1++)
+		{
+			if (this->enemyShip[count1].isLife == true)
+			{
+				this->enemyShip[count1].Draw(this->celShader, &VPmatrix);
+			}
+		}*/
 	}
 
 	// 弾
@@ -528,36 +515,40 @@ void Scene00::Control()
 	if (GetKeyboardTrigger(DIK_3))	// バウンディングボックスをコントロール
 	{
 		// プレーヤー
-		this->ship->boundingBox->isBoundingBoxDraw = !this->ship->boundingBox->isBoundingBoxDraw;	// バウンディングボックスをコントロール
-			
+		this->ship->check->isBoundingBoxDraw = !this->ship->check->isBoundingBoxDraw;	// バウンディングボックスをコントロール
+		this->ship->space->isBoundingBoxDraw = !this->ship->space->isBoundingBoxDraw;	// バウンディングボックスをコントロール
+
 		// エネミー
 		for (int count = 0; count < ENEMY_MAX; count++)
 		{
-			this->enemyShip[count].boundingBox->isBoundingBoxDraw = !this->enemyShip[count].boundingBox->isBoundingBoxDraw;
+			this->enemyShip[count].check->isBoundingBoxDraw = !this->enemyShip[count].check->isBoundingBoxDraw;
+			this->enemyShip[count].space->isBoundingBoxDraw = !this->enemyShip[count].space->isBoundingBoxDraw;
 		}
 			
 		// 弾
 		for (int count = 0; count < BULLET_MAX; count++)
 		{
-			this->bullet[count].boundingBox->isBoundingBoxDraw = !this->bullet[count].boundingBox->isBoundingBoxDraw;
+			this->bullet[count].check->isBoundingBoxDraw = !this->bullet[count].check->isBoundingBoxDraw;
+			this->bullet[count].space->isBoundingBoxDraw = !this->bullet[count].space->isBoundingBoxDraw;
 		}
-		std::cout << "[State] BoundingBox: " << std::boolalpha << this->ship->boundingBox->isBoundingBoxDraw << std::endl;
+
+		std::cout << "[State] BoundingBox: " << std::boolalpha << this->ship->check->isBoundingBoxDraw << std::endl;
 	}
 }
 
 //*****************************************************************************
 //
-// 当たり判定
+// 当たり判定(長方形)
 //
 //*****************************************************************************
 bool Scene00::CheckBB(Bullet* bullet, Enemy* enemy)
 {
 	// 弾
 	D3DXVECTOR3 bulletPos = bullet->pos;
-	D3DXVECTOR3 bulletBoxSize = bullet->boundingBox->size;
+	D3DXVECTOR3 bulletBoxSize = bullet->check->size;
 	// エネミー
 	D3DXVECTOR3 enemyPos = enemy->pos;
-	D3DXVECTOR3 enemyBoxSize = enemy->boundingBox->size;
+	D3DXVECTOR3 enemyBoxSize = enemy->check->size;
 
 	if (
 		bulletPos.x + bulletBoxSize.x / 2 > enemyPos.x - enemyBoxSize.x / 2 &&
@@ -567,6 +558,29 @@ bool Scene00::CheckBB(Bullet* bullet, Enemy* enemy)
 		bulletPos.z + bulletBoxSize.z / 2 > enemyPos.z - enemyBoxSize.z / 2 &&
 		bulletPos.z - bulletBoxSize.z / 2 < enemyPos.z + enemyBoxSize.z / 2
 		)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+//*****************************************************************************
+//
+// 当たり判定(円)
+//
+//*****************************************************************************
+bool Scene00::CheckBC(Bullet* bullet, Enemy* enemy)
+{
+	D3DXVECTOR3 temp = bullet->pos - enemy->pos;
+	float fTempLenghtSq = D3DXVec3LengthSq(&temp);
+
+	float bulletR = bullet->check->radius;
+	float enemyR = enemy->check->radius;
+
+	if (fTempLenghtSq <= (bulletR + enemyR) * (bulletR + enemyR))
 	{
 		return true;
 	}

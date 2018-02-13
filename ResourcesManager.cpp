@@ -24,7 +24,7 @@ ResourcesManager::ResourcesManager()
 
 	this->textureList["fieldTransparent"] = "data/TEXTURE/field003.png";
 	this->textureList["fieldSea"] = "data/TEXTURE/sea3k.png";
-	this->textureList["fieldSea2"] = "data/TEXTURE/sea3k2.png";
+	this->textureList["fieldSea2"] = "data/TEXTURE/sea4.png";
 
 	this->textureList["title"] = "data/TEXTURE/title.png";
 	this->textureList["ending"] = "data/TEXTURE/ending.png";
