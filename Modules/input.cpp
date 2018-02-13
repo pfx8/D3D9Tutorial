@@ -534,9 +534,6 @@ void UpdatePad(void)
 		//* OPTIONSボタン
 		if ( dijs.rgbButtons[9] & 0x80 )	padState[i] |= BUTTON_OPTIONS;
 
-		// test
-		std::cout << "--------->" << dijs.lZ << std::endl;
-
 		// Trigger設定
 		padTrigger[i] = ((lastPadState ^ padState[i])	// 前回と違っていて
 						& padState[i]);					// しかも今ONのやつ

@@ -40,7 +40,7 @@ public:
 
 	HRESULT InitSkyBox(float length);		// スカイボックスを初期化
 	void SetWorldMatrix();					// 臨時ーーワールド変換
-	void Draw();							// スカイボックスを描画
+	void Draw(Shader* shader, D3DXMATRIX* VPMatrix);							// スカイボックスを描画
 };
 
 #endif // !_SKY_BOX_H_

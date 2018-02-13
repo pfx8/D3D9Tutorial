@@ -20,11 +20,6 @@ SkyBox::SkyBox()
 	this->vertexDecl = NULL;
 
 	this->texture = NULL;
-	/*this->texture[0] = NULL;
-	this->texture[1] = NULL;
-	this->texture[2] = NULL;
-	this->texture[3] = NULL;
-	this->texture[4] = NULL;*/
 
 	this->length = 0.0f;
 	this->pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
@@ -42,11 +37,6 @@ SkyBox::~SkyBox()
 	RELEASE_POINT(this->vertexDecl);
 
 	RELEASE_POINT(this->texture);
-	/*RELEASE_POINT(this->texture[0]);
-	RELEASE_POINT(this->texture[1]);
-	RELEASE_POINT(this->texture[2]);
-	RELEASE_POINT(this->texture[3]);
-	RELEASE_POINT(this->texture[4]);*/
 }
 
 //*****************************************************************************
@@ -68,7 +58,7 @@ HRESULT SkyBox::InitSkyBox(float length)
 		pDevice->CreateVertexDeclaration(boundingBoxDecl, &this->vertexDecl);
 
 		// オブジェクトの頂点バッファを生成
-		if (FAILED(pDevice->CreateVertexBuffer(20 * sizeof(SKYBOXVERTEX), D3DUSAGE_WRITEONLY, 0, D3DPOOL_DEFAULT, &this->vertexBuffer, NULL)))
+		if (FAILED(pDevice->CreateVertexBuffer(16 * sizeof(SKYBOXVERTEX), D3DUSAGE_WRITEONLY, 0, D3DPOOL_DEFAULT, &this->vertexBuffer, NULL)))
 		{
 			std::cout << "[Error] 頂点バッファが生成できない!" << std::endl;	// エラーメッセージ
 			return E_FAIL;
@@ -78,34 +68,39 @@ HRESULT SkyBox::InitSkyBox(float length)
 		SKYBOXVERTEX vertex[] =
 		{
 			// 前
-			{ D3DXVECTOR3(-length / 2, 0.0f,       length / 2), D3DXVECTOR2(0.0f, 1.0f) },
 			{ D3DXVECTOR3(-length / 2, length / 2, length / 2), D3DXVECTOR2(0.0f, 0.0f) },
-			{ D3DXVECTOR3( length / 2, 0.0f,       length / 2), D3DXVECTOR2(0.2f, 1.0f) },
-			{ D3DXVECTOR3( length / 2, length / 2, length / 2), D3DXVECTOR2(0.2f, 0.0f) },
+			{ D3DXVECTOR3( length / 2, length / 2, length / 2), D3DXVECTOR2(0.25f, 0.0f) },
+			{ D3DXVECTOR3(-length / 2, 0.0f,       length / 2), D3DXVECTOR2(0.0f, 1.0f) },
+			{ D3DXVECTOR3( length / 2, 0.0f,       length / 2), D3DXVECTOR2(0.25f, 1.0f) },
+
 
 			// 後ろ
-			{ D3DXVECTOR3( length / 2, 0.0f,       -length / 2), D3DXVECTOR2(0.2f, 1.0f) },
-			{ D3DXVECTOR3( length / 2, length / 2, -length / 2), D3DXVECTOR2(0.2f, 0.0f) },
-			{ D3DXVECTOR3(-length / 2, 0.0f,       -length / 2), D3DXVECTOR2(0.4f, 1.0f) },
-			{ D3DXVECTOR3(-length / 2, length / 2, -length / 2), D3DXVECTOR2(0.4f, 0.0f) },
+			{ D3DXVECTOR3( length / 2, length / 2, -length / 2), D3DXVECTOR2(0.25f, 0.0f) },
+			{ D3DXVECTOR3(-length / 2, length / 2, -length / 2), D3DXVECTOR2(0.5f, 0.0f) },
+			{ D3DXVECTOR3( length / 2, 0.0f,       -length / 2), D3DXVECTOR2(0.25f, 1.0f) },
+			{ D3DXVECTOR3(-length / 2, 0.0f,       -length / 2), D3DXVECTOR2(0.5f, 1.0f) },
+
 
 			// 左
-			{ D3DXVECTOR3(-length / 2, 0.0f,       -length / 2), D3DXVECTOR2(0.4f, 1.0f) },
-			{ D3DXVECTOR3(-length / 2, length / 2, -length / 2), D3DXVECTOR2(0.4f, 0.0f) },
-			{ D3DXVECTOR3(-length / 2, 0.0f,        length / 2), D3DXVECTOR2(0.6f, 1.0f) },
-			{ D3DXVECTOR3(-length / 2, length / 2,  length / 2), D3DXVECTOR2(0.6f, 0.0f) },
+			{ D3DXVECTOR3(-length / 2, length / 2, -length / 2), D3DXVECTOR2(0.5f, 0.0f) },
+			{ D3DXVECTOR3(-length / 2, length / 2,  length / 2), D3DXVECTOR2(0.75f, 0.0f) },
+			{ D3DXVECTOR3(-length / 2, 0.0f,       -length / 2), D3DXVECTOR2(0.5f, 1.0f) },
+			{ D3DXVECTOR3(-length / 2, 0.0f,        length / 2), D3DXVECTOR2(0.75f, 1.0f) },
+
 
 			// 右
-			{ D3DXVECTOR3(length / 2, 0.0f,        length / 2), D3DXVECTOR2(0.6f, 1.0f) },
-			{ D3DXVECTOR3(length / 2, length / 2,  length / 2), D3DXVECTOR2(0.6f, 0.0f) },
-			{ D3DXVECTOR3(length / 2, 0.0f,       -length / 2), D3DXVECTOR2(0.8f, 1.0f) },
-			{ D3DXVECTOR3(length / 2, length / 2, -length / 2), D3DXVECTOR2(0.8f, 0.0f) },
+			{ D3DXVECTOR3(length / 2, length / 2,  length / 2), D3DXVECTOR2(0.75f, 0.0f) },
+			{ D3DXVECTOR3(length / 2, length / 2, -length / 2), D3DXVECTOR2(1.0f, 0.0f) },
+			{ D3DXVECTOR3(length / 2, 0.0f,        length / 2), D3DXVECTOR2(0.75f, 1.0f) },
+			{ D3DXVECTOR3(length / 2, 0.0f,       -length / 2), D3DXVECTOR2(1.0f, 1.0f) },
 
-			// 上
-			{ D3DXVECTOR3( length / 2, length / 2, -length / 2), D3DXVECTOR2(0.0f, 1.0f) },
-			{ D3DXVECTOR3( length / 2, length / 2,  length / 2), D3DXVECTOR2(0.0f, 0.0f) },
-			{ D3DXVECTOR3(-length / 2, length / 2, -length / 2), D3DXVECTOR2(1.0f, 1.0f) },
-			{ D3DXVECTOR3(-length / 2, length / 2,  length / 2), D3DXVECTOR2(1.0f, 0.0f) },
+
+			//// 上
+			//{ D3DXVECTOR3( length / 2, length / 2,  length / 2), D3DXVECTOR2(0.8f, 0.0f) },
+			//{ D3DXVECTOR3(-length / 2, length / 2,  length / 2), D3DXVECTOR2(1.0f, 0.0f) },
+			//{ D3DXVECTOR3( length / 2, length / 2, -length / 2), D3DXVECTOR2(0.8f, 1.0f) },
+			//{ D3DXVECTOR3(-length / 2, length / 2, -length / 2), D3DXVECTOR2(1.0f, 1.0f) },
+
 
 		};
 
@@ -123,7 +118,7 @@ HRESULT SkyBox::InitSkyBox(float length)
 
 	{// インデックス設計
 		//オブジェクトの頂点インデックスバッファを生成
-		if (FAILED(pDevice->CreateIndexBuffer(6 * sizeof(WORD), 0, D3DFMT_INDEX16, D3DPOOL_DEFAULT, &this->indexBuffer, NULL)))
+		if (FAILED(pDevice->CreateIndexBuffer(24 * sizeof(WORD), 0, D3DFMT_INDEX16, D3DPOOL_DEFAULT, &this->indexBuffer, NULL)))
 		{
 			std::cout << "[Error] 頂点インデクスが生成できない!" << std::endl;	// エラーメッセージ
 			return E_FAIL;
@@ -148,9 +143,9 @@ HRESULT SkyBox::InitSkyBox(float length)
 		vertexIndex[18] = 12, vertexIndex[19] = 13, vertexIndex[20] = 14;
 		vertexIndex[21] = 13, vertexIndex[22] = 14, vertexIndex[23] = 15;
 
-		// 上
-		vertexIndex[24] = 16, vertexIndex[25] = 17, vertexIndex[26] = 18;
-		vertexIndex[27] = 17, vertexIndex[28] = 18, vertexIndex[29] = 19;
+		//// 上
+		//vertexIndex[24] = 16, vertexIndex[25] = 17, vertexIndex[26] = 18;
+		//vertexIndex[27] = 17, vertexIndex[28] = 18, vertexIndex[29] = 19;
 
 		// インデックス データのロックを解除する
 		this->indexBuffer->Unlock();
@@ -184,12 +179,38 @@ void SkyBox::SetWorldMatrix()
 // スカイボックスを描画
 //
 //*****************************************************************************
-void SkyBox::Draw()
+void SkyBox::Draw(Shader* shader, D3DXMATRIX* VPMatrix)
 {
 	PDIRECT3DDEVICE9 pDevice = GetDevice();
 
-	pDevice->SetVertexDeclaration(this->vertexDecl);							// 頂点宣言を設定
-	pDevice->SetStreamSource(0, this->vertexBuffer, 0, sizeof(SKYBOXVERTEX));	// 頂点バッファをデバイスのデータストリームにバイナリ
-	pDevice->SetIndices(this->indexBuffer);										// 頂点イデックスの設定
-	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 17, 0, 16);			// バウンディングボックスの描画
+	// テクニックを設定
+	shader->shaderHandle = shader->effectPoint->GetTechniqueByName("RenderWithTextrue");
+	shader->effectPoint->SetTechnique(shader->shaderHandle);
+
+	// ワールド変換、ビューイング変換、プロジェクション変換マトリックス
+	SetWorldMatrix();
+	shader->effectPoint->SetMatrix(shader->WMatrixHandle, &this->worldMatrix);
+	shader->effectPoint->SetMatrix(shader->VPMatrixHandle, VPMatrix);
+
+	// テクスチャの設定
+	shader->effectPoint->SetTexture(shader->textureHandle, this->texture);
+
+	// 描画
+	UINT passNum = 0;
+	shader->effectPoint->Begin(&passNum, 0);
+	// 各パスを実行する
+	for (int count = 0; count < passNum; count++)
+	{
+		shader->effectPoint->BeginPass(0);
+
+		pDevice->SetVertexDeclaration(this->vertexDecl);							// 頂点宣言を設定
+		pDevice->SetStreamSource(0, this->vertexBuffer, 0, sizeof(SKYBOXVERTEX));	// 頂点バッファをデバイスのデータストリームにバイナリ
+		pDevice->SetIndices(this->indexBuffer);										// 頂点イデックスの設定
+		pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 17, 0, 16);			// バウンディングボックスの描画
+
+		shader->effectPoint->EndPass();
+	}
+	shader->effectPoint->End();
+
+
 }

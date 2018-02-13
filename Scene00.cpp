@@ -77,7 +77,7 @@ void Scene00::InitScene00()
 
 	// スカイボックス
 	this->skyBox->InitSkyBox(2500.0f);
-	this->resourcesManager->LoadTexture("skybox", &this->skyBox->texture);
+	this->resourcesManager->LoadTexture("skybox2", &this->skyBox->texture);
 
 	// フィールド
 	this->sea->InitPlane(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(17.0f, 17.0f), D3DXVECTOR2(150, 150));
@@ -294,31 +294,33 @@ void Scene00::Draw()
 
 	// スカイボックス
 	{
-		// テクニックを設定
-		this->shader->shaderHandle = this->shader->effectPoint->GetTechniqueByName("RenderWithTextrue");
-		this->shader->effectPoint->SetTechnique(this->shader->shaderHandle);
+		//// テクニックを設定
+		//this->shader->shaderHandle = this->shader->effectPoint->GetTechniqueByName("RenderWithTextrue");
+		//this->shader->effectPoint->SetTechnique(this->shader->shaderHandle);
 
-		// ワールド変換、ビューイング変換、プロジェクション変換マトリックス
-		this->skyBox->SetWorldMatrix();
-		this->shader->effectPoint->SetMatrix(this->shader->WMatrixHandle, &this->skyBox->worldMatrix);
-		D3DXMATRIX skyBoxVPmatrix = this->camera->viewMatrix * this->camera->projectionMatrix;
-		this->shader->effectPoint->SetMatrix(this->shader->VPMatrixHandle, &skyBoxVPmatrix);
+		//// ワールド変換、ビューイング変換、プロジェクション変換マトリックス
+		//this->skyBox->SetWorldMatrix();
+		//this->shader->effectPoint->SetMatrix(this->shader->WMatrixHandle, &this->skyBox->worldMatrix);
+		//D3DXMATRIX skyBoxVPmatrix = this->camera->viewMatrix * this->camera->projectionMatrix;
+		//this->shader->effectPoint->SetMatrix(this->shader->VPMatrixHandle, &skyBoxVPmatrix);
 
-		// テクスチャの設定
-		this->shader->effectPoint->SetTexture(this->shader->textureHandle, this->skyBox->texture);
+		//// テクスチャの設定
+		//this->shader->effectPoint->SetTexture(this->shader->textureHandle, this->skyBox->texture);
 
-		// 描画
-		UINT passNum = 0;
-		this->shader->effectPoint->Begin(&passNum, 0);
-		// 各パスを実行する
-		for (int count = 0; count < passNum; count++)
-		{
-			this->shader->effectPoint->BeginPass(0);
-			this->skyBox->Draw();
+		//// 描画
+		//UINT passNum = 0;
+		//this->shader->effectPoint->Begin(&passNum, 0);
+		//// 各パスを実行する
+		//for (int count = 0; count < passNum; count++)
+		//{
+		//	this->shader->effectPoint->BeginPass(0);
+		//	this->skyBox->Draw();
 
-			this->shader->effectPoint->EndPass();
-		}
-		this->shader->effectPoint->End();
+		//	this->shader->effectPoint->EndPass();
+		//}
+		//this->shader->effectPoint->End();
+
+		this->skyBox->Draw(this->shader, &VPmatrix);
 	}
 
 	// オブジェクト種類番号
