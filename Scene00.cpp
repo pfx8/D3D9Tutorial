@@ -78,11 +78,6 @@ void Scene00::InitScene00()
 	// スカイボックス
 	this->skyBox->InitSkyBox(2500.0f);
 	this->resourcesManager->LoadTexture("skybox", &this->skyBox->texture);
-	/*this->resourcesManager->LoadTexture("front", &this->skyBox->texture[0]);
-	this->resourcesManager->LoadTexture("back", &this->skyBox->texture[1]);
-	this->resourcesManager->LoadTexture("left", &this->skyBox->texture[2]);
-	this->resourcesManager->LoadTexture("right", &this->skyBox->texture[3]);
-	this->resourcesManager->LoadTexture("top", &this->skyBox->texture[4]);*/
 
 	// フィールド
 	this->sea->InitPlane(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(17.0f, 17.0f), D3DXVECTOR2(150, 150));
