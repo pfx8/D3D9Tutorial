@@ -24,7 +24,7 @@ Light::Light()
 	this->light.Diffuse = D3DXCOLOR(1.0f, 1.0f, 0.95f, 1.0f);	// 拡散反射光(モデル本来のカラー)
 	this->light.Specular = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// 鏡面反射光
 
-	this->light.Direction = D3DXVECTOR3(1.0f, -1.0f, 0.0f);		// 光の方向
+	this->light.Direction = D3DXVECTOR3(1.0f, 1.0f, 1.0f);		// 光の方向
 
 	pDevice->SetLight(0, &this->light);
 	pDevice->LightEnable(0, true);
