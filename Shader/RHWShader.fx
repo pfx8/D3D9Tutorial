@@ -39,7 +39,6 @@ float4 RHWPixelShader(float2 pos : POSITIONT,
     {
         diffuse *= alpha;
     }
-    //diffuse.a = 0.3;
 
     return diffuse;
     }

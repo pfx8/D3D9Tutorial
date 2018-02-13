@@ -80,7 +80,7 @@ void Character::PosToMessageAndMessageDraw(int row)
 	D3DXVECTOR3 temp2;
 	temp2.x = leftTime;
 	temp2.y = rightTime;
-	temp2.z = 0;
+	temp2.z = D3DXToDegree(rot.y);
 
 	//this->message->DrawPosMessage("Light", temp, D3DXVECTOR2(0, float((row + 0) * 18)));
 	this->message->DrawPosMessage("time", temp2, D3DXVECTOR2(0, float((row + 0) * 18)));
@@ -131,13 +131,13 @@ void Character::Update(float rot)
 
 	if (GetKeyboardPress(DIK_A))	// 左回転
 	{
-		// 更新キャラクターをカメラの回転角度
-		this->RotationVecUp(-0.05f / 180.0f * D3DX_PI);
+		// 更新キャラクターをカメラの回転角度0.05
+		this->RotationVecUp(-0.5f / 180.0f * D3DX_PI);
 	}
 	else if (GetKeyboardPress(DIK_D))	// 右回転
 	{
 		// 更新キャラクターをカメラの回転角度
-		this->RotationVecUp(0.05f / 180.0f * D3DX_PI);
+		this->RotationVecUp(0.5f / 180.0f * D3DX_PI);
 	}
 
 	// テスト、HP減り
@@ -145,7 +145,6 @@ void Character::Update(float rot)
 	{
 		this->HP -= 1;
 	}
-
 
 	// 波に合わせて揺れる
 	this->waveAngle = rot;
@@ -225,6 +224,15 @@ void Character::RotationVecUp(float angle)
 {
 	// 角度を記録する
 	this->rot.y += angle;
+
+	if (this->rot.y >= D3DXToRadian(360.0f))
+	{
+		this->rot.y = 0.0f;
+	}
+	if (this->rot.y <= D3DXToRadian(-360.0f))
+	{
+		this->rot.y = 0.0f;
+	}
 
 	D3DXMATRIX rotMatrix;
 	D3DXMatrixRotationAxis(&rotMatrix, &this->upVector, angle);					// 回転行列を作る
