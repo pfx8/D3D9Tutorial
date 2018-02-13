@@ -424,7 +424,8 @@ void Scene00::Draw()
 void Scene00::Control()
 {
 	// プレーヤー攻撃
-	if (GetKeyboardTrigger(DIK_SPACE) && this->camera->isShooting != IS_no)	// 攻撃
+	if (GetKeyboardTrigger(DIK_SPACE) && this->camera->isShooting != IS_no 
+		&& (this->ship->leftTime == 0 || this->ship->rightTime))		// 攻撃
 	{
 		// 臨時値
 		int i = 0;

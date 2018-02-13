@@ -129,7 +129,8 @@ void Character::Update(float rot)
 		this->RotationVecUp(0.05f / 180.0f * D3DX_PI);
 	}
 
-	if (GetKeyboardTrigger(DIK_P))	// 前に進む
+	// テスト、HP減り
+	if (GetKeyboardTrigger(DIK_P))
 	{
 		this->HP -= 1;
 	}

@@ -22,6 +22,8 @@
 
 #define MAX_HP						(3)
 
+#define BULLET_TIME					(3.0f)
+
 struct PlayerModel
 {
 	Model*			shipBody;
@@ -46,15 +48,15 @@ private:
 
 public:
 	LEVER_LEVEL		leverLevel;		// 船のレバー操作
-	double			speed; // スピードに関する倍数
+	double			speed;			// スピードに関する倍数
 	DebugMessage*	message;		// Debugメッセージ
-	float			waveAngle;	// 揺れ係数
+	float			waveAngle;		// 揺れ係数
 	D3DXMATRIX		worldMatrix;	// ワールド変換マトリックス
 	D3DXMATRIX		lightMatrix;	// ライトマトリックス
 
 	// ベクトル
 	D3DXVECTOR3		upVector;		// カメラの上方向ベクトル
-	D3DXVECTOR3		lookVector;	// カメラの注視方向ベクトル
+	D3DXVECTOR3		lookVector;		// カメラの注視方向ベクトル
 	D3DXVECTOR3		rightVector;	// カメラの右方向ベクトル
 
 	// 固定属性
@@ -66,6 +68,9 @@ public:
 	BoundingBox*	boundingBox;	// バウンディングボックス
 	
 	int				HP;
+
+	float			leftTime;
+	float			rightTime;
 
 	Character();
 	~Character();

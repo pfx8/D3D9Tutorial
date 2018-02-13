@@ -23,8 +23,8 @@ ScreenPolygon::ScreenPolygon()
 	this->UIminiMapPlayerTexture = NULL;
 	this->UIminiMapEnemyVertexBuffer = NULL;
 	this->UIminiMapEnemyTexture = NULL;
-	this->UIKeyVertexBuffer = NULL;
-	this->UIKeyTexture = NULL;
+	this->UIleftVertexBuffer = NULL;
+	this->UIleftTexture = NULL;
 
 	this->HP = 3;
 	this->UIHPVertexBuffer[0] = NULL;
@@ -38,6 +38,11 @@ ScreenPolygon::ScreenPolygon()
 	this->UIstopTexture = NULL;
 	this->UIgouVertexBuffer = NULL;
 	this->UIgouTexture = NULL;
+
+	this->UIleftVertexBuffer = NULL;
+	this->UIleftTexture = NULL;
+	this->UIrightVertexBuffer = NULL;
+	this->UIrightTexture = NULL;
 
 	// シェーダーを初期化
 	this->RHWshader = new RHWShader;
@@ -55,7 +60,8 @@ ScreenPolygon::ScreenPolygon()
 	this->resourcesManager->LoadTexture("UIstop", &this->UIstopTexture);
 	this->resourcesManager->LoadTexture("UIgou", &this->UIgouTexture);
 
-	this->resourcesManager->LoadTexture("UIkey", &this->UIKeyTexture);
+	this->resourcesManager->LoadTexture("UIleft", &this->UIleftTexture);
+	this->resourcesManager->LoadTexture("UIright", &this->UIrightTexture);
 
 	MakeVertexDecl();
 	MakeIndex();
@@ -71,7 +77,8 @@ ScreenPolygon::ScreenPolygon()
 	MakeVertex(D3DXVECTOR2(90, SCREEN_HEIGHT - 120 - 40 - 20), D3DXVECTOR2(60, 60), &this->UIstopVertexBuffer);
 	MakeVertex(D3DXVECTOR2(60, SCREEN_HEIGHT - 60 - 40), D3DXVECTOR2(120, 60), &this->UIgouVertexBuffer);
 
-	MakeVertex(D3DXVECTOR2(0, SCREEN_HEIGHT - 200), D3DXVECTOR2(200, 200), &this->UIKeyVertexBuffer);
+	MakeVertex(D3DXVECTOR2(SCREEN_WIDTH - 90, 50), D3DXVECTOR2(50, 50), &this->UIrightVertexBuffer);
+	MakeVertex(D3DXVECTOR2(SCREEN_WIDTH - 160, 50), D3DXVECTOR2(50, 50), &this->UIleftVertexBuffer);
 }
 
 //*****************************************************************************
@@ -111,8 +118,8 @@ ScreenPolygon::~ScreenPolygon()
 	RELEASE_POINT(this->UIHPVertexBuffer[1]); 
 	RELEASE_POINT(this->UIHPVertexBuffer[2]);
 	RELEASE_POINT(this->UIHPTexture);
-	RELEASE_POINT(this->UIKeyVertexBuffer);
-	RELEASE_POINT(this->UIKeyTexture);
+	RELEASE_POINT(this->UIleftVertexBuffer);
+	RELEASE_POINT(this->UIleftTexture);
 
 	RELEASE_CLASS_POINT(this->resourcesManager);
 }
@@ -233,7 +240,8 @@ void ScreenPolygon::Draw()
 	DrawObject(this->UIgouVertexBuffer, this->UIgouTexture, LL_BACK);
 
 	// 操作ボタン
-	//DrawObject(this->UIKeyVertexBuffer, this->UIKeyTexture);
+	DrawObject(this->UIleftVertexBuffer, this->UIleftTexture);
+	DrawObject(this->UIrightVertexBuffer, this->UIrightTexture);
 }
 
 //*****************************************************************************

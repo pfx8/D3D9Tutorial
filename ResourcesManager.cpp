@@ -42,7 +42,8 @@ ResourcesManager::ResourcesManager()
 	this->textureList["UIstop"] = "data/TEXTURE/UI/stop.png";
 	this->textureList["UIgou"] = "data/TEXTURE/UI/gou.png";
 
-	this->textureList["UIkey"] = "data/TEXTURE/UI/key.png";
+	this->textureList["UIleft"] = "data/TEXTURE/UI/left.png";
+	this->textureList["UIright"] = "data/TEXTURE/UI/right.png";
 
 	this->textureList["NULL"] = "NULL";
 

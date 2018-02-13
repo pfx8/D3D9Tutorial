@@ -57,8 +57,11 @@ public:
 	LPDIRECT3DTEXTURE9				UIgouTexture;			// フィールドテクスチャ
 	LEVER_LEVEL						level;					// 船の状態
 
-	LPDIRECT3DVERTEXBUFFER9			UIKeyVertexBuffer;		// 頂点バッファへのポインタ
-	LPDIRECT3DTEXTURE9				UIKeyTexture;			// フィールドテクスチャ
+	LPDIRECT3DVERTEXBUFFER9			UIleftVertexBuffer;		// 頂点バッファへのポインタ
+	LPDIRECT3DTEXTURE9				UIleftTexture;			// フィールドテクスチャ
+
+	LPDIRECT3DVERTEXBUFFER9			UIrightVertexBuffer;		// 頂点バッファへのポインタ
+	LPDIRECT3DTEXTURE9				UIrightTexture;			// フィールドテクスチャ
 
 	ScreenPolygon();
 	~ScreenPolygon();
