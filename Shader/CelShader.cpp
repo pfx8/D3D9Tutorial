@@ -96,5 +96,5 @@ void CelShader::GetShaderParameter()
 	this->WMatrixHandle = this->effectPoint->GetParameterByName(0, "WMatrix");
 	this->VPMatrixHandle = this->effectPoint->GetParameterByName(0, "VPMatrix");
 	this->lightingHandle = this->effectPoint->GetParameterByName(0, "LightDirection");
-	this->typeHandle = this->effectPoint->GetParameterByName(0, "type");
+	this->typeHandle = this->effectPoint->GetParameterByName(0, "ObjType");
 }

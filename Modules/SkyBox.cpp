@@ -73,27 +73,23 @@ HRESULT SkyBox::InitSkyBox(float length)
 			{ D3DXVECTOR3(-length / 2, 0.0f,       length / 2), D3DXVECTOR2(0.0f, 1.0f) },
 			{ D3DXVECTOR3( length / 2, 0.0f,       length / 2), D3DXVECTOR2(0.25f, 1.0f) },
 
+			// 右
+			{ D3DXVECTOR3(length / 2, length / 2,  length / 2), D3DXVECTOR2(0.25f, 0.0f) },
+			{ D3DXVECTOR3(length / 2, length / 2, -length / 2), D3DXVECTOR2(0.5f, 0.0f) },
+			{ D3DXVECTOR3(length / 2, 0.0f,        length / 2), D3DXVECTOR2(0.25f, 1.0f) },
+			{ D3DXVECTOR3(length / 2, 0.0f,       -length / 2), D3DXVECTOR2(0.5f, 1.0f) },
 
 			// 後ろ
-			{ D3DXVECTOR3( length / 2, length / 2, -length / 2), D3DXVECTOR2(0.25f, 0.0f) },
-			{ D3DXVECTOR3(-length / 2, length / 2, -length / 2), D3DXVECTOR2(0.5f, 0.0f) },
-			{ D3DXVECTOR3( length / 2, 0.0f,       -length / 2), D3DXVECTOR2(0.25f, 1.0f) },
-			{ D3DXVECTOR3(-length / 2, 0.0f,       -length / 2), D3DXVECTOR2(0.5f, 1.0f) },
-
+			{ D3DXVECTOR3( length / 2, length / 2, -length / 2), D3DXVECTOR2(0.5f, 0.0f) },
+			{ D3DXVECTOR3(-length / 2, length / 2, -length / 2), D3DXVECTOR2(0.75f, 0.0f) },
+			{ D3DXVECTOR3( length / 2, 0.0f,       -length / 2), D3DXVECTOR2(0.5f, 1.0f) },
+			{ D3DXVECTOR3(-length / 2, 0.0f,       -length / 2), D3DXVECTOR2(0.75f, 1.0f) },
 
 			// 左
-			{ D3DXVECTOR3(-length / 2, length / 2, -length / 2), D3DXVECTOR2(0.5f, 0.0f) },
-			{ D3DXVECTOR3(-length / 2, length / 2,  length / 2), D3DXVECTOR2(0.75f, 0.0f) },
-			{ D3DXVECTOR3(-length / 2, 0.0f,       -length / 2), D3DXVECTOR2(0.5f, 1.0f) },
-			{ D3DXVECTOR3(-length / 2, 0.0f,        length / 2), D3DXVECTOR2(0.75f, 1.0f) },
-
-
-			// 右
-			{ D3DXVECTOR3(length / 2, length / 2,  length / 2), D3DXVECTOR2(0.75f, 0.0f) },
-			{ D3DXVECTOR3(length / 2, length / 2, -length / 2), D3DXVECTOR2(1.0f, 0.0f) },
-			{ D3DXVECTOR3(length / 2, 0.0f,        length / 2), D3DXVECTOR2(0.75f, 1.0f) },
-			{ D3DXVECTOR3(length / 2, 0.0f,       -length / 2), D3DXVECTOR2(1.0f, 1.0f) },
-
+			{ D3DXVECTOR3(-length / 2, length / 2, -length / 2), D3DXVECTOR2(0.75f, 0.0f) },
+			{ D3DXVECTOR3(-length / 2, length / 2,  length / 2), D3DXVECTOR2(1.0f, 0.0f) },
+			{ D3DXVECTOR3(-length / 2, 0.0f,       -length / 2), D3DXVECTOR2(0.75f, 1.0f) },
+			{ D3DXVECTOR3(-length / 2, 0.0f,        length / 2), D3DXVECTOR2(1.0f, 1.0f) },
 
 			//// 上
 			//{ D3DXVECTOR3( length / 2, length / 2,  length / 2), D3DXVECTOR2(0.8f, 0.0f) },
@@ -131,15 +127,15 @@ HRESULT SkyBox::InitSkyBox(float length)
 		vertexIndex[0] = 0, vertexIndex[1] = 1, vertexIndex[2] = 2;
 		vertexIndex[3] = 1, vertexIndex[4] = 2, vertexIndex[5] = 3;
 
-		// 後ろ
+		// 右
 		vertexIndex[6] = 4, vertexIndex[7] = 5, vertexIndex[8] = 6;
 		vertexIndex[9] = 5, vertexIndex[10] = 6, vertexIndex[11] = 7;
 
-		// 左
+		// 後ろ
 		vertexIndex[12] = 8, vertexIndex[13] = 9, vertexIndex[14] = 10;
 		vertexIndex[15] = 9, vertexIndex[16] = 10, vertexIndex[17] = 11;
 
-		// 右
+		// 左
 		vertexIndex[18] = 12, vertexIndex[19] = 13, vertexIndex[20] = 14;
 		vertexIndex[21] = 13, vertexIndex[22] = 14, vertexIndex[23] = 15;
 
@@ -182,6 +178,9 @@ void SkyBox::SetWorldMatrix()
 void SkyBox::Draw(Shader* shader, D3DXMATRIX* VPMatrix)
 {
 	PDIRECT3DDEVICE9 pDevice = GetDevice();
+
+	//pDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
+	//pDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
 
 	// テクニックを設定
 	shader->shaderHandle = shader->effectPoint->GetTechniqueByName("RenderWithTextrue");

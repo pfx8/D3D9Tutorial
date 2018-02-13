@@ -59,7 +59,6 @@ PS_OUTPUT BasicPixelShader(VS_OUTPUT vsout, uniform bool withTextrue)
 
     if (withTextrue == true)
     {
-        //pout.diffuse = tex2D(Samp, vsout.uvCoords + float2(0.5f, 0.5f)) * alpha; // textrue sRGB * Alpha
         pout.diffuse = tex2D(Samp, vsout.uvCoords) * alpha; // textrue sRGB * Alpha
     }
     else

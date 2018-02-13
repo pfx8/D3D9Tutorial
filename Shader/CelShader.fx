@@ -67,7 +67,7 @@ CelVertexOUT CelVertexShader(CelVertexIN In)
     Out.position = mul(Out.position, VPMatrix);
     
     // 法線変換
-    Out.normal = normalize(mul(float4(In.normal, 1.0), WMatrix));
+    Out.normal = normalize(mul(float4(In.normal, 1.0), rotMatix));
 
     // UV座標
     Out.uvCoords = In.uvCoords;
@@ -97,7 +97,6 @@ float4 CelPixelShader(CelVertexOUT In) : COLOR0
     }
     else if (ObjType == 2) // 大砲
     {
-        //diffuse = In.diffuse * globalIlumination;
         diffuse = float4(22, 22, 22, 1) * globalIlumination;
     }
 
@@ -122,9 +121,9 @@ CelVertexOUT OutlineVertexShader(CelVertexIN In)
 
     float4 normal = normalize(mul(float4(In.normal, 1.0f), rotMatix));
     
-    float3 lightVec = normalize(lightDir);
+    //float3 lightVec = normalize(lightDir);
 
-    float value = dot(lightVec, In.normal); // 法線と光の内積を計算
+    float value = dot(lightDir, In.normal); // 法線と光の内積を計算
 
      
     if (value > 0)                          // 法線の方向へ拡大
