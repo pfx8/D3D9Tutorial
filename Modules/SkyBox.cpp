@@ -19,11 +19,12 @@ SkyBox::SkyBox()
 	this->indexBuffer = NULL;
 	this->vertexDecl = NULL;
 
-	this->texture[0] = NULL;
+	this->texture = NULL;
+	/*this->texture[0] = NULL;
 	this->texture[1] = NULL;
 	this->texture[2] = NULL;
 	this->texture[3] = NULL;
-	this->texture[4] = NULL;
+	this->texture[4] = NULL;*/
 
 	this->length = 0.0f;
 	this->pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
@@ -40,11 +41,12 @@ SkyBox::~SkyBox()
 	RELEASE_POINT(this->indexBuffer);
 	RELEASE_POINT(this->vertexDecl);
 
-	RELEASE_POINT(this->texture[0]);
+	RELEASE_POINT(this->texture);
+	/*RELEASE_POINT(this->texture[0]);
 	RELEASE_POINT(this->texture[1]);
 	RELEASE_POINT(this->texture[2]);
 	RELEASE_POINT(this->texture[3]);
-	RELEASE_POINT(this->texture[4]);
+	RELEASE_POINT(this->texture[4]);*/
 }
 
 //*****************************************************************************
@@ -78,26 +80,26 @@ HRESULT SkyBox::InitSkyBox(float length)
 			// 前
 			{ D3DXVECTOR3(-length / 2, 0.0f,       length / 2), D3DXVECTOR2(0.0f, 1.0f) },
 			{ D3DXVECTOR3(-length / 2, length / 2, length / 2), D3DXVECTOR2(0.0f, 0.0f) },
-			{ D3DXVECTOR3( length / 2, 0.0f,       length / 2), D3DXVECTOR2(1.0f, 1.0f) },
-			{ D3DXVECTOR3( length / 2, length / 2, length / 2), D3DXVECTOR2(1.0f, 0.0f) },
+			{ D3DXVECTOR3( length / 2, 0.0f,       length / 2), D3DXVECTOR2(0.2f, 1.0f) },
+			{ D3DXVECTOR3( length / 2, length / 2, length / 2), D3DXVECTOR2(0.2f, 0.0f) },
 
 			// 後ろ
-			{ D3DXVECTOR3( length / 2, 0.0f,       -length / 2), D3DXVECTOR2(0.0f, 1.0f) },
-			{ D3DXVECTOR3( length / 2, length / 2, -length / 2), D3DXVECTOR2(0.0f, 0.0f) },
-			{ D3DXVECTOR3(-length / 2, 0.0f,       -length / 2), D3DXVECTOR2(1.0f, 1.0f) },
-			{ D3DXVECTOR3(-length / 2, length / 2, -length / 2), D3DXVECTOR2(1.0f, 0.0f) },
+			{ D3DXVECTOR3( length / 2, 0.0f,       -length / 2), D3DXVECTOR2(0.2f, 1.0f) },
+			{ D3DXVECTOR3( length / 2, length / 2, -length / 2), D3DXVECTOR2(0.2f, 0.0f) },
+			{ D3DXVECTOR3(-length / 2, 0.0f,       -length / 2), D3DXVECTOR2(0.4f, 1.0f) },
+			{ D3DXVECTOR3(-length / 2, length / 2, -length / 2), D3DXVECTOR2(0.4f, 0.0f) },
 
 			// 左
-			{ D3DXVECTOR3(-length / 2, 0.0f,       -length / 2), D3DXVECTOR2(0.0f, 1.0f) },
-			{ D3DXVECTOR3(-length / 2, length / 2, -length / 2), D3DXVECTOR2(0.0f, 0.0f) },
-			{ D3DXVECTOR3(-length / 2, 0.0f,        length / 2), D3DXVECTOR2(1.0f, 1.0f) },
-			{ D3DXVECTOR3(-length / 2, length / 2,  length / 2), D3DXVECTOR2(1.0f, 0.0f) },
+			{ D3DXVECTOR3(-length / 2, 0.0f,       -length / 2), D3DXVECTOR2(0.4f, 1.0f) },
+			{ D3DXVECTOR3(-length / 2, length / 2, -length / 2), D3DXVECTOR2(0.4f, 0.0f) },
+			{ D3DXVECTOR3(-length / 2, 0.0f,        length / 2), D3DXVECTOR2(0.6f, 1.0f) },
+			{ D3DXVECTOR3(-length / 2, length / 2,  length / 2), D3DXVECTOR2(0.6f, 0.0f) },
 
 			// 右
-			{ D3DXVECTOR3(length / 2, 0.0f,        length / 2), D3DXVECTOR2(0.0f, 1.0f) },
-			{ D3DXVECTOR3(length / 2, length / 2,  length / 2), D3DXVECTOR2(0.0f, 0.0f) },
-			{ D3DXVECTOR3(length / 2, 0.0f,       -length / 2), D3DXVECTOR2(1.0f, 1.0f) },
-			{ D3DXVECTOR3(length / 2, length / 2, -length / 2), D3DXVECTOR2(1.0f, 0.0f) },
+			{ D3DXVECTOR3(length / 2, 0.0f,        length / 2), D3DXVECTOR2(0.6f, 1.0f) },
+			{ D3DXVECTOR3(length / 2, length / 2,  length / 2), D3DXVECTOR2(0.6f, 0.0f) },
+			{ D3DXVECTOR3(length / 2, 0.0f,       -length / 2), D3DXVECTOR2(0.8f, 1.0f) },
+			{ D3DXVECTOR3(length / 2, length / 2, -length / 2), D3DXVECTOR2(0.8f, 0.0f) },
 
 			// 上
 			{ D3DXVECTOR3( length / 2, length / 2, -length / 2), D3DXVECTOR2(0.0f, 1.0f) },

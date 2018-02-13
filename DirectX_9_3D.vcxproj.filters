@@ -99,6 +99,9 @@
     <ClCompile Include="Modules\ScreenPolygon.cpp">
       <Filter>Modules</Filter>
     </ClCompile>
+    <ClCompile Include="Modules\Billboard.cpp">
+      <Filter>Modules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="modules\BoundingBox.h">
@@ -174,6 +177,9 @@
       <Filter>Modules</Filter>
     </ClInclude>
     <ClInclude Include="Modules\Material.h">
+      <Filter>Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Modules\Billboard.h">
       <Filter>Modules</Filter>
     </ClInclude>
   </ItemGroup>

@@ -24,6 +24,9 @@
     <ClCompile Include="DebugMessage.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Modules\Billboard.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="modules\BoundingBox.cpp" />
     <ClCompile Include="modules\Camera.cpp" />
     <ClCompile Include="modules\Character.cpp" />
@@ -54,6 +57,9 @@
     <ClInclude Include="DebugMessage.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Engine.h" />
+    <ClInclude Include="Modules\Billboard.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="modules\BoundingBox.h" />
     <ClInclude Include="modules\Camera.h" />
     <ClInclude Include="modules\Character.h" />

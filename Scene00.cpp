@@ -77,12 +77,12 @@ void Scene00::InitScene00()
 
 	// スカイボックス
 	this->skyBox->InitSkyBox(2500.0f);
-	/*this->resourcesManager->LoadTexture("skybox", &this->skyBox->texture);*/
-	this->resourcesManager->LoadTexture("front", &this->skyBox->texture[0]);
+	this->resourcesManager->LoadTexture("skybox", &this->skyBox->texture);
+	/*this->resourcesManager->LoadTexture("front", &this->skyBox->texture[0]);
 	this->resourcesManager->LoadTexture("back", &this->skyBox->texture[1]);
 	this->resourcesManager->LoadTexture("left", &this->skyBox->texture[2]);
 	this->resourcesManager->LoadTexture("right", &this->skyBox->texture[3]);
-	this->resourcesManager->LoadTexture("top", &this->skyBox->texture[4]);
+	this->resourcesManager->LoadTexture("top", &this->skyBox->texture[4]);*/
 
 	// フィールド
 	this->sea->InitPlane(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(17.0f, 17.0f), D3DXVECTOR2(150, 150));
@@ -310,7 +310,7 @@ void Scene00::Draw()
 		this->shader->effectPoint->SetMatrix(this->shader->VPMatrixHandle, &skyBoxVPmatrix);
 
 		// テクスチャの設定
-		//this->shader->effectPoint->SetTexture(this->shader->textureHandle, this->skyBox->texture);
+		this->shader->effectPoint->SetTexture(this->shader->textureHandle, this->skyBox->texture);
 
 		// 描画
 		UINT passNum = 0;
@@ -336,34 +336,7 @@ void Scene00::Draw()
 
 		// バウンディングボックス
 		this->ship->check->Draw(this->shader, &VPmatrix);
-		this->ship->space->Draw(this->shader, &VPmatrix);
-
-		//if (this->ship->check->isBoundingBoxDraw == true)
-		//{
-		//	// テクニックを設定
-		//	this->shader->shaderHandle = this->shader->effectPoint->GetTechniqueByName("RenderWithoutTextrue");
-		//	this->shader->effectPoint->SetTechnique(this->shader->shaderHandle);
-
-		//	// ワールド変換、ビューイング変換、プロジェクション変換マトリックス
-		//	this->shader->effectPoint->SetMatrix(this->shader->WMatrixHandle, &this->ship->worldMatrix);
-		//	D3DXMATRIX VPmatrix = this->camera->viewMatrix * this->camera->projectionMatrix;
-		//	this->shader->effectPoint->SetMatrix(this->shader->VPMatrixHandle, &VPmatrix);
-
-		//	// アルファ値の設定(テクスチャ無し)
-		//	this->shader->effectPoint->SetFloat(this->shader->alphaHandle, 0.5f);
-
-		//	UINT passNum = 0;
-		//	this->shader->effectPoint->Begin(&passNum, 0);
-		//	for (int count = 0; count < passNum; count++)
-		//	{
-		//		this->shader->effectPoint->BeginPass(0);
-
-		//		this->ship->check->Draw();
-
-		//		this->shader->effectPoint->EndPass();
-		//	}
-		//	this->shader->effectPoint->End();
-		//}		
+		this->ship->space->Draw(this->shader, &VPmatrix);	
 	
 		// シャドー
 		//this->shadowMap->effectPoint->SetTechnique("");
