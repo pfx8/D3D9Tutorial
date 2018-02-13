@@ -43,9 +43,9 @@ typedef enum
 class Character
 {
 private:
-	UINT			leverLevel;		// 船のレバー操作
 
 public:
+	LEVER_LEVEL		leverLevel;		// 船のレバー操作
 	double			speed; // スピードに関する倍数
 	DebugMessage*	message;		// Debugメッセージ
 	float			waveAngle;	// 揺れ係数

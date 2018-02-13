@@ -82,9 +82,6 @@ void Character::PosToMessageAndMessageDraw(int row)
 //*****************************************************************************
 void Character::Draw(CelShader* celShader, D3DXMATRIX* VPMatrix)
 {
-	// ワールド変換
-	SetWorldMatrix();
-
 	// メッシュを描画する
 	this->player.shipBody->DrawModel(celShader, &this->worldMatrix, VPMatrix, &lightMatrix, MT_ship);
 	this->player.shipCannon->DrawModel(celShader, &this->worldMatrix, VPMatrix, &lightMatrix, MT_ship);
@@ -100,11 +97,25 @@ void Character::Update(float rot)
 	// プレーヤー操作 
 	if (GetKeyboardTrigger(DIK_W))	// 前に進む
 	{
-		this->ChangeLever(LL_FRONT);
+		if (this->leverLevel == LL_STOP)
+		{
+			this->ChangeLever(LL_FRONT);
+		}
+		else
+		{
+			this->ChangeLever(LL_STOP);
+		}	
 	}
 	if (GetKeyboardTrigger(DIK_S))	// 後ろに進む
 	{
-		this->ChangeLever(LL_BACK);
+		if (this->leverLevel == LL_STOP)
+		{
+			this->ChangeLever(LL_BACK);
+		}
+		else
+		{
+			this->ChangeLever(LL_STOP);
+		}
 	}
 
 	if (GetKeyboardPress(DIK_A))	// 左回転
@@ -134,12 +145,27 @@ void Character::Update(float rot)
 	switch (leverLevel)
 	{
 	case LL_FRONT:
-		this->speed += 0.0001f;
+		this->speed += 0.0003f;
 		if (this->speed >= MAX_FRONT_SPEED_COEFFICIENT)
 			this->speed = MAX_FRONT_SPEED_COEFFICIENT;
 		break;
 	case LL_STOP:
-		this->speed = 0.0f;
+		if (this->speed > 0)
+		{
+			this->speed -= 0.0001f;
+			if (this->speed <= 0)
+				this->speed = 0;
+		}
+		else if (this->speed < 0)
+		{
+			this->speed += 0.0003f;
+			if (this->speed >= 0)
+				this->speed = 0;
+		}
+		else
+		{
+			this->speed = 0.0f;
+		}
 		break;
 	case LL_BACK:
 		this->speed -= 0.0001f;
@@ -149,7 +175,12 @@ void Character::Update(float rot)
 	default:
 		break;
 	}
+
+	// 移動
 	MoveAlongVecLook(this->speed);
+
+	// ワールド変換
+	SetWorldMatrix();
 }
 
 //*****************************************************************************
@@ -181,43 +212,9 @@ void Character::RotationVecUp(float angle)
 //*****************************************************************************
 void Character::ChangeLever(LEVER_LEVEL level)
 {
-	switch (leverLevel)
-	{
-	case LL_FRONT:
-		if (level == LL_STOP)
-		{
-			leverLevel = LL_STOP;
-		}
-		if (level == LL_BACK)
-		{
-			leverLevel = LL_BACK;
-		}
-		break;
-	case LL_STOP:
-		if (level == LL_FRONT)
-		{
-			leverLevel = LL_FRONT;
-		}
-		if (level == LL_BACK)
-		{
-			leverLevel = LL_BACK;
-		}
-		break;
-	case LL_BACK:
-		if (level == LL_FRONT)
-		{
-			leverLevel = LL_FRONT;
-		}
-		if (level == LL_STOP)
-		{
-			leverLevel = LL_STOP;
-		}
-		break;
-	default:
-		break;
-	}
+	this->leverLevel = level;
 
-	//コンソールに出すメッセージ
+	// コンソールに出すメッセージ
 	switch (leverLevel)
 	{
 	case LL_FRONT:

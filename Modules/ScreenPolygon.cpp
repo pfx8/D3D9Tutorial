@@ -32,6 +32,13 @@ ScreenPolygon::ScreenPolygon()
 	this->UIHPVertexBuffer[2] = NULL;
 	this->UIHPTexture = NULL;
 
+	this->UIzenVertexBuffer = NULL;
+	this->UIzenTexture = NULL;
+	this->UIstopVertexBuffer = NULL;
+	this->UIstopTexture = NULL;
+	this->UIgouVertexBuffer = NULL;
+	this->UIgouTexture = NULL;
+
 	// シェーダーを初期化
 	this->RHWshader = new RHWShader;
 	this->RHWshader->InitShader();
@@ -43,18 +50,26 @@ ScreenPolygon::ScreenPolygon()
 	this->resourcesManager->LoadTexture("UIenemy", &this->UIminiMapEnemyTexture);
 
 	this->resourcesManager->LoadTexture("UIhp", &this->UIHPTexture);
+
+	this->resourcesManager->LoadTexture("UIzen", &this->UIzenTexture);
+	this->resourcesManager->LoadTexture("UIstop", &this->UIstopTexture);
+	this->resourcesManager->LoadTexture("UIgou", &this->UIgouTexture);
+
 	this->resourcesManager->LoadTexture("UIkey", &this->UIKeyTexture);
 
 	MakeVertexDecl();
 	MakeIndex();
 
 	// 各頂点を作成
-	
-	MakeVertex(D3DXVECTOR2(SCREEN_WIDTH - 400, SCREEN_HEIGHT - 400), D3DXVECTOR2(400, 400), &this->UIminiMapVertexBuffer);
+	MakeVertex(D3DXVECTOR2(SCREEN_WIDTH - 200, SCREEN_HEIGHT - 200), D3DXVECTOR2(200, 200), &this->UIminiMapVertexBuffer);
 
 	MakeVertex(D3DXVECTOR2(30, 30), D3DXVECTOR2(64, 80), &this->UIHPVertexBuffer[0]);
 	MakeVertex(D3DXVECTOR2(114, 30), D3DXVECTOR2(64, 80), &this->UIHPVertexBuffer[1]);
 	MakeVertex(D3DXVECTOR2(198, 30), D3DXVECTOR2(64, 80), &this->UIHPVertexBuffer[2]);
+
+	MakeVertex(D3DXVECTOR2(60, SCREEN_HEIGHT - 180 - 40 - 20 - 20), D3DXVECTOR2(120, 60), &this->UIzenVertexBuffer);
+	MakeVertex(D3DXVECTOR2(90, SCREEN_HEIGHT - 120 - 40 - 20), D3DXVECTOR2(60, 60), &this->UIstopVertexBuffer);
+	MakeVertex(D3DXVECTOR2(60, SCREEN_HEIGHT - 60 - 40), D3DXVECTOR2(120, 60), &this->UIgouVertexBuffer);
 
 	MakeVertex(D3DXVECTOR2(0, SCREEN_HEIGHT - 200), D3DXVECTOR2(200, 200), &this->UIKeyVertexBuffer);
 }
@@ -67,14 +82,15 @@ ScreenPolygon::ScreenPolygon()
 void ScreenPolygon::Update(Character* player, Character* enemy)
 {
 	this->HP = player->HP;
+	this->level = player->leverLevel;
 
-	D3DXVECTOR2 miniMapCenter = D3DXVECTOR2(SCREEN_WIDTH - 200, SCREEN_HEIGHT - 200);
+	D3DXVECTOR2 miniMapCenter = D3DXVECTOR2(SCREEN_WIDTH - 100, SCREEN_HEIGHT - 100);
 	float mapSize = 17.0f * 150;
 
-	D3DXVECTOR2 miniMapPlayer = miniMapCenter + D3DXVECTOR2(400 * player->pos.x / mapSize, -1 * 400 * player->pos.z / mapSize);
+	D3DXVECTOR2 miniMapPlayer = miniMapCenter + D3DXVECTOR2(200 * player->pos.x / mapSize, -1 * 200 * player->pos.z / mapSize);
 	MakeVertex(miniMapPlayer, D3DXVECTOR2(20, 20), &this->UIminiMapPlayerVertexBuffer);
 
-	D3DXVECTOR2 miniMapEnemy = miniMapCenter + D3DXVECTOR2(400 * enemy->pos.x / mapSize, -1 * 400 * enemy->pos.z / mapSize);
+	D3DXVECTOR2 miniMapEnemy = miniMapCenter + D3DXVECTOR2(200 * enemy->pos.x / mapSize, -1 * 200 * enemy->pos.z / mapSize);
 	MakeVertex(miniMapEnemy, D3DXVECTOR2(20, 20), &this->UIminiMapEnemyVertexBuffer);
 }
 
@@ -211,16 +227,21 @@ void ScreenPolygon::Draw()
 			i++;
 	}
 
+	// 船の状態
+	DrawObject(this->UIzenVertexBuffer, this->UIzenTexture, LL_FRONT);
+	DrawObject(this->UIstopVertexBuffer, this->UIstopTexture, LL_STOP);
+	DrawObject(this->UIgouVertexBuffer, this->UIgouTexture, LL_BACK);
+
 	// 操作ボタン
-	DrawObject(this->UIKeyVertexBuffer, this->UIKeyTexture);
+	//DrawObject(this->UIKeyVertexBuffer, this->UIKeyTexture);
 }
 
 //*****************************************************************************
 //
-// 各ものを描画する
+// 動的なものを描画する
 //
 //*****************************************************************************
-void ScreenPolygon::DrawObject(LPDIRECT3DVERTEXBUFFER9 vertexBuffer, LPDIRECT3DTEXTURE9 texture)
+void ScreenPolygon::DrawObject(LPDIRECT3DVERTEXBUFFER9 vertexBuffer, LPDIRECT3DTEXTURE9 texture, int level)
 {
 	PDIRECT3DDEVICE9 pDevice = GetDevice();
 
@@ -229,6 +250,19 @@ void ScreenPolygon::DrawObject(LPDIRECT3DVERTEXBUFFER9 vertexBuffer, LPDIRECT3DT
 
 	// テクスチャの設定
 	this->RHWshader->effectPoint->SetTexture(this->RHWshader->textureHandle, texture);
+
+	if (this->level == level)
+	{
+		// 船の状態を設定(動的な)
+		int temp = 1;
+		this->RHWshader->effectPoint->SetValue("isLL", &temp, sizeof(int));
+	}
+	else
+	{
+		// 変化なしのもの(静的な)
+		int temp = 0;
+		this->RHWshader->effectPoint->SetValue("isLL", &temp, sizeof(int));
+	}
 
 	// 描画
 	UINT passNum = 0;

@@ -82,7 +82,9 @@ float4 CelPixelShader(CelVertexOUT In) : COLOR0
 {
     float4 globalIlumination = lightDiffuse + lightSpecular;
 
-    float value = dot(-lightDir, In.normal); // 法線と光の内積を計算して、色を決める;
+    float3 lightVec = normalize(lightDir);
+
+    float value = dot(lightVec, In.normal); // 法線と光の内積を計算して、色を決める;
     
     float4 diffuse;
     if (ObjType == 0) // ship
@@ -118,12 +120,24 @@ CelVertexOUT OutlineVertexShader(CelVertexIN In)
     float4 position = Out.position = mul(float4(In.position, 1.0f), WMatrix);
     position = Out.position = mul(position, VPMatrix);
 
-    float4 normal = normalize(mul(float4(In.normal, 1.0f), WMatrix));
+    float4 normal = normalize(mul(float4(In.normal, 1.0f), rotMatix));
+    
+    float3 lightVec = normalize(lightDir);
 
-    Out.position = position + (mul(0.2, normal)); // 法線の方向へ拡大
+    float value = dot(lightVec, In.normal); // 法線と光の内積を計算
 
-    return Out;
-}
+     
+    if (value > 0)                           // 法線の方向へ拡大
+    {
+        Out.position = position - (mul(0.18, normal));
+    }
+    else
+    {
+        Out.position = position + (mul(0.18, normal));
+    }
+
+        return Out;
+    }
 
 //------------------------------------------------------
 //
@@ -142,14 +156,14 @@ float4 OutlinePixelShader(CelVertexOUT In) : COLOR0
 //------------------------------------------------------
 technique CelShader // トゥ―ンシェーダー
 {
-    //pass P0 // OutLine
-    //{
-    //    VertexShader = compile vs_3_0 OutlineVertexShader();
-    //    PixelShader = compile ps_3_0 OutlinePixelShader();
+    pass P0 // OutLine
+    {
+        VertexShader = compile vs_3_0 OutlineVertexShader();
+        PixelShader = compile ps_3_0 OutlinePixelShader();
 
-    //    CullMode = CW;
-    //}
-    pass P0 // モデル
+        CullMode = CW;
+    }
+    pass P // モデル
     {
         VertexShader = compile vs_3_0 CelVertexShader();
         PixelShader = compile ps_3_0 CelPixelShader();

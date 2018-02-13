@@ -19,7 +19,12 @@ SkyBox::SkyBox()
 	this->indexBuffer = NULL;
 	this->vertexDecl = NULL;
 
-	this->texture = NULL;
+	this->texture[0] = NULL;
+	this->texture[1] = NULL;
+	this->texture[2] = NULL;
+	this->texture[3] = NULL;
+	this->texture[4] = NULL;
+
 	this->length = 0.0f;
 	this->pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 }
@@ -34,7 +39,12 @@ SkyBox::~SkyBox()
 	RELEASE_POINT(this->vertexBuffer);
 	RELEASE_POINT(this->indexBuffer);
 	RELEASE_POINT(this->vertexDecl);
-	RELEASE_POINT(this->texture);
+
+	RELEASE_POINT(this->texture[0]);
+	RELEASE_POINT(this->texture[1]);
+	RELEASE_POINT(this->texture[2]);
+	RELEASE_POINT(this->texture[3]);
+	RELEASE_POINT(this->texture[4]);
 }
 
 //*****************************************************************************
@@ -56,7 +66,7 @@ HRESULT SkyBox::InitSkyBox(float length)
 		pDevice->CreateVertexDeclaration(boundingBoxDecl, &this->vertexDecl);
 
 		// オブジェクトの頂点バッファを生成
-		if (FAILED(pDevice->CreateVertexBuffer(4 * sizeof(SKYBOXVERTEX), D3DUSAGE_WRITEONLY, 0, D3DPOOL_DEFAULT, &this->vertexBuffer, NULL)))
+		if (FAILED(pDevice->CreateVertexBuffer(20 * sizeof(SKYBOXVERTEX), D3DUSAGE_WRITEONLY, 0, D3DPOOL_DEFAULT, &this->vertexBuffer, NULL)))
 		{
 			std::cout << "[Error] 頂点バッファが生成できない!" << std::endl;	// エラーメッセージ
 			return E_FAIL;
@@ -66,40 +76,41 @@ HRESULT SkyBox::InitSkyBox(float length)
 		SKYBOXVERTEX vertex[] =
 		{
 			// 前
-			{ D3DXVECTOR3(-length / 2, length / 2, length / 2), D3DXVECTOR2(0.0f, 0.0f) },
-			{ D3DXVECTOR3( length / 2, length / 2, length / 2), D3DXVECTOR2(1.0f, 0.0f) },
 			{ D3DXVECTOR3(-length / 2, 0.0f,       length / 2), D3DXVECTOR2(0.0f, 1.0f) },
+			{ D3DXVECTOR3(-length / 2, length / 2, length / 2), D3DXVECTOR2(0.0f, 0.0f) },
 			{ D3DXVECTOR3( length / 2, 0.0f,       length / 2), D3DXVECTOR2(1.0f, 1.0f) },
+			{ D3DXVECTOR3( length / 2, length / 2, length / 2), D3DXVECTOR2(1.0f, 0.0f) },
 
 			// 後ろ
-			{ D3DXVECTOR3( length / 2, length / 2, -length / 2), D3DXVECTOR2(0.0f, 0.0f) },
 			{ D3DXVECTOR3( length / 2, 0.0f,       -length / 2), D3DXVECTOR2(0.0f, 1.0f) },
-			{ D3DXVECTOR3(-length / 2, length / 2, -length / 2), D3DXVECTOR2(1.0f, 0.0f) },
+			{ D3DXVECTOR3( length / 2, length / 2, -length / 2), D3DXVECTOR2(0.0f, 0.0f) },
 			{ D3DXVECTOR3(-length / 2, 0.0f,       -length / 2), D3DXVECTOR2(1.0f, 1.0f) },
+			{ D3DXVECTOR3(-length / 2, length / 2, -length / 2), D3DXVECTOR2(1.0f, 0.0f) },
 
 			// 左
-			{ D3DXVECTOR3(-length / 2, length / 2, -length / 2), D3DXVECTOR2(0.0f, 0.0f) },
 			{ D3DXVECTOR3(-length / 2, 0.0f,       -length / 2), D3DXVECTOR2(0.0f, 1.0f) },
-			{ D3DXVECTOR3(-length / 2, length / 2,  length / 2), D3DXVECTOR2(1.0f, 0.0f) },
+			{ D3DXVECTOR3(-length / 2, length / 2, -length / 2), D3DXVECTOR2(0.0f, 0.0f) },
 			{ D3DXVECTOR3(-length / 2, 0.0f,        length / 2), D3DXVECTOR2(1.0f, 1.0f) },
+			{ D3DXVECTOR3(-length / 2, length / 2,  length / 2), D3DXVECTOR2(1.0f, 0.0f) },
 
 			// 右
-			{ D3DXVECTOR3(length / 2, length / 2,  length / 2), D3DXVECTOR2(0.0f, 0.0f) },
 			{ D3DXVECTOR3(length / 2, 0.0f,        length / 2), D3DXVECTOR2(0.0f, 1.0f) },
-			{ D3DXVECTOR3(length / 2, length / 2, -length / 2), D3DXVECTOR2(1.0f, 0.0f) },
+			{ D3DXVECTOR3(length / 2, length / 2,  length / 2), D3DXVECTOR2(0.0f, 0.0f) },
 			{ D3DXVECTOR3(length / 2, 0.0f,       -length / 2), D3DXVECTOR2(1.0f, 1.0f) },
+			{ D3DXVECTOR3(length / 2, length / 2, -length / 2), D3DXVECTOR2(1.0f, 0.0f) },
 
 			// 上
-			{ D3DXVECTOR3( length / 2, length / 2,  length / 2), D3DXVECTOR2(0.0f, 0.0f) },
-			{ D3DXVECTOR3(-length / 2, length / 2,  length / 2), D3DXVECTOR2(1.0f, 0.0f) },
 			{ D3DXVECTOR3( length / 2, length / 2, -length / 2), D3DXVECTOR2(0.0f, 1.0f) },
+			{ D3DXVECTOR3( length / 2, length / 2,  length / 2), D3DXVECTOR2(0.0f, 0.0f) },
 			{ D3DXVECTOR3(-length / 2, length / 2, -length / 2), D3DXVECTOR2(1.0f, 1.0f) },
+			{ D3DXVECTOR3(-length / 2, length / 2,  length / 2), D3DXVECTOR2(1.0f, 0.0f) },
+
 		};
 
 		VOID* vertexBuffer;	// 頂点バッファポインタ作成
 
 		// 頂点データの範囲をロックして頂点バッファメモリへのポインタを取得する
-		if (FAILED(this->vertexBuffer->Lock(0, sizeof(vertex), (void**)&vertexBuffer, 0)))
+		if (FAILED(this->vertexBuffer->Lock(0, 0, (void**)&vertexBuffer, 0)))
 		{
 			std::cout << "[Error] 頂点バッファがロックできない!" << std::endl;	// エラーメッセージ
 			return E_FAIL;
@@ -178,5 +189,5 @@ void SkyBox::Draw()
 	pDevice->SetVertexDeclaration(this->vertexDecl);							// 頂点宣言を設定
 	pDevice->SetStreamSource(0, this->vertexBuffer, 0, sizeof(SKYBOXVERTEX));	// 頂点バッファをデバイスのデータストリームにバイナリ
 	pDevice->SetIndices(this->indexBuffer);										// 頂点イデックスの設定
-	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 4, 0, 2);			// バウンディングボックスの描画
+	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 17, 0, 16);			// バウンディングボックスの描画
 }

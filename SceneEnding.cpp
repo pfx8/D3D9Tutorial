@@ -133,6 +133,10 @@ void SceneEnding::Draw()
 	// テクスチャの設定
 	this->RHWshader->effectPoint->SetTexture(this->RHWshader->textureHandle, this->texture);
 
+	// 静的な
+	int temp = 0;
+	this->RHWshader->effectPoint->SetValue("isLL", &temp, sizeof(int));
+
 	// 描画
 	UINT passNum = 0;
 	this->RHWshader->effectPoint->Begin(&passNum, 0);

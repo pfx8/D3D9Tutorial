@@ -23,7 +23,7 @@ class ScreenPolygon
 private:
 	RHWShader*	RHWshader;	// 変換済み用シェーダー
 
-	void DrawObject(LPDIRECT3DVERTEXBUFFER9 vertexBuffer, LPDIRECT3DTEXTURE9 texture);					// 各ものを描画する
+	void DrawObject(LPDIRECT3DVERTEXBUFFER9 vertexBuffer, LPDIRECT3DTEXTURE9 texture, int level = 2);	// 動的なものを描画する
 	void MakeVertexDecl();																				// 頂点宣言
 	HRESULT MakeVertex(D3DXVECTOR2 pos, D3DXVECTOR2 size, LPDIRECT3DVERTEXBUFFER9* vertexBufferPoint);	// 頂点作成
 	HRESULT MakeIndex();																				// インデックス作成
@@ -32,7 +32,7 @@ public:
 	ResourcesManager*				resourcesManager;		// リソースマネジメント
 
 	IDirect3DVertexDeclaration9*	vertexDecl;				// 頂点シェーダー宣言
-	LPDIRECT3DINDEXBUFFER9			indexBuffer;			// 頂点インデックスバッファ
+	LPDIRECT3DINDEXBUFFER9			indexBuffer;			// 頂点インデックスバッファ(共有)
 
 	LPDIRECT3DVERTEXBUFFER9			UIminiMapVertexBuffer;	// 頂点バッファへのポインタ
 	LPDIRECT3DTEXTURE9				UIminiMapTexture;		// フィールドテクスチャ
@@ -46,6 +46,16 @@ public:
 	LPDIRECT3DVERTEXBUFFER9			UIHPVertexBuffer[3];	// 頂点バッファへのポインタ
 	LPDIRECT3DTEXTURE9				UIHPTexture;			// フィールドテクスチャ
 	int								HP;
+
+	LPDIRECT3DVERTEXBUFFER9			UIzenVertexBuffer;		// 頂点バッファへのポインタ
+	LPDIRECT3DTEXTURE9				UIzenTexture;			// フィールドテクスチャ
+
+	LPDIRECT3DVERTEXBUFFER9			UIstopVertexBuffer;		// 頂点バッファへのポインタ
+	LPDIRECT3DTEXTURE9				UIstopTexture;			// フィールドテクスチャ
+
+	LPDIRECT3DVERTEXBUFFER9			UIgouVertexBuffer;		// 頂点バッファへのポインタ
+	LPDIRECT3DTEXTURE9				UIgouTexture;			// フィールドテクスチャ
+	LEVER_LEVEL						level;					// 船の状態
 
 	LPDIRECT3DVERTEXBUFFER9			UIKeyVertexBuffer;		// 頂点バッファへのポインタ
 	LPDIRECT3DTEXTURE9				UIKeyTexture;			// フィールドテクスチャ

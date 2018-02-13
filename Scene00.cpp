@@ -76,8 +76,13 @@ void Scene00::InitScene00()
 	this->celShader->effectPoint->SetValue("lightSpecular", &this->directionLight->light.Specular, sizeof(D3DXCOLOR));
 
 	// スカイボックス
-	this->skyBox->InitSkyBox(50.0f);
-	this->resourcesManager->LoadTexture("skybox", &this->skyBox->texture);
+	this->skyBox->InitSkyBox(500.0f);
+	/*this->resourcesManager->LoadTexture("skybox", &this->skyBox->texture);*/
+	this->resourcesManager->LoadTexture("front", &this->skyBox->texture[0]);
+	this->resourcesManager->LoadTexture("back", &this->skyBox->texture[1]);
+	this->resourcesManager->LoadTexture("left", &this->skyBox->texture[2]);
+	this->resourcesManager->LoadTexture("right", &this->skyBox->texture[3]);
+	this->resourcesManager->LoadTexture("top", &this->skyBox->texture[4]);
 
 	// フィールド
 	this->sea->InitPlane(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(17.0f, 17.0f), D3DXVECTOR2(150, 150));
@@ -159,8 +164,10 @@ void Scene00::SetRenderState()
 
 	// レンダーステートパラメータの設定
 	pDevice->SetRenderState(D3DRS_ZENABLE, TRUE);					// Zバッファを使用
-	pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);		// αソースカラーの指定
-	pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);	// αデスティネーションカラーの指定
+	//pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);		// αソースカラーの指定
+	//pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);	// αデスティネーションカラーの指定
+	pDevice->SetRenderState(D3DRS_NORMALIZENORMALS, true);
+	pDevice->SetRenderState(D3DRS_SPECULARENABLE, true);
 }
 
 //*****************************************************************************
@@ -298,7 +305,7 @@ void Scene00::Draw()
 		this->shader->effectPoint->SetMatrix(this->shader->VPMatrixHandle, &skyBoxVPmatrix);
 
 		// テクスチャの設定
-		this->shader->effectPoint->SetTexture(this->shader->textureHandle, this->skyBox->texture);
+		//this->shader->effectPoint->SetTexture(this->shader->textureHandle, this->skyBox->texture);
 
 		// 描画
 		UINT passNum = 0;

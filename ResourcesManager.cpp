@@ -35,7 +35,13 @@ ResourcesManager::ResourcesManager()
 	this->textureList["UIminimap"] = "data/TEXTURE/UI/minimap.png";
 	this->textureList["UIplayer"] = "data/TEXTURE/UI/player.png";
 	this->textureList["UIenemy"] = "data/TEXTURE/UI/enemy.png";
+
 	this->textureList["UIhp"] = "data/TEXTURE/UI/hp.png";
+
+	this->textureList["UIzen"] = "data/TEXTURE/UI/zen.png";
+	this->textureList["UIstop"] = "data/TEXTURE/UI/stop.png";
+	this->textureList["UIgou"] = "data/TEXTURE/UI/gou.png";
+
 	this->textureList["UIkey"] = "data/TEXTURE/UI/key.png";
 
 	this->textureList["NULL"] = "NULL";

@@ -59,7 +59,7 @@ public:
 	Scene00();
 	~Scene00();
 
-	void InitScene00();				// ‰Šú‰»
+	void InitScene00();		// ‰Šú‰»
 	void Update();			// XV
 	void Draw();			// •`‰æ
 	void Control();			// ‘€ìŠÖ”
