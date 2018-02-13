@@ -108,38 +108,44 @@ void Character::Draw(CelShader* celShader, D3DXMATRIX* VPMatrix)
 void Character::Update(float rot)
 {
 	// プレーヤー操作 
-	if (GetKeyboardTrigger(DIK_W))	// 前に進む
+	bool isButton;
+	isButton = (GetKeyboardTrigger(DIK_W) || IsButtonTriggered(0, LEFT_STICK_UP));
+	if (isButton)	// 前に進む
 	{
 		if (this->leverLevel == LL_STOP)
 		{
 			this->ChangeLever(LL_FRONT);
 		}
-		else
+		else if(this->leverLevel == LL_BACK)
 		{
 			this->ChangeLever(LL_STOP);
 		}	
 	}
-	if (GetKeyboardTrigger(DIK_S))	// 後ろに進む
+
+	isButton = (GetKeyboardTrigger(DIK_S) || IsButtonTriggered(0, LEFT_STICK_DOWN));
+	if (isButton)	// 後ろに進む
 	{
 		if (this->leverLevel == LL_STOP)
 		{
 			this->ChangeLever(LL_BACK);
 		}
-		else
+		else if(this->leverLevel == LL_FRONT)
 		{
 			this->ChangeLever(LL_STOP);
 		}
 	}
 
-	if (GetKeyboardPress(DIK_A))	// 左回転
+	isButton = (GetKeyboardPress(DIK_A) || IsButtonPressed(0, LEFT_STICK_LEFT));
+	if (isButton)	// 左回転
 	{
 		// 更新キャラクターをカメラの回転角度0.05
-		this->RotationVecUp(-0.5f / 180.0f * D3DX_PI);
+		this->RotationVecUp(-0.05f / 180.0f * D3DX_PI);
 	}
-	else if (GetKeyboardPress(DIK_D))	// 右回転
+	isButton = (GetKeyboardPress(DIK_D) || IsButtonPressed(0, LEFT_STICK_RIGHT));
+	if (isButton)	// 右回転
 	{
 		// 更新キャラクターをカメラの回転角度
-		this->RotationVecUp(0.5f / 180.0f * D3DX_PI);
+		this->RotationVecUp(0.05f / 180.0f * D3DX_PI);
 	}
 
 	// テスト、HP減り

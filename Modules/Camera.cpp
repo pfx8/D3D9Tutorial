@@ -136,7 +136,10 @@ void Camera::Update(Character* player)
 void Camera::CameraContrlUpdate(Character* player)
 {
 	// 射撃モードに変更
-	if (GetKeyboardTrigger(DIK_R))
+	bool isButton;
+
+	isButton = (GetKeyboardTrigger(DIK_R) || IsButtonTriggered(0, BUTTON_L1));
+	if (isButton)
 	{
 		if (this->isShooting == IS_left)
 		{
@@ -148,7 +151,8 @@ void Camera::CameraContrlUpdate(Character* player)
 		}
 
 	}
-	if (GetKeyboardTrigger(DIK_T))
+	isButton = (GetKeyboardTrigger(DIK_T) || IsButtonTriggered(0, BUTTON_R1));
+	if (isButton)
 	{
 		if (this->isShooting == IS_right)
 		{
@@ -170,20 +174,24 @@ void Camera::CameraContrlUpdate(Character* player)
 	//	Rotation(player, 0, D3DXToRadian(-1.0f));
 	//}
 
-	if (GetKeyboardPress(DIK_J) && this->isShooting == IS_no)	// 左回転
+	isButton = (GetKeyboardPress(DIK_J) || IsButtonPressed(0, BUTTON_SQUARE));
+	if (isButton && this->isShooting == IS_no)	// 左回転
 	{
 		Rotation(player, D3DXToRadian(1.0f), 0);
 	}
-	else if (GetKeyboardPress(DIK_L) && this->isShooting == IS_no)	// 右回転
+	isButton = (GetKeyboardPress(DIK_L) || IsButtonPressed(0, BUTTON_CIRCLE));
+	if (isButton && this->isShooting == IS_no)	// 右回転
 	{
 		Rotation(player, D3DXToRadian(-1.0f), 0);
 	}
 
-	if (GetKeyboardPress(DIK_Q) && this->isShooting == IS_no)		// ゾーンを拡大
+	isButton = (GetKeyboardPress(DIK_Q) || IsButtonPressed(0, BUTTON_TRIANGLE));
+	if (isButton && this->isShooting == IS_no)	// ゾーンを拡大
 	{
 		Zoom(zoomSpeed);
 	}
-	else if (GetKeyboardPress(DIK_E) && this->isShooting == IS_no)	// ゾーンを縮小
+	isButton = (GetKeyboardPress(DIK_E) || IsButtonPressed(0, BUTTON_CROSS));
+	if (isButton && this->isShooting == IS_no)	// ゾーンを縮小
 	{
 		Zoom(-zoomSpeed);
 	}

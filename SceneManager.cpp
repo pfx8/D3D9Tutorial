@@ -101,7 +101,9 @@ void SceneManager::ChangeRenderState()
 
 	}
 
-	if (GetKeyboardTrigger(DIK_RETURN))
+	bool isButton;
+	isButton = (GetKeyboardTrigger(DIK_RETURN) || IsButtonTriggered(0, BUTTON_OPTIONS));
+	if (isButton)
 	{
 		// 次のシーンに進み
 		if (this->sceneState == SS_Title)
@@ -113,7 +115,8 @@ void SceneManager::ChangeRenderState()
 			ChooseScene(SS_Title);
 	}
 
-	if (GetKeyboardTrigger(DIK_BACK) && this->sceneState == SS_Run)
+	isButton = (GetKeyboardTrigger(DIK_BACK) || IsButtonTriggered(0, BUTTON_SHARE));
+	if (isButton && this->sceneState == SS_Run)
 	{
 		// 戻るメニュー
 		ChooseScene(SS_Title);

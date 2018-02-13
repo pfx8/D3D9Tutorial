@@ -379,10 +379,12 @@ void Scene00::Draw()
 void Scene00::Control()
 {
 	// プレーヤー攻撃(左)
-	int  leftButton = 0;
+	/*int  leftButton = 0;
 	bool isLeftShooting;
 	int  rightButton = 0;
-	bool isRightShooting;
+	bool isRightShooting;*/
+
+	bool isButton;
 
 	/*if (this->ship->rot.y <= D3DXToRadian(90) && this->ship->rot.y >= -D3DXToRadian(90))
 	{
@@ -399,7 +401,8 @@ void Scene00::Control()
 		isRightShooting = this->ship->leftShooting;
 	}*/
 
-	if (GetKeyboardTrigger(/*leftButton*/DIK_N) && (/*isLeftShooting*/this->ship->leftShooting == false))
+	isButton = (GetKeyboardTrigger(DIK_N) || IsButtonTriggered(0, BUTTON_L2));
+	if (isButton && (this->ship->leftShooting == false))
 	{
 		int i = 0;
 		D3DXVECTOR3 temp = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
@@ -439,7 +442,8 @@ void Scene00::Control()
 		this->ship->leftShooting = true;
 	}
 
-	if (GetKeyboardTrigger(/*rightButton*/DIK_M) && (/*isRightShooting*/this->ship->rightShooting == false))
+	isButton = (GetKeyboardTrigger(DIK_M) || IsButtonTriggered(0, BUTTON_R2));
+	if (isButton && (this->ship->rightShooting == false))
 	{
 		int i = 0;
 		D3DXVECTOR3 temp = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
