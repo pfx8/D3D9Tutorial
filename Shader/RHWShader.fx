@@ -16,12 +16,17 @@ float   alpha; // 弾発射ボタン処理
 texture tex; // テクスチャ
 sampler Samp = // サンプラー
 sampler_state
-{
+{   
+    // テクスチャ
     Texture = <tex>;
+    
+    // 使用してるピクセルカラーを線形補間する
     MipFilter = LINEAR;
     MinFilter = LINEAR;
     MagFilter = LINEAR;
-    AddressU = WRAP;
+    
+    // UV使用方法
+    AddressU = WRAP;    
     AddressV = WRAP;
 };
 

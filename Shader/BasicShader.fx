@@ -43,6 +43,8 @@ sampler_state
     MipFilter = LINEAR;
     MinFilter = LINEAR;
     MagFilter = LINEAR;
+    AddressU = WRAP;
+    AddressV = WRAP;
 };
 
 struct PS_OUTPUT
