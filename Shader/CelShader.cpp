@@ -19,7 +19,6 @@ CelShader::CelShader()
 	this->WMatrixHandle = NULL;
 	this->VPMatrixHandle = NULL;
 	this->lightingHandle = NULL;
-	//this->textureHandle = NULL;
 }
 
 //*****************************************************************************
@@ -95,6 +94,5 @@ void CelShader::GetShaderParameter()
 	// シェーダー中のグローバル変数を取得
 	this->WMatrixHandle = this->effectPoint->GetParameterByName(0, "WMatrix");
 	this->VPMatrixHandle = this->effectPoint->GetParameterByName(0, "VPMatrix");
-	this->lightingHandle = this->effectPoint->GetParameterByName(0, "LightDirection");
 	this->typeHandle = this->effectPoint->GetParameterByName(0, "ObjType");
 }

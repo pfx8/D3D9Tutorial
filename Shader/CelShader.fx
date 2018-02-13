@@ -11,34 +11,53 @@
 // 頂点IN構造体
 struct CelVertexIN
 {
-    float3 position : POSITION;
-    float3 normal : NORMAL0;
-    float2 uvCoords : TEXCOORD0; // テクスチャ座標
+    float3 position : POSITION0;
+    float3 normal   : NORMAL0;
+    float2 uvCoords : TEXCOORD; // テクスチャ座標
 };
 
 // 頂点OUT構造体
 struct CelVertexOUT
 {
     float4 position : POSITION0;
-    float3 normal : NORMAL0;
-    float4 diffuse : COLOR0;
+    float3 normal   : NORMAL0;
     float2 uvCoords : TEXCOORD0; // テクスチャ座標
+
 };
 
 // 行列
 matrix WMatrix;         // ワールド変換行列
 matrix VPMatrix;        // ビューイング変換とプロジェクション変換行列
-matrix rotMatix;        // 回転マトリックス
+matrix lightMatrix;     // 回転マトリックス
 
 // ライト
 float3 lightDir;        // ライト方向ベクトル
 float4 lightDiffuse;    // アンビエント(環境光のカラー)
 float4 lightSpecular;   // 鏡面反射光(スペキュラー)
 
-// マテリアル
-//float4 materialDiffuseColor; // マテリアルのディフェーズ
+int ObjType;            // 1.プレーヤー 2.敵 3.大砲
 
-int ObjType;                 // 1.プレーヤー 2.敵 3.大砲
+//------------------------------------------------------
+//
+// 頂点シェーダー(トゥ―ンシェーダー)
+//
+//------------------------------------------------------
+CelVertexOUT CelVertexShader(CelVertexIN In)
+{
+    CelVertexOUT Out = (CelVertexOUT) 0; // 初期化
+
+    // 座標変換
+    Out.position = mul(float4(In.position, 1.0), WMatrix);
+    Out.position = mul(Out.position, VPMatrix);
+    
+    // 法線変換
+    Out.normal = normalize(mul(float4(In.normal, 1.0), lightMatrix));
+
+    // UV座標
+    Out.uvCoords = In.uvCoords;
+
+    return Out;
+}
 
 // サンプラー
 texture tex; // 使用するテクスチャ
@@ -55,28 +74,6 @@ sampler_state
 
 //------------------------------------------------------
 //
-// 頂点シェーダー(トゥ―ンシェーダー)
-//
-//------------------------------------------------------
-CelVertexOUT CelVertexShader(CelVertexIN In)
-{
-    CelVertexOUT Out = (CelVertexOUT) 0; // 初期化
-
-    // 座標変換
-    Out.position = mul(float4(In.position, 1.0), WMatrix);
-    Out.position = mul(Out.position, VPMatrix);
-    
-    // 法線変換
-    Out.normal = normalize(mul(float4(In.normal, 1.0), WMatrix));
-
-    // UV座標
-    Out.uvCoords = In.uvCoords;
-
-    return Out;
-}
-
-//------------------------------------------------------
-//
 // ピクセルシェーダー(トゥ―ンシェーダー)
 //
 //------------------------------------------------------
@@ -84,25 +81,32 @@ float4 CelPixelShader(CelVertexOUT In) : COLOR0
 {
     float4 globalIlumination = lightDiffuse + lightSpecular;
 
-    float value = dot(lightDir, In.normal); // 法線と光の内積を計算して、色を決める;
-    
+    //float3 lightVec = normalize(mul(float4(lightDir, 1.0), WMatrix));
+
+    float value = dot(-lightDir, In.normal); // 法線と光の内積を計算して、色を決める;
+
+    if (value < 0)
+        value = 0;
+
     float4 diffuse;
     if (ObjType == 0) // ship
     {
-        diffuse = tex2D(texSamp, In.uvCoords) * globalIlumination;
+        diffuse = tex2D(texSamp, In.uvCoords) ;
     }
-    else if (ObjType == 1) // 敵
+    else if (ObjType == 1) // 大砲
     {
-        diffuse = In.diffuse * globalIlumination;
+        diffuse = float4(0.2, 0.2, 0.2, 1.0);
     }
-    else if (ObjType == 2) // 大砲
-    {
-        diffuse = float4(22, 22, 22, 1) * globalIlumination;
-    }
+    diffuse *= globalIlumination;
+    diffuse.a = 1.0;
 
     //法線とライトの内積によってカラーを決める
-    if (value < 0.85)
-        diffuse = float4(0.55, 0.55, 0.55, 0.55) * diffuse;
+    if (value > 0.85)
+        diffuse = float4(1.0, 1.0, 1.0, 1.0) * diffuse;
+    else if (value > 0.5)
+        diffuse = float4(0.7, 0.7, 0.7, 1.0) * diffuse;
+    else 
+        diffuse = float4(0.35, 0.35, 0.35, 1.0) * diffuse;
 
     return diffuse;
 }
@@ -116,22 +120,21 @@ CelVertexOUT OutlineVertexShader(CelVertexIN In)
 {
     CelVertexOUT Out = (CelVertexOUT) 0; // 初期化
 
-    float4 position = Out.position = mul(float4(In.position, 1.0f), WMatrix);
-    position = Out.position = mul(position, VPMatrix);
+    float4 position = mul(mul(float4(In.position, 1.0f), WMatrix), VPMatrix);
 
-    float4 normal = normalize(mul(float4(In.normal, 1.0f), rotMatix));
+    float4 normal = mul(mul(float4(In.normal, 1.0f), WMatrix), VPMatrix);
 
     float value = dot(lightDir, In.normal); // 法線と光の内積を計算
-
-     
-    if (value > 0)                          // 法線の方向へ拡大
-    {
-        Out.position = position - (mul(0.22, normal));
-    }
-    else
-    {
-        Out.position = position + (mul(0.22, normal));
-    }
+    
+    //if (value > 0)
+    //{
+    //    Out.position = position - (mul(0.015, normal));
+    //}
+    //else
+    //{
+    //    Out.position = position + (mul(0.015, normal));
+    //}
+    Out.position = position + (mul(0.02, normal));
 
         return Out;
     }
@@ -160,7 +163,7 @@ technique CelShader // トゥ―ンシェーダー
 
         CullMode = CW;
     }
-    pass P // モデル
+    pass P1 // モデル
     {
         VertexShader = compile vs_3_0 CelVertexShader();
         PixelShader = compile ps_3_0 CelPixelShader();

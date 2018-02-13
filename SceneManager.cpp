@@ -101,7 +101,7 @@ void SceneManager::ChangeRenderState()
 
 	}
 
-	bool isButton;
+	bool isButton = false;
 	isButton = (GetKeyboardTrigger(DIK_RETURN) || IsButtonTriggered(0, BUTTON_OPTIONS));
 	if (isButton)
 	{

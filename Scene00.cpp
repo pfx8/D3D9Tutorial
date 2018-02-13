@@ -38,9 +38,6 @@ Scene00::Scene00()
 	// 主人公
 	this->ship = new Character;
 
-	// シャドー
-	this->shadowMap = new ShadowMapShader;
-
 	// 敵
 	this->enemyShip = new Enemy[ENEMY_MAX];
 
@@ -94,13 +91,10 @@ void Scene00::InitScene00()
 	this->ship->check->InitBox(20, 20, 20, 0.1f);
 	this->ship->space->InitBox(30, 30, 30, 0.1f);
 
-	// シャドー
-	this->shadowMap->InitShader();
-
 	// 敵
 	for (int count = 0; count < ENEMY_MAX; count++)
 	{
-		D3DXVECTOR3 temp = D3DXVECTOR3(float(rand() % 150), 0.0f, float(rand() % 120));
+		D3DXVECTOR3 temp = D3DXVECTOR3(float(rand() % 850), 0.0f, float(rand() % 620));
 		if (rand() % 1 == 0 && rand() % 1 == 0)
 		{
 			temp.x *= -1;
@@ -294,32 +288,6 @@ void Scene00::Draw()
 
 	// スカイボックス
 	{
-		//// テクニックを設定
-		//this->shader->shaderHandle = this->shader->effectPoint->GetTechniqueByName("RenderWithTextrue");
-		//this->shader->effectPoint->SetTechnique(this->shader->shaderHandle);
-
-		//// ワールド変換、ビューイング変換、プロジェクション変換マトリックス
-		//this->skyBox->SetWorldMatrix();
-		//this->shader->effectPoint->SetMatrix(this->shader->WMatrixHandle, &this->skyBox->worldMatrix);
-		//D3DXMATRIX skyBoxVPmatrix = this->camera->viewMatrix * this->camera->projectionMatrix;
-		//this->shader->effectPoint->SetMatrix(this->shader->VPMatrixHandle, &skyBoxVPmatrix);
-
-		//// テクスチャの設定
-		//this->shader->effectPoint->SetTexture(this->shader->textureHandle, this->skyBox->texture);
-
-		//// 描画
-		//UINT passNum = 0;
-		//this->shader->effectPoint->Begin(&passNum, 0);
-		//// 各パスを実行する
-		//for (int count = 0; count < passNum; count++)
-		//{
-		//	this->shader->effectPoint->BeginPass(0);
-		//	this->skyBox->Draw();
-
-		//	this->shader->effectPoint->EndPass();
-		//}
-		//this->shader->effectPoint->End();
-
 		this->skyBox->Draw(this->shader, &VPmatrix);
 	}
 
@@ -352,12 +320,12 @@ void Scene00::Draw()
 
 	// 弾
 	{
-		for (int count1 = 0; count1 < BULLET_MAX; count1++)
+		for (int count = 0; count < BULLET_MAX; count++)
 		{
-			if (this->bullet[count1].isUse == true)
+			if (this->bullet[count].isUse == true)
 			{
 				D3DXMATRIX VPmatrix = this->camera->viewMatrix * this->camera->projectionMatrix;
-				this->bullet[count1].Draw(this->celShader, &VPmatrix);
+				this->bullet[count].Draw(this->celShader, &VPmatrix);
 			}
 		}
 	}
@@ -368,8 +336,6 @@ void Scene00::Draw()
 	// デッバグメッセージ
 	this->ship->PosToMessageAndMessageDraw(0);
 	//this->camera->PosToMessageAndMessageDraw(0);
-
-
 }
 
 
@@ -386,7 +352,7 @@ void Scene00::Control()
 	int  rightButton = 0;
 	bool isRightShooting;*/
 
-	bool isButton;
+	bool isButton = false;
 
 	/*if (this->ship->rot.y <= D3DXToRadian(90) && this->ship->rot.y >= -D3DXToRadian(90))
 	{

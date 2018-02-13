@@ -47,12 +47,14 @@ class Character
 private:
 
 public:
+	D3DXMATRIX		worldMatrix;	// ワールド変換マトリックス
+	D3DXMATRIX		lightMatrix;	// ライトマトリックス
+	D3DXMATRIX		normalMatrix;	// ライトマトリックス
+
 	LEVER_LEVEL		leverLevel;		// 船のレバー操作
 	double			speed;			// スピードに関する倍数
 	DebugMessage*	message;		// Debugメッセージ
 	float			waveAngle;		// 揺れ係数
-	D3DXMATRIX		worldMatrix;	// ワールド変換マトリックス
-	D3DXMATRIX		lightMatrix;	// ライトマトリックス
 
 	// ベクトル
 	D3DXVECTOR3		upVector;		// カメラの上方向ベクトル
@@ -80,12 +82,12 @@ public:
 
 	D3DXVECTOR3  MoveAlongVecLook(float speedCoefficient);	// 注視方向に沿って移動
 	void PosToMessageAndMessageDraw(int row);	// 座標をメッセージに渡して、画面に描画する
-	void SetWorldMatrix();						// ワールド変換を設定
-	void Update(float rot);						// キャラクター更新
+	void SetWorldMatrix();						// ワールド変換を
 	void ChangeLever(LEVER_LEVEL level);		// レバーの操作によってスピードを変わる
 	bool CheckHitBB(Character* Object);			// 当たり判定
 	void RotationVecUp(float angle);			// 上方向のベクトルにして回転
 
+	virtual void Update(float rot);						// キャラクター更新
 	virtual void Draw(CelShader* celShader, D3DXMATRIX* VPMatrix);	// キャラクターの描画
 
 	void InitCharacter();

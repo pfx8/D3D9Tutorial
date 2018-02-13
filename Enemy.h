@@ -43,6 +43,7 @@ public:
 	// —Õ
 	void Trans(float angle);
 	bool CheckBB(Character* player);
+	void Update(float rot);					// “G‚ÌXV
 };
 #endif // !_ENEMY_H_
 

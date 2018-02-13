@@ -48,11 +48,11 @@ private:
 	Light*				directionLight;		// ライト
 	Enemy*				enemyShip;	// 敵
 	Bullet*				bullet;		// 弾
-	SkyBox*				skyBox;		// スカイボックス
-	ShadowMapShader*	shadowMap;	// シャドーマップ
+	SkyBox*				skyBox;		// 
 	ScreenPolygon*		screenPolygon;// RHWポリゴン
 
-	
+	//ShadowMapShader*	shadowMap;	// シャドーマップ
+
 public:
 	Character*			ship;			// プレーヤー
 

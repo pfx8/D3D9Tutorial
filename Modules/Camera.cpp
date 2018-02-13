@@ -136,7 +136,7 @@ void Camera::Update(Character* player)
 void Camera::CameraContrlUpdate(Character* player)
 {
 	// 射撃モードに変更
-	bool isButton;
+	bool isButton = false;
 
 	isButton = (GetKeyboardTrigger(DIK_R) || IsButtonTriggered(0, BUTTON_L1));
 	if (isButton)

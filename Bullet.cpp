@@ -103,14 +103,12 @@ void Bullet::CheckBulletAndShip()
 
 //*****************************************************************************
 //
-// キャラクターの描画
+// 描画
 //
 //*****************************************************************************
 void Bullet::Draw(CelShader* celShader, D3DXMATRIX* VPMatrix)
 {
-	// ワールド変換
 	SetWorldMatrix();
 
-	// メッシュを描画する
-	this->model->DrawModel(celShader, &this->worldMatrix, VPMatrix, &lightMatrix, MT_bullet);
+	model->DrawModel(celShader, &this->worldMatrix, VPMatrix, &this->lightMatrix, &this->normalMatrix, MT_bullet);
 }

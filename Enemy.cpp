@@ -174,3 +174,58 @@ void Enemy::Trans(float angle)
 	this->lookVector.x = cosf(-this->rot.y + D3DX_PI / 2);
 	this->lookVector.z = sinf(-this->rot.y + D3DX_PI / 2);
 }
+
+//*****************************************************************************
+//
+// “G‚ÌXV
+//
+//*****************************************************************************
+void Enemy::Update(float rot)
+{
+	// ”g‚É‡‚í‚¹‚Ä—h‚ê‚é
+	this->waveAngle = rot;
+	if (this->waveAngle > D3DX_PI * 2.0f)
+		this->waveAngle = 0.0f;
+	this->pos.y = 0.5 + 0.8 * sinf(this->waveAngle);
+
+	// ˆÚ“®
+	switch (leverLevel)
+	{
+	case LL_FRONT:
+		this->speed += 0.0003f;
+		if (this->speed >= MAX_FRONT_SPEED_COEFFICIENT)
+			this->speed = MAX_FRONT_SPEED_COEFFICIENT;
+		break;
+	case LL_STOP:
+		if (this->speed > 0)
+		{
+			this->speed -= 0.0001f;
+			if (this->speed <= 0)
+				this->speed = 0;
+		}
+		else if (this->speed < 0)
+		{
+			this->speed += 0.0003f;
+			if (this->speed >= 0)
+				this->speed = 0;
+		}
+		else
+		{
+			this->speed = 0.0f;
+		}
+		break;
+	case LL_BACK:
+		this->speed -= 0.0001f;
+		if (this->speed <= MAX_BACK_SPEED_COEFFICIENT)
+			this->speed = MAX_BACK_SPEED_COEFFICIENT;
+		break;
+	default:
+		break;
+	}
+
+	// ˆÚ“®
+	MoveAlongVecLook(this->speed);
+
+	// ƒ[ƒ‹ƒh•ÏŠ·
+	SetWorldMatrix();
+}

@@ -84,8 +84,8 @@ void Character::PosToMessageAndMessageDraw(int row)
 	temp2.y = rightTime;
 	temp2.z = D3DXToDegree(rot.y);
 
-	//this->message->DrawPosMessage("Light", temp, D3DXVECTOR2(0, float((row + 0) * 18)));
-	this->message->DrawPosMessage("time", temp2, D3DXVECTOR2(0, float((row + 0) * 18)));
+	this->message->DrawPosMessage("Light", temp, D3DXVECTOR2(0, float((row + 0) * 18)));
+	//this->message->DrawPosMessage("time", temp2, D3DXVECTOR2(0, float((row + 0) * 18)));
 }
 
 //*****************************************************************************
@@ -96,8 +96,8 @@ void Character::PosToMessageAndMessageDraw(int row)
 void Character::Draw(CelShader* celShader, D3DXMATRIX* VPMatrix)
 {
 	// メッシュを描画する
-	this->player.shipBody->DrawModel(celShader, &this->worldMatrix, VPMatrix, &lightMatrix, MT_ship);
-	this->player.shipCannon->DrawModel(celShader, &this->worldMatrix, VPMatrix, &lightMatrix, MT_ship);
+	this->player.shipBody->DrawModel(celShader, &this->worldMatrix, VPMatrix, &this->lightMatrix, &this->normalMatrix, MT_ship);
+	this->player.shipCannon->DrawModel(celShader, &this->worldMatrix, VPMatrix, &this->lightMatrix, &this->normalMatrix, MT_ship);
 }
 
 //*****************************************************************************
@@ -108,7 +108,7 @@ void Character::Draw(CelShader* celShader, D3DXMATRIX* VPMatrix)
 void Character::Update(float rot)
 {
 	// プレーヤー操作 
-	bool isButton;
+	bool isButton = false;
 	isButton = (GetKeyboardTrigger(DIK_W) || IsButtonTriggered(0, LEFT_STICK_UP));
 	if (isButton)	// 前に進む
 	{
@@ -139,13 +139,13 @@ void Character::Update(float rot)
 	if (isButton)	// 左回転
 	{
 		// 更新キャラクターをカメラの回転角度0.05
-		this->RotationVecUp(-0.05f / 180.0f * D3DX_PI);
+		this->RotationVecUp(-0.5f / 180.0f * D3DX_PI);
 	}
 	isButton = (GetKeyboardPress(DIK_D) || IsButtonPressed(0, LEFT_STICK_RIGHT));
 	if (isButton)	// 右回転
 	{
 		// 更新キャラクターをカメラの回転角度
-		this->RotationVecUp(0.05f / 180.0f * D3DX_PI);
+		this->RotationVecUp(0.5f / 180.0f * D3DX_PI);
 	}
 
 	// テスト、HP減り
@@ -264,7 +264,7 @@ void Character::ChangeLever(LEVER_LEVEL level)
 	this->leverLevel = level;
 
 	// コンソールに出すメッセージ
-	switch (leverLevel)
+	switch (this->leverLevel)
 	{
 	case LL_FRONT:
 		std::cout << "前" << std::endl; break;
@@ -299,7 +299,7 @@ void Character::SetWorldMatrix()
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
-	D3DXMATRIX mtxScl, mtxTranslate;
+	D3DXMATRIX mtxScl, mtxRot, mtxTranslate;
 
 	// ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&this->worldMatrix);
@@ -309,16 +309,32 @@ void Character::SetWorldMatrix()
 	D3DXMatrixMultiply(&this->worldMatrix, &this->worldMatrix, &mtxScl);
 
 	// 回転を反映
-	D3DXMatrixRotationYawPitchRoll(&this->lightMatrix, this->rot.y, this->rot.x, this->rot.z);
-	D3DXMatrixMultiply(&this->worldMatrix, &this->worldMatrix, &this->lightMatrix);
+	D3DXMatrixRotationYawPitchRoll(&mtxRot, this->rot.y, this->rot.x, this->rot.z);
+	D3DXMatrixMultiply(&this->worldMatrix, &this->worldMatrix, &mtxRot);
 
 	// 移動を反映
 	D3DXMatrixTranslation(&mtxTranslate, this->pos.x, this->pos.y, this->pos.z);
 	D3DXMatrixMultiply(&this->worldMatrix, &this->worldMatrix, &mtxTranslate);
 
 	// ライトマトリックス
-	D3DXMatrixTranslation(&mtxTranslate, 0, this->pos.y, 0);
-	D3DXMatrixMultiply(&this->lightMatrix, &this->lightMatrix, &mtxTranslate);
+	D3DXMATRIX mtxLightTranslate;
+	D3DXMatrixIdentity(&this->lightMatrix);
+
+	D3DXMatrixTranslation(&mtxLightTranslate, 0, this->pos.y, 0);
+	D3DXMatrixMultiply(&this->lightMatrix, &this->lightMatrix, &mtxLightTranslate);
+
+	//// ノーマルマトリックス
+	//D3DXMATRIX mtxRotNormal, mtxTranslateNormal;
+	//D3DXMatrixIdentity(&this->normalMatrix);
+
+	//D3DXMatrixRotationYawPitchRoll(&mtxRotNormal, this->rot.y, this->rot.x, this->rot.z);
+	//D3DXMatrixMultiply(&this->normalMatrix, &this->normalMatrix, &mtxRotNormal);
+
+	/*D3DXMatrixTranslation(&mtxTranslateNormal, this->pos.x, this->pos.y, this->pos.z);
+	D3DXMatrixMultiply(&this->normalMatrix, &this->normalMatrix, &mtxTranslateNormal);*/
+
+	D3DXMatrixRotationYawPitchRoll(&mtxLightTranslate, this->rot.y, 0, 0);
+	D3DXMatrixMultiply(&this->lightMatrix, &this->lightMatrix, &mtxLightTranslate);
 }
 
 //*****************************************************************************

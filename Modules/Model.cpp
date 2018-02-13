@@ -54,7 +54,8 @@ Model::~Model()
 // モデルを描画する(CelShader)
 //
 //*****************************************************************************
-void Model::DrawModel(CelShader* celShader, D3DXMATRIX* worldMatrix, D3DXMATRIX* VPMatrix, D3DXMATRIX* lightMatrix, Model_Type modelType)
+void Model::DrawModel(CelShader* celShader, D3DXMATRIX* worldMatrix, D3DXMATRIX* VPMatrix, 
+	D3DXMATRIX* lightMatrix, D3DXMATRIX* normalMatrix, Model_Type modelType)
 {
 	// テクニックを設定
 	celShader->effectPoint->SetTechnique(celShader->celShaderHandle);
@@ -62,7 +63,9 @@ void Model::DrawModel(CelShader* celShader, D3DXMATRIX* worldMatrix, D3DXMATRIX*
 	// 変更行列を渡す
 	celShader->effectPoint->SetMatrix(celShader->WMatrixHandle, worldMatrix);
 	celShader->effectPoint->SetMatrix(celShader->VPMatrixHandle, VPMatrix);
-	celShader->effectPoint->SetValue("rotMatix", &lightMatrix, sizeof(D3DXMATRIX));
+
+	celShader->effectPoint->SetValue("lightMatrix", lightMatrix, sizeof(D3DXMATRIX));
+	//celShader->effectPoint->SetValue("normalMatrix", normalMatrix, sizeof(D3DXMATRIX*));
 
 	// Obj種類番号を渡す
 	celShader->effectPoint->SetInt(celShader->typeHandle, modelType);
