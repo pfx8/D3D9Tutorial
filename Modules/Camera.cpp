@@ -94,7 +94,7 @@ void Camera::Update(Character* player)
 		break;
 	case IS_left:
 		this->posAt = player->pos - player->rightVector * 20.0f;
-		this->posEye = player->pos + D3DXVECTOR3(0.0f, 5.0f, 0.0f);
+		this->posEye = player->pos + D3DXVECTOR3(0.0f, 5.0f, 0.0f) - player->rightVector * 1.5f;
 
 		// 注視方向ベクトル
 		temp = -player->rightVector;
@@ -102,7 +102,7 @@ void Camera::Update(Character* player)
 		break;
 	case IS_right:
 		this->posAt = player->pos + player->rightVector * 20.0f;
-		this->posEye = player->pos + D3DXVECTOR3(0.0f, 5.0f, 0.0f);
+		this->posEye = player->pos + D3DXVECTOR3(0.0f, 5.0f, 0.0f) + player->rightVector * 1.5f;
 
 		// 注視方向ベクトル
 		temp = player->rightVector;

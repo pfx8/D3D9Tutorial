@@ -89,14 +89,16 @@ float4 CelPixelShader(CelVertexOUT In) : COLOR0
         value = 0;
 
     float4 diffuse;
-    if (ObjType == 0) // ship
-    {
-        diffuse = tex2D(texSamp, In.uvCoords) ;
-    }
-    else if (ObjType == 1) // 大砲
-    {
-        diffuse = float4(0.2, 0.2, 0.2, 1.0);
-    }
+    //if (ObjType == 0) // ship
+    //{
+    //    diffuse = tex2D(texSamp, In.uvCoords) ;
+    //}
+    //else if (ObjType == 1) // 大砲
+    //{
+    //    diffuse = float4(0.2, 0.2, 0.2, 1.0);
+    //}
+
+    diffuse = tex2D(texSamp, In.uvCoords);
     diffuse *= globalIlumination;
     diffuse.a = 1.0;
 
@@ -125,16 +127,8 @@ CelVertexOUT OutlineVertexShader(CelVertexIN In)
     float4 normal = mul(mul(float4(In.normal, 1.0f), WMatrix), VPMatrix);
 
     float value = dot(lightDir, In.normal); // 法線と光の内積を計算
-    
-    //if (value > 0)
-    //{
-    //    Out.position = position - (mul(0.015, normal));
-    //}
-    //else
-    //{
-    //    Out.position = position + (mul(0.015, normal));
-    //}
-    Out.position = position + (mul(0.02, normal));
+
+    Out.position = position + (mul(0.018, normal));
 
         return Out;
     }

@@ -116,6 +116,7 @@ void Scene00::InitScene00()
 	for (int count = 0; count < BULLET_MAX; count++)
 	{
 		this->resourcesManager->LoadMesh("ball", this->bullet[count].model);
+		this->resourcesManager->LoadTexture("bullet", &this->bullet[count].model->meshTexturePoint);
 	}
 
 	// カメラ
