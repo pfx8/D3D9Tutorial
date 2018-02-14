@@ -11,6 +11,7 @@
 #include "Modules/Camera.h"
 #include "Modules/Light.h"
 #include "Modules/Plane.h"
+#include "Modules/Sound.h"
 #include "Console.h"
 #include "SceneManager.h"
 
@@ -133,6 +134,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		std::cout << "[Error] コンソールが初期化失敗!" << std::endl;	// エラーメッセージ
 		return E_FAIL;
 	}
+
+	// 音楽
+	InitSound(hWnd);
 
 	// シンーマネジメント
 	g_SceneManager = new SceneManager();

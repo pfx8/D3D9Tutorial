@@ -131,6 +131,9 @@ void Scene00::InitScene00()
 		this->billboard[count].Init();
 	}*/
 
+	// 効果音
+	this->seHit = LoadSound(SE_HIT);
+
 	std::cout << "[State] BoundingBox: " << std::boolalpha << this->ship->check->isBoundingBoxDraw << std::endl;
 }
 
@@ -149,6 +152,8 @@ Scene00::~Scene00()
 	RELEASE_CLASS_POINT(this->shader);	// ベーシックシェーダー
 	RELEASE_CLASS_POINT(this->celShader);	// トゥ―ンシェーダー
 	RELEASE_CLASS_POINT(this->skyBox);	// トゥ―ンシェーダー
+
+	RELEASE_CLASS_POINT(this->seHit);
 
 	RELEASE_CLASS_ARRY_POINT(this->enemyShip); // エネミー
 	RELEASE_CLASS_ARRY_POINT(this->bullet); // エネミー
@@ -447,6 +452,8 @@ void Scene00::Control()
 		}
 
 		this->ship->leftShooting = true;
+
+		PlaySound(this->seHit, E_DS8_FLAG_NONE);
 	}
 
 	isButton = (GetKeyboardTrigger(DIK_M) || IsButtonTriggered(0, BUTTON_R2));
@@ -488,6 +495,8 @@ void Scene00::Control()
 		}
 
 		this->ship->rightShooting = true;
+
+		PlaySound(this->seHit, E_DS8_FLAG_NONE);
 	}
 
 	// バウンディングボックス操作更新

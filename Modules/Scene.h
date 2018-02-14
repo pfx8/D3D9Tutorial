@@ -11,6 +11,7 @@
 #include "../Engine.h"
 #include "../ResourcesManager.h"
 #include "../DebugMessage.h" 
+#include "../Modules/Sound.h"
 
 #include <map>
 
@@ -31,7 +32,7 @@ private:
 
 public:
 	ResourcesManager*	resourcesManager;	// リソースマネジメント
-	DebugMessage*		message;		// メッセージ
+	DebugMessage*		message;			// メッセージ
 	
 	Scene();
 	~Scene();
