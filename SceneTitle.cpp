@@ -17,7 +17,7 @@ SceneTitle::SceneTitle()
 	this->vertexDecl = NULL;
 	this->vertexBuffer = NULL;
 	this->indexBuffer = NULL;
-	this->texture = NULL;
+	this->titleTexture = NULL;
 
 	// シェーダーを初期化
 	this->RHWshader = new RHWShader;
@@ -27,7 +27,8 @@ SceneTitle::SceneTitle()
 	this->resourcesManager = new ResourcesManager;
 
 	// タイトルテクスチャを取得
-	this->resourcesManager->LoadTexture("title", &this->texture);
+	this->resourcesManager->LoadTexture("title", &this->titleTexture);
+	this->resourcesManager->LoadTexture("press", &this->pressTexture);
 
 	// 頂点作成
 	MakeVertexDecl();
@@ -43,7 +44,7 @@ SceneTitle::~SceneTitle()
 	RELEASE_POINT(this->vertexBuffer);
 	RELEASE_POINT(this->vertexDecl);
 	RELEASE_POINT(this->indexBuffer);
-	RELEASE_POINT(this->texture);
+	RELEASE_POINT(this->titleTexture);
 
 	RELEASE_CLASS_POINT(this->resourcesManager);
 }
@@ -127,35 +128,74 @@ void SceneTitle::Draw()
 {
 	PDIRECT3DDEVICE9 pDevice = GetDevice();
 
-	// テクニックを設定
-	this->RHWshader->effectPoint->SetTechnique(this->RHWshader->RHWShaderHandle);
-
-	// テクスチャの設定
-	this->RHWshader->effectPoint->SetTexture(this->RHWshader->textureHandle, this->texture);
-
-	// 静的な
-	int temp = 0;
-	this->RHWshader->effectPoint->SetValue("type", &temp, sizeof(int));
-
-	// アルファ値を設定
-	float alpha = 1.0f;
-	this->RHWshader->effectPoint->SetValue("alpha", &alpha, sizeof(float));
-
-	// 描画
-	UINT passNum = 0;
-	this->RHWshader->effectPoint->Begin(&passNum, 0);
-	// 各パスを実行する
-	for (int count = 0; count < passNum; count++)
+	// タイトル
 	{
-		this->RHWshader->effectPoint->BeginPass(0);
+		// テクニックを設定
+		this->RHWshader->effectPoint->SetTechnique(this->RHWshader->RHWShaderHandle);
 
-		pDevice->SetVertexDeclaration(this->vertexDecl);							// 頂点宣言を設定
-		pDevice->SetStreamSource(0, this->vertexBuffer, 0, sizeof(VERTEX_2D));		// 頂点バッファをデバイスのデータストリームにバイナリ
-		pDevice->SetIndices(this->indexBuffer);										// 頂点インデックスバッファを設定
-		pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 4, 0, 2);		// ポリゴンの描画
+		// テクスチャの設定
+		this->RHWshader->effectPoint->SetTexture(this->RHWshader->textureHandle, this->titleTexture);
 
-		this->RHWshader->effectPoint->EndPass();
+		// 静的な
+		int temp = 0;
+		this->RHWshader->effectPoint->SetValue("type", &temp, sizeof(int));
+
+		// アルファ値を設定
+		float alpha = 1.0f;
+		this->RHWshader->effectPoint->SetValue("alpha", &alpha, sizeof(float));
+
+		// 描画
+		UINT passNum = 0;
+		this->RHWshader->effectPoint->Begin(&passNum, 0);
+		// 各パスを実行する
+		for (int count = 0; count < passNum; count++)
+		{
+			this->RHWshader->effectPoint->BeginPass(0);
+
+			pDevice->SetVertexDeclaration(this->vertexDecl);							// 頂点宣言を設定
+			pDevice->SetStreamSource(0, this->vertexBuffer, 0, sizeof(VERTEX_2D));		// 頂点バッファをデバイスのデータストリームにバイナリ
+			pDevice->SetIndices(this->indexBuffer);										// 頂点インデックスバッファを設定
+			pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 4, 0, 2);			// ポリゴンの描画
+
+			this->RHWshader->effectPoint->EndPass();
+		}
+		this->RHWshader->effectPoint->End();
 	}
-	this->RHWshader->effectPoint->End();
+
+	// press button
+	{
+		// テクニックを設定
+		this->RHWshader->effectPoint->SetTechnique(this->RHWshader->RHWShaderHandle);
+
+		// テクスチャの設定
+		this->RHWshader->effectPoint->SetTexture(this->RHWshader->textureHandle, this->pressTexture);
+
+		// 動的な
+		int temp = 2;
+		this->RHWshader->effectPoint->SetValue("type", &temp, sizeof(int));
+
+		// アルファ値を設定
+		float alpha = sinf(timeGetTime() / 500.0);
+		if (alpha < 0)
+			alpha = -alpha;
+		this->RHWshader->effectPoint->SetValue("alpha", &alpha, sizeof(float));
+
+		// 描画
+		UINT passNum = 0;
+		this->RHWshader->effectPoint->Begin(&passNum, 0);
+		// 各パスを実行する
+		for (int count = 0; count < passNum; count++)
+		{
+			this->RHWshader->effectPoint->BeginPass(0);
+
+			pDevice->SetVertexDeclaration(this->vertexDecl);							// 頂点宣言を設定
+			pDevice->SetStreamSource(0, this->vertexBuffer, 0, sizeof(VERTEX_2D));		// 頂点バッファをデバイスのデータストリームにバイナリ
+			pDevice->SetIndices(this->indexBuffer);										// 頂点インデックスバッファを設定
+			pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 4, 0, 2);			// ポリゴンの描画
+
+			this->RHWshader->effectPoint->EndPass();
+		}
+		this->RHWshader->effectPoint->End();
+	}
 	
 }

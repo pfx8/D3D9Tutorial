@@ -17,7 +17,7 @@ SceneEnding::SceneEnding()
 	this->vertexDecl = NULL;
 	this->vertexBuffer = NULL;
 	this->indexBuffer = NULL;
-	this->texture = NULL;
+	this->titleTexture = NULL;
 
 	// シェーダーを初期化
 	this->RHWshader = new RHWShader;
@@ -27,7 +27,7 @@ SceneEnding::SceneEnding()
 	this->resourcesManager = new ResourcesManager;
 
 	// タイトルテクスチャを取得
-	this->resourcesManager->LoadTexture("ending", &this->texture);
+	this->resourcesManager->LoadTexture("ending", &this->titleTexture);
 
 	// 頂点作成
 	MakeVertexDecl();
@@ -43,7 +43,7 @@ SceneEnding::~SceneEnding()
 	RELEASE_POINT(this->vertexBuffer);
 	RELEASE_POINT(this->vertexDecl);
 	RELEASE_POINT(this->indexBuffer);
-	RELEASE_POINT(this->texture);
+	RELEASE_POINT(this->titleTexture);
 
 	RELEASE_CLASS_POINT(this->resourcesManager);
 }
@@ -131,7 +131,7 @@ void SceneEnding::Draw()
 	this->RHWshader->effectPoint->SetTechnique(this->RHWshader->RHWShaderHandle);
 
 	// テクスチャの設定
-	this->RHWshader->effectPoint->SetTexture(this->RHWshader->textureHandle, this->texture);
+	this->RHWshader->effectPoint->SetTexture(this->RHWshader->textureHandle, this->titleTexture);
 
 	// 静的な
 	int temp = 0;

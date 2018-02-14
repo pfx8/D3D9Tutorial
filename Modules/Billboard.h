@@ -35,7 +35,7 @@ private:
 	HRESULT MakeVertexBillboard();	// 頂点作成
 
 public:
-	LPDIRECT3DTEXTURE9		texture;					// テクスチャへのポインタ
+	LPDIRECT3DTEXTURE9		titleTexture;					// テクスチャへのポインタ
 	LPDIRECT3DVERTEXBUFFER9	vertexBuffer;				// 頂点バッファ
 
 	D3DXMATRIX				worldMatrix;				// ワールドマトリックス

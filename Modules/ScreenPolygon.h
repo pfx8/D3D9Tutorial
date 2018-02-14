@@ -25,7 +25,7 @@ class ScreenPolygon
 private:
 	RHWShader*	RHWshader;	// 変換済み用シェーダー
 
-	void DrawObject(LPDIRECT3DVERTEXBUFFER9 vertexBuffer, LPDIRECT3DTEXTURE9 texture, int level = 9, float alpha = 0.0f, bool needa = false);	// 動的なものを描画する
+	void DrawObject(LPDIRECT3DVERTEXBUFFER9 vertexBuffer, LPDIRECT3DTEXTURE9 titleTexture, int level = 9, float alpha = 0.0f, bool needa = false);	// 動的なものを描画する
 	void MakeVertexDecl();																				// 頂点宣言
 	HRESULT MakeVertex(D3DXVECTOR2 pos, D3DXVECTOR2 size, LPDIRECT3DVERTEXBUFFER9* vertexBufferPoint);	// 頂点作成
 	HRESULT MakeTransVertex(D3DXVECTOR2 pos, D3DXVECTOR2 size, LPDIRECT3DVERTEXBUFFER9* vertexBufferPoint, float rot);	// 頂点作成

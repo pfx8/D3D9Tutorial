@@ -77,11 +77,11 @@ void Scene00::InitScene00()
 
 	// スカイボックス
 	this->skyBox->InitSkyBox(2500.0f);
-	this->resourcesManager->LoadTexture("skybox", &this->skyBox->texture);
+	this->resourcesManager->LoadTexture("skybox", &this->skyBox->titleTexture);
 
 	// フィールド
 	this->sea->InitPlane(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(17.0f, 17.0f), D3DXVECTOR2(150, 150));
-	this->resourcesManager->LoadTexture("fieldSea2", &this->sea->texture);
+	this->resourcesManager->LoadTexture("fieldSea2", &this->sea->titleTexture);
 
 	// 主人公
 	this->ship->InitCharacter();
@@ -302,7 +302,7 @@ void Scene00::Draw()
 		this->shader->effectPoint->SetMatrix(this->shader->VPMatrixHandle, &fieldVPmatrix);
 			
 		// テクスチャ、アルファ値の設定
-		this->shader->effectPoint->SetTexture(this->shader->textureHandle, this->sea->texture);
+		this->shader->effectPoint->SetTexture(this->shader->textureHandle, this->sea->titleTexture);
 		this->shader->effectPoint->SetFloat(this->shader->alphaHandle, 1.0f);
 			
 		// 描画

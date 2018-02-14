@@ -19,7 +19,7 @@ SkyBox::SkyBox()
 	this->indexBuffer = NULL;
 	this->vertexDecl = NULL;
 
-	this->texture = NULL;
+	this->titleTexture = NULL;
 
 	this->length = 0.0f;
 	this->pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
@@ -36,7 +36,7 @@ SkyBox::~SkyBox()
 	RELEASE_POINT(this->indexBuffer);
 	RELEASE_POINT(this->vertexDecl);
 
-	RELEASE_POINT(this->texture);
+	RELEASE_POINT(this->titleTexture);
 }
 
 //*****************************************************************************
@@ -192,7 +192,7 @@ void SkyBox::Draw(Shader* shader, D3DXMATRIX* VPMatrix)
 	shader->effectPoint->SetMatrix(shader->VPMatrixHandle, VPMatrix);
 
 	// テクスチャの設定
-	shader->effectPoint->SetTexture(shader->textureHandle, this->texture);
+	shader->effectPoint->SetTexture(shader->textureHandle, this->titleTexture);
 
 	// 描画
 	UINT passNum = 0;

@@ -311,7 +311,7 @@ void ScreenPolygon::Draw()
 // level ... -1後退 0停止 1前進 2普通(デフォルト)
 //
 //*****************************************************************************
-void ScreenPolygon::DrawObject(LPDIRECT3DVERTEXBUFFER9 vertexBuffer, LPDIRECT3DTEXTURE9 texture, int level, float alpha, bool needa)
+void ScreenPolygon::DrawObject(LPDIRECT3DVERTEXBUFFER9 vertexBuffer, LPDIRECT3DTEXTURE9 titleTexture, int level, float alpha, bool needa)
 {
 	PDIRECT3DDEVICE9 pDevice = GetDevice();
 
@@ -319,7 +319,7 @@ void ScreenPolygon::DrawObject(LPDIRECT3DVERTEXBUFFER9 vertexBuffer, LPDIRECT3DT
 	this->RHWshader->effectPoint->SetTechnique(this->RHWshader->RHWShaderHandle);
 
 	// テクスチャの設定
-	this->RHWshader->effectPoint->SetTexture(this->RHWshader->textureHandle, texture);
+	this->RHWshader->effectPoint->SetTexture(this->RHWshader->textureHandle, titleTexture);
 
 	if (this->level == level)
 	{

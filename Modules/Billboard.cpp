@@ -27,7 +27,7 @@ BillBoard::BillBoard()
 
 	this->isUse = true;
 
-	this->texture = NULL;
+	this->titleTexture = NULL;
 	this->vertexBuffer = NULL;
 }
 
@@ -38,7 +38,7 @@ BillBoard::BillBoard()
 //*****************************************************************************
 BillBoard::~BillBoard()
 {
-	RELEASE_POINT(this->texture);
+	RELEASE_POINT(this->titleTexture);
 	RELEASE_POINT(this->vertexBuffer);
 }
 

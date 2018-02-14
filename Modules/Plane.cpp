@@ -25,7 +25,7 @@ Plane::Plane()
 	// ポインタ
 	this->vertexBuffer = NULL;
 	this->indexBuffer = NULL;
-	this->texture = NULL;
+	this->titleTexture = NULL;
 }
 
 //*****************************************************************************
@@ -37,7 +37,7 @@ Plane::~Plane()
 {
 	// ポインタ
 	RELEASE_POINT(this->vertexBuffer);
-	RELEASE_POINT(this->texture);
+	RELEASE_POINT(this->titleTexture);
 	RELEASE_POINT(this->indexBuffer);
 }
 
