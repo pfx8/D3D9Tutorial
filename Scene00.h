@@ -55,7 +55,7 @@ private:
 
 	LPDIRECTSOUNDBUFFER8 seHit;
 
-	//BillBoard*			billboard;
+	//BillBoard*		billboard;
 
 	//ShadowMapShader*	shadowMap;	// シャドーマップ
 

@@ -378,7 +378,7 @@ void Scene00::Draw()
 	this->screenPolygon->Draw();
 		
 	// デッバグメッセージ
-	//this->ship->PosToMessageAndMessageDraw(0);
+	this->ship->PosToMessageAndMessageDraw(0);
 	//this->camera->PosToMessageAndMessageDraw(0);
 }
 
@@ -453,6 +453,8 @@ void Scene00::Control()
 
 		this->ship->leftShooting = true;
 
+		if(IsPlaying(this->seHit))
+			StopSound(this->seHit);
 		PlaySound(this->seHit, E_DS8_FLAG_NONE);
 	}
 
@@ -496,6 +498,8 @@ void Scene00::Control()
 
 		this->ship->rightShooting = true;
 
+		if (IsPlaying(this->seHit))
+			StopSound(this->seHit);
 		PlaySound(this->seHit, E_DS8_FLAG_NONE);
 	}
 

@@ -84,8 +84,10 @@ void Character::PosToMessageAndMessageDraw(int row)
 	temp2.y = rightTime;
 	temp2.z = D3DXToDegree(rot.y);
 
-	this->message->DrawPosMessage("Light", temp, D3DXVECTOR2(0, float((row + 0) * 18)));
+	//this->message->DrawPosMessage("Light", temp, D3DXVECTOR2(0, float((row + 0) * 18)));
 	//this->message->DrawPosMessage("time", temp2, D3DXVECTOR2(0, float((row + 0) * 18)));
+	this->message->DrawPosMessage("look", this->lookVector, D3DXVECTOR2(0, float((row + 0) * 18)));
+	this->message->DrawPosMessage("right", this->rightVector, D3DXVECTOR2(0, float((row + 1) * 18)));
 }
 
 //*****************************************************************************
@@ -252,6 +254,8 @@ void Character::RotationVecUp(float angle)
 	D3DXVec3Cross(&this->upVector, &this->rightVector, &this->lookVector);
 	D3DXVec3Normalize(&this->upVector, &this->upVector);
 
+	// test
+	this->rightVector = -this->rightVector;
 }
 
 //*****************************************************************************
