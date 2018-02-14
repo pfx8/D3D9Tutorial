@@ -11,10 +11,12 @@
 #include <map>
 
 #include "Model.h"
+#include "Sound.h"
 #include "BoundingBox.h"
 #include "..\Engine.h"
 #include "..\DebugMessage.h"
 #include "..\Shader\CelShader.h"
+
 
 // à⁄ìÆÅ@= lookVector * SPEED_COEFFICIENT
 #define MAX_BACK_SPEED_COEFFICIENT	(-0.28f)
@@ -76,6 +78,8 @@ public:
 	bool			leftShooting;
 	float			rightTime;
 	bool			rightShooting;
+
+
 
 	Character();
 	~Character();

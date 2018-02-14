@@ -53,6 +53,8 @@ private:
 	SkyBox*				skyBox;				// スカイボックス
 	ScreenPolygon*		screenPolygon;		// RHWポリゴン
 
+	LPDIRECTSOUNDBUFFER8 seHit;
+
 	//BillBoard*			billboard;
 
 	//ShadowMapShader*	shadowMap;	// シャドーマップ

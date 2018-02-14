@@ -30,7 +30,7 @@
     <ClCompile Include="modules\BoundingBox.cpp" />
     <ClCompile Include="modules\Camera.cpp" />
     <ClCompile Include="modules\Character.cpp" />
-    <ClCompile Include="modules\input.cpp" />
+    <ClCompile Include="Modules\Input.cpp" />
     <ClCompile Include="modules\Light.cpp" />
     <ClCompile Include="modules\Material.cpp" />
     <ClCompile Include="modules\Model.cpp" />
@@ -42,6 +42,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Modules\Sound.cpp" />
     <ClCompile Include="ResourcesManager.cpp" />
     <ClCompile Include="Scene00.cpp" />
     <ClCompile Include="SceneEnding.cpp" />
@@ -65,7 +66,7 @@
     <ClInclude Include="modules\BoundingBox.h" />
     <ClInclude Include="modules\Camera.h" />
     <ClInclude Include="modules\Character.h" />
-    <ClInclude Include="modules\input.h" />
+    <ClInclude Include="Modules\Input.h" />
     <ClInclude Include="modules\Light.h" />
     <ClInclude Include="Modules\Material.h" />
     <ClInclude Include="modules\Model.h" />
@@ -77,6 +78,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="Modules\Sound.h" />
     <ClInclude Include="ResourcesManager.h" />
     <ClInclude Include="Scene00.h" />
     <ClInclude Include="SceneEnding.h" />

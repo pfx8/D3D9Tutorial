@@ -36,6 +36,8 @@ private:
 	SceneEnding*	sceneEnding;
 	SCENESTATE		sceneState;
 
+	LPDIRECTSOUNDBUFFER8 bgm;
+
 	std::map <SCENESTATE, Scene*> sceneList;
 
 	void ChangeRenderState();	// レンダリング状態更新

@@ -21,6 +21,10 @@ SceneManager::SceneManager()
 
 	// 最初のシーンを設定
 	this->sceneState = SS_Title;
+	
+	// 音楽
+	this->bgm = LoadSound(BGM_TITLE);
+	PlaySound(this->bgm, E_DS8_FLAG_LOOP);
 
 	// シーンリストを作る
 	this->sceneList[SS_Title] = this->sceneTitle;
@@ -36,6 +40,7 @@ SceneManager::SceneManager()
 SceneManager::~SceneManager()
 {
 	RELEASE_CLASS_POINT(this->sceneList[this->sceneState]);
+	RELEASE_POINT(this->bgm);
 }
 
 //*****************************************************************************
@@ -51,17 +56,30 @@ void SceneManager::ChooseScene(SCENESTATE state)
 		this->sceneState = SS_Title;
 		this->sceneTitle->SetRenderState();	// レンダリング状態を設定
 
+		// 音楽
+		this->bgm->Release();
+		this->bgm = LoadSound(BGM_TITLE);
+		PlaySound(this->bgm, E_DS8_FLAG_LOOP);
+
 		break;
 	case SS_Run:
 		this->sceneState = SS_Run;
 		this->scene00->SetRenderState();
 
+		// 音楽
+		this->bgm->Release();
+		this->bgm = LoadSound(BGM_GAME);
+		PlaySound(this->bgm, E_DS8_FLAG_LOOP);
+
 		break;
 	case SS_Ending:
 		this->sceneState = SS_Ending;
 
-		break;
-	default:
+		// 音楽
+		this->bgm->Release();
+		this->bgm = LoadSound(BGM_END);
+		PlaySound(this->bgm, E_DS8_FLAG_LOOP);
+
 		break;
 	}
 }
