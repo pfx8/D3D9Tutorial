@@ -49,7 +49,9 @@
     <ClCompile Include="SceneTitle.cpp" />
     <ClCompile Include="Shader\CelShader.cpp" />
     <ClCompile Include="Shader\RHWShader.cpp" />
-    <ClCompile Include="Shader\ShadowMapShader.cpp" />
+    <ClCompile Include="Shader\ShadowMapShader.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bullet.h" />
@@ -82,7 +84,9 @@
     <ClInclude Include="SceneTitle.h" />
     <ClInclude Include="Shader\CelShader.h" />
     <ClInclude Include="Shader\RHWShader.h" />
-    <ClInclude Include="Shader\ShadowMapShader.h" />
+    <ClInclude Include="Shader\ShadowMapShader.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\BasicShader.fx">
@@ -101,8 +105,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\ShadowMapShader.fx">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

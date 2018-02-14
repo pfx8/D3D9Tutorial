@@ -19,11 +19,12 @@ enum cameraState	// カメラ逆かどうかの状態
 	offReversal = 1,
 };
 
-enum Is_Shooting
+enum WhereIsCamera
 {
-	IS_no,
-	IS_left,
-	IS_right
+	WIC_freedom,
+	WIC_left,
+	WIC_right,
+	WIC_playerBack,
 };
 
 //*****************************************************************************
@@ -36,6 +37,8 @@ class Camera
 private:
 	DebugMessage*	message;
 	D3DXVECTOR3		offSetFromPlayer;				// プレーヤーとカメラの偏り(半径)
+	D3DXVECTOR3		offSetFromPlayerBack;			// ずっとプレーヤーの後ろとの偏り(半径)
+	float			beforeAngle;				// プレーヤー前回の回転角度を記録
 
 	float offsetFromTargetMin;						// プレーヤーとカメラの偏りの最小値
 	float offsetFromTargetMax;						// プレーヤーとカメラの偏りの最大値
@@ -64,7 +67,7 @@ public:
 	D3DXMATRIX		viewMatrix;			// ビューイング変換行列
 	D3DXMATRIX		projectionMatrix;	// プロジェクション変換行列
 
-	Is_Shooting		isShooting;
+	WhereIsCamera	whereIsCamera;
 
 	Camera();
 	~Camera();

@@ -15,9 +15,9 @@
 #include "Modules\Camera.h"
 
 #define FIRST_UP_SPEED	10.0f
-#define MOVE_SPEED		0.17f
+#define MOVE_SPEED		0.57f
 #define ACCELERARION	-0.2f
-#define ONE_FRAME_TIME	(1.0f / 60.0f)
+
 //*****************************************************************************
 //
 // クラス宣言
@@ -26,7 +26,7 @@
 class Bullet : public Character
 {
 private:
-	float	upSpeed;	// 最初のスピード
+	float	speed;	// 最初のスピード
 
 public:
 	bool	isUse;		// 使われてるかどうかを判断する

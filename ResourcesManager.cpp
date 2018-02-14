@@ -24,7 +24,7 @@ ResourcesManager::ResourcesManager()
 	this->textureList["fieldSea"] = "data/TEXTURE/sea3k.png";
 	this->textureList["fieldSea2"] = "data/TEXTURE/sea4.png";
 
-	this->textureList["title"] = "data/TEXTURE/title.png";
+	this->textureList["title"] = "data/TEXTURE/title2.png";
 	this->textureList["ending"] = "data/TEXTURE/ending.png";
 
 	this->textureList["shipBody"] = "data/TEXTURE/VikingShip/Ship.png";
@@ -38,6 +38,7 @@ ResourcesManager::ResourcesManager()
 
 	this->textureList["UIhp"] = "data/TEXTURE/UI/hp.png";
 
+	this->textureList["UIpan"] = "data/TEXTURE/UI/pan.png";
 	this->textureList["UIzen"] = "data/TEXTURE/UI/zen.png";
 	this->textureList["UIstop"] = "data/TEXTURE/UI/stop.png";
 	this->textureList["UIgou"] = "data/TEXTURE/UI/gou.png";

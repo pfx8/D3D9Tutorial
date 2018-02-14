@@ -24,13 +24,15 @@
 #include "Modules\Shader.h"
 #include "Modules\SkyBox.h"
 #include "Modules\ScreenPolygon.h"
+#include "Modules\Billboard.h"
 
 #include "Shader\RHWShader.h"
 #include "Shader\CelShader.h"
 #include "Shader\ShadowMapShader.h"
 
-#define ENEMY_MAX 5
-#define BULLET_MAX 21
+#define ENEMY_MAX		(5)
+#define BULLET_MAX		(21)
+#define BILLBOARD_MAX	(4)
 
 //*****************************************************************************
 //
@@ -43,13 +45,15 @@ private:
 	Camera*				camera;		// カメラ
 	CelShader*			celShader;	// トゥ―ンシェーダー
 
-	Shader*				shader;		// ベーシックシェーダー
-	Plane*				sea;			// フィールド海
+	Shader*				shader;				// ベーシックシェーダー
+	Plane*				sea;				// フィールド海
 	Light*				directionLight;		// ライト
-	Enemy*				enemyShip;	// 敵
-	Bullet*				bullet;		// 弾
-	SkyBox*				skyBox;		// 
-	ScreenPolygon*		screenPolygon;// RHWポリゴン
+	Enemy*				enemyShip;			// 敵
+	Bullet*				bullet;				// 弾
+	SkyBox*				skyBox;				// スカイボックス
+	ScreenPolygon*		screenPolygon;		// RHWポリゴン
+
+	//BillBoard*			billboard;
 
 	//ShadowMapShader*	shadowMap;	// シャドーマップ
 

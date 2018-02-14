@@ -47,6 +47,9 @@ Scene00::Scene00()
 	// カメラ
 	this->camera = new Camera;
 
+	// ビルボード
+	/*this->billboard = new BillBoard[BILLBOARD_MAX];*/
+
 	// 初期化
 	InitScene00();
 }
@@ -121,6 +124,12 @@ void Scene00::InitScene00()
 
 	// カメラ
 	this->camera->InitCameraByPlayer(this->ship);
+
+	// ビルボード
+	/*for (int count = 0; count < BILLBOARD_MAX; count++)
+	{
+		this->billboard[count].Init();
+	}*/
 
 	std::cout << "[State] BoundingBox: " << std::boolalpha << this->ship->check->isBoundingBoxDraw << std::endl;
 }
@@ -197,21 +206,21 @@ void Scene00::Update()
 	}
 
 	// 敵の攻撃
-	for (int count = 0; count < ENEMY_MAX; count++)
-	{
-		if (this->enemyShip[count].EnemyAttack(this->ship) == true && this->enemyShip[count].isAttack == false)
-		{
-			for (int count2 = 0; count2 < BULLET_MAX; count2++)
-			{
-				if (this->bullet[count2].isUse == false)
-				{
-					this->bullet[count2].InitBulletByCharacter(this->enemyShip[count].pos, this->enemyShip[count].lookVector, false); // プレーヤーによって弾を初期化
-					this->enemyShip[count].isAttack = true;
-					break;
-				}
-			}
-		}
-	}
+	//for (int count = 0; count < ENEMY_MAX; count++)
+	//{
+	//	if (this->enemyShip[count].EnemyAttack(this->ship) == true && this->enemyShip[count].isAttack == false)
+	//	{
+	//		for (int count2 = 0; count2 < BULLET_MAX; count2++)
+	//		{
+	//			if (this->bullet[count2].isUse == false)
+	//			{
+	//				this->bullet[count2].InitBulletByCharacter(this->enemyShip[count].pos, this->enemyShip[count].lookVector, false); // プレーヤーによって弾を初期化
+	//				this->enemyShip[count].isAttack = true;
+	//				break;
+	//			}
+	//		}
+	//	}
+	//}
 
 	// 弾と敵の当たり判定
 	for (int count = 0; count < BULLET_MAX; count++)
@@ -232,6 +241,24 @@ void Scene00::Update()
 			}
 		}
 	}
+
+	// 水エフェクト(billboard)生成
+	//for (int count = 0; count < BILLBOARD_MAX; count++)
+	//{
+	//	if (this->billboard[count].isUse == false)
+	//	{
+	//		//this->billboard[count].SetVertexBillboardByship(5.0f, 5.0f, this->ship, true);
+	//	}
+	//}
+
+	//// 水エフェクト(billboard)更新
+	//for (int count = 0; count < BILLBOARD_MAX; count++)
+	//{
+	//	if (this->billboard[count].isUse == true)
+	//	{
+	//		this->billboard[count].Update();
+	//	}
+	//}
 	
 	// 揺れる状況
 	this->ship->Update(this->sea->waveAngle);
@@ -308,6 +335,17 @@ void Scene00::Draw()
 		//this->shadowMap->effectPoint->SetTechnique("");
 	}
 
+	// 水エフェクト
+	/*{
+		for (int count = 0; count < BILLBOARD_MAX; count++)
+		{
+			if (this->billboard[count].isUse == true)
+			{
+				this->billboard[count].Draw(this->camera->viewMatrix);
+			}
+		}
+	}*/
+
 	// エネミー
 	{
 		/*for (int count1 = 0; count1 < ENEMY_MAX; count1++)
@@ -335,7 +373,7 @@ void Scene00::Draw()
 	this->screenPolygon->Draw();
 		
 	// デッバグメッセージ
-	this->ship->PosToMessageAndMessageDraw(0);
+	//this->ship->PosToMessageAndMessageDraw(0);
 	//this->camera->PosToMessageAndMessageDraw(0);
 }
 

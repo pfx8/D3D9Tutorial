@@ -13,6 +13,8 @@
 #include "..\ResourcesManager.h"
 #include "..\Shader\RHWShader.h"
 
+#define MINIMAP_SIZE (SCREEN_HEIGHT / 3)
+
 //*****************************************************************************
 //
 // クラス宣言
@@ -26,6 +28,7 @@ private:
 	void DrawObject(LPDIRECT3DVERTEXBUFFER9 vertexBuffer, LPDIRECT3DTEXTURE9 texture, int level = 9, float alpha = 0.0f, bool needa = false);	// 動的なものを描画する
 	void MakeVertexDecl();																				// 頂点宣言
 	HRESULT MakeVertex(D3DXVECTOR2 pos, D3DXVECTOR2 size, LPDIRECT3DVERTEXBUFFER9* vertexBufferPoint);	// 頂点作成
+	HRESULT MakeTransVertex(D3DXVECTOR2 pos, D3DXVECTOR2 size, LPDIRECT3DVERTEXBUFFER9* vertexBufferPoint, float rot);	// 頂点作成
 	HRESULT MakeIndex();																				// インデックス作成
 
 public:
@@ -46,6 +49,10 @@ public:
 	LPDIRECT3DVERTEXBUFFER9			UIHPVertexBuffer[3];	// 頂点バッファへのポインタ
 	LPDIRECT3DTEXTURE9				UIHPTexture;			// フィールドテクスチャ
 	int								HP;
+
+	LPDIRECT3DVERTEXBUFFER9			UIpanVertexBuffer;		// 頂点バッファへのポインタ
+	LPDIRECT3DTEXTURE9				UIpanTexture;			// フィールドテクスチャ
+	D3DXMATRIX						pan;					// 回転行列
 
 	LPDIRECT3DVERTEXBUFFER9			UIzenVertexBuffer;		// 頂点バッファへのポインタ
 	LPDIRECT3DTEXTURE9				UIzenTexture;			// フィールドテクスチャ

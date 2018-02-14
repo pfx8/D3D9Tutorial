@@ -22,6 +22,11 @@ Camera::Camera()
 	this->posEye	= D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	this->posAt		= D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
+	/*this->posEye = D3DXVECTOR3(-4.0f, -4.0f, 6.0f);
+	this->posAt = D3DXVECTOR3(0.0f, 10.0f, 0.0f);*/
+
+	this->beforeAngle = 0.0f;
+
 	this->upVector		= D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 	this->lookVector	= D3DXVECTOR3(0.0f, 0.0f, -1.0f);
 	this->rightVector	= D3DXVECTOR3(-1.0f, 0.0f, 0.0f);
@@ -35,7 +40,7 @@ Camera::Camera()
 	this->rotateSpeedVertical = 1.0f;
 	this->zoomSpeed = 2.0f;
 
-	this->isShooting = IS_no;
+	this->whereIsCamera = WIC_freedom;
 
 	D3DXMatrixIdentity(&viewMatrix);
 	D3DXMatrixIdentity(&projectionMatrix);
@@ -64,6 +69,7 @@ void Camera::InitCameraByPlayer(Character* player)
 	this->posAt = D3DXVECTOR3(0.0f, 7.5f, 0.0f);
 
 	this->offSetFromPlayer = player->pos - this->posEye;
+	this->offSetFromPlayerBack = player->pos - this->posEye; // プレーヤー後ろになる座標を保存
 
 	SetViewport();		// ビューポートを設定
 }
@@ -82,17 +88,17 @@ void Camera::Update(Character* player)
 	D3DXVECTOR3 temp = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
 	// カメラ位置を更新
-	switch (isShooting)
+	switch (whereIsCamera)
 	{
-	case IS_no:
+	case WIC_freedom:
 		this->posEye = player->pos - this->offSetFromPlayer;
-		this->posAt = player->pos;
+		this->posAt = player->pos + D3DXVECTOR3(0.0f, 5.0f, 0.0f);
 		
 		// 注視方向ベクトル
 		temp = player->pos - this->posEye;
 
 		break;
-	case IS_left:
+	case WIC_left:
 		this->posAt = player->pos - player->rightVector * 20.0f;
 		this->posEye = player->pos + D3DXVECTOR3(0.0f, 5.0f, 0.0f) - player->rightVector * 1.5f;
 
@@ -100,12 +106,24 @@ void Camera::Update(Character* player)
 		temp = -player->rightVector;
 
 		break;
-	case IS_right:
+	case WIC_right:
 		this->posAt = player->pos + player->rightVector * 20.0f;
 		this->posEye = player->pos + D3DXVECTOR3(0.0f, 5.0f, 0.0f) + player->rightVector * 1.5f;
 
 		// 注視方向ベクトル
 		temp = player->rightVector;
+
+		break;
+	case WIC_playerBack:
+		this->posEye = player->pos - this->offSetFromPlayerBack;
+		this->posAt = player->pos + D3DXVECTOR3(0.0f, 5.0f, 0.0f);
+
+		// 注視方向ベクトル
+		temp = player->pos - this->posEye;
+
+		// フリーカメラに戻る
+		this->whereIsCamera = WIC_freedom;
+		this->offSetFromPlayer = this->offSetFromPlayerBack;
 
 		break;
 	}
@@ -141,26 +159,26 @@ void Camera::CameraContrlUpdate(Character* player)
 	isButton = (GetKeyboardTrigger(DIK_R) || IsButtonTriggered(0, BUTTON_L1));
 	if (isButton)
 	{
-		if (this->isShooting == IS_left)
+		if (this->whereIsCamera == WIC_left)
 		{
-			this->isShooting = IS_no;
+			this->whereIsCamera = WIC_freedom;
 		}
 		else
 		{
-			this->isShooting = IS_left;
+			this->whereIsCamera = WIC_left;
 		}
 
 	}
 	isButton = (GetKeyboardTrigger(DIK_T) || IsButtonTriggered(0, BUTTON_R1));
 	if (isButton)
 	{
-		if (this->isShooting == IS_right)
+		if (this->whereIsCamera == WIC_right)
 		{
-			this->isShooting = IS_no;
+			this->whereIsCamera = WIC_freedom;
 		}
 		else
 		{
-			this->isShooting = IS_right;
+			this->whereIsCamera = WIC_right;
 		}
 
 	}
@@ -175,25 +193,41 @@ void Camera::CameraContrlUpdate(Character* player)
 	//}
 
 	isButton = (GetKeyboardPress(DIK_J) || IsButtonPressed(0, BUTTON_SQUARE));
-	if (isButton && this->isShooting == IS_no)	// 左回転
+	if (isButton && this->whereIsCamera == WIC_freedom)	// 左回転
 	{
 		Rotation(player, D3DXToRadian(1.0f), 0);
 	}
 	isButton = (GetKeyboardPress(DIK_L) || IsButtonPressed(0, BUTTON_CIRCLE));
-	if (isButton && this->isShooting == IS_no)	// 右回転
+	if (isButton && this->whereIsCamera == WIC_freedom)	// 右回転
 	{
 		Rotation(player, D3DXToRadian(-1.0f), 0);
 	}
 
 	isButton = (GetKeyboardPress(DIK_Q) || IsButtonPressed(0, BUTTON_TRIANGLE));
-	if (isButton && this->isShooting == IS_no)	// ゾーンを拡大
+	if (isButton && this->whereIsCamera == WIC_freedom)	// ゾーンを拡大
 	{
 		Zoom(zoomSpeed);
 	}
 	isButton = (GetKeyboardPress(DIK_E) || IsButtonPressed(0, BUTTON_CROSS));
-	if (isButton && this->isShooting == IS_no)	// ゾーンを縮小
+	if (isButton && this->whereIsCamera == WIC_freedom)	// ゾーンを縮小
 	{
 		Zoom(-zoomSpeed);
+	}
+
+	// プレーヤーの後ろに戻る
+	if (GetKeyboardTrigger(DIK_Z))
+	{
+		this->whereIsCamera = WIC_playerBack;
+
+		// もしプレーヤーが回転されたら
+		// 水平(playerBcak)
+		float angle = this->beforeAngle + player->rot.y;
+
+		D3DXMATRIX HorizonalMatrixBack;
+		D3DXMatrixRotationAxis(&HorizonalMatrixBack, &player->upVector, angle);									// 回転行列を作る
+		D3DXVec3TransformCoord(&this->offSetFromPlayerBack, &this->offSetFromPlayerBack, &HorizonalMatrixBack);	// カメラの新しい座標を計算する
+
+		this->beforeAngle -= angle;
 	}
 }
 

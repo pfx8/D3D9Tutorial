@@ -49,10 +49,11 @@
 //
 //*****************************************************************************
 #define CLASS_NAME		_T("D3d9Class")		// ウインドウのクラス名
-#define WINDOW_NAME		_T("Zilch-E")		// ウインドウのキャプション名
+#define WINDOW_NAME		_T("Under the Sky")		// ウインドウのキャプション名
 #define SCREEN_WIDTH	(1200)				// ウインドウの幅
 #define SCREEN_HEIGHT	(800)				// ウインドウの高さ
-
+#define ONE_FRAME_TIME	(1.0f / 60.0f)		// 1フレームの時間
+			
 // 頂点フォーマット( 頂点座標[3D] / 法線 / 反射光 / テクスチャ座標 )
 typedef struct VERTEX_3D
 {

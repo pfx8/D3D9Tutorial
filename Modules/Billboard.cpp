@@ -19,7 +19,16 @@
 //*****************************************************************************
 BillBoard::BillBoard()
 {
+	this->pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	this->scl = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	this->moveSpeedVec = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
+	this->accelerarion = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+
+	this->isUse = true;
+
+	this->texture = NULL;
+	this->vertexBuffer = NULL;
 }
 
 //*****************************************************************************
@@ -29,315 +38,149 @@ BillBoard::BillBoard()
 //*****************************************************************************
 BillBoard::~BillBoard()
 {
-
+	RELEASE_POINT(this->texture);
+	RELEASE_POINT(this->vertexBuffer);
 }
 
-//=============================================================================
+//*****************************************************************************
+//
 // 初期化処理
-//=============================================================================
-HRESULT InitBillboard(void)
+//
+//*****************************************************************************
+void BillBoard::Init()
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	// 頂点情報の作成
-	MakeVertexBillboard(pDevice);
-
-	// テクスチャの読み込み
-	D3DXCreateTextureFromFile(pDevice,						// デバイスへのポインタ
-								TEXTURE_BILLBOARD,			// ファイルの名前
-								&g_pD3DTextureBillboard);	// 読み込むメモリー
-
-	g_posBillboard = D3DXVECTOR3(0.0f, 18.0f, 0.0f);
-	g_sclBillboard = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
-	g_moveBillboard = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-
-	D3DXVECTOR3 shadowPos = g_posBillboard;
-	shadowPos.y -= 15;
-	// 影の設定
-	g_nIdxShadowBillboard = CreateShadow(shadowPos, BILLBOARD_SIZE_X, BILLBOARD_SIZE_Y);
-	SetColorShadow(g_nIdxShadowBillboard, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f));
-
-	g_bEnableGravity = false;
-
-	g_use = false;
-
-	return S_OK;
+	MakeVertexBillboard();
 }
 
-//=============================================================================
-// 終了処理
-//=============================================================================
-void UninitBillboard(void)
-{
-	if(g_pD3DTextureBillboard != NULL)
-	{// テクスチャの開放
-		g_pD3DTextureBillboard->Release();
-		g_pD3DTextureBillboard = NULL;
-	}
-
-	if(g_pD3DVtxBuffBillboard != NULL)
-	{// 頂点バッファの開放
-		g_pD3DVtxBuffBillboard->Release();
-		g_pD3DVtxBuffBillboard = NULL;
-	}
-}
-
-//=============================================================================
+//*****************************************************************************
+//
 // 更新処理
-//=============================================================================
-void UpdateBillboard(void)
+//
+//*****************************************************************************
+void BillBoard::Update()
 {
-	//D3DXVECTOR3 rotCamera;
+	// 垂直位置の計算 
+	this->moveSpeedVec.y += this->accelerarion.y;
+	this->pos.y += 0.5f * this->moveSpeedVec.y * ONE_FRAME_TIME;
 
-	//// カメラの回転を取得
-	//rotCamera = GetRotCamera();
+	// 水平移動
+	this->moveSpeedVec.x += this->accelerarion.x;
+	this->moveSpeedVec.z += this->accelerarion.z;
+	this->pos.x += this->moveSpeedVec.x;
+	this->pos.z += this->moveSpeedVec.z;
 
-	//if(GetKeyboardPress(DIK_LEFT))
-	//{
-	//	if(GetKeyboardPress(DIK_UP))
-	//	{// 左前移動
-	//		g_moveBillboard.x -= sinf(rotCamera.y + D3DX_PI * 0.75f) * VALUE_MOVE_BILLBOARD;
-	//		g_moveBillboard.z -= cosf(rotCamera.y + D3DX_PI * 0.75f) * VALUE_MOVE_BILLBOARD;
-	//	}
-	//	else if(GetKeyboardPress(DIK_DOWN))
-	//	{// 左後移動
-	//		g_moveBillboard.x -= sinf(rotCamera.y + D3DX_PI * 0.25f) * VALUE_MOVE_BILLBOARD;
-	//		g_moveBillboard.z -= cosf(rotCamera.y + D3DX_PI * 0.25f) * VALUE_MOVE_BILLBOARD;
-	//	}
-	//	else
-	//	{// 左移動
-	//		g_moveBillboard.x -= sinf(rotCamera.y + D3DX_PI * 0.50f) * VALUE_MOVE_BILLBOARD;
-	//		g_moveBillboard.z -= cosf(rotCamera.y + D3DX_PI * 0.50f) * VALUE_MOVE_BILLBOARD;
-	//	}
-	//}
-	//else if(GetKeyboardPress(DIK_RIGHT))
-	//{
-	//	if(GetKeyboardPress(DIK_UP))
-	//	{// 右前移動
-	//		g_moveBillboard.x -= sinf(rotCamera.y - D3DX_PI * 0.75f) * VALUE_MOVE_BILLBOARD;
-	//		g_moveBillboard.z -= cosf(rotCamera.y - D3DX_PI * 0.75f) * VALUE_MOVE_BILLBOARD;
-	//	}
-	//	else if(GetKeyboardPress(DIK_DOWN))
-	//	{// 右後移動
-	//		g_moveBillboard.x -= sinf(rotCamera.y - D3DX_PI * 0.25f) * VALUE_MOVE_BILLBOARD;
-	//		g_moveBillboard.z -= cosf(rotCamera.y - D3DX_PI * 0.25f) * VALUE_MOVE_BILLBOARD;
-	//	}
-	//	else
-	//	{// 右移動
-	//		g_moveBillboard.x -= sinf(rotCamera.y - D3DX_PI * 0.50f) * VALUE_MOVE_BILLBOARD;
-	//		g_moveBillboard.z -= cosf(rotCamera.y - D3DX_PI * 0.50f) * VALUE_MOVE_BILLBOARD;
-	//	}
-	//}
-	//else if(GetKeyboardPress(DIK_UP))
-	//{// 前移動
-	//	g_moveBillboard.x -= sinf(D3DX_PI + rotCamera.y) * VALUE_MOVE_BILLBOARD;
-	//	g_moveBillboard.z -= cosf(D3DX_PI + rotCamera.y) * VALUE_MOVE_BILLBOARD;
-	//}
-	//else if(GetKeyboardPress(DIK_DOWN))
-	//{// 後移動
-	//	g_moveBillboard.x -= sinf(rotCamera.y) * VALUE_MOVE_BILLBOARD;
-	//	g_moveBillboard.z -= cosf(rotCamera.y) * VALUE_MOVE_BILLBOARD;
-	//}
-
-	//if(GetKeyboardTrigger(DIK_SPACE))
-	//{// ジャンプ
-	//	if(g_bEnableGravity == true)
-	//	{
-	//		g_moveBillboard.y = VALUE_JUMP;
-	//	}
-	//}
-
-	//g_posBillboard.x += g_moveBillboard.x;
-	//g_posBillboard.z += g_moveBillboard.z;
-
-	//g_moveBillboard.x += (0.0f - g_moveBillboard.x) * RATE_REGIST;
-	//g_moveBillboard.z += (0.0f - g_moveBillboard.z) * RATE_REGIST;
-
-	//if(g_bEnableGravity == true)
-	//{
-	//	g_posBillboard.y += g_moveBillboard.y;
-	//	if(g_posBillboard.y < 9.0f)
-	//	{
-	//		g_posBillboard.y = 9.0f;
-	//		g_moveBillboard.y *= RATE_REFRECT;
-	//	}
-	//	g_moveBillboard.y -= VALUE_GRAVITY;
-	//}
-
-	if (g_use == true)
+	// 地図の範囲を超えたら、弾を消す
+	if (this->pos.y <= 0.0f)
 	{
-		// 範囲チェック
-		if (g_posBillboard.x < -310.0f)
-		{
-			g_posBillboard.x = -310.0f;
-			g_use = false;
-		}
-		else if (g_posBillboard.x > 310.0f)
-		{
-			g_posBillboard.x = 310.0f;
-			g_use = false;
-		}
-		else if (g_posBillboard.z < -310.0f)
-		{
-			g_posBillboard.z = -310.0f;
-			g_use = false;
-		}
-		else if (g_posBillboard.z > 310.0f)
-		{
-			g_posBillboard.z = 310.0f;
-			g_use = false;
-		}
-		else
-		{
-			g_moveBillboard += g_moveBillboard*1.0f;
-		}
-
-		g_posBillboard.x += g_moveBillboard.x;
-		g_posBillboard.z += g_moveBillboard.z;
-
-		//SetVertexBillboard(g_posBillboard.x, g_posBillboard.z);
-
-		//{// 影の設定
-		//	SetPositionShadow(g_nIdxShadowBillboard, D3DXVECTOR3(g_posBillboard.x, 0.1f, g_posBillboard.z));
-
-		//	float fSizeX = BILLBOARD_SIZE_X + (g_posBillboard.y - 9.0f) * 0.025f;
-		//	if(fSizeX < BILLBOARD_SIZE_X)
-		//	{
-		//		fSizeX = BILLBOARD_SIZE_X;
-		//	}
-		//	float fSizeY = BILLBOARD_SIZE_Y + (g_posBillboard.y - 9.0f) * 0.025f;
-		//	if(fSizeY < BILLBOARD_SIZE_Y)
-		//	{
-		//		fSizeY = BILLBOARD_SIZE_Y;
-		//	}
-		//	SetVertexShadow(g_nIdxShadowBillboard, fSizeX, fSizeY);
-
-		//	float colA = (400.0f - (g_posBillboard.y - 9.0f)) / 800.0f;
-		//	if(colA < 0.0f)
-		//	{
-		//		colA = 0.0f;
-		//	}
-		//	SetColorShadow(g_nIdxShadowBillboard, D3DXCOLOR(1.0f, 1.0f, 1.0f, colA));
-		//}
-
-	}
-
-	// 重力ON/OFF
-	if (GetKeyboardTrigger(DIK_G))
-	{
-		g_bEnableGravity ^= 1;
-	}
-
-	PrintDebugProc("*** 重力 ***\n");
-	PrintDebugProc("重力ON/OFF : G\n");
-	PrintDebugProc("[重力 = ");
-	if (g_bEnableGravity)
-	{
-		PrintDebugProc("ON]\n");
+		// 消したら数値を全部初期化
+		this->isUse = false;
+		this->pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		this->moveSpeedVec = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	}
 	else
 	{
-		PrintDebugProc("OFF]\n");
+		// 頂点情報の作成
+		MakeVertexBillboard();
 	}
 }
 
-//=============================================================================
+//*****************************************************************************
+//
 // 描画処理
-//=============================================================================
-void DrawBillboard(void)
+//
+//*****************************************************************************
+void BillBoard::Draw(D3DXMATRIX viewMatrix)
 {
-	if (g_use == true)
-	{
-		LPDIRECT3DDEVICE9 pDevice = GetDevice();
-		D3DXMATRIX mtxView, mtxScale, mtxTranslate;
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();
+	D3DXMATRIX mtxView, mtxScale, mtxTranslate;
 
-		// ラインティングを無効にする
-		pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+	// ラインティングを無効にする
+	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 
-		// ビューマトリックスを取得
-		mtxView = GetMtxView();
+	// ビューマトリックスを取得
+	mtxView = viewMatrix;
 
-		// ワールドマトリックスの初期化
-		D3DXMatrixIdentity(&g_mtxWorldBillboard);
+	// ワールドマトリックスの初期化
+	D3DXMatrixIdentity(&this->worldMatrix);
 
-		// ポリゴンを正面に向ける
-		g_mtxWorldBillboard._11 = mtxView._11;
-		g_mtxWorldBillboard._21 = mtxView._12;
-		g_mtxWorldBillboard._12 = mtxView._21;
-		g_mtxWorldBillboard._31 = mtxView._13;
-		g_mtxWorldBillboard._13 = mtxView._31;
-		g_mtxWorldBillboard._22 = mtxView._22;
-		g_mtxWorldBillboard._32 = mtxView._23;
-		g_mtxWorldBillboard._23 = mtxView._32;
-		g_mtxWorldBillboard._33 = mtxView._33;
+	// ポリゴンを正面に向ける
+	this->worldMatrix._11 = mtxView._11;
+	this->worldMatrix._21 = mtxView._12;
+	this->worldMatrix._12 = mtxView._21;
+	this->worldMatrix._31 = mtxView._13;
+	this->worldMatrix._13 = mtxView._31;
+	this->worldMatrix._22 = mtxView._22;
+	this->worldMatrix._32 = mtxView._23;
+	this->worldMatrix._23 = mtxView._32;
+	this->worldMatrix._33 = mtxView._33;
 
-		// スケールを反映
-		D3DXMatrixScaling(&mtxScale, g_sclBillboard.x,
-			g_sclBillboard.y,
-			g_sclBillboard.z);
-		D3DXMatrixMultiply(&g_mtxWorldBillboard,
-			&g_mtxWorldBillboard, &mtxScale);
+	// スケールを反映
+	D3DXMatrixScaling(&mtxScale, this->scl.x, this->scl.y, this->scl.z);
+	D3DXMatrixMultiply(&this->worldMatrix, &this->worldMatrix, &mtxScale);
 
-		// 移動を反映
-		D3DXMatrixTranslation(&mtxTranslate, g_posBillboard.x,
-			g_posBillboard.y,
-			g_posBillboard.z);
-		D3DXMatrixMultiply(&g_mtxWorldBillboard,
-			&g_mtxWorldBillboard, &mtxTranslate);
+	// 移動を反映
+	D3DXMatrixTranslation(&mtxTranslate, this->pos.x, this->pos.y, this->pos.z);
+	D3DXMatrixMultiply(&this->worldMatrix, &this->worldMatrix, &mtxTranslate);
 
-		// ワールドマトリックスの設定
-		pDevice->SetTransform(D3DTS_WORLD, &g_mtxWorldBillboard);
+	// ワールドマトリックスの設定
+	pDevice->SetTransform(D3DTS_WORLD, &this->worldMatrix);
 
-		// 頂点バッファをデバイスのデータストリームにバインド
-		pDevice->SetStreamSource(0, g_pD3DVtxBuffBillboard, 0, sizeof(VERTEX_3D));
+	// 頂点バッファをデバイスのデータストリームにバインド
+	pDevice->SetStreamSource(0, vertexBuffer, 0, sizeof(BILLBOARDVERTEX));
 
-		// 頂点フォーマットの設定
-		pDevice->SetFVF(FVF_VERTEX_3D);
+	// 頂点フォーマットの設定
+	pDevice->SetFVF(FVF_BILLBOARDVERTEX);
 
-		// テクスチャの設定
-		pDevice->SetTexture(0, g_pD3DTextureBillboard);
+	// テクスチャの設定
+	//pDevice->SetTexture(0, texture);
 
-		// ポリゴンの描画
-		pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, NUM_POLYGON);
+	// ポリゴンの描画
+	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
 
-		// ラインティングを有効にする
-		pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
-	}
+	// ラインティングを有効にする
+	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
 }
 
-//=============================================================================
-// 頂点情報の作成
-//=============================================================================
-HRESULT MakeVertexBillboard(LPDIRECT3DDEVICE9 pDevice)
+//*****************************************************************************
+//
+// 頂点作成
+//
+//*****************************************************************************
+HRESULT BillBoard::MakeVertexBillboard()
 {
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();
+
 	// オブジェクトの頂点バッファを生成
-    if(FAILED(pDevice->CreateVertexBuffer(sizeof(VERTEX_3D) * NUM_VERTEX,	// 頂点データ用に確保するバッファサイズ(バイト単位)
-												D3DUSAGE_WRITEONLY,			// 頂点バッファの使用法　
-												FVF_VERTEX_3D,				// 使用する頂点フォーマット
-												D3DPOOL_MANAGED,			// リソースのバッファを保持するメモリクラスを指定
-												&g_pD3DVtxBuffBillboard,	// 頂点バッファインターフェースへのポインタ
-												NULL)))						// NULLに設定
+    if(FAILED(pDevice->CreateVertexBuffer(sizeof(BILLBOARDVERTEX) * 4,	// 頂点データ用に確保するバッファサイズ(バイト単位)
+											D3DUSAGE_WRITEONLY,			// 頂点バッファの使用法　
+											FVF_BILLBOARDVERTEX,		// 使用する頂点フォーマット
+											D3DPOOL_MANAGED,			// リソースのバッファを保持するメモリクラスを指定
+											&this->vertexBuffer,		// 頂点バッファインターフェースへのポインタ
+											NULL)))						// NULLに設定
 	{
         return E_FAIL;
 	}
 
 	{//頂点バッファの中身を埋める
-		VERTEX_3D *pVtx;
+		BILLBOARDVERTEX *pVtx;
 
 		// 頂点データの範囲をロックし、頂点バッファへのポインタを取得
-		g_pD3DVtxBuffBillboard->Lock(0, 0, (void**)&pVtx, 0);
+		this->vertexBuffer->Lock(0, 0, (void**)&pVtx, 0);
 
 		// 頂点座標の設定
-		pVtx[0].vtx = D3DXVECTOR3(-BILLBOARD_SIZE_X / 2, -BILLBOARD_SIZE_Y / 2, 0.0f);
-		pVtx[1].vtx = D3DXVECTOR3(-BILLBOARD_SIZE_X / 2, BILLBOARD_SIZE_Y / 2, 0.0f);
-		pVtx[2].vtx = D3DXVECTOR3(BILLBOARD_SIZE_X / 2, -BILLBOARD_SIZE_Y / 2, 0.0f);
-		pVtx[3].vtx = D3DXVECTOR3(BILLBOARD_SIZE_X / 2, BILLBOARD_SIZE_Y / 2, 0.0f);
+		pVtx[0].position = pos + D3DXVECTOR3(-BILLBOARD_SIZE_X / 2, -BILLBOARD_SIZE_Y / 2, 0.0f);
+		pVtx[1].position = pos + D3DXVECTOR3(-BILLBOARD_SIZE_X / 2, BILLBOARD_SIZE_Y / 2, 0.0f);
+		pVtx[2].position = pos + D3DXVECTOR3(BILLBOARD_SIZE_X / 2, -BILLBOARD_SIZE_Y / 2, 0.0f);
+		pVtx[3].position = pos + D3DXVECTOR3(BILLBOARD_SIZE_X / 2, BILLBOARD_SIZE_Y / 2, 0.0f);
 
 		// 法線の設定
-		pVtx[0].nor = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
-		pVtx[1].nor = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
-		pVtx[2].nor = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
-		pVtx[3].nor = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
+		pVtx[0].normal = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
+		pVtx[1].normal = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
+		pVtx[2].normal = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
+		pVtx[3].normal = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
 
 		// 反射光の設定
 		pVtx[0].diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
@@ -352,38 +195,48 @@ HRESULT MakeVertexBillboard(LPDIRECT3DDEVICE9 pDevice)
 		pVtx[3].tex = D3DXVECTOR2(1.0f, 0.0f);
 
 		// 頂点データをアンロックする
-		g_pD3DVtxBuffBillboard->Unlock();
+		this->vertexBuffer->Unlock();
 	}
 
 	return S_OK;
 }
 
-//=============================================================================
+//*****************************************************************************
+//
 // 頂点座標の設定
-//=============================================================================
-void SetVertexBillboard(float fSizeX, float fSizeY)
+//
+//*****************************************************************************
+void BillBoard::SetVertexBillboardByship(float sizeX, float sizeY, Character* ship, bool isLeft)
 {
-	{//頂点バッファの中身を埋める
-		VERTEX_3D *pVtx;
+	this->isUse = true;
+
+	this->pos = ship->pos + ship->lookVector * 3.0f;
+	this->moveSpeedVec = -ship->lookVector * sizeX;
+
+	if (isLeft == true)
+	{
+		this->accelerarion = -ship->rightVector * 3;
+	}
+	else
+	{
+		this->accelerarion = ship->rightVector * 3;
+	}
+
+	// 座標更新
+	{
+		//頂点バッファの中身を埋める
+		BILLBOARDVERTEX *pVtx;
 
 		// 頂点データの範囲をロックし、頂点バッファへのポインタを取得
-		g_pD3DVtxBuffBillboard->Lock(0, 0, (void**)&pVtx, 0);
+		this->vertexBuffer->Lock(0, 0, (void**)&pVtx, 0);
 
 		// 頂点座標の設定
-		pVtx[0].vtx = D3DXVECTOR3(-fSizeX / 2, -fSizeY / 2, 0.0f);
-		pVtx[1].vtx = D3DXVECTOR3(-fSizeX / 2, fSizeY / 2, 0.0f);
-		pVtx[2].vtx = D3DXVECTOR3(fSizeX / 2, -fSizeY / 2, 0.0f);
-		pVtx[3].vtx = D3DXVECTOR3(fSizeX / 2, fSizeY / 2, 0.0f);
+		pVtx[0].position = pos + D3DXVECTOR3(-sizeX / 2, -sizeY / 2, 0.0f);
+		pVtx[1].position = pos + D3DXVECTOR3(-sizeX / 2,  sizeY / 2, 0.0f);
+		pVtx[2].position = pos + D3DXVECTOR3( sizeX / 2, -sizeY / 2, 0.0f);
+		pVtx[3].position = pos + D3DXVECTOR3( sizeX / 2,  sizeY / 2, 0.0f);
 
 		// 頂点データをアンロックする
-		g_pD3DVtxBuffBillboard->Unlock();
+		this->vertexBuffer->Unlock();
 	}
-}
-
-void SetBullet(D3DXVECTOR3 pos, D3DXVECTOR3 move)
-{
-	g_posBillboard = pos;
-	g_moveBillboard = move;
-
-	g_use = true;
 }

@@ -17,8 +17,8 @@
 #include "..\Shader\CelShader.h"
 
 // à⁄ìÆÅ@= lookVector * SPEED_COEFFICIENT
-#define MAX_BACK_SPEED_COEFFICIENT	(-0.38f)
-#define MAX_FRONT_SPEED_COEFFICIENT	(0.55f)
+#define MAX_BACK_SPEED_COEFFICIENT	(-0.28f)
+#define MAX_FRONT_SPEED_COEFFICIENT	(0.38f)
 
 #define MAX_HP						(3)
 
