@@ -49,6 +49,8 @@ void Character::InitCharacter()
 	this->rightTime = 3.0f;
 	this->rightShooting = false;
 
+	this->isBorder = false;
+
 	this->leverLevel = LL_STOP;
 }
 
@@ -143,6 +145,7 @@ void Character::Update(float rot)
 		// 更新キャラクターをカメラの回転角度0.05
 		this->RotationVecUp(-0.5f / 180.0f * D3DX_PI);
 	}
+
 	isButton = (GetKeyboardPress(DIK_D) || IsButtonPressed(0, LEFT_STICK_RIGHT));
 	if (isButton)	// 右回転
 	{
@@ -162,43 +165,50 @@ void Character::Update(float rot)
 		this->waveAngle = 0.0f;
 	this->pos.y = 0.5 + 0.8 * sinf(this->waveAngle);
 
-	// 移動
-	switch (leverLevel)
-	{
-	case LL_FRONT:
-		this->speed += 0.0003f;
-		if (this->speed >= MAX_FRONT_SPEED_COEFFICIENT)
-			this->speed = MAX_FRONT_SPEED_COEFFICIENT;
-		break;
-	case LL_STOP:
-		if (this->speed > 0)
-		{
-			this->speed -= 0.0001f;
-			if (this->speed <= 0)
-				this->speed = 0;
-		}
-		else if (this->speed < 0)
-		{
-			this->speed += 0.0003f;
-			if (this->speed >= 0)
-				this->speed = 0;
-		}
-		else
-		{
-			this->speed = 0.0f;
-		}
-		break;
-	case LL_BACK:
-		this->speed -= 0.0001f;
-		if (this->speed <= MAX_BACK_SPEED_COEFFICIENT)
-			this->speed = MAX_BACK_SPEED_COEFFICIENT;
-		break;
-	default:
-		break;
-	}
 
-	// 移動
-	MoveAlongVecLook(this->speed);
+	// 移動範囲をチェック
+	if (CheckMapBorder() == false)
+	{
+		// ボーダーに触ってなければ
+		
+		// スビード
+		switch (leverLevel)
+		{
+		case LL_FRONT:
+			this->speed += 0.0003f;
+			if (this->speed >= MAX_FRONT_SPEED_COEFFICIENT)
+				this->speed = MAX_FRONT_SPEED_COEFFICIENT;
+			break;
+		case LL_STOP:
+			if (this->speed > 0)
+			{
+				this->speed -= 0.0001f;
+				if (this->speed <= 0)
+					this->speed = 0;
+			}
+			else if (this->speed < 0)
+			{
+				this->speed += 0.0003f;
+				if (this->speed >= 0)
+					this->speed = 0;
+			}
+			else
+			{
+				this->speed = 0.0f;
+			}
+			break;
+		case LL_BACK:
+			this->speed -= 0.0001f;
+			if (this->speed <= MAX_BACK_SPEED_COEFFICIENT)
+				this->speed = MAX_BACK_SPEED_COEFFICIENT;
+			break;
+		default:
+			break;
+		}
+
+		// 移動
+		MoveAlongVecLook(this->speed);
+	}
 
 	// ワールド変換
 	SetWorldMatrix();
@@ -223,6 +233,110 @@ void Character::Update(float rot)
 			rightShooting = false;
 		}
 	}
+}
+
+//*****************************************************************************
+//
+// マップから出るかどうかをチェック
+//
+//*****************************************************************************
+bool Character::CheckMapBorder()
+{
+	D3DXVECTOR3 temp = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	temp = this->pos + this->check->size;
+
+	D3DXVECTOR3 temp2 = D3DXVECTOR3(0.0f, 0.0f, 0.0f); // 軸正方
+	
+	// 内積 > 0, 0 < 角度 < 90 || 270 < 角度 < 360
+	// 内積 < 0, 90 < 角度 < 270
+
+	temp2 = D3DXVECTOR3(0.0f, 0.0f, 1.0f); // Z軸
+	if (temp.x >= 1100)
+	{
+		if (D3DXVec3Dot(&this->lookVector, &temp2) > 0)
+		{
+			this->pos += temp2 * this->speed;
+			this->isBorder = true;
+			this->borderStatus = BS_dotplus;
+
+			return true;
+		}
+		else if(D3DXVec3Dot(&this->lookVector, &temp2) < 0)
+		{
+			this->pos -= temp2 * this->speed;
+			this->isBorder = true;
+			this->borderStatus = BS_dotMinus;
+
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	if (temp.x <= -1100)
+	{
+		if (D3DXVec3Dot(&this->lookVector, &temp2) > 0)
+		{
+			this->pos += temp2 * this->speed;
+			this->isBorder = true;
+			this->borderStatus = BS_dotplus;
+
+			return true;
+		}
+		else if(D3DXVec3Dot(&this->lookVector, &temp2) < 0)
+		{
+			this->pos -= temp2 * this->speed;
+			this->isBorder = true;
+			this->borderStatus = BS_dotMinus;
+
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	temp2 = D3DXVECTOR3(1.0f, 0.0f, 0.0f); // X軸
+	if (temp.z >= 1250)
+	{
+		if (D3DXVec3Dot(&this->lookVector, &temp2) > 0)
+		{
+			this->pos += temp2 * this->speed;
+			this->isBorder = true;
+
+			return true;
+		}
+		else
+		{
+			this->pos -= temp2 * this->speed;
+			this->isBorder = true;
+
+			return true;
+		}
+	}
+
+	if (temp.z <= -1250)
+	{
+		if (D3DXVec3Dot(&this->lookVector, &temp2) > 0)
+		{
+			this->pos += temp2 * this->speed;
+			this->isBorder = true;
+
+			return true;
+		}
+		else
+		{
+			this->pos -= temp2 * this->speed;
+			this->isBorder = true;
+
+			return true;
+		}
+	}
+
+	return false;
 }
 
 //*****************************************************************************

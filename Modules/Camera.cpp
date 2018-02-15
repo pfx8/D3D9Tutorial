@@ -192,12 +192,12 @@ void Camera::CameraContrlUpdate(Character* player)
 	//	Rotation(player, 0, D3DXToRadian(-1.0f));
 	//}
 
-	isButton = (GetKeyboardPress(DIK_J) || IsButtonPressed(0, BUTTON_SQUARE));
+	isButton = (GetKeyboardPress(DIK_J) || IsButtonPressed(0, RIGHT_STICK_LEFT));
 	if (isButton && this->whereIsCamera == WIC_freedom)	// 左回転
 	{
 		Rotation(player, D3DXToRadian(1.0f), 0);
 	}
-	isButton = (GetKeyboardPress(DIK_L) || IsButtonPressed(0, BUTTON_CIRCLE));
+	isButton = (GetKeyboardPress(DIK_L) || IsButtonPressed(0, RIGHT_STICK_RIGHT));
 	if (isButton && this->whereIsCamera == WIC_freedom)	// 右回転
 	{
 		Rotation(player, D3DXToRadian(-1.0f), 0);
@@ -215,7 +215,7 @@ void Camera::CameraContrlUpdate(Character* player)
 	}
 
 	// プレーヤーの後ろに戻る
-	if (GetKeyboardTrigger(DIK_Z))
+	if (GetKeyboardTrigger(DIK_Z) || IsButtonTriggered(0, BUTTON_CIRCLE))
 	{
 		this->whereIsCamera = WIC_playerBack;
 

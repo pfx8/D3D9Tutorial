@@ -215,6 +215,10 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 //*****************************************************************************
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	static float fog_start = 50;
+	static float fog_end = 300;
+	static float fog_density = 0.01f;
+
 	switch( message )
 	{
 	case WM_DESTROY:
@@ -319,7 +323,6 @@ HRESULT InitDiretX(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	else
 		vp = D3DCREATE_SOFTWARE_VERTEXPROCESSING;	// ソフトウェアで頂点を処理する
 
-
 	// デバイスの生成
 	// ディスプレイアダプタを表すためのデバイスを作成
 	// 描画と頂点処理をハードウェアで行なう
@@ -342,7 +345,6 @@ HRESULT InitDiretX(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	//
 	//*****************************************************************************
 	InitInput(hInstance, hWnd);
-
 
 	return S_OK;
 }

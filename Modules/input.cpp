@@ -380,6 +380,8 @@ long GetMouseZ(void)
 {
 	return mouseState.lZ;
 }
+
+
 //================================================= game pad
 //---------------------------------------- コールバック関数
 BOOL CALLBACK SearchGamePadCallback(LPDIDEVICEINSTANCE lpddi, LPVOID )
@@ -429,6 +431,9 @@ HRESULT InitializePad(void)			// パッド初期化
 		// Y軸の範囲を設定
 		diprg.diph.dwObj		= DIJOFS_Y;
 		pGamePad[i]->SetProperty(DIPROP_RANGE, &diprg.diph);
+		// Z軸の範囲を設定
+		diprg.diph.dwObj		= DIJOFS_Z;
+		pGamePad[i]->SetProperty(DIPROP_RANGE, &diprg.diph);
 
 		// 各軸ごとに、無効のゾーン値を設定する。
 		// 無効ゾーンとは、中央からの微少なジョイスティックの動きを無視する範囲のこと。
@@ -443,6 +448,9 @@ HRESULT InitializePad(void)			// パッド初期化
 		pGamePad[i]->SetProperty( DIPROP_DEADZONE, &dipdw.diph);
 		//Y軸の無効ゾーンを設定
 		dipdw.diph.dwObj		= DIJOFS_Y;
+		pGamePad[i]->SetProperty(DIPROP_DEADZONE, &dipdw.diph);
+		//Z軸の無効ゾーンを設定
+		dipdw.diph.dwObj		= DIJOFS_Z;
 		pGamePad[i]->SetProperty(DIPROP_DEADZONE, &dipdw.diph);
 			
 		//ジョイスティック入力制御開始
@@ -508,10 +516,10 @@ void UpdatePad(void)
 		if ( dijs.lX < 0 )					padState[i] |= LEFT_STICK_LEFT;
 		//* x-axis (right)
 		if ( dijs.lX > 0 )					padState[i] |= LEFT_STICK_RIGHT;
-		////* z-axis (left)
-		//if ( dijs.lZ < 0 )					padState[i] |= RIGHT_STICK_LEFT;
-		////* z-axis (right)
-		//if ( dijs.lZ > 0 )					padState[i] |= RIGHT_STICK_RIGHT;
+		//* z-axis (left)
+		if ( dijs.lZ < 0 )					padState[i] |= RIGHT_STICK_LEFT;
+		//* z-axis (right)
+		if ( dijs.lZ > 0 )					padState[i] |= RIGHT_STICK_RIGHT;
 
 		//* □ボタン
 		if ( dijs.rgbButtons[0] & 0x80 )	padState[i] |= BUTTON_SQUARE;

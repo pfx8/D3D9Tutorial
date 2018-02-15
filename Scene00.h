@@ -30,7 +30,7 @@
 #include "Shader\CelShader.h"
 #include "Shader\ShadowMapShader.h"
 
-#define ENEMY_MAX		(5)
+#define ENEMY_MAX		(1)
 #define BULLET_MAX		(21)
 #define BILLBOARD_MAX	(4)
 

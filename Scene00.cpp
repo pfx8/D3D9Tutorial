@@ -91,13 +91,14 @@ void Scene00::InitScene00()
 	this->resourcesManager->LoadTexture("shipCannon", &this->ship->player.shipCannon->meshTexturePoint);
 	// バウンディングボックスを初期化
 	/*this->ship->boundingBox->InitBox(4, 7, 8, 0.1f);*/
-	this->ship->check->InitBox(20, 20, 20, 0.1f);
-	this->ship->space->InitBox(30, 30, 30, 0.1f);
+	this->ship->check->InitBox(25, 25, 25, 0.1f);
+	this->ship->space->InitBox(40, 40, 40, 0.1f);
 
 	// 敵
 	for (int count = 0; count < ENEMY_MAX; count++)
 	{
 		D3DXVECTOR3 temp = D3DXVECTOR3(float(rand() % 850), 0.0f, float(rand() % 620));
+
 		if (rand() % 1 == 0 && rand() % 1 == 0)
 		{
 			temp.x *= -1;
@@ -111,7 +112,7 @@ void Scene00::InitScene00()
 		this->resourcesManager->LoadTexture("shipBody", &this->enemyShip[count].player.shipBody->meshTexturePoint);
 		this->resourcesManager->LoadMesh("shipCannon", this->enemyShip[count].player.shipCannon);
 		this->resourcesManager->LoadTexture("shipCannon", &this->enemyShip[count].player.shipCannon->meshTexturePoint);
-		this->enemyShip[count].check->InitBox(4, 7, 8, 0.1f);	// バウンディングボックスを初期化
+		this->enemyShip[count].check->InitBox(4, 7, 8, 0.1f);				// バウンディングボックスを初期化
 		this->enemyShip[count].Trans((rand() % 80) / 180.0f * D3DX_PI);		// 向きを決める
 	}
 
@@ -130,6 +131,7 @@ void Scene00::InitScene00()
 	{
 		this->billboard[count].Init();
 	}*/
+
 
 	// 効果音
 	this->seHit = LoadSound(SE_HIT);
@@ -169,11 +171,10 @@ void Scene00::SetRenderState()
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	// レンダーステートパラメータの設定
-	pDevice->SetRenderState(D3DRS_ZENABLE, TRUE);					// Zバッファを使用
-	//pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);		// αソースカラーの指定
-	//pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);	// αデスティネーションカラーの指定
-	pDevice->SetRenderState(D3DRS_NORMALIZENORMALS, true);
-	pDevice->SetRenderState(D3DRS_SPECULARENABLE, true);
+	pDevice->SetRenderState(D3DRS_ZENABLE, TRUE);						// Zバッファを使用
+	pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);				// αブレンドを行う
+	pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);			// αソースカラーの指定
+	pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);		// αデスティネーションカラーの指定
 }
 
 //*****************************************************************************
@@ -289,6 +290,30 @@ void Scene00::Draw()
 	D3DXMATRIX VPmatrix = this->camera->viewMatrix * this->camera->projectionMatrix;
 
 	// フォグ
+	{
+		//pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);				// 裏面をカリング
+
+		//float Start = 50.0f;    // For linear mode
+		//float End = 300.0f;
+		//float Density = 0.66f;   // For exponential modes
+
+		//						 // Enable fog blending.
+		//pDevice->SetRenderState(D3DRS_FOGENABLE, TRUE);
+
+		//// Set the fog color.
+		//pDevice->SetRenderState(D3DRS_FOGCOLOR, 0xffffffff);
+
+		//// Set fog parameters.
+		//pDevice->SetRenderState(D3DRS_FOGTABLEMODE, D3DFOG_LINEAR);
+		//pDevice->SetRenderState(D3DRS_FOGSTART, *(DWORD *)(&Start));
+		//pDevice->SetRenderState(D3DRS_FOGEND, *(DWORD *)(&End));
+		////g_pD3DDevice->SetRenderState(D3DRS_FOGTABLEMODE, D3DFOG_EXP2);
+		////g_pD3DDevice->SetRenderState(D3DRS_FOGDENSITY, *(DWORD *)(&Density));
+
+		////g_pD3DDevice->SetRenderState(D3DRS_FOGTABLEMODE, D3DFOG_NONE);
+		//pDevice->SetRenderState(D3DRS_RANGEFOGENABLE, TRUE);
+	}
+
 
 	// フィールド
 	{
@@ -333,8 +358,14 @@ void Scene00::Draw()
 		this->ship->Draw(this->celShader, &VPmatrix);
 
 		// バウンディングボックス
-		this->ship->check->Draw(this->shader, &VPmatrix);
-		this->ship->space->Draw(this->shader, &VPmatrix);	
+		if (this->ship->check->isBoundingBoxDraw == true)
+		{
+			this->ship->check->Draw(this->shader, &VPmatrix);
+		}
+		if (this->ship->space->isBoundingBoxDraw == true)
+		{
+			this->ship->space->Draw(this->shader, &VPmatrix);
+		}
 	
 		// シャドー
 		//this->shadowMap->effectPoint->SetTechnique("");
@@ -353,13 +384,13 @@ void Scene00::Draw()
 
 	// エネミー
 	{
-		/*for (int count1 = 0; count1 < ENEMY_MAX; count1++)
+		for (int count1 = 0; count1 < ENEMY_MAX; count1++)
 		{
 			if (this->enemyShip[count1].isLife == true)
 			{
 				this->enemyShip[count1].Draw(this->celShader, &VPmatrix);
 			}
-		}*/
+		}
 	}
 
 	// 弾
@@ -391,27 +422,7 @@ void Scene00::Draw()
 void Scene00::Control()
 {
 	// プレーヤー攻撃(左)
-	/*int  leftButton = 0;
-	bool isLeftShooting;
-	int  rightButton = 0;
-	bool isRightShooting;*/
-
 	bool isButton = false;
-
-	/*if (this->ship->rot.y <= D3DXToRadian(90) && this->ship->rot.y >= -D3DXToRadian(90))
-	{
-		leftButton = DIK_N;
-		isLeftShooting = this->ship->leftShooting;
-		rightButton = DIK_M;
-		isRightShooting = this->ship->rightShooting;
-	}
-	else
-	{
-		leftButton = DIK_M;
-		isLeftShooting = this->ship->rightShooting;
-		rightButton = DIK_N;
-		isRightShooting = this->ship->leftShooting;
-	}*/
 
 	isButton = (GetKeyboardTrigger(DIK_N) || IsButtonTriggered(0, BUTTON_L2));
 	if (isButton && (this->ship->leftShooting == false))

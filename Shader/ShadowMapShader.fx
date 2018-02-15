@@ -58,7 +58,6 @@ matrix lightViewProj;
 // マテリアル
 float4 material;
 
-
 // サンプラー
 texture shadowMap;
 sampler shadowMapSampler =

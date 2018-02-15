@@ -40,10 +40,10 @@
 #define BUTTON_R2			0x00000800l	// Ｒボタン(.rgbButtons[7]&0x80)
 #define BUTTON_SHARE		0x00001000l	// ＳＴＡＲＴボタン(.rgbButtons[8]&0x80)
 #define BUTTON_OPTIONS		0x00002000l	// Ｍボタン(.rgbButtons[9]&0x80)
-//#define RIGHT_STICK_UP		0x00004000l
-//#define RIGHT_STICK_DOWN	0x00008000l
-//#define RIGHT_STICK_LEFT	0x00010000l	// 右スティック左(.IZ<0)
-//#define RIGHT_STICK_RIGHT	0x00020000l	// 右スティック右(.IZ>0)
+#define RIGHT_STICK_UP		0x00004000l
+#define RIGHT_STICK_DOWN	0x00008000l
+#define RIGHT_STICK_LEFT	0x00010000l	// 右スティック左(.IZ<0)
+#define RIGHT_STICK_RIGHT	0x00020000l	// 右スティック右(.IZ>0)
 #define GAMEPADMAX			4			// 同時に接続するジョイパッドの最大数をセット
 
 

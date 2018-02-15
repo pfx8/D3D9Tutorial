@@ -22,6 +22,7 @@ private:
 
 public:
 	D3DLIGHT9			light;  // Ç±Ç±Ç≈ÇÕïΩçsåıåπ
+	D3DXVECTOR3			pos;
 
 	Light();	
 	~Light();

@@ -183,32 +183,32 @@ void BoundingBox::Draw(Shader* shader, D3DXMATRIX* VPMatrix)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
-	if (this->isBoundingBoxDraw == true)
+	SetWorldMatrix();
+
+	// テクニックを設定
+	shader->shaderHandle = shader->effectPoint->GetTechniqueByName("RenderWithoutTextrue");
+	shader->effectPoint->SetTechnique(shader->shaderHandle);
+
+	// ワールド変換、ビューイング変換、プロジェクション変換マトリックス
+	shader->effectPoint->SetMatrix(shader->WMatrixHandle, &this->worldMatrix);
+	shader->effectPoint->SetMatrix(shader->VPMatrixHandle, VPMatrix);
+
+	// アルファ値の設定(テクスチャ無し)
+	shader->effectPoint->SetFloat(shader->alphaHandle, 0.2f);
+
+	UINT passNum = 0;
+	shader->effectPoint->Begin(&passNum, 0);
+	for (int count = 0; count < passNum; count++)
 	{
-		// テクニックを設定
-		shader->shaderHandle = shader->effectPoint->GetTechniqueByName("RenderWithoutTextrue");
-		shader->effectPoint->SetTechnique(shader->shaderHandle);
+		shader->effectPoint->BeginPass(0);
 
-		// ワールド変換、ビューイング変換、プロジェクション変換マトリックス
-		shader->effectPoint->SetMatrix(shader->WMatrixHandle, &this->worldMatrix);
-		shader->effectPoint->SetMatrix(shader->VPMatrixHandle, VPMatrix);
+		pDevice->SetVertexDeclaration(this->vertexDecl);								// 頂点シェーダー設定
+		pDevice->SetStreamSource(0, this->vertexBuffer, 0, sizeof(BOUNDINGBOXVERTEX));	// 頂点バッファをデバイスのデータストリームにバイナリ
+		pDevice->SetIndices(this->indexBuffer);											// 頂点イデックスの設定
+		pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 17, 0, 16);				// バウンディングボックスの描画
 
-		// アルファ値の設定(テクスチャ無し)
-		shader->effectPoint->SetFloat(shader->alphaHandle, 0.5f);
-
-		UINT passNum = 0;
-		shader->effectPoint->Begin(&passNum, 0);
-		for (int count = 0; count < passNum; count++)
-		{
-			shader->effectPoint->BeginPass(0);
-
-			pDevice->SetVertexDeclaration(this->vertexDecl);								// 頂点シェーダー設定
-			pDevice->SetStreamSource(0, this->vertexBuffer, 0, sizeof(BOUNDINGBOXVERTEX));	// 頂点バッファをデバイスのデータストリームにバイナリ
-			pDevice->SetIndices(this->indexBuffer);											// 頂点イデックスの設定
-			pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 17, 0, 16);				// バウンディングボックスの描画
-
-			shader->effectPoint->EndPass();
-		}
-		shader->effectPoint->End();
+		shader->effectPoint->EndPass();
 	}
+	shader->effectPoint->End();
+	
 }

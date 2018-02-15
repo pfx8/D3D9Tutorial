@@ -63,7 +63,8 @@ PS_OUTPUT BasicPixelShader(VS_OUTPUT vsout, uniform bool withTextrue)
     }
     else
     {
-        pout.diffuse = float4(1.0, 0.0, 0.0, 1.0) * alpha; // 赤を出る
+        pout.diffuse = float4(1.0, 0.0, 0.0, 1.0);
+        pout.diffuse.a *= alpha; // 赤を出る
     }
 
     return pout;

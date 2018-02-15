@@ -39,6 +39,12 @@ typedef enum
 	LL_FRONT,		// [1]前進
 }LEVER_LEVEL;
 
+enum Border_Status
+{
+	BS_dotMinus,
+	BS_dotplus,
+};
+
 //*****************************************************************************
 //
 // クラス宣言
@@ -47,6 +53,7 @@ typedef enum
 class Character
 {
 private:
+	bool			CheckMapBorder();	// マップから出るかどうかをチェック
 
 public:
 	D3DXMATRIX		worldMatrix;	// ワールド変換マトリックス
@@ -79,7 +86,8 @@ public:
 	float			rightTime;
 	bool			rightShooting;
 
-
+	bool			isBorder;
+	Border_Status	borderStatus;
 
 	Character();
 	~Character();

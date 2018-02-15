@@ -26,6 +26,8 @@ Light::Light()
 
 	this->light.Direction = D3DXVECTOR3(1.0f, -1.0f, 0.0f);		// 光の方向
 
+	this->pos = D3DXVECTOR3(-1250.0f, 1250.0f, 0.0f);
+
 	pDevice->SetLight(0, &this->light);
 	pDevice->LightEnable(0, true);
 }

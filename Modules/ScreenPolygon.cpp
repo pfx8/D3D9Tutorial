@@ -227,15 +227,21 @@ void ScreenPolygon::Update(Character* player, Character* enemy)
 	this->leftShooting = player->leftTime;
 	this->rightShooting = player->rightTime;
 
-	D3DXVECTOR2 miniMapCenter = D3DXVECTOR2(SCREEN_WIDTH - 100, SCREEN_HEIGHT - 100);
+	D3DXVECTOR2 miniMapCenter = D3DXVECTOR2(SCREEN_WIDTH - MINIMAP_SIZE / 2, SCREEN_HEIGHT - MINIMAP_SIZE / 2);
 	float mapSize = 17.0f * 150;
 
-	D3DXVECTOR2 miniMapPlayer = miniMapCenter + D3DXVECTOR2(200 * player->pos.x / mapSize, -1 * 200 * player->pos.z / mapSize);
+	D3DXVECTOR2 miniMapPlayer = miniMapCenter + D3DXVECTOR2(MINIMAP_SIZE * player->pos.x / mapSize, -1 * MINIMAP_SIZE * player->pos.z / mapSize);
 	MakeVertex(miniMapPlayer, D3DXVECTOR2(20, 20), &this->UIminiMapPlayerVertexBuffer);
 
-	D3DXVECTOR2 miniMapEnemy = miniMapCenter + D3DXVECTOR2(200 * enemy->pos.x / mapSize, -1 * 200 * enemy->pos.z / mapSize);
-	MakeVertex(miniMapEnemy, D3DXVECTOR2(20, 20), &this->UIminiMapEnemyVertexBuffer);
+	/*for (int count = 0; count < 5; count++)
+	{
+		D3DXVECTOR2 miniMapEnemy = miniMapCenter + D3DXVECTOR2(MINIMAP_SIZE * enemy[count].pos.x / mapSize, -1 * MINIMAP_SIZE * enemy[count].pos.z / mapSize);
+		MakeVertex(miniMapEnemy, D3DXVECTOR2(20, 20), &this->UIminiMapEnemyVertexBuffer);
+	}*/
 
+	D3DXVECTOR2 miniMapEnemy = miniMapCenter + D3DXVECTOR2(MINIMAP_SIZE * enemy->pos.x / mapSize, -1 * MINIMAP_SIZE * enemy->pos.z / mapSize);
+	MakeVertex(miniMapEnemy, D3DXVECTOR2(20, 20), &this->UIminiMapEnemyVertexBuffer);
+	
 	// プレーヤーの方向により角度を更新
 	MakeTransVertex(D3DXVECTOR2(122, SCREEN_HEIGHT - 180 - 80), D3DXVECTOR2(120, 60), &this->UIzenVertexBuffer, player->rot.y);
 	MakeTransVertex(D3DXVECTOR2(152, SCREEN_HEIGHT - 130 - 80), D3DXVECTOR2(60, 60), &this->UIstopVertexBuffer, player->rot.y);
