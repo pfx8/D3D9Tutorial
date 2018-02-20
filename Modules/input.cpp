@@ -503,9 +503,9 @@ void UpdatePad(void)
 		// LONG lX;		X軸の位置		左アナログスティックの左右
 		// LONG lY;		Y軸の位置		左アナログスティックの上下
 		// LONG lZ;		Z軸の位置		右アナログスティックの左右
-		// LONG lRx;	X軸の回転値		右アナログスティックの上下
+		// LONG lRx;	X軸の回転値		未使用
 		// LONG lRy;	Y軸の回転値		未使用
-		// LONG lRz;	Z軸の回転値		未使用
+		// LONG lRz;	Z軸の回転値		右アナログスティックの上下
 
 		// ３２の各ビットに意味を持たせ、ボタン押下に応じてビットをオンにする
 		//* y-axis (forward)
@@ -520,6 +520,11 @@ void UpdatePad(void)
 		if ( dijs.lZ < 0 )					padState[i] |= RIGHT_STICK_LEFT;
 		//* z-axis (right)
 		if ( dijs.lZ > 0 )					padState[i] |= RIGHT_STICK_RIGHT;
+		//* z-trans (up)
+		if (dijs.lRz < 0)					padState[i] |= RIGHT_STICK_UP;
+		//* z-trans (down)
+		if (dijs.lRz > 0)					padState[i] |= RIGHT_STICK_DOWN;
+		
 
 		//* □ボタン
 		if ( dijs.rgbButtons[0] & 0x80 )	padState[i] |= BUTTON_SQUARE;

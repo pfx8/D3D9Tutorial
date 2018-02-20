@@ -103,6 +103,8 @@ public:
 	virtual void Draw(CelShader* celShader, D3DXMATRIX* VPMatrix);	// キャラクターの描画
 
 	void InitCharacter();
+
+	void Move();								// キャラクター移動
 };
 #endif // !_CHARACTER_H_
 

@@ -243,17 +243,17 @@ void Camera::Rotation(Character* player, float radiansHorizonal, float radiansVe
 	D3DXMatrixRotationAxis(&HorizonalMatrix, &player->upVector, radiansHorizonal);			// 回転行列を作る
 	D3DXVec3TransformCoord(&this->offSetFromPlayer, &this->offSetFromPlayer, &HorizonalMatrix);	// カメラの新しい座標を計算する
 
-	//// 垂直
-	//D3DXMATRIX VerticalMatrix;
-	//D3DXMatrixRotationAxis(&VerticalMatrix, &player->m_rightVector, radiansVertical);			// 回転行列を作る
-	//D3DXVECTOR3 tempOffset = D3DXVECTOR3(1.0f, 1.0f, 1.0f);				
-	//D3DXVec3TransformCoord(&tempOffset, &tempOffset, &VerticalMatrix);	// 移動後の座標を計算
-	//D3DXVec3Normalize(&tempOffset, &tempOffset);						// 法線を正規化
-	//float radianToPlayerUp = D3DXVec3Dot(&tempOffset, &player->m_upVector);	// カメラの移動範囲を制限するため、プレーヤーの垂直ベクトルと内積を計算する
-	//if (radianToPlayerUp < this->verticalRadiansMax && radianToPlayerUp > this->verticalRadiansMin)
-	//{
-	//	this->offSetFromPlayer = tempOffset;
-	//}
+	// 垂直
+	D3DXMATRIX VerticalMatrix;
+	D3DXMatrixRotationAxis(&VerticalMatrix, &player->rightVector, radiansVertical);			// 回転行列を作る
+	D3DXVECTOR3 tempOffset = D3DXVECTOR3(1.0f, 1.0f, 1.0f);				
+	D3DXVec3TransformCoord(&tempOffset, &tempOffset, &VerticalMatrix);	// 移動後の座標を計算
+	D3DXVec3Normalize(&tempOffset, &tempOffset);						// 法線を正規化
+	float radianToPlayerUp = D3DXVec3Dot(&tempOffset, &player->upVector);	// カメラの移動範囲を制限するため、プレーヤーの垂直ベクトルと内積を計算する
+	if (radianToPlayerUp < this->verticalRadiansMax && radianToPlayerUp > this->verticalRadiansMin)
+	{
+		this->offSetFromPlayer = tempOffset;
+	}
 }
 
 //*****************************************************************************
